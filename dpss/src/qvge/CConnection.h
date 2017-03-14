@@ -43,10 +43,10 @@ public:
 	// reimp
 	static QByteArray factoryId()			{ return "CConnection"; }
 	virtual QByteArray typeId() const		{ return this->factoryId(); }
-	virtual QByteArray classId() const		{ return "edge"; }
-	virtual QByteArray superClassId() const { return Super::classId(); }
-	virtual QString createNewId() const;
+    virtual QByteArray classId() const		{ return "edge"; }
+    virtual QByteArray superClassId() const { return Super::classId(); }
 
+	virtual QString createNewId() const;
 	virtual CItem* create() const			{ return new CConnection(parentItem());	}
 	CConnection* clone();
 

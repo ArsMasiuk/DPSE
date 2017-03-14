@@ -38,12 +38,8 @@ public:
 	static QByteArray factoryId()		{ return "CBranchNode"; }
 	virtual QByteArray typeId() const	{ return this->factoryId(); }
 
-	virtual CItem* create() const
-	{
-		return new CBranchNode(parentItem());
-	}
-
 	virtual QString createNewId() const;
+	virtual CItem* create() const		{ return new CBranchNode(parentItem());	}
 };
 
 
@@ -56,10 +52,10 @@ public:
 
 	static QByteArray factoryId()		{ return "CFanNode"; }
 	virtual QByteArray typeId() const	{ return this->factoryId(); }
-	virtual QString createNewId() const;
-	virtual QByteArray classId() const	{ return "fan"; }
-	virtual QByteArray superClassId() const { return Super::classId(); }
+    virtual QByteArray classId() const	{ return "fan"; }
+    virtual QByteArray superClassId() const { return Super::classId(); }
 
+	virtual QString createNewId() const;
 	virtual CItem* create() const		{ return new CFanNode(parentItem()); }
 
 	virtual QList<CNode*> unlink();

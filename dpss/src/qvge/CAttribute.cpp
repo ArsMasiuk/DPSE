@@ -1,15 +1,12 @@
 #include "CAttribute.h"
 
 CAttribute::CAttribute()
-	: isVisible(false),
-	isVirtual(false)
+    : isVirtual(false)
 {
-
 }
 
-CAttribute::CAttribute(const QByteArray& classId, const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue, bool visible)
-	: isVisible(visible),
-	isVirtual(false)
+CAttribute::CAttribute(const QByteArray& classId, const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue)
+    : isVirtual(false)
 {
 	this->classId = classId;
 	this->id = attrId;
@@ -19,12 +16,13 @@ CAttribute::CAttribute(const QByteArray& classId, const QByteArray& attrId, cons
 
 bool CAttribute::storeTo(QDataStream & out, quint64 version64) const
 {
-	out << id << classId << name << defaultValue << isVisible << isVirtual;
+    out << id << classId << name << defaultValue << true << isVirtual;
 	return true;
 }
 
 bool CAttribute::restoreFrom(QDataStream & out, quint64 version64)
 {
-	out >> id >> classId >> name >> defaultValue >> isVisible >> isVirtual;
+    static bool dummy;
+    out >> id >> classId >> name >> defaultValue >> dummy >> isVirtual;
 	return true;
 }

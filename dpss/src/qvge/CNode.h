@@ -44,8 +44,8 @@ public:
 
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
 	virtual QVariant getAttribute(const QByteArray& attrId) const;
-	virtual QByteArray classId() const { return "node"; }
-	virtual QByteArray superClassId() const { return Super::classId(); }
+    virtual QByteArray classId() const { return "node"; }
+    virtual QByteArray superClassId() const { return Super::classId(); }
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;

@@ -10,12 +10,11 @@
 struct CAttribute
 {
 	CAttribute();
-	CAttribute(const QByteArray& classId, const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue, bool visible);
+    CAttribute(const QByteArray& classId, const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue);
 
 	QByteArray id, classId;
 	QString name;
 	QVariant defaultValue;
-	bool isVisible;
 	bool isVirtual;	// x,y,label,color etc.
 
 	// serialization 

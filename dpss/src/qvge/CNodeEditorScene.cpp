@@ -28,17 +28,17 @@ void CNodeEditorScene::initialize()
 	Super::initialize();
 
 	// default node attr
-	CAttribute nodeAttr("node", "color", "Color", QColor(Qt::magenta), false);
+    CAttribute nodeAttr("node", "color", "Color", QColor(Qt::magenta));
 	setClassAttribute(nodeAttr);
 
-    CAttribute shapeAttr("node", "shape", "Shape", "disc", false);
+    CAttribute shapeAttr("node", "shape", "Shape", "disc");
 	setClassAttribute(shapeAttr);
 
-	CAttribute posAttr("node", "pos", "Position", QPointF(), true);
-	setClassAttribute(posAttr);
+    CAttribute posAttr("node", "pos", "Position", QPointF());
+    setClassAttribute(posAttr, true);
 
 	// default edge attr
-	CAttribute edgeAttr("edge", "color", "Color", QColor(Qt::gray), false);
+    CAttribute edgeAttr("edge", "color", "Color", QColor(Qt::gray));
 	setClassAttribute(edgeAttr);
 }
 

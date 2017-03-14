@@ -98,14 +98,28 @@ QVariant CItem::getAttribute(const QByteArray& attrId) const
 
 QSet<QByteArray> CItem::getVisibleAttributeIds(int flags) const
 {
-	static QSet<QByteArray> result;
-	if (result.isEmpty())
-		result << "id" << "label" << "pos";
+	QSet<QByteArray> result;
 
 	if (flags == VF_ANY || flags == VF_TOOLTIP)
-		return result + m_attributes.keys().toSet();
+        result = getLocalAttributes().keys().toSet();
 
-	return result;
+	auto scene = getScene();
+	if (scene)
+	{
+		QByteArray lookId = classId();
+
+		while (!lookId.isEmpty())
+		{
+			if (flags == VF_ANY || flags == VF_TOOLTIP)
+				result += scene->getClassAttributes(lookId).keys().toSet();
+			else
+				result += scene->getVisibleClassAttributes(lookId);
+
+			lookId = scene->getSuperClassId(lookId);
+		}
+	}
+
+    return result;
 }
 
 QVariant CItem::getClassAttribute(const QByteArray& attrId) const
@@ -113,11 +127,16 @@ QVariant CItem::getClassAttribute(const QByteArray& attrId) const
 	auto scene = getScene();
 	if (scene)
 	{
-		auto v = scene->getClassAttribute(classId(), attrId);
-		if (v.isValid()) return v;
+		QByteArray lookId = classId();
 
-		v = scene->getClassAttribute(superClassId(), attrId);
-		if (v.isValid()) return v;
+		while (!lookId.isEmpty())
+		{
+			auto v = scene->getClassAttribute(lookId, attrId);
+			if (v.isValid()) 
+				return v;
+
+			lookId = scene->getSuperClassId(lookId);
+		}
 	}
 
 	return QVariant();

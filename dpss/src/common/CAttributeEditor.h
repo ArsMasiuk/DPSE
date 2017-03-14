@@ -4,7 +4,7 @@
 #include <QWidget>
 
 class CEditorScene;
-class CAttribute;
+struct CAttribute;
 
 #include "ui_CAttributeEditor.h"
 

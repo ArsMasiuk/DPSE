@@ -63,13 +63,15 @@ public:
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
 	virtual QVariant getAttribute(const QByteArray& attrId) const;
 	virtual QVariant getClassAttribute(const QByteArray& attrId) const;
-	virtual QByteArray classId() const { return "item"; }
-	virtual QByteArray superClassId() const { return QByteArray(); }
+    virtual QByteArray classId() const			{ return "item"; }
+    virtual QByteArray superClassId() const		{ return QByteArray(); }
 
 	enum VisibleFlags { VF_ANY = 0, VF_LABEL = 1, VF_TOOLTIP = 2 };
-	virtual QSet<QByteArray> getVisibleAttributeIds(int flags = VF_ANY) const;
+    virtual QSet<QByteArray> getVisibleAttributeIds(int flags) const;
 
-	const QMap<QByteArray, QVariant>& getLocalAttributes() const { return m_attributes; }
+	const QMap<QByteArray, QVariant>& getLocalAttributes() const { 
+		return m_attributes; 
+	}
 
 	QGraphicsItem* getSceneItem() const {
 		return dynamic_cast<QGraphicsItem*>((CItem*)this);

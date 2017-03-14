@@ -103,14 +103,20 @@ public:
 		return NULL;
 	}
 
-	CItem* getActiveItemFactory() const 
-	{
+	CItem* getActiveItemFactory() const {
 		return m_activeItemFactory;
 	}
 
 	// attributes
-	QVariant getClassAttribute(const QByteArray& classId, const QByteArray& attrId) const;
-	void setClassAttribute(const CAttribute& attr);
+    QVariant getClassAttribute(const QByteArray& classId, const QByteArray& attrId) const {
+        return m_classAttributes[classId][attrId].defaultValue;
+    }
+
+    void setClassAttribute(const CAttribute& attr, bool vis = false) {
+        m_classAttributes[attr.classId][attr.id] = attr;
+
+        setClassAttributeVisible(attr.classId, attr.id, vis);
+    }
 
 	AttributesMap getClassAttributes(const QByteArray& classId) const { 
 		return m_classAttributes[classId]; 
@@ -118,6 +124,24 @@ public:
 	
 	QByteArrayList getClasses() const {
 		return m_classAttributes.keys();
+	}
+
+    QSet<QByteArray> getVisibleClassAttributes(const QByteArray& classId) const {
+        return m_classAttributesVis[classId];
+    }
+
+    void setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis = true) {
+        if (vis)
+            m_classAttributesVis[classId].insert(attrId);
+        else
+            m_classAttributesVis[classId].remove(attrId);
+    }
+
+	QByteArray getSuperClassId(const QByteArray& classId) const {
+		if (m_classToSuperIds.contains(classId))
+			return m_classToSuperIds[classId];
+
+		return QByteArray();
 	}
 
 	// selections
@@ -210,9 +234,12 @@ protected:
 	QMap<QByteArray, CItem*> m_itemFactories;
 	CItem *m_activeItemFactory;
 
+	QMap<QByteArray, QByteArray> m_classToSuperIds;
+
 	IUndoManager *m_undoManager;
 
 	ClassAttributesMap m_classAttributes;
+    QMap<QByteArray, QSet<QByteArray>> m_classAttributesVis;
 
 private:
     int m_gridSize;

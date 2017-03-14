@@ -60,13 +60,14 @@ void CEditorScene::initialize()
 	removeItems();
 
 	m_classAttributes.clear();
+	m_classAttributesVis.clear();
 
 	// default item attr
-	CAttribute labelAttr("item", "label", "Label", "", true);
-	setClassAttribute(labelAttr);
+    CAttribute labelAttr("item", "label", "Label", "");
+    setClassAttribute(labelAttr, true);
 
-	CAttribute idAttr("item", "id", "ID", "", true);
-	setClassAttribute(idAttr);
+    CAttribute idAttr("item", "id", "ID", "");
+    setClassAttribute(idAttr, true);
 }
 
 void CEditorScene::removeItems()
@@ -216,12 +217,12 @@ bool CEditorScene::storeTo(QDataStream& out) const
 	out << (quint64)0x12345678;
 
 	out << m_classAttributes.size();
-	for (auto classAttr : m_classAttributes)
+	for (auto classAttrs : m_classAttributes)
 	{
-		out << classAttr.size();
-		for (auto attrId : classAttr)
+		out << classAttrs.size();
+		for (auto attr : classAttrs)
 		{
-			attrId.storeTo(out, version64);
+			attr.storeTo(out, version64);
 		}
 	}
 
@@ -313,24 +314,17 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 	return true;
 }
 
-// attributes
-
-QVariant CEditorScene::getClassAttribute(const QByteArray &classId, const QByteArray &attrId) const
-{
-	return m_classAttributes[classId][attrId].defaultValue;
-}
-
-void CEditorScene::setClassAttribute(const CAttribute &attr)
-{
-	m_classAttributes[attr.classId][attr.id] = attr;
-}
-
 // factorization
 
 bool CEditorScene::addItemFactory(CItem *factoryItem)
 {
 	if (factoryItem)
 	{
+		// register class inheritance
+		QByteArray classId = factoryItem->classId();
+		QByteArray superClassId = factoryItem->superClassId();
+		m_classToSuperIds[classId] = superClassId;
+
 		QByteArray id = factoryItem->typeId();
 
 		// already registered?

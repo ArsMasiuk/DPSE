@@ -62,12 +62,13 @@ void CAttributeEditor::onSceneChanged()
 void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem* classTreeItem)
 {
 	AttributesMap attrs = m_scene->getClassAttributes(classId);
+    QSet<QByteArray> visIds = m_scene->getVisibleClassAttributes(classId);
 
 	for (auto attr : attrs)
 	{
 		auto attrItem = new QTreeWidgetItem(classTreeItem);
 		attrItem->setText(0, QString(attr.id));
-		attrItem->setCheckState(0, attr.isVisible ? Qt::Checked : Qt::Unchecked);
+        attrItem->setCheckState(0, visIds.contains(attr.id) ? Qt::Checked : Qt::Unchecked);
 		attrItem->setText(1, attr.name);
 		attrItem->setText(2, attr.defaultValue.toString());
 	}

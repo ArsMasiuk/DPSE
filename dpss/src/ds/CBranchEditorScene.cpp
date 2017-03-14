@@ -32,16 +32,16 @@ void CBranchEditorScene::initialize()
 	Super::initialize();
 
 	// default fan attr
-	CAttribute fanAttr("fan", "color", "Color", QColor(Qt::green), false);
+    CAttribute fanAttr("fan", "color", "Color", QColor(Qt::green));
 	setClassAttribute(fanAttr);
 
     // default branch attributes
-    setClassAttribute(CAttribute("edge", "MODEL", "Model", "", false));
-    setClassAttribute(CAttribute("edge", "L", "L", 0, false));
-    setClassAttribute(CAttribute("edge", "S", "S", 0, false));
-    setClassAttribute(CAttribute("edge", "R", "R", 0, false));
-    setClassAttribute(CAttribute("edge", "H", "H", 0, false));
-    setClassAttribute(CAttribute("edge", "Q", "Q", 0, false));
+    setClassAttribute(CAttribute("edge", "MODEL", "Model", ""));
+    setClassAttribute(CAttribute("edge", "L", "L", 0));
+    setClassAttribute(CAttribute("edge", "S", "S", 0));
+    setClassAttribute(CAttribute("edge", "R", "R", 0));
+    setClassAttribute(CAttribute("edge", "H", "H", 0));
+    setClassAttribute(CAttribute("edge", "Q", "Q", 0));
 }
 
 
