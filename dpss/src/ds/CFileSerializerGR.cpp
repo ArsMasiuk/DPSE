@@ -100,9 +100,9 @@ bool CFileSerializerGR::readFan(int index, const QSettings& set, CEditorScene& s
 	readNodeParams(index, node, set);
 
 	// attr
-	node->setAttribute("LINK_R", set.value("R"));
-	node->setAttribute("LINK_H", set.value("H"));
-	node->setAttribute("LINK_Q", set.value("Q"));
+    node->setAttribute("R", set.value("R"));
+    node->setAttribute("H", set.value("H"));
+    node->setAttribute("Q", set.value("Q"));
 
 	scene.addItem(node);
 
@@ -135,12 +135,12 @@ bool CFileSerializerGR::readLink(int index, const QSettings& set, CEditorScene& 
 	link->setAttribute("id", title);
 
 	// attr
-	link->setAttribute("LINK_L", set.value("L", 0).toStringList().join('.').toFloat());
-	link->setAttribute("LINK_F1", set.value("F1", 0).toStringList().join('.').toFloat());
-	link->setAttribute("LINK_F2", set.value("F2", 0).toStringList().join('.').toFloat());
-	link->setAttribute("LINK_R", set.value("R", 0).toStringList().join('.').toFloat());
-	link->setAttribute("LINK_H", set.value("H", 0).toStringList().join('.').toFloat());
-	link->setAttribute("LINK_Q", set.value("Q", 0).toStringList().join('.').toFloat());
+    link->setAttribute("L", set.value("L", 0).toStringList().join('.').toFloat());
+    link->setAttribute("S", set.value("F1", 0).toStringList().join('.').toFloat());
+    //link->setAttribute("LINK_F2", set.value("F2", 0).toStringList().join('.').toFloat());
+    link->setAttribute("R", set.value("R", 0).toStringList().join('.').toFloat());
+    link->setAttribute("H", set.value("H", 0).toStringList().join('.').toFloat());
+    link->setAttribute("Q", set.value("Q", 0).toStringList().join('.').toFloat());
 
 	switch (set.value("Model", 0).toInt())
 	{

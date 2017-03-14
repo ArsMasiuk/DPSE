@@ -4,6 +4,12 @@
 #include <qvge/CNode.h>
 #include <qvge/CConnection.h>
 
+#include <QInputDialog>
+
+
+static int ClassRole = Qt::UserRole + 1;
+static int AttrRole = Qt::UserRole + 2;
+
 
 CItemAttributeEditor::CItemAttributeEditor(QWidget *parent)
 	: QWidget(parent),
@@ -59,7 +65,7 @@ void CItemAttributeEditor::onSelectionChanged()
 	ui.Editor->addTopLevelItem(iedges);
 
 	listAttributes(inodes, nodes, "node");
-	listAttributes(iedges, edges, "edge");
+    listAttributes(iedges, edges, "edge");
 }
 
 void CItemAttributeEditor::listAttributes(QTreeWidgetItem* rootItem, const QList<CItem*>& sceneItems, const QByteArray& classId)
@@ -103,7 +109,38 @@ void CItemAttributeEditor::listAttributes(QTreeWidgetItem* rootItem, const QList
 		auto *item = new QTreeWidgetItem(rootItem);
 		item->setText(0, it.key());
 		item->setText(1, it.value().isNull() ? "<...>" : Utils::variantToText(it.value()));
-	}
+
+        item->setData(0, ClassRole, classId);
+        item->setData(0, AttrRole, it.key());
+    }
 
 	rootItem->setExpanded(true);
+}
+
+
+// edit attrs
+
+void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    auto attrV = item->data(0, AttrRole);
+    if (attrV.isNull())
+        return;
+
+    QByteArray attrId = attrV.toByteArray();
+
+    QString val = QInputDialog::getText(NULL, tr("Set Attribute"), attrId);
+    if (val.isEmpty())
+        return;
+
+    QList<CItem*> sceneItems = m_scene->getSelectedItems<CItem>();
+    for (auto sceneItem : sceneItems)
+    {
+        sceneItem->setAttribute(attrId, val);
+    }
+
+    // store state
+    m_scene->addUndoState();
+
+    // rebuild tree
+    onSelectionChanged();
 }

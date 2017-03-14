@@ -24,6 +24,7 @@ protected:
 
 protected Q_SLOTS:
 	void onSelectionChanged();
+    void on_Editor_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
 private:
 	void listAttributes(QTreeWidgetItem* rootItem, const QList<CItem*>& items, const QByteArray& classId);
