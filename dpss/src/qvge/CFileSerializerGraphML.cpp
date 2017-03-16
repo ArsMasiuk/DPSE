@@ -57,7 +57,7 @@ bool CFileSerializerGraphML::load(const QString& fileName, CEditorScene& scene) 
 	return true;
 }
 
-bool CFileSerializerGraphML::readAttrKey(int index, const QDomNode & domNode, CEditorScene & scene, KeyAttrMap& cka) const
+bool CFileSerializerGraphML::readAttrKey(int /*index*/, const QDomNode & domNode, CEditorScene & scene, KeyAttrMap& cka) const
 {
 	QDomElement elem = domNode.toElement();
 
@@ -90,7 +90,7 @@ bool CFileSerializerGraphML::readAttrKey(int index, const QDomNode & domNode, CE
 	return true;
 }
 
-bool CFileSerializerGraphML::readNode(int index, const QDomNode &domNode, CEditorScene& scene, const KeyAttrMap& cka) const
+bool CFileSerializerGraphML::readNode(int /*index*/, const QDomNode &domNode, CEditorScene& scene, const KeyAttrMap& cka) const
 {
 	QDomElement elem = domNode.toElement();
 
@@ -134,7 +134,7 @@ bool CFileSerializerGraphML::readNode(int index, const QDomNode &domNode, CEdito
 	return true;
 }
 
-bool CFileSerializerGraphML::readEdge(int index, const QDomNode &domNode, CEditorScene& scene, const KeyAttrMap& cka) const
+bool CFileSerializerGraphML::readEdge(int /*index*/, const QDomNode &domNode, CEditorScene& scene, const KeyAttrMap& cka) const
 {
 	QDomElement elem = domNode.toElement();
 	

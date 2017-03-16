@@ -53,6 +53,7 @@ public:
 	void setSceneCursor(const QCursor& c) { m_sceneCursor = c; }
 
 	bool itemLabelsEnabled() const		{ return m_labelsEnabled; }
+	bool itemLabelsNeedUpdate() const	{ return m_labelsUpdate; }
 
 	// undo-redo
 	int availableUndoCount() const;
@@ -112,30 +113,17 @@ public:
         return m_classAttributes[classId][attrId].defaultValue;
     }
 
-    void setClassAttribute(const CAttribute& attr, bool vis = false) {
-        m_classAttributes[attr.classId][attr.id] = attr;
+	void setClassAttribute(const CAttribute& attr, bool vis = false);
 
-        setClassAttributeVisible(attr.classId, attr.id, vis);
-    }
-
-	AttributesMap getClassAttributes(const QByteArray& classId) const { 
-		return m_classAttributes[classId]; 
-	}
+	AttributesMap getClassAttributes(const QByteArray& classId, bool inherited) const;
 	
 	QByteArrayList getClasses() const {
 		return m_classAttributes.keys();
 	}
 
-    QSet<QByteArray> getVisibleClassAttributes(const QByteArray& classId) const {
-        return m_classAttributesVis[classId];
-    }
+	QSet<QByteArray> getVisibleClassAttributes(const QByteArray& classId, bool inherited) const;
 
-    void setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis = true) {
-        if (vis)
-            m_classAttributesVis[classId].insert(attrId);
-        else
-            m_classAttributesVis[classId].remove(attrId);
-    }
+	void setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis = true);
 
 	QByteArray getSuperClassId(const QByteArray& classId) const {
 		if (m_classToSuperIds.contains(classId))
@@ -203,6 +191,7 @@ Q_SIGNALS:
 protected:
 	// reimp
 	virtual void drawBackground(QPainter *painter, const QRectF &rect);
+	virtual void drawForeground(QPainter *painter, const QRectF &rect);
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -218,9 +207,9 @@ protected:
 	void finishDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool dragCancelled);
 
 	virtual void onDragging(QGraphicsItem* dragItem, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
-	virtual void onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem);
-	virtual void onLeftClick(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* clickedItem) {}
-	virtual void onLeftDoubleClick(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* clickedItem);
+	virtual void onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* hoverItem);
+	virtual void onLeftClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* /*clickedItem*/) {}
+	virtual void onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 
 private:
 	void updateSceneCursor();
@@ -246,7 +235,7 @@ private:
     bool m_gridEnabled;
     bool m_gridSnap;
     QPen m_gridPen;
-	bool m_labelsEnabled;
+	bool m_labelsEnabled, m_labelsUpdate;
 
 	QSet<CItem*> m_acceptedHovers, m_rejectedHovers;
 

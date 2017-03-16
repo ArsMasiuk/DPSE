@@ -94,7 +94,7 @@ public:
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);
 
     typedef QMap<quint64, CItem*> CItemLinkMap;
-	virtual bool linkAfterRestore(const CItemLinkMap& idToItem) { return true; }
+	virtual bool linkAfterRestore(const CItemLinkMap& /*idToItem*/) { return true; }
 
 	// returns new item of this class
 	virtual CItem* clone() = 0;
@@ -104,12 +104,12 @@ public:
 	virtual void onItemMoved() {}
 	virtual void onHoverEnter() {}
 	virtual void onHoverLeave() {}
-	virtual void onDraggedOver(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems) {}
-	virtual void onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems) {}
+	virtual void onDraggedOver(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
+	virtual void onDroppedOn(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
 
 	// call from drag event
-	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem) { return Accepted; }
-	virtual void leaveDragFromItem(QGraphicsItem* draggedItem) {}
+	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Accepted; }
+	virtual void leaveDragFromItem(QGraphicsItem* /*draggedItem*/) {}
 
 protected:
 	virtual void copyDataFrom(CItem* from);

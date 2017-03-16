@@ -15,7 +15,7 @@
 #include <qopengl.h>
 
 
-const quint64 version64 = 4;	// build
+const quint64 version64 = 5;	// build
 const char* versionId = "VersionId";
 
 
@@ -32,6 +32,7 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
     m_gridPen = QPen(Qt::gray, 0, Qt::DotLine);
 
 	m_labelsEnabled = true;
+	m_labelsUpdate = false;
 
     //setSceneRect(-1000, -1000, 2000, 2000);
 
@@ -226,6 +227,11 @@ bool CEditorScene::storeTo(QDataStream& out) const
 		}
 	}
 
+	out << m_classToSuperIds;
+
+	// visible attributes
+	out << m_classAttributesVis;
+
 	return true;
 }
 
@@ -311,6 +317,13 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 		}
 	}
 
+	// visible attributes
+	if (version64 >= 5)
+	{
+		out >> m_classToSuperIds;
+		out >> m_classAttributesVis;
+	}
+
 	return true;
 }
 
@@ -364,6 +377,63 @@ CItem* CEditorScene::createItemOfType(const QByteArray &id) const
 	return NULL;
 }
 
+// attributes
+
+void CEditorScene::setClassAttribute(const CAttribute& attr, bool vis) 
+{
+	m_classAttributes[attr.classId][attr.id] = attr;
+
+	setClassAttributeVisible(attr.classId, attr.id, vis);
+}
+
+void CEditorScene::setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis)
+{
+	if (vis)
+		m_classAttributesVis[classId].insert(attrId);
+	else
+		m_classAttributesVis[classId].remove(attrId);
+
+	// set label update flag
+	m_labelsUpdate = true;
+
+	// schedule update
+	invalidate();
+}
+
+QSet<QByteArray> CEditorScene::getVisibleClassAttributes(const QByteArray& classId, bool inherited) const
+{
+	QSet<QByteArray> result = m_classAttributesVis[classId];
+
+	if (inherited)
+	{
+		QByteArray superId = getSuperClassId(classId);
+		while (!superId.isEmpty())
+		{
+			result = result.unite(m_classAttributesVis[superId]);
+			superId = getSuperClassId(superId);
+		}
+	}
+
+	return result;
+}
+
+AttributesMap CEditorScene::getClassAttributes(const QByteArray& classId, bool inherited) const
+{
+	AttributesMap result = m_classAttributes[classId];
+
+	if (inherited)
+	{
+		QByteArray superId = getSuperClassId(classId);
+		while (!superId.isEmpty())
+		{
+			result = result.unite(m_classAttributes[superId]);
+			superId = getSuperClassId(superId);
+		}
+	}
+
+	return result;
+}
+
 // callbacks
 
 void CEditorScene::onItemDestroyed(CItem *citem)
@@ -410,6 +480,14 @@ void CEditorScene::drawBackground(QPainter *painter, const QRectF &r)
 	//qDebug() << lines.size();
 
 	painter->drawLines(lines.data(), lines.size());
+}
+
+void CEditorScene::drawForeground(QPainter *painter, const QRectF &r)
+{
+	Super::drawForeground(painter, r);
+
+	// drop label update flag
+	m_labelsUpdate = false;
 }
 
 bool CEditorScene::checkLabelRegion(const QRectF &r)

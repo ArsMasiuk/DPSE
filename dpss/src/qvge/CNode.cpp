@@ -357,7 +357,7 @@ void CNode::onItemMoved()
 }
 
 
-void CNode::onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems)
+void CNode::onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& /*rejectedItems*/)
 {
 	if (acceptedItems.size())
 	{
@@ -418,7 +418,7 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 }
 
 
-void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget * /*widget*/)
 {
 	updateTextInfo();
 
@@ -492,7 +492,7 @@ QRectF CNode::boundingRect() const
 }
 
 
-void CNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void CNode::hoverEnterEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	m_internalStateFlags |= IS_Hover;
 
@@ -502,7 +502,7 @@ void CNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 }
 
 
-void CNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void CNode::hoverLeaveEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
 	m_internalStateFlags &= ~IS_Hover;
 

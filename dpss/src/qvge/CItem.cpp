@@ -93,7 +93,7 @@ QVariant CItem::getAttribute(const QByteArray& attrId) const
 	if (m_attributes.contains(attrId))
 		return m_attributes[attrId];
 
-	return getClassAttribute(attrId);
+	return  getClassAttribute(attrId);
 }
 
 QSet<QByteArray> CItem::getVisibleAttributeIds(int flags) const
@@ -106,17 +106,10 @@ QSet<QByteArray> CItem::getVisibleAttributeIds(int flags) const
 	auto scene = getScene();
 	if (scene)
 	{
-		QByteArray lookId = classId();
-
-		while (!lookId.isEmpty())
-		{
-			if (flags == VF_ANY || flags == VF_TOOLTIP)
-				result += scene->getClassAttributes(lookId).keys().toSet();
-			else
-				result += scene->getVisibleClassAttributes(lookId);
-
-			lookId = scene->getSuperClassId(lookId);
-		}
+		if (flags == VF_ANY || flags == VF_TOOLTIP)
+			result += scene->getClassAttributes(classId(), true).keys().toSet();
+		else
+			result += scene->getVisibleClassAttributes(classId(), true);
 	}
 
     return result;
@@ -211,7 +204,10 @@ QPointF CItem::labelOffset(const QRectF& itemRect, const QSizeF& labelSize) cons
 
 void CItem::updateTextInfo()
 {
-	if (!(m_internalStateFlags & IS_Attribute_Changed))
+	if (!(m_internalStateFlags & IS_Attribute_Changed) && 
+		!(getScene()->itemLabelsEnabled()) &&
+		!(getScene()->itemLabelsNeedUpdate())
+	)
 		return;
 
 	resetItemStateFlag(IS_Attribute_Changed);

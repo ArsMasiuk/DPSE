@@ -81,7 +81,7 @@ void CItemAttributeEditor::listAttributes(QTreeWidgetItem* rootItem, const QList
 	}
 
 	// merge class ids
-	const AttributesMap& classAttrs = m_scene->getClassAttributes(classId);
+	const AttributesMap& classAttrs = m_scene->getClassAttributes(classId, true);
 	ids.unite(classAttrs.keys().toSet());
 
 	// merge attrs
@@ -120,7 +120,7 @@ void CItemAttributeEditor::listAttributes(QTreeWidgetItem* rootItem, const QList
 
 // edit attrs
 
-void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
     auto attrV = item->data(0, AttrRole);
     if (attrV.isNull())

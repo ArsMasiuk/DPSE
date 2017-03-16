@@ -61,8 +61,8 @@ void CAttributeEditor::onSceneChanged()
 
 void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem* classTreeItem)
 {
-	AttributesMap attrs = m_scene->getClassAttributes(classId);
-    QSet<QByteArray> visIds = m_scene->getVisibleClassAttributes(classId);
+	AttributesMap attrs = m_scene->getClassAttributes(classId, false);
+    QSet<QByteArray> visIds = m_scene->getVisibleClassAttributes(classId, false);
 
 	for (auto attr : attrs)
 	{
@@ -71,7 +71,23 @@ void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem*
         attrItem->setCheckState(0, visIds.contains(attr.id) ? Qt::Checked : Qt::Unchecked);
 		attrItem->setText(1, attr.name);
 		attrItem->setText(2, attr.defaultValue.toString());
+
+		attrItem->setData(0, Qt::UserRole + 1, attr.id);
+		attrItem->setData(0, Qt::UserRole + 2, classId);
 	}
 
 	classTreeItem->setExpanded(true);
 }
+
+void CAttributeEditor::on_AttributeList_itemChanged(QTreeWidgetItem *item, int column)
+{
+	if (column == 0)
+	{
+		bool isVisible = (item->checkState(0) == Qt::Checked);
+		QByteArray attrId = item->data(0, Qt::UserRole + 1).toByteArray();
+		QByteArray classId = item->data(0, Qt::UserRole + 2).toByteArray();
+
+		m_scene->setClassAttributeVisible(classId, attrId, isVisible);
+	}
+}
+

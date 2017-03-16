@@ -77,7 +77,7 @@ void CBranchEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEv
 		{
             auto point = mouseEvent->scenePos();
 
-            CFanNode* node = createItemOfType<CFanNode>(&point);
+            /*CFanNode* node = */createItemOfType<CFanNode>(&point);
 
 			addUndoState();
 

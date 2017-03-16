@@ -98,7 +98,7 @@ bool CFileSerializerGEXF::readNode(int index, const QDomNode &domNode, CEditorSc
 }
 
 
-bool CFileSerializerGEXF::readEdge(int index, const QDomNode &domNode, CEditorScene& scene) const
+bool CFileSerializerGEXF::readEdge(int /*index*/, const QDomNode &domNode, CEditorScene& scene) const
 {
 	QDomElement elem = domNode.toElement();
 

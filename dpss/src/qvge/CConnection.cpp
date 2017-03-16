@@ -41,7 +41,7 @@ QPainterPath CConnection::shape() const
 	return m_shapePath;
 }
 
-void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget */*widget*/)
 {
 	updateTextInfo();
 

@@ -33,7 +33,7 @@ public:
 		return false;
 	}
 
-	virtual bool save(const QString& fileName, const CEditorScene& scene) const {
+	virtual bool save(const QString& /*fileName*/, const CEditorScene& /*scene*/) const {
 		return false;
 	}
 

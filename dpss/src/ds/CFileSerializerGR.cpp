@@ -110,7 +110,7 @@ bool CFileSerializerGR::readFan(int index, const QSettings& set, CEditorScene& s
 }
 
 
-bool CFileSerializerGR::readLink(int index, const QSettings& set, CEditorScene& scene) const
+bool CFileSerializerGR::readLink(int /*index*/, const QSettings& set, CEditorScene& scene) const
 {
 	CBranchConnection* link = scene.createItemOfType<CBranchConnection>();
 	if (!link)

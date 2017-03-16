@@ -51,7 +51,7 @@ public:
 	CConnection* clone();
 
 	// reimp
-	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem) { return Ignored; }
+	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Ignored; }
 
 	// reimp
 	virtual QPainterPath shape() const;
