@@ -31,7 +31,7 @@ void CAttributeEditor::setScene(CEditorScene* scene)
 
 void CAttributeEditor::onSceneAttached(CEditorScene* scene)
 {
-	connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()));
+	connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()), Qt::QueuedConnection);
 
 	onSceneChanged();
 }
@@ -43,6 +43,9 @@ void CAttributeEditor::onSceneDetached(CEditorScene* scene)
 
 void CAttributeEditor::onSceneChanged()
 {
+	ui.AttributeList->setUpdatesEnabled(false);
+	ui.AttributeList->blockSignals(true);
+
 	ui.ClassSelectorCB->clear();
 	ui.AttributeList->clear();
 
@@ -57,6 +60,9 @@ void CAttributeEditor::onSceneChanged()
 
 		fillClassAttr(classId, classTreeItem);
 	}
+
+	ui.AttributeList->setUpdatesEnabled(true);
+	ui.AttributeList->blockSignals(false);
 }
 
 void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem* classTreeItem)
@@ -88,6 +94,8 @@ void CAttributeEditor::on_AttributeList_itemChanged(QTreeWidgetItem *item, int c
 		QByteArray classId = item->data(0, Qt::UserRole + 2).toByteArray();
 
 		m_scene->setClassAttributeVisible(classId, attrId, isVisible);
+
+		m_scene->addUndoState();
 	}
 }
 

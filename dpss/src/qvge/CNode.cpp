@@ -299,6 +299,34 @@ void CNode::onConnectionDetach(CConnection *conn)
 
 void CNode::updateConnections()
 {
+	//QMap<CNode*, int> indexMap;
+
+	//for (auto conn : m_connections)
+	//{
+	//	if (!conn->isCircled())
+	//	{
+	//		CNode* node = conn->firstNode() == this ? conn->lastNode() : conn->firstNode();
+	//		
+	//		if (indexMap.contains(node))
+	//		{
+	//			int mi = indexMap[node];
+	//			indexMap[node] = ++mi;
+	//			
+	//			int bf = (mi + 1) / 2;
+	//			if (mi & 1)
+	//				bf = -bf;
+
+	//			conn->setBendFactor(bf);
+	//		}
+	//		else
+	//		{
+	//			indexMap[node] = 0;
+	//			
+	//			conn->setBendFactor(0);
+	//		}
+	//	}
+	//}
+
 	typedef QSet<CNode*> MultiIndex;
 
 	QMultiHash<MultiIndex, CConnection*> multiHash;

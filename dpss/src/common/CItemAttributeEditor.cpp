@@ -40,7 +40,7 @@ void CItemAttributeEditor::setScene(CEditorScene* scene)
 
 void CItemAttributeEditor::onSceneAttached(CEditorScene* scene)
 {
-	connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
+	connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()), Qt::QueuedConnection);
 }
 
 void CItemAttributeEditor::onSceneDetached(CEditorScene* scene)

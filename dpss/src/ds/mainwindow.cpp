@@ -11,6 +11,7 @@
 
 #include "CAttributeEditor.h"
 #include "CItemAttributeEditor.h"
+#include "CCommutationTable.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -47,6 +48,13 @@ MainWindow::MainWindow(QWidget *parent) :
     attrItemEditorDock->setWindowTitle(tr("Item Attributes"));
     addDockWidget(Qt::RightDockWidgetArea, attrItemEditorDock);
     m_attrItemEditor->setScene(m_editorScene);
+
+	QDockWidget* attrCommTableDock = new QDockWidget(this);
+	auto commTable = new CCommutationTable(this);
+	attrCommTableDock->setWidget(commTable);
+	attrCommTableDock->setWindowTitle(tr("Commutations"));
+	addDockWidget(Qt::RightDockWidgetArea, attrCommTableDock);
+	commTable->setScene(m_editorScene);
 
     // actions
     ui->actionShowGrid->setChecked(m_editorScene->gridEnabled());
