@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QDialog>
+#include <QtCharts>
 
 #include <CBranchEditorScene.h>
 
@@ -12,6 +13,8 @@
 namespace Ui {
 class CGraphSimulatorDialog;
 }
+
+using namespace QtCharts;
 
 class CGraphSimulatorDialog : public QDialog, public ILogger
 {
@@ -31,6 +34,8 @@ private Q_SLOTS:
     void on_Start_clicked();
 	void on_Stop_clicked();
 
+	void on_StepTable_itemSelectionChanged();
+
 	void onStepFinished(double time, int step, std::vector<double>& qvec);
 	void onSimulationFinished();
 
@@ -39,6 +44,10 @@ protected:
 
 private:
     Ui::CGraphSimulatorDialog *ui;
+	QChartView *m_ChartView;
+
+	QChart m_Chart;
+	QMap<int, QList<QPointF>> m_testPoints;
 
 	CGraphSimulator m_simu;
 };

@@ -6,7 +6,7 @@
 
 QT       += core gui xml opengl
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts
 
 TARGET = dpss
 TEMPLATE = app

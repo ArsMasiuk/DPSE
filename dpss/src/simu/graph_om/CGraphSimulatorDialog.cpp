@@ -13,6 +13,10 @@ CGraphSimulatorDialog::CGraphSimulatorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	m_ChartView = new QChartView(ui->ChartBox);
+	ui->ChartBox->layout()->addWidget(m_ChartView);
+	m_ChartView->setChart(&m_Chart);
+
     //m_simu.setLogger(this);
 
 	connect(&m_simu, SIGNAL(stepFinished(double, int, std::vector<double>&)),
@@ -87,6 +91,8 @@ void CGraphSimulatorDialog::on_Start_clicked()
 	ui->ProgressBar->setValue(0);
 	ui->ProgressBar->setMaximum(m_simu.getMaxSteps());
 
+	m_testPoints.clear();
+
     m_simu.run();
 }
 
@@ -96,29 +102,59 @@ void CGraphSimulatorDialog::on_Stop_clicked()
 	m_simu.stop();
 }
 
+void CGraphSimulatorDialog::on_StepTable_itemSelectionChanged()
+{
+	// chart 
+	m_Chart.removeAllSeries();
+
+
+	auto selectedItems = ui->StepTable->selectedItems();
+	for (auto item : selectedItems)
+	{
+		int index = item->data(Qt::UserRole).toInt();
+		QLineSeries *ts = new QLineSeries();
+		ts->append(m_testPoints[index]);
+		m_Chart.addSeries(ts);
+	}
+}
+
 
 void CGraphSimulatorDialog::onStepFinished(double time, int step, std::vector<double>& qvec)
 {
-	ui->SimuTimeLabel->setText(QString("%1 s").arg(time));
-	ui->SimuStepLabel->setNum(step);
-
-	ui->ProgressBar->setValue(step);
-
 	if (step % 100 == 0)
 	{
+		ui->SimuTimeLabel->setText(QString("%1 s").arg(time));
+		ui->SimuStepLabel->setNum(step);
+
+		ui->ProgressBar->setValue(step);
+
 		// table
 		ui->StepTable->setUpdatesEnabled(false);
 		ui->StepTable->setRowCount(1);
+
 		int oldRows = ui->StepTable->columnCount();
 		ui->StepTable->setColumnCount(qvec.size());
-		for (int r = oldRows; r < qvec.size(); ++r)
+		for (int r = oldRows; r < qvec.size(); ++r) {
 			ui->StepTable->setItem(0, r, new QTableWidgetItem());
+			ui->StepTable->item(0, r)->setData(Qt::UserRole, r);
+		}
+
 		for (int r = 0; r < qvec.size(); ++r)
 			ui->StepTable->item(0, r)->setText(QString::number(qvec[r]));
+		
 		ui->StepTable->setUpdatesEnabled(true);
+
+		// chart update
+		for (int r = 0; r < qvec.size(); ++r)
+		{
+			m_testPoints[r] << QPointF(step, qvec[r]);
+		}
+
+		on_StepTable_itemSelectionChanged();
+
+		qApp->processEvents();
 	}
 
-	qApp->processEvents();
 }
 
 

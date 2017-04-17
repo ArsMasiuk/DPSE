@@ -169,9 +169,9 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_4">
-          <property name="minimumSize">
+          <property name="maximumSize">
            <size>
-            <width>0</width>
+            <width>16777215</width>
             <height>100</height>
            </size>
           </property>
@@ -180,23 +180,31 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
-            <widget class="QTableWidget" name="StepTable"/>
+            <widget class="QTableWidget" name="StepTable">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+         <widget class="QGroupBox" name="ChartBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>38</height>
-           </size>
+          <property name="title">
+           <string>Trends</string>
           </property>
-         </spacer>
+          <layout class="QVBoxLayout" name="verticalLayout_8"/>
+         </widget>
         </item>
        </layout>
       </widget>
