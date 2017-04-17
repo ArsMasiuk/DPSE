@@ -4,6 +4,7 @@
 #include <QGraphicsScene>
 #include <QSet>
 #include <QMenu>
+#include <QByteArrayList>
 
 #include <CAttribute.h>
 

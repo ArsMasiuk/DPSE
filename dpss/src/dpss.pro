@@ -48,5 +48,7 @@ FORMS    += $$files($$PWD/common/*.ui)
 
 HEADERS  += $$files($$PWD/simu/*.h)
 
-LIBS += -lopengl32 -lGlu32
+win32{
+    LIBS += -lopengl32 -lGlu32
+}
 
