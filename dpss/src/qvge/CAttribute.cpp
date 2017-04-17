@@ -14,13 +14,13 @@ CAttribute::CAttribute(const QByteArray& classId, const QByteArray& attrId, cons
 	this->defaultValue = defaultValue;
 }
 
-bool CAttribute::storeTo(QDataStream & out, quint64 version64) const
+bool CAttribute::storeTo(QDataStream & out, quint64 /*version64*/) const
 {
     out << id << classId << name << defaultValue << true << isVirtual;
 	return true;
 }
 
-bool CAttribute::restoreFrom(QDataStream & out, quint64 version64)
+bool CAttribute::restoreFrom(QDataStream & out, quint64 /*version64*/)
 {
     static bool dummy;
     out >> id >> classId >> name >> defaultValue >> dummy >> isVirtual;

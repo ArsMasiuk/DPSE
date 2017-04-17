@@ -39,9 +39,10 @@ public:
 
     void setLogger(ILogger *logger);
 
-    // reimp
+    // ISimulator
     virtual void setScene(const CBranchEditorScene& scene);
     virtual bool run();
+	virtual bool stop() { return false;  }
 
 protected:
     // mpisch specific

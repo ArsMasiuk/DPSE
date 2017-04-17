@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-
+#include <vector>
 
 using namespace std;
 
@@ -11,12 +11,12 @@ class ISimulatorCallback
 public:
 	// text		any text to output
 	// status	optional severity id (for example, 0 - ok, 1 - error etc)
-	virtual void log(const char* text, int status = 0) const = 0;
+	virtual void log(const char* text, int status = 0) = 0;
 
 	// time		 time stamp of the step
 	// step		iteration number (0, 1, ...)
 	// qvec		vector of Q values calculated for every branch (from 1 to N)
-	virtual void stepResult(double time, int step, std::vector<double>& qvec) const = 0;
+	virtual void stepResult(double time, int step, std::vector<double>& qvec) = 0;
 };
 
 

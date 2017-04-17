@@ -149,7 +149,7 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 	return true;
 }
 
-void CNodeEditorScene::cancel(const QPointF& pos)
+void CNodeEditorScene::cancel(const QPointF& /*pos*/)
 {
 	m_state = IS_None;
 

@@ -41,7 +41,7 @@ QPainterPath CConnection::shape() const
 	return m_shapePath;
 }
 
-void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget */*widget*/)
+void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* /*widget*/)
 {
 	updateTextInfo();
 
@@ -107,13 +107,13 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 		drawLabel(painter, option);
 }
 
-QPointF CConnection::labelOffset(const QRectF & itemRect, const QSizeF & labelSize) const
+QPointF CConnection::labelOffset(const QRectF& /*itemRect*/, const QSizeF& labelSize) const
 {
 	// center label over line rect
 	return m_controlPos - QPointF(labelSize.width() / 2, -labelSize.height() / 2);
 }
 
-void CConnection::drawArrow(QPainter *painter, const QStyleOptionGraphicsItem *option, bool first, const QLineF& direction)
+void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, bool first, const QLineF& direction)
 {
 	qreal shift = 0;
 	if (first && m_firstNode)

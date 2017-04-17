@@ -162,7 +162,7 @@ void CItem::copyDataFrom(CItem* from)
 
 // painting
 
-void CItem::drawLabel(QPainter *painter, const QStyleOptionGraphicsItem *option)
+void CItem::drawLabel(QPainter *painter, const QStyleOptionGraphicsItem* /*option*/)
 {
 	if (m_label && !m_label->text().isEmpty())
 	{

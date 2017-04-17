@@ -57,6 +57,7 @@
      <string>Simulation</string>
     </property>
     <addaction name="actionMPI_Sch"/>
+    <addaction name="actionGraph_OM"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -204,6 +205,11 @@
   <action name="actionMPI_Sch">
    <property name="text">
     <string>MPI-Sch</string>
+   </property>
+  </action>
+  <action name="actionGraph_OM">
+   <property name="text">
+    <string>Graph-OM</string>
    </property>
   </action>
  </widget>

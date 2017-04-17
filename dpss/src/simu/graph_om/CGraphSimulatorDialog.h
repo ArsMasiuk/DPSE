@@ -2,7 +2,11 @@
 
 #include <QDialog>
 
+#include <CBranchEditorScene.h>
+
 #include <ILogger.h>
+
+#include "CGraphSimulator.h"
 
 
 namespace Ui {
@@ -25,9 +29,16 @@ public:
 
 private Q_SLOTS:
     void on_Start_clicked();
+	void on_Stop_clicked();
+
+	void onStepFinished(double time, int step, std::vector<double>& qvec);
+	void onSimulationFinished();
+
+protected:
+	virtual void closeEvent(QCloseEvent *event);
 
 private:
     Ui::CGraphSimulatorDialog *ui;
 
-    //CMPISimulator m_simu;
+	CGraphSimulator m_simu;
 };

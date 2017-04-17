@@ -15,6 +15,7 @@ char MATRIX_KONTUR_FILE_NAME[] = "MKon.txt";
 // Конструктор
 Graph::Graph()
 {
+	m_forceStop = false;
 }
 
 // Деструктор
@@ -3413,3 +3414,87 @@ int Graph::getmax(int a, int b)
 {
   return (a > b) ? a : b;
 }
+
+
+// ISimulatorEngine
+
+void Graph::SaveStepValuesToVector(std::vector<double>& qvec) const
+{
+	qvec.clear();
+
+	for (int i = 0; i < iNumTreeVariables; i++)
+	{
+		qvec.push_back(EX.coeffRef(i));
+	}
+
+	for (int i = 0; i < iNumATreeVariables; i++)
+	{
+		qvec.push_back(EY.coeffRef(i));
+	}
+}
+
+
+int Graph::runSimulation(const char* inputFileName, const SimulationParams& params, ISimulatorCallback& out) 
+{
+	m_forceStop = false;
+
+	Eigen::VectorXd RHS, dY;
+
+	InitializeEigenR();
+	InitializeEigenK();
+	InitializeEigenH();
+	InitializeEigenY();
+
+	CalculateEigenW();
+
+	EX = (-1) * (EW * EY);
+
+	CalculateEigenSp();
+
+	int iNumIterations = 0;
+
+	//errno_t err;
+	//FILE *f;
+	// Open for write (will make new file if file "steps_out.txt" does not exist)  
+	//err = fopen_s(&f, "steps_out.txt", "w");
+	//if (err != 0)
+	//{
+	//	printf("The file 'steps_out.txt' was not opened\n");
+	//	return -1;
+	//}
+
+	std::vector<double> qvec;
+	SaveStepValuesToVector(qvec);
+	out.stepResult(0, 0, qvec);
+
+	int iMaxIterations = SIMULATION_TIME / TIME_STEP_SIZE;
+
+	while (iNumIterations++ < iMaxIterations)
+	{
+		CalculateEigenZ();
+
+		dY = (ESp * EH) - ((ESp * ER) * EZ);
+		EY = EY + TIME_STEP_SIZE * dY;
+		EX = (-1) * (EW * EY);
+
+		SaveStepValuesToVector(qvec);
+		out.stepResult(TIME_STEP_SIZE * iNumIterations, iNumIterations, qvec);
+
+		if (EigenVectorMaxElement(dY) < 1e-05)
+			break;
+
+		if (m_forceStop)
+			break;
+	}
+
+	m_forceStop = false;
+	return 0;
+}
+
+int Graph::stopSimulation(ISimulatorCallback& out)
+{
+	m_forceStop = true;
+
+	return 0;
+}
+ 

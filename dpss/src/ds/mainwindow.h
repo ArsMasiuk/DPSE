@@ -36,6 +36,7 @@ private Q_SLOTS:
 
     // simu
     void on_actionMPI_Sch_triggered();
+	void on_actionGraph_OM_triggered();
 
 private:
     Ui::MainWindow *ui;

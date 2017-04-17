@@ -8,6 +8,8 @@
 #include <Eigen/SparseLU>
 #include <Eigen/LU>
 
+#include <simu/ISimulatorEngine.h>
+
 #define EPS 1e-5
 #define SIMULATION_TIME 60
 #define TIME_STEP_SIZE 0.001
@@ -44,7 +46,7 @@ typedef struct SparseMatrixStruct
 } SparseMatrixType;
 
 
-class Graph
+class Graph : public ISimulatorEngine
 {
 public:
   Graph();
@@ -121,6 +123,15 @@ public:
 
   int Calculate();
   int EigenCalculate();
+
+  // ISimulatorEngine
+  virtual int runSimulation(const char* inputFileName, const SimulationParams& params, ISimulatorCallback& out);
+  virtual int stopSimulation(ISimulatorCallback& out);
+
+private:
+  void SaveStepValuesToVector(std::vector<double>& qvec) const;
+
+  bool m_forceStop;
 
 private:
 

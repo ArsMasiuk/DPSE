@@ -20,6 +20,7 @@
 #include "CFileSerializerGR.h"
 
 #include "simu/mpisch/CMPISimulatorDialog.h"
+#include "simu/graph_om/CGraphSimulatorDialog.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -216,5 +217,16 @@ void MainWindow::on_actionMPI_Sch_triggered()
     {
         QMessageBox::critical(NULL, tr("Error running simulation"), tr("Cannot start MPI_Sch simulator :("));
     }
+}
+
+
+void MainWindow::on_actionGraph_OM_triggered()
+{
+	CGraphSimulatorDialog grsim;
+
+	if (!grsim.run(*m_editorScene))
+	{
+		QMessageBox::critical(NULL, tr("Error running simulation"), tr("Cannot start Graph_OM simulator :("));
+	}
 }
 

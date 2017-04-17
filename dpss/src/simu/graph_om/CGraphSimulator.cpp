@@ -1,78 +1,144 @@
 #include <stdio.h>
+
+#include <QApplication>
+#include <QFileInfo>
+
 #include "Graph.h"
+
+#include "CGraphSimulator.h"
 
 using namespace std;
 
-int main_simu(Graph& g, const char* fileName)
+
+// CGraphSimulator
+
+CGraphSimulator::CGraphSimulator()
+{
+	m_scene = NULL;
+	m_graph = new Graph();
+}
+
+
+int CGraphSimulator::getMaxSteps() const
+{
+	// temp
+	return 60000;
+}
+
+
+bool CGraphSimulator::createDDSfile()
+{
+	// TEST
+	QString dataDir = QApplication::applicationDirPath() + "/../data/test/";
+	m_ddsFileName = QFileInfo(dataDir + "Graph-117_DDS.txt").canonicalFilePath();
+
+	return true;
+}
+
+
+// ISimulator
+
+void CGraphSimulator::setScene(const CBranchEditorScene& scene)
+{
+	m_scene = &scene;
+}
+
+
+bool CGraphSimulator::run()
+{
+	if (!createDDSfile())
+		return false;
+
+	if (startSimulation() < 0)
+		return false;
+
+	Q_EMIT simulationFinished();
+
+	return true;
+}
+
+
+bool CGraphSimulator::stop()
+{
+	if (!m_graph)
+		return false;
+
+	m_graph->stopSimulation(*this);
+
+	return true;
+}
+
+
+// simulation
+
+int CGraphSimulator::startSimulation()
 {  
+	m_graph = new Graph();
+
   int result = 0;
 
-  result = g.InitFromFile_DDS(fileName);
+  result = m_graph->InitFromFile_DDS(m_ddsFileName.toLocal8Bit().data());
             if (result)
 	           {
 		           fprintf(stderr,"g.InitFromFile() error");
 		           return -1;
 	           }
 
-  result = g.MSmBuildFromArchs();
+  result = m_graph->MSmBuildFromArchs();
              if (result == -1)
              {
                fprintf(stderr, "g.MSmBuildFromArchs() error");
                return -1;
              }
    
-  result = g.MSmCheckForLonelyVertices();
+  result = m_graph->MSmCheckForLonelyVertices();
              if (result)
              {
                fprintf(stderr, "Graph has %d lonely vertices. Please, check input file...\n", result);
                return -1;
              }
   
-  g.MSmPrint();
+  //g.MSmPrint();
 
 
 
-
-
-  g.BuildTree_Prim();
+			 m_graph->BuildTree_Prim();
   //g.BuildTree_TO_DELETE();
 
 
 
+			 m_graph->BuildCycles();
 
+  //g.PrintAllCycles();
 
-  g.BuildCycles();
-
-  g.PrintAllCycles();
-
-  result = g.MInBuildFromArchs();
+  result = m_graph->MInBuildFromArchs();
              if (result == -1)
              {
                fprintf(stderr, "g.MInBuildFromArchs() error");
                return -1;
              }
 
-  g.MInPrint();
+  //g.MInPrint();
   
-  result = g.MInConvertToEigenFormat();
+  result = m_graph->MInConvertToEigenFormat();
   if (result)
             {
               fprintf(stderr, "Error during converting MIn to sparse format\n");
               return -1;
             }
 
-  result = g.MKonBuildFromArchs();
+  result = m_graph->MKonBuildFromArchs();
              if (result == -1)
              {
                fprintf(stderr, "g.MKonBuildFromArchs() error");
                return -1;
              }
 
-  g.MKonPrint();
+  //g.MKonPrint();
   
-  g.PrintKonturs();
+  //g.PrintKonturs();
 
-  result = g.MKonConvertToEigenFormat();
+  result = m_graph->MKonConvertToEigenFormat();
             if (result)
             {
               fprintf(stderr, "Error during converting MIn to sparse format\n");
@@ -80,106 +146,26 @@ int main_simu(Graph& g, const char* fileName)
             }
 
   //g.Calculate();
-  g.EigenCalculate();
+  //g.EigenCalculate();
 
+	ISimulatorEngine::SimulationParams params;
+	m_graph->runSimulation(NULL, params, *this);
    
-  fprintf_s(stdout, "Press Enter...\n");
-	_getchar_nolock();
+ // fprintf_s(stdout, "Press Enter...\n");
+	//_getchar_nolock();
 	return 0;
 }
 
-int main2(int argc, char **argv)
+
+// ISimulatorCallback
+
+void CGraphSimulator::log(const char* text, int status)
 {
-  Graph g;
-  std::vector < std::vector < int > > M1, M2;
+
+}
 
 
-  //      | 3  1  1  0  1 |
-  //      | 1 -1  0  1  0 |  
-  //  M = | 1  0  0  2  1 |
-  //      | 0  1  2  7  1 |
-  //      | 1  0  1  1  4 |  
-
-  M1.resize(5);
-  M1[0].resize(4);
-  M1[1].resize(4);
-  M1[2].resize(4);
-  M1[3].resize(4);
-  M1[4].resize(4);
-
-  M1[0][0] = 3;
-  M1[0][1] = 1;
-  M1[0][2] = 1;
-  M1[0][3] = 0;
-  M1[1][0] = 1;
-  M1[1][1] = -1;
-  M1[1][2] = 0;
-  M1[1][3] = 1;
-  M1[2][0] = 1;
-  M1[2][1] = 0;
-  M1[2][2] = 0;
-  M1[2][3] = 2;
-  M1[3][0] = 0;
-  M1[3][1] = 1;
-  M1[3][2] = 2;
-  M1[3][3] = 7;
-  M1[4][0] = 1;
-  M1[4][1] = 0;
-  M1[4][2] = 1;
-  M1[4][3] = 1;
-  
-
-
-  M2.resize(4);
-  M2[0].resize(4);
-  M2[1].resize(4);
-  M2[2].resize(4);
-  M2[3].resize(4);
-
-  M2[0][0] = 2;
-  M2[0][1] = 0;
-  M2[0][2] = 4;
-  M2[0][3] = 0;
-  M2[1][0] = 6;
-  M2[1][1] = 7;
-  M2[1][2] = 0;
-  M2[1][3] = 1;
-  M2[2][0] = -1;
-  M2[2][1] = 2;
-  M2[2][2] = -4;
-  M2[2][3] = 4;
-  M2[3][0] = 0;
-  M2[3][1] = 1;
-  M2[3][2] = 0;
-  M2[3][3] = 1;
-  
-
-
-
-  SparseMatrixType m1, m2, AddSEM;
-
-  int result;
-  result = g.ConvertMatrixToSparseFormat(M1, &m1);
-  result = g.ConvertMatrixToSparseFormat(M2, &m2);
-
-  //g.SparseMatricesAdd(m1, m2, &AddSEM);
-  //g.SparseMatricesSub(m1, m2, &AddSEM);
-  //g.SparseMatriceLineMulConst(&m1, 1, 0);
-  //g.SparseMatriceLinesSwap(&m1, 1, 4);
-
-  //g.SparseMatricesMul(m1, m2, &AddSEM);
-  //g.SparseMatricesMul(m2, m1, &AddSEM);
-  g.SparseMatrixReverse(m2, &AddSEM);
-
-  // altr  = { 3, 1, 1, 1,  1,-1, 1,  1, 2, 1,  1, 2, 7, 1,  1, 1, 1, 4 }
-  // jptr  = { 0, 1, 2, 4,  0, 1, 3,  0, 3, 4,  1, 2, 3, 4,  0, 2, 3, 4 }
-  // iptr  = { 0,           4,        7,       10,          14,          18}
-
-  // altr  = { 3, 1, 1, 1,  1, 1, 1, 4,  1, 2, 1,  1, 2, 7, 1,  1,-1, 1 }
-  // jptr  = { 0, 1, 2, 4,  0, 2, 3, 4,  0, 3, 4,  1, 2, 3, 4,  0, 1, 3 }
-  // iptr  = { 0,           4,           8,       11,          15,       18}
-
-  int i = 0;
-  
-  return 0;
+void CGraphSimulator::stepResult(double time, int step, std::vector<double>& qvec)
+{
+	Q_EMIT stepFinished(time, step, qvec);
 }

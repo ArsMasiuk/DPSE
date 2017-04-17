@@ -244,7 +244,6 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 
 	// read
 	CItem::CItemLinkMap idToItem;
-	int readItems = 0, totalItems = 0;
 
 	while (!out.atEnd())
 	{
@@ -443,7 +442,7 @@ void CEditorScene::onItemDestroyed(CItem *citem)
 
 // protected
 
-void CEditorScene::drawBackground(QPainter *painter, const QRectF &r)
+void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 {
 	// reset region
 	m_usedLabelsRegion = QPainterPath();
@@ -649,7 +648,7 @@ void CEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	}
 }
 
-void CEditorScene::finishDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool dragCancelled)
+void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* dragItem, bool dragCancelled)
 {
 	if (dragItem)
 	{
@@ -710,7 +709,7 @@ void CEditorScene::onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 	setSceneCursor(Qt::ArrowCursor);
 }
 
-void CEditorScene::onDragging(QGraphicsItem* dragItem, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems)
+void CEditorScene::onDragging(QGraphicsItem* /*dragItem*/, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems)
 {
 	if (acceptedItems.size())
 	{
@@ -727,7 +726,7 @@ void CEditorScene::onDragging(QGraphicsItem* dragItem, const QSet<CItem*>& accep
 	setSceneCursor(Qt::SizeAllCursor);
 }
 
-void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* clickedItem)
+void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* clickedItem)
 {
 	if (CItem *item = dynamic_cast<CItem*>(clickedItem))
 	{

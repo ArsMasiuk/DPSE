@@ -47,3 +47,9 @@ v2/.vs/BranchEditor2/v14/.suo
 /v3/build-app-Qt_5_7_MinGW_32bit-Debug
 *.xgr
 _builds
+/dpss/bin.mingw_debug
+/dpss/bin.msvc
+/dpss/bin.msvc_debug
+/dpss/build-dpss-Qt_5_7_MinGW_32bit-Debug
+/dpss/build-dpss-Qt_5_7_MSVC_2015_64bit-Debug
+/dpss/build-dpss-Qt_5_7_MSVC_2015_64bit-Release

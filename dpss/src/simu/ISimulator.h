@@ -8,6 +8,7 @@ class ISimulator
 public:
     virtual void setScene(const CBranchEditorScene& scene) = 0;
     virtual bool run() = 0;
+	virtual bool stop() = 0;
 };
 
 
