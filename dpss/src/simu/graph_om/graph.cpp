@@ -3467,7 +3467,10 @@ int Graph::runSimulation(const char* inputFileName, const SimulationParams& para
 	SaveStepValuesToVector(qvec);
 	out.stepResult(0, 0, qvec);
 
-	int iMaxIterations = SIMULATION_TIME / TIME_STEP_SIZE;
+	double dSimuTime = params.duration;
+
+	int iMaxIterations = dSimuTime / TIME_STEP_SIZE;
+	//int iMaxIterations = SIMULATION_TIME / TIME_STEP_SIZE;
 
 	while (iNumIterations++ < iMaxIterations)
 	{

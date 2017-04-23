@@ -17,7 +17,7 @@ CGraphSimulatorDialog::CGraphSimulatorDialog(QWidget *parent) :
 	ui->ChartBox->layout()->addWidget(m_ChartView);
 	m_ChartView->setChart(&m_Chart);
 
-    //m_simu.setLogger(this);
+    m_simu.setLogger(this);
 
 	connect(&m_simu, SIGNAL(stepFinished(double, int, std::vector<double>&)),
 		this, SLOT(onStepFinished(double, int, std::vector<double>&)));
@@ -81,6 +81,11 @@ void CGraphSimulatorDialog::write(const QString& text, int state, const QDateTim
 
 void CGraphSimulatorDialog::on_Start_clicked()
 {
+	int simTime = ui->SimuTime->value();
+	write(tr("Start simulation (%1 s)").arg(simTime), LOG_OK);
+
+	m_simu.setSimulationTime(simTime);
+
 	// temp
 	ui->Tabs->setTabEnabled(0, false);
 	ui->Tabs->setTabEnabled(1, false); 
@@ -134,7 +139,8 @@ void CGraphSimulatorDialog::onStepFinished(double time, int step, std::vector<do
 
 		int oldRows = ui->StepTable->columnCount();
 		ui->StepTable->setColumnCount(qvec.size());
-		for (int r = oldRows; r < qvec.size(); ++r) {
+		for (int r = oldRows; r < qvec.size(); ++r) 
+		{
 			ui->StepTable->setItem(0, r, new QTableWidgetItem());
 			ui->StepTable->item(0, r)->setData(Qt::UserRole, r);
 		}
@@ -163,6 +169,8 @@ void CGraphSimulatorDialog::onSimulationFinished()
 	ui->Tabs->setTabEnabled(0, true);
 	ui->Tabs->setTabEnabled(1, true);
 	ui->Tabs->setCurrentIndex(2);
+
+	write(tr("Simulation finished"), LOG_OK);
 }
 
 

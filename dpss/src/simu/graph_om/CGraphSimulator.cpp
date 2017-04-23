@@ -12,17 +12,31 @@ using namespace std;
 
 // CGraphSimulator
 
-CGraphSimulator::CGraphSimulator()
+CGraphSimulator::CGraphSimulator(): m_log(NULL)
 {
 	m_scene = NULL;
 	m_graph = new Graph();
+
+	m_simuTime = 60;
+}
+
+
+void CGraphSimulator::setLogger(ILogger *logger)
+{
+	m_log = logger;
+}
+
+
+void CGraphSimulator::setSimulationTime(int sec)
+{
+	m_simuTime = sec > 0 ? sec : INT_MAX;
 }
 
 
 int CGraphSimulator::getMaxSteps() const
 {
 	// temp
-	return 60000;
+	return m_simuTime * 1000;
 }
 
 
@@ -31,6 +45,8 @@ bool CGraphSimulator::createDDSfile()
 	// TEST
 	QString dataDir = QApplication::applicationDirPath() + "/../data/test/";
 	m_ddsFileName = QFileInfo(dataDir + "Graph-117_DDS.txt").canonicalFilePath();
+
+	if (m_log) m_log->write(QString("DDS file: %1").arg(m_ddsFileName));
 
 	return true;
 }
@@ -149,6 +165,7 @@ int CGraphSimulator::startSimulation()
   //g.EigenCalculate();
 
 	ISimulatorEngine::SimulationParams params;
+	params.duration = m_simuTime;
 	m_graph->runSimulation(NULL, params, *this);
    
  // fprintf_s(stdout, "Press Enter...\n");
@@ -161,7 +178,8 @@ int CGraphSimulator::startSimulation()
 
 void CGraphSimulator::log(const char* text, int status)
 {
-
+	if (m_log)
+		m_log->write(QString(text), status);
 }
 
 

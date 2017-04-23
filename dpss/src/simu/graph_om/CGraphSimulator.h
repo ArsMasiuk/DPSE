@@ -15,6 +15,9 @@ class CGraphSimulator : public QObject, public ISimulator, public ISimulatorCall
 public:
 	CGraphSimulator(); 
 
+	void setLogger(ILogger *logger);
+
+	void setSimulationTime(int sec);
 	int getMaxSteps() const;
 
 	// ISimulator
@@ -36,7 +39,10 @@ private:
 
 private:
 	const CBranchEditorScene *m_scene;
+	ILogger *m_log;
 
 	Graph *m_graph;
 	QString m_ddsFileName;
+
+	int m_simuTime;
 };
