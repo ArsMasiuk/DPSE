@@ -41,6 +41,7 @@ void CItemAttributeEditor::setScene(CEditorScene* scene)
 void CItemAttributeEditor::onSceneAttached(CEditorScene* scene)
 {
 	connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()), Qt::QueuedConnection);
+	connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()), Qt::QueuedConnection);
 }
 
 void CItemAttributeEditor::onSceneDetached(CEditorScene* scene)
@@ -48,9 +49,14 @@ void CItemAttributeEditor::onSceneDetached(CEditorScene* scene)
 	scene->disconnect(this);
 }
 
-void CItemAttributeEditor::onSelectionChanged()
+void CItemAttributeEditor::onSceneChanged()
 {
 	// test
+	onSelectionChanged();
+}
+
+void CItemAttributeEditor::onSelectionChanged()
+{
 	ui.Editor->clear();
 
 	QList<CItem*> nodes = m_scene->getSelectedItems<CNode, CItem>();

@@ -20,11 +20,14 @@ public:
 	void setScene(CEditorScene* scene);
 
 protected:
+	void connectSignals(CEditorScene* scene);
 	void onSceneAttached(CEditorScene* scene);
 	void onSceneDetached(CEditorScene* scene);
 
 protected Q_SLOTS:
 	void onSceneChanged();
+	void onSelectionChanged();
+	void on_Table_itemSelectionChanged();
 
 private:
 	Ui::CCommutationTable ui;

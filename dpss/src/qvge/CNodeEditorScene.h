@@ -32,7 +32,11 @@ public Q_SLOTS:
 	virtual void onActionUnlink();
 	virtual void onActionNodeColor();
 	virtual void onActionEdgeColor();
-	virtual void onActionEdgeReverse();
+	void onActionEdgeReverse();
+	void onActionEdgeStartArrow();
+	void onActionEdgeEndArrow();
+	void onActionEdgeBothArrows();
+	void onActionEdgeNoArrows();
 
 protected:
 	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);

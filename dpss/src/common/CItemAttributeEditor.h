@@ -23,6 +23,7 @@ protected:
 	void onSceneDetached(CEditorScene* scene);
 
 protected Q_SLOTS:
+	void onSceneChanged();
 	void onSelectionChanged();
     void on_Editor_itemDoubleClicked(QTreeWidgetItem *item, int column);
 

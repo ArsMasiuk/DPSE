@@ -81,29 +81,7 @@ public:
 	virtual CItem* createItemOfType(const QByteArray& typeId) const;
 
 	template<class T>
-	T* createItemOfType(QPointF* at = NULL) const
-	{
-		CItem* item = createItemOfType(T::factoryId());
-		if (item)
-		{
-			T* titem = dynamic_cast<T*>(item);
-			if (titem)
-			{
-				if (at)
-				{
-					(const_cast<CEditorScene*>(this))->addItem(titem);
-					titem->setPos(*at);
-				}
-
-				return titem;
-			}
-
-			delete item;
-			return NULL;
-		}
-
-		return NULL;
-	}
+	T* createItemOfType(QPointF* at = NULL) const;
 
 	CItem* getActiveItemFactory() const {
 		return m_activeItemFactory;
@@ -137,34 +115,10 @@ public:
 	QList<QGraphicsItem*> createSelectedList(const CItemsEvaluator&) const;
 
 	template<class T, class L = T>
-	QList<L*> getSelectedItems() const
-	{
-		QList<L*> result;
-
-		for (auto* item : selectedItems())
-		{
-			T* titem = dynamic_cast<T*>(item);
-			if (titem)
-				result.append(titem);
-		}
-
-		return result;
-	}
+	QList<L*> getSelectedItems(bool triggeredIfEmpty = false) const;
 
 	template<class T, class L = T>
-	QList<L*> getItems() const
-	{
-		QList<L*> result;
-
-		for (auto* item : items())
-		{
-			T* titem = dynamic_cast<T*>(item);
-			if (titem)
-				result.append(titem);
-		}
-
-		return result;
-	}
+	QList<L*> getItems() const;
 
 	// callbacks
 	virtual void onItemDestroyed(CItem *citem);
@@ -248,5 +202,71 @@ private:
 	// paint speedups
 	QPainterPath m_usedLabelsRegion;
 };
+
+
+// factorization
+
+template<class T>
+T* CEditorScene::createItemOfType(QPointF* at) const
+{
+	CItem* item = createItemOfType(T::factoryId());
+	if (item)
+	{
+		T* titem = dynamic_cast<T*>(item);
+		if (titem)
+		{
+			if (at)
+			{
+				(const_cast<CEditorScene*>(this))->addItem(titem);
+				titem->setPos(*at);
+			}
+
+			return titem;
+		}
+
+		delete item;
+		return NULL;
+	}
+
+	return NULL;
+}
+
+
+// selections
+
+template<class T, class L = T>
+QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
+{
+	QList<L*> result;
+
+	for (auto* item : selectedItems())
+	{
+		T* titem = dynamic_cast<T*>(item);
+		if (titem)
+			result.append(titem);
+	}
+
+	if (result.isEmpty() && triggeredIfEmpty && m_menuTriggerItem)
+		result.append(m_menuTriggerItem);
+
+	return result;
+}
+
+
+template<class T, class L = T>
+QList<L*> CEditorScene::getItems() const
+{
+	QList<L*> result;
+
+	for (auto* item : items())
+	{
+		T* titem = dynamic_cast<T*>(item);
+		if (titem)
+			result.append(titem);
+	}
+
+	return result;
+}
+
 
 #endif // CEDITORSCENE_H

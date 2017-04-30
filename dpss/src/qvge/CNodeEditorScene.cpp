@@ -46,13 +46,13 @@ void CNodeEditorScene::initialize()
 
 void CNodeEditorScene::onActionUnlink()
 {
-	QList<QGraphicsItem*> itemList = createSelectedList(CNodeItems());
-	if (itemList.isEmpty())
+	QList<CNode*> nodes = getSelectedItems<CNode>(true);
+	if (nodes.isEmpty())
 		return;
 
-	for (QGraphicsItem* item : itemList)
+	for (auto node : nodes)
 	{
-		dynamic_cast<CNode*>(item)->unlink();
+		node->unlink();
 	}
 
 	addUndoState();
@@ -60,17 +60,17 @@ void CNodeEditorScene::onActionUnlink()
 
 void CNodeEditorScene::onActionNodeColor()
 {
-	QList<QGraphicsItem*> itemList = createSelectedList(CNodeItems());
-	if (itemList.isEmpty())
+	QList<CNode*> nodes = getSelectedItems<CNode>(true);
+	if (nodes.isEmpty())
 		return;
 
-	QColor color = QColorDialog::getColor(dynamic_cast<CNode*>(itemList.first())->getAttribute("color").value<QColor>());
+	QColor color = QColorDialog::getColor(nodes.first()->getAttribute("color").value<QColor>());
 	if (!color.isValid())
 		return;
 
-	for (QGraphicsItem* item : itemList)
+	for (auto node: nodes)
 	{
-		dynamic_cast<CNode*>(item)->setAttribute("color", color);
+		node->setAttribute("color", color);
 	}
 
 	addUndoState();
@@ -78,17 +78,17 @@ void CNodeEditorScene::onActionNodeColor()
 
 void CNodeEditorScene::onActionEdgeColor()
 {
-	QList<QGraphicsItem*> itemList = createSelectedList(CLineItems());
-	if (itemList.isEmpty())
+	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+	if (edges.isEmpty())
 		return;
 
-	QColor color = QColorDialog::getColor(dynamic_cast<CConnection*>(itemList.first())->getAttribute("color").value<QColor>());
+	QColor color = QColorDialog::getColor(edges.first()->getAttribute("color").value<QColor>());
 	if (!color.isValid())
 		return;
 
-	for (QGraphicsItem* item : itemList)
+	for (auto edge : edges)
 	{
-		dynamic_cast<CConnection*>(item)->setAttribute("color", color);
+		edge->setAttribute("color", color);
 	}
 
 	addUndoState();
@@ -96,13 +96,73 @@ void CNodeEditorScene::onActionEdgeColor()
 
 void CNodeEditorScene::onActionEdgeReverse()
 {
-	QList<QGraphicsItem*> itemList = createSelectedList(CLineItems());
-	if (itemList.isEmpty())
+	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+	if (edges.isEmpty())
 		return;
 
-	for (QGraphicsItem* item : itemList)
+	for (auto edge : edges)
 	{
-		dynamic_cast<CConnection*>(item)->reverse();
+		edge->reverse();
+	}
+
+	addUndoState();
+}
+
+void CNodeEditorScene::onActionEdgeStartArrow()
+{
+	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+	if (edges.isEmpty())
+		return;
+
+	for (auto edge : edges)
+	{
+		edge->setItemFlag(CF_Start_Arrow);
+		edge->update();
+	}
+
+	addUndoState();
+}
+
+void CNodeEditorScene::onActionEdgeEndArrow()
+{
+	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+	if (edges.isEmpty())
+		return;
+
+	for (auto edge : edges)
+	{
+		edge->setItemFlag(CF_End_Arrow);
+		edge->update();
+	}
+
+	addUndoState();
+}
+
+void CNodeEditorScene::onActionEdgeBothArrows()
+{
+	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+	if (edges.isEmpty())
+		return;
+
+	for (auto edge : edges)
+	{
+		edge->setItemFlag(CF_Mutual_Arrows);
+		edge->update();
+	}
+
+	addUndoState();
+}
+
+void CNodeEditorScene::onActionEdgeNoArrows()
+{
+	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+	if (edges.isEmpty())
+		return;
+
+	for (auto edge : edges)
+	{
+		edge->resetItemFlag(CF_Mutual_Arrows);
+		edge->update();
 	}
 
 	addUndoState();
@@ -321,7 +381,7 @@ bool CNodeEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QLis
 	// add default node actions
 	menu.addSeparator();
 
-	bool nodesSelected = createSelectedList(CNodeItems()).size();
+	bool nodesSelected = getSelectedItems<CNode>(true).size();
 
 	QAction *unlinkAction = menu.addAction(tr("Unlink"), this, SLOT(onActionUnlink()));
 	unlinkAction->setEnabled(nodesSelected);
@@ -332,13 +392,19 @@ bool CNodeEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QLis
 	// add default edge actions
 	menu.addSeparator();
 
-	bool edgesSelected = createSelectedList(CLineItems()).size();
+	bool edgesSelected = getSelectedItems<CConnection>(true).size();
 
 	QAction *edgeColorAction = menu.addAction(tr("Connection(s) Color..."), this, SLOT(onActionEdgeColor()));
 	edgeColorAction->setEnabled(edgesSelected);
 
-	QAction *edgeReverseAction = menu.addAction(tr("Reverse"), this, SLOT(onActionEdgeReverse()));
-	edgeReverseAction->setEnabled(edgesSelected);
+	QMenu *arrowsMenu = menu.addMenu(tr("Arrows"));
+	arrowsMenu->setEnabled(edgesSelected);
+	arrowsMenu->addAction(tr("Begin"), this, SLOT(onActionEdgeStartArrow()));
+	arrowsMenu->addAction(tr("End"), this, SLOT(onActionEdgeEndArrow()));
+	arrowsMenu->addAction(tr("Both"), this, SLOT(onActionEdgeBothArrows()));
+	arrowsMenu->addAction(tr("None"), this, SLOT(onActionEdgeNoArrows()));
+	arrowsMenu->addSeparator();
+	arrowsMenu->addAction(tr("Reverse"), this, SLOT(onActionEdgeReverse()));
 
 	return true;
 }
