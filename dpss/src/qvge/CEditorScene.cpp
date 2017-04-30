@@ -795,6 +795,7 @@ void CEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuE
 	}
 }
 
+
 bool CEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems)
 {
 	if (!item && selectedItems.isEmpty())
@@ -806,6 +807,7 @@ bool CEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QG
 
 	return true;
 }
+
 
 void CEditorScene::onActionDelete()
 {
@@ -825,31 +827,53 @@ void CEditorScene::onActionDelete()
 	addUndoState();
 }
 
+
 void CEditorScene::onActionSelectAll()
 {
-	blockSignals(true);
+	selectAll();
+}
 
+
+void CEditorScene::selectAll() 
+{
 	QList<QGraphicsItem*> itemList = items();
+	if (itemList.isEmpty())
+		return;
 
-	for (QGraphicsItem* item : itemList)
-	{
+	QSignalBlocker blocker(this);
+
+	for (auto item : itemList)
 		item->setSelected(true);
-	}
 
-	blockSignals(false);
+	blocker.unblock();
 
 	Q_EMIT selectionChanged();
 }
+
+
+void CEditorScene::deselectAll()
+{
+	QList<QGraphicsItem*> itemList = items();
+	if (itemList.isEmpty())
+		return;
+
+	QSignalBlocker blocker(this);
+
+	for (auto item : itemList)
+		item->setSelected(false);
+
+	blocker.unblock();
+
+	Q_EMIT selectionChanged();
+}
+
 
 // evaluators
 
 QList<QGraphicsItem*> CEditorScene::createSelectedList(const CItemsEvaluator& eval) const
 {
 	QList<QGraphicsItem*> result;
-
-	QList<QGraphicsItem*> itemList = selectedItems();
-	if (itemList.isEmpty() && m_menuTriggerItem)
-		itemList.append(m_menuTriggerItem);
+	QList<QGraphicsItem*> itemList = getSelectedItems<QGraphicsItem>(true);
 
 	for (int i = 0; i < itemList.size(); ++i)
 	{
@@ -859,6 +883,7 @@ QList<QGraphicsItem*> CEditorScene::createSelectedList(const CItemsEvaluator& ev
 
 	return result;
 }
+
 
 bool CDeletableItems::evaluate(const QGraphicsItem& item) const
 {

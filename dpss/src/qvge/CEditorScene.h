@@ -137,6 +137,9 @@ public Q_SLOTS:
 	virtual void onActionDelete();
 	virtual void onActionSelectAll();
 
+	void selectAll();
+	void deselectAll();
+
 Q_SIGNALS:
 	void undoAvailable(bool);
 	void redoAvailable(bool);
@@ -239,15 +242,16 @@ QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
 {
 	QList<L*> result;
 
-	for (auto* item : selectedItems())
+	auto selItems = selectedItems();
+	if (selItems.isEmpty() && triggeredIfEmpty && m_menuTriggerItem)
+		selItems.append(m_menuTriggerItem);
+
+	for (auto* item : selItems)
 	{
 		T* titem = dynamic_cast<T*>(item);
 		if (titem)
 			result.append(titem);
 	}
-
-	if (result.isEmpty() && triggeredIfEmpty && m_menuTriggerItem)
-		result.append(m_menuTriggerItem);
 
 	return result;
 }
