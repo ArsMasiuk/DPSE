@@ -1,10 +1,11 @@
 #include "CItemAttributeEditor.h"
 
-#include <qvge/CEditorScene.h>
+#include <qvge/CNodeEditorScene.h>
 #include <qvge/CNode.h>
 #include <qvge/CConnection.h>
 
 #include <QInputDialog>
+#include <QMessageBox>
 
 
 static int ClassRole = Qt::UserRole + 1;
@@ -23,7 +24,7 @@ CItemAttributeEditor::~CItemAttributeEditor()
 
 }
 
-void CItemAttributeEditor::setScene(CEditorScene* scene)
+void CItemAttributeEditor::setScene(CNodeEditorScene* scene)
 {
 	ui.Editor->clear();
 
@@ -134,15 +135,66 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 
     QByteArray attrId = attrV.toByteArray();
 
-    QString val = QInputDialog::getText(NULL, tr("Set Attribute"), attrId);
+    QString val = QInputDialog::getText(NULL, tr("Set Attribute"), attrId, QLineEdit::Normal, item->text(1));
     if (val.isEmpty())
         return;
 
-    QList<CItem*> sceneItems = m_scene->getSelectedItems<CItem>();
-    for (auto sceneItem : sceneItems)
-    {
-        sceneItem->setAttribute(attrId, val);
-    }
+	QList<CItem*> sceneItems = m_scene->getSelectedItems<CItem>();
+
+	if (attrId == "id")
+	{
+		if (sceneItems.size() > 1)
+		{
+			int r = QMessageBox::warning(NULL, tr("Changing ID"),
+				tr("More than one item selected, ID will be set to the 1st one. Continue?"),
+				QMessageBox::Ok | QMessageBox::Cancel);
+
+			if (r == QMessageBox::Cancel)
+				return;
+		}
+
+		auto classId = item->data(0, ClassRole).toByteArray();
+
+		if (classId == "node")
+		{
+			CNode* node = m_scene->nodeById(val);
+			if (node) 
+			{
+				int r = QMessageBox::warning(NULL, tr("Changing ID"),
+					tr("Such ID exists already. Existing ID will be marked with _old if continued."),
+					QMessageBox::Ok | QMessageBox::Cancel);
+
+				if (r == QMessageBox::Cancel)
+					return;
+
+				node->setId(val + "_old");
+			}
+		}
+		else
+		if (classId == "edge")
+		{
+			CConnection* edge = m_scene->edgeById(val);
+			if (edge)
+			{
+				int r = QMessageBox::warning(NULL, tr("Changing ID"),
+					tr("Such ID exists already. Existing ID will be marked with _old if continued."),
+					QMessageBox::Ok | QMessageBox::Cancel);
+
+				if (r == QMessageBox::Cancel)
+					return;
+
+				edge->setId(val + "_old");
+			}
+		}
+
+		// some other class...
+		sceneItems.first()->setId(val);
+	}
+	else // other attr
+		for (auto sceneItem : sceneItems)
+		{
+			sceneItem->setAttribute(attrId, val);
+		}
 
     // store state
     m_scene->addUndoState();

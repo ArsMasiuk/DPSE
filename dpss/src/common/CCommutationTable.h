@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class CEditorScene;
+class CNodeEditorScene;
 struct CAttribute;
 
 #include "ui_CCommutationTable.h"
@@ -17,7 +18,7 @@ public:
 	CCommutationTable(QWidget *parent = 0);
 	~CCommutationTable();
 
-	void setScene(CEditorScene* scene);
+	void setScene(CNodeEditorScene* scene);
 
 protected:
 	void connectSignals(CEditorScene* scene);
@@ -28,11 +29,12 @@ protected Q_SLOTS:
 	void onSceneChanged();
 	void onSelectionChanged();
 	void on_Table_itemSelectionChanged();
+	void on_Table_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
 private:
 	Ui::CCommutationTable ui;
 
-	CEditorScene *m_scene;
+	CNodeEditorScene *m_scene;
 };
 
 #endif // CCommutationTable_H

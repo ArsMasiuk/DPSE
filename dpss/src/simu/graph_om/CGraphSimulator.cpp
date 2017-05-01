@@ -1,7 +1,8 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 
 #include <QApplication>
 #include <QFileInfo>
+#include <QTextStream>
 
 #include "Graph.h"
 
@@ -52,17 +53,122 @@ bool CGraphSimulator::createDDSfile()
 }
 
 
+void CGraphSimulator::doParseScene()
+{
+}
+
+
+bool CGraphSimulator::createSceneFile()
+{
+	//	NUj  KUj  Qi  Ri     Qist  H  Fi  Pi  αi  Li  Ki
+
+	QString inputTable;
+	QTextStream ts(&inputTable);
+
+	auto branches = m_scene->getItems<CBranchConnection>();
+
+	// sort by ids
+	QMap<QString, CBranchConnection*> branchMap;
+	for (auto branch : branches)
+	{
+		branchMap[branch->getId()] = branch;
+	}
+
+	int Qi = 0;	// Q number
+	int ni = 1;	// N number (0 = ATM)
+
+	QMap<CNode*, int> nodeMap;	// node to N
+
+	for (auto branch : branchMap.values())
+	{
+		Qi++;	// branch is 1-based
+
+		auto startNode = branch->firstNode();
+		auto endNode = branch->lastNode();
+
+		float H = 0;
+
+		// start node
+		int NUi = ni;
+		auto fan1 = dynamic_cast<CFanNode*>(startNode);
+		if (fan1)
+		{
+			H = fan1->getAttribute("H").toFloat();
+			NUi = nodeMap[startNode] = 0;	// connect to ATM
+		}
+		else
+			if (nodeMap.contains(startNode))
+				NUi = nodeMap[startNode];
+			else
+				NUi = nodeMap[startNode] = ni++;
+
+		// end node
+		int KUi = ni;
+		auto fan2 = dynamic_cast<CFanNode*>(endNode);
+		if (fan2)
+		{
+			H = fan2->getAttribute("H").toFloat();
+			KUi = nodeMap[endNode] = 0;	// connect to ATM
+		}
+		else
+			if (nodeMap.contains(endNode))
+				KUi = nodeMap[endNode];
+			else 
+				KUi = nodeMap[endNode] = ni++;
+
+		// warn: two fans should not be?
+		// if (fan1 && fan2)
+
+		// output line
+		ts << NUi << "\t " << KUi << "\t " << Qi << "\t ";
+		ts << branch->getAttribute("R").toFloat() << "\t ";
+		ts << "0" << "\t ";
+		ts << H << "\t ";
+		ts << branch->getAttribute("S").toFloat() << "\t ";
+		ts << "0" << "\t ";
+		ts << "0" << "\t ";
+		ts << branch->getAttribute("L").toFloat() << "\t ";
+		ts << branch->getAttribute("L").toFloat() << "\t ";	// TEMP: must be K here
+		//ts << "0" << " ";
+
+		ts << "\n";
+	}
+
+	ts.flush();
+
+
+	QString dataDir = QApplication::applicationDirPath() + "/../data/test/";
+	m_tableFileName = QFileInfo(dataDir + "Graph.txt").absoluteFilePath();
+
+	if (m_log) 
+		m_log->write(QString("Table file: %1").arg(m_tableFileName));
+
+	QFile ft(m_tableFileName);
+	if (!ft.open(QFile::WriteOnly))
+		return false;
+
+	ft.write(inputTable.toLatin1());
+
+	return true;
+}
+
+
 // ISimulator
 
 void CGraphSimulator::setScene(const CBranchEditorScene& scene)
 {
 	m_scene = &scene;
+
+	//doParseScene();
 }
 
 
 bool CGraphSimulator::run()
 {
-	if (!createDDSfile())
+	//if (!createDDSfile())
+	//	return false;
+
+	if (!createSceneFile())
 		return false;
 
 	if (startSimulation() < 0)
@@ -93,7 +199,8 @@ int CGraphSimulator::startSimulation()
 
   int result = 0;
 
-  result = m_graph->InitFromFile_DDS(m_ddsFileName.toLocal8Bit().data());
+  result = m_graph->InitFromFile(m_tableFileName.toLocal8Bit().data());
+  //result = m_graph->InitFromFile_DDS(m_ddsFileName.toLocal8Bit().data());
             if (result)
 	           {
 		           fprintf(stderr,"g.InitFromFile() error");

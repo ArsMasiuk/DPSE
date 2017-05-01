@@ -66,6 +66,9 @@ public:
     virtual QByteArray classId() const			{ return "item"; }
     virtual QByteArray superClassId() const		{ return QByteArray(); }
 
+	QString getId() const			{ return m_id; }
+	void setId(const QString& id)	{ setAttribute("id", id);	}
+
 	enum VisibleFlags { VF_ANY = 0, VF_LABEL = 1, VF_TOOLTIP = 2 };
     virtual QSet<QByteArray> getVisibleAttributeIds(int flags) const;
 

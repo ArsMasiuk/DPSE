@@ -17,8 +17,12 @@ QString Utils::variantToText(const QVariant& v)
 	case QVariant::Bool:
 		return v.toBool() ? "true" : "false";
 
-	//case QVariant::Double:
-	//	return QString::number(v.toDouble());
+	case QVariant::Double:
+		return QString::number(v.toDouble(), 'f', 4);
+
+	case QMetaType::Float:
+		return QString::number(v.value<float>(), 'f', 4);
+
 
 	//case QVariant::UInt:
 	//	return QString::number(v.toUInt());

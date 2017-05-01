@@ -34,7 +34,9 @@ Q_SIGNALS:
 	void simulationFinished();
 
 private:
+	void doParseScene();
 	bool createDDSfile();
+	bool createSceneFile();
 	int startSimulation();
 
 private:
@@ -43,6 +45,13 @@ private:
 
 	Graph *m_graph;
 	QString m_ddsFileName;
+	QString m_tableFileName;
 
 	int m_simuTime;
+
+	QList<CBranchConnection*> m_branches;
+	QList<CBranchNode*> m_nodes;
+
+	QMap<CNode*, int> m_nodeToId;
+	QMap<int, CFanNode*> m_idToFan;
 };

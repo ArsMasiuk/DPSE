@@ -5,6 +5,7 @@
 #include "ui_CItemAttributeEditor.h"
 
 class CEditorScene;
+class CNodeEditorScene;
 class CItem;
 
 
@@ -16,7 +17,7 @@ public:
 	CItemAttributeEditor(QWidget *parent = 0);
 	~CItemAttributeEditor();
 
-	void setScene(CEditorScene* scene);
+	void setScene(CNodeEditorScene* scene);
 
 protected:
 	void onSceneAttached(CEditorScene* scene);
@@ -32,7 +33,7 @@ private:
 
 	Ui::CItemAttributeEditor ui;
 
-	CEditorScene *m_scene;
+	CNodeEditorScene *m_scene;
 };
 
 #endif // CITEMATTRIBUTEEDITOR_H
