@@ -85,6 +85,11 @@ bool CItem::setAttribute(const QByteArray& attrId, const QVariant& v)
 	return true;
 }
 
+bool CItem::removeAttribute(const QByteArray & attrId)
+{
+	return m_attributes.remove(attrId);
+}
+
 QVariant CItem::getAttribute(const QByteArray& attrId) const
 {
 	if (attrId == "id")

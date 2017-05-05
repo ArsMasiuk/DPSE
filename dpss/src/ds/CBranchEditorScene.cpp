@@ -40,7 +40,7 @@ void CBranchEditorScene::initialize()
     setClassAttribute(CAttribute("edge", "L", "L", 0));
     setClassAttribute(CAttribute("edge", "S", "S", 0));
     setClassAttribute(CAttribute("edge", "R", "R", 0));
-    setClassAttribute(CAttribute("edge", "H", "H", 0));
+    //setClassAttribute(CAttribute("edge", "H", "H", 0));
     setClassAttribute(CAttribute("edge", "Q", "Q", 0));
 }
 

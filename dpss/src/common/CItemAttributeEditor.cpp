@@ -202,3 +202,51 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
     // rebuild tree
     onSelectionChanged();
 }
+
+
+void CItemAttributeEditor::on_AddButton_clicked()
+{
+
+}
+
+
+void CItemAttributeEditor::on_RemoveButton_clicked()
+{
+	QList<QTreeWidgetItem *> selItems = ui.Editor->selectedItems();
+	if (selItems.isEmpty())
+		return;
+
+	auto *item = selItems.first();
+	auto attrId = item->data(0, AttrRole).toByteArray();
+	if (attrId.isEmpty())
+		return;
+
+	int r = QMessageBox::question(NULL, 
+		tr("Remove attribute"), 
+		tr("Remove attribute %1 from selected items?").arg(QString(attrId)), 
+		QMessageBox::Yes, QMessageBox::Cancel);
+	if (r == QMessageBox::Cancel)
+		return;
+
+	QList<CItem*> sceneItems;
+	auto classId = item->data(0, ClassRole).toByteArray();
+	if (classId == "node")
+	{
+		sceneItems = m_scene->getSelectedItems<CNode, CItem>();
+	}
+	else if (classId == "edge")
+	{
+		sceneItems = m_scene->getSelectedItems<CConnection, CItem>();
+	}
+
+	for (auto sceneItem : sceneItems)
+	{
+		sceneItem->removeAttribute(attrId);
+	}
+
+	// store state
+	m_scene->addUndoState();
+
+	// rebuild tree
+	onSelectionChanged();
+}

@@ -92,6 +92,13 @@ public:
         return m_classAttributes[classId][attrId].defaultValue;
     }
 
+	bool removeClassAttribute(const QByteArray& classId, const QByteArray& attrId) {
+		auto it = m_classAttributes.find(classId);
+		if (it == m_classAttributes.end())
+			return false;
+		return (*it).remove(attrId);
+	}
+
 	void setClassAttribute(const CAttribute& attr, bool vis = false);
 
 	AttributesMap getClassAttributes(const QByteArray& classId, bool inherited) const;
@@ -248,7 +255,7 @@ QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
 
 	for (auto* item : selItems)
 	{
-		T* titem = dynamic_cast<T*>(item);
+		L* titem = dynamic_cast<T*>(item);
 		if (titem)
 			result.append(titem);
 	}
@@ -256,7 +263,7 @@ QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
 	return result;
 }
 
-
+ 
 template<class T, class L = T>
 QList<L*> CEditorScene::getItems() const
 {
@@ -264,7 +271,7 @@ QList<L*> CEditorScene::getItems() const
 
 	for (auto* item : items())
 	{
-		T* titem = dynamic_cast<T*>(item);
+		L* titem = dynamic_cast<T*>(item);
 		if (titem)
 			result.append(titem);
 	}

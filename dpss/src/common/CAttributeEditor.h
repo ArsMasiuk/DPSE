@@ -28,6 +28,7 @@ protected:
 protected Q_SLOTS:
 	void onSceneChanged();
 	void on_AttributeList_itemChanged(QTreeWidgetItem *item, int column);
+	void on_RemoveButton_clicked();
 
 private:
 	Ui::CAttributeEditor ui;

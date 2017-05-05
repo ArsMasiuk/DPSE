@@ -139,7 +139,7 @@ bool CFileSerializerGR::readLink(int /*index*/, const QSettings& set, CEditorSce
     link->setAttribute("S", set.value("F1", 0).toStringList().join('.').toFloat());
     //link->setAttribute("LINK_F2", set.value("F2", 0).toStringList().join('.').toFloat());
     link->setAttribute("R", set.value("R", 0).toStringList().join('.').toFloat());
-    link->setAttribute("H", set.value("H", 0).toStringList().join('.').toFloat());
+    //link->setAttribute("H", set.value("H", 0).toStringList().join('.').toFloat());
     link->setAttribute("Q", set.value("Q", 0).toStringList().join('.').toFloat());
 
 	switch (set.value("Model", 0).toInt())

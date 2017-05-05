@@ -61,6 +61,7 @@ public:
 	
 	// attributes
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
+	virtual bool removeAttribute(const QByteArray& attrId); 
 	virtual QVariant getAttribute(const QByteArray& attrId) const;
 	virtual QVariant getClassAttribute(const QByteArray& attrId) const;
     virtual QByteArray classId() const			{ return "item"; }

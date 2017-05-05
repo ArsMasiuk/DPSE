@@ -1,5 +1,13 @@
 #include "CAttributeEditor.h"
+
 #include <qvge/CEditorScene.h>
+
+#include <QMessageBox>
+
+
+static int ClassRole = Qt::UserRole + 1;
+static int AttrRole = Qt::UserRole + 2;
+
 
 CAttributeEditor::CAttributeEditor(QWidget *parent)
 	: QWidget(parent),
@@ -78,8 +86,8 @@ void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem*
 		attrItem->setText(1, attr.name);
 		attrItem->setText(2, attr.defaultValue.toString());
 
-		attrItem->setData(0, Qt::UserRole + 1, attr.id);
-		attrItem->setData(0, Qt::UserRole + 2, classId);
+		attrItem->setData(0, AttrRole, attr.id);
+		attrItem->setData(0, ClassRole, classId);
 	}
 
 	classTreeItem->setExpanded(true);
@@ -90,8 +98,8 @@ void CAttributeEditor::on_AttributeList_itemChanged(QTreeWidgetItem *item, int c
 	if (column == 0)
 	{
 		bool isVisible = (item->checkState(0) == Qt::Checked);
-		QByteArray attrId = item->data(0, Qt::UserRole + 1).toByteArray();
-		QByteArray classId = item->data(0, Qt::UserRole + 2).toByteArray();
+		QByteArray attrId = item->data(0, AttrRole).toByteArray();
+		QByteArray classId = item->data(0, ClassRole).toByteArray();
 
 		m_scene->setClassAttributeVisible(classId, attrId, isVisible);
 
@@ -99,3 +107,27 @@ void CAttributeEditor::on_AttributeList_itemChanged(QTreeWidgetItem *item, int c
 	}
 }
 
+void CAttributeEditor::on_RemoveButton_clicked()
+{
+	QList<QTreeWidgetItem *> selItems = ui.AttributeList->selectedItems();
+	if (selItems.isEmpty())
+		return;
+
+	auto *item = selItems.first();
+	auto attrId = item->data(0, AttrRole).toByteArray();
+	if (attrId.isEmpty())
+		return;
+
+	auto classId = item->data(0, ClassRole).toByteArray();
+
+	int r = QMessageBox::question(NULL,
+		tr("Remove attribute"),
+		tr("Remove attribute '%1' from class '%2' attributes?").arg(QString(attrId), QString(classId)),
+		QMessageBox::Yes, QMessageBox::Cancel);
+	if (r == QMessageBox::Cancel)
+		return;
+
+	m_scene->removeClassAttribute(classId, attrId);
+
+	m_scene->addUndoState();
+}
