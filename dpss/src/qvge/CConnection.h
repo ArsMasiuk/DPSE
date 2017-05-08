@@ -56,6 +56,10 @@ public:
 	// reimp
 	virtual QPainterPath shape() const;
 
+	// attributes
+	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
+	virtual QVariant getAttribute(const QByteArray& attrId) const;
+
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);

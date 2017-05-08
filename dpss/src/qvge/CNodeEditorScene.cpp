@@ -40,6 +40,9 @@ void CNodeEditorScene::initialize()
 	// default edge attr
     CAttribute edgeAttr("edge", "color", "Color", QColor(Qt::gray));
 	setClassAttribute(edgeAttr);
+
+	CAttribute directionAttr("edge", "direction", "Direction", "directed");
+	setClassAttribute(directionAttr);
 }
 
 // menu slots
@@ -108,7 +111,7 @@ void CNodeEditorScene::onActionEdgeReverse()
 	addUndoState();
 }
 
-void CNodeEditorScene::onActionEdgeStartArrow()
+void CNodeEditorScene::onActionEdgeDirected()
 {
 	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
 	if (edges.isEmpty())
@@ -116,14 +119,14 @@ void CNodeEditorScene::onActionEdgeStartArrow()
 
 	for (auto edge : edges)
 	{
-		edge->setItemFlag(CF_Start_Arrow);
+		edge->setAttribute("direction", "directed");
 		edge->update();
 	}
 
 	addUndoState();
 }
 
-void CNodeEditorScene::onActionEdgeEndArrow()
+void CNodeEditorScene::onActionEdgeMutual()
 {
 	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
 	if (edges.isEmpty())
@@ -131,14 +134,15 @@ void CNodeEditorScene::onActionEdgeEndArrow()
 
 	for (auto edge : edges)
 	{
-		edge->setItemFlag(CF_End_Arrow);
+		edge->setAttribute("direction", "mutual");
 		edge->update();
 	}
 
 	addUndoState();
 }
 
-void CNodeEditorScene::onActionEdgeBothArrows()
+
+void CNodeEditorScene::onActionEdgeUndirected()
 {
 	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
 	if (edges.isEmpty())
@@ -146,22 +150,7 @@ void CNodeEditorScene::onActionEdgeBothArrows()
 
 	for (auto edge : edges)
 	{
-		edge->setItemFlag(CF_Mutual_Arrows);
-		edge->update();
-	}
-
-	addUndoState();
-}
-
-void CNodeEditorScene::onActionEdgeNoArrows()
-{
-	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
-	if (edges.isEmpty())
-		return;
-
-	for (auto edge : edges)
-	{
-		edge->resetItemFlag(CF_Mutual_Arrows);
+		edge->setAttribute("direction", "undirected");
 		edge->update();
 	}
 
@@ -397,12 +386,11 @@ bool CNodeEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QLis
 	QAction *edgeColorAction = menu.addAction(tr("Connection(s) Color..."), this, SLOT(onActionEdgeColor()));
 	edgeColorAction->setEnabled(edgesSelected);
 
-	QMenu *arrowsMenu = menu.addMenu(tr("Arrows"));
+	QMenu *arrowsMenu = menu.addMenu(tr("Direction"));
 	arrowsMenu->setEnabled(edgesSelected);
-	arrowsMenu->addAction(tr("Begin"), this, SLOT(onActionEdgeStartArrow()));
-	arrowsMenu->addAction(tr("End"), this, SLOT(onActionEdgeEndArrow()));
-	arrowsMenu->addAction(tr("Both"), this, SLOT(onActionEdgeBothArrows()));
-	arrowsMenu->addAction(tr("None"), this, SLOT(onActionEdgeNoArrows()));
+	arrowsMenu->addAction(tr("Directed"), this, SLOT(onActionEdgeDirected()));
+	arrowsMenu->addAction(tr("Mutual"), this, SLOT(onActionEdgeMutual()));
+	arrowsMenu->addAction(tr("None"), this, SLOT(onActionEdgeUndirected()));
 	arrowsMenu->addSeparator();
 	arrowsMenu->addAction(tr("Reverse"), this, SLOT(onActionEdgeReverse()));
 

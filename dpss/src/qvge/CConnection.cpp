@@ -25,6 +25,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	setItemFlag(IF_FramelessSelection);
 }
 
+
 CConnection::~CConnection()
 {
 	if (m_firstNode)
@@ -33,6 +34,54 @@ CConnection::~CConnection()
 	if (m_lastNode && m_lastNode != m_firstNode)
 		m_lastNode->onConnectionDeleted(this);
 }
+
+
+// attributes
+
+bool CConnection::setAttribute(const QByteArray& attrId, const QVariant& v)
+{
+	if (attrId == "direction")
+	{
+		auto val = v.toString();
+		if (val == "directed")
+		{
+			setItemFlag(CF_End_Arrow);
+			resetItemFlag(CF_Start_Arrow);
+			return true;
+		}
+		else if (val == "mutual")
+		{
+			setItemFlag(CF_Mutual_Arrows);
+			return true;
+		}
+		else if (val == "undirected")
+		{
+			resetItemFlag(CF_Mutual_Arrows);
+			return true;
+		}
+
+		return false;
+	}
+
+	return Super::setAttribute(attrId, v);
+}
+
+
+QVariant CConnection::getAttribute(const QByteArray& attrId) const
+{
+	if (attrId == "direction")
+	{
+		if ((itemFlags() & CF_Mutual_Arrows) == CF_Mutual_Arrows)
+			return "mutual";
+		else if (itemFlags() & CF_End_Arrow)
+			return "directed";
+		else
+			return "undirected";
+	}
+
+	return Super::getAttribute(attrId);
+}
+
 
 // reimp
 

@@ -131,10 +131,7 @@ bool CFileSerializerGEXF::readEdge(int /*index*/, const QDomNode &domNode, CEdit
 	if (edgeType.isEmpty())
 		edgeType = m_edgeType;
 
-	if (edgeType == "directed")
-		link->setItemFlag(CF_End_Arrow);
-	else if (edgeType == "mutual")
-		link->setItemFlag(CF_Mutual_Arrows);
+	link->setAttribute("direction", edgeType);
 
 	scene.addItem(link);
 
