@@ -1,4 +1,5 @@
 #include "CAttributeEditor.h"
+#include "CNewAttributeDialog.h"
 
 #include <qvge/CEditorScene.h>
 
@@ -16,10 +17,11 @@ CAttributeEditor::CAttributeEditor(QWidget *parent)
 	ui.setupUi(this);
 }
 
+
 CAttributeEditor::~CAttributeEditor()
 {
-
 }
+
 
 void CAttributeEditor::setScene(CEditorScene* scene)
 {
@@ -37,6 +39,7 @@ void CAttributeEditor::setScene(CEditorScene* scene)
 		onSceneAttached(m_scene);
 }
 
+
 void CAttributeEditor::onSceneAttached(CEditorScene* scene)
 {
 	connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()), Qt::QueuedConnection);
@@ -44,10 +47,12 @@ void CAttributeEditor::onSceneAttached(CEditorScene* scene)
 	onSceneChanged();
 }
 
+
 void CAttributeEditor::onSceneDetached(CEditorScene* scene)
 {
 	scene->disconnect(this);
 }
+
 
 void CAttributeEditor::onSceneChanged()
 {
@@ -63,6 +68,7 @@ void CAttributeEditor::onSceneChanged()
 	{
 		auto classTreeItem = new QTreeWidgetItem();
 		classTreeItem->setText(0, QString(classId));
+        classTreeItem->setData(0, ClassRole, classId);
 
 		ui.AttributeList->addTopLevelItem(classTreeItem);
 
@@ -72,6 +78,7 @@ void CAttributeEditor::onSceneChanged()
 	ui.AttributeList->setUpdatesEnabled(true);
 	ui.AttributeList->blockSignals(false);
 }
+
 
 void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem* classTreeItem)
 {
@@ -93,6 +100,7 @@ void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem*
 	classTreeItem->setExpanded(true);
 }
 
+
 void CAttributeEditor::on_AttributeList_itemChanged(QTreeWidgetItem *item, int column)
 {
 	if (column == 0)
@@ -107,9 +115,39 @@ void CAttributeEditor::on_AttributeList_itemChanged(QTreeWidgetItem *item, int c
 	}
 }
 
+
+void CAttributeEditor::on_AddButton_clicked()
+{
+    CNewAttributeDialog attrDialog;
+    int r = attrDialog.exec();
+    if (r == QDialog::Rejected)
+        return;
+
+    QByteArray attrId = attrDialog.getAttrId();
+    if (attrId.isEmpty())
+        return;
+
+    QString name = attrDialog.getAttrName();
+    if (name.isEmpty())
+        name = attrId;
+
+    QVariant v = attrDialog.getDefaultValue();
+
+    QByteArray classId;
+    QList<QTreeWidgetItem*> selItems = ui.AttributeList->selectedItems();
+    if (!selItems.isEmpty())
+        classId = selItems.first()->data(0, ClassRole).toByteArray();
+
+    CAttribute attr(classId, attrId, name, v);
+    m_scene->setClassAttribute(attr, false);
+
+    m_scene->addUndoState();
+}
+
+
 void CAttributeEditor::on_RemoveButton_clicked()
 {
-	QList<QTreeWidgetItem *> selItems = ui.AttributeList->selectedItems();
+    QList<QTreeWidgetItem*> selItems = ui.AttributeList->selectedItems();
 	if (selItems.isEmpty())
 		return;
 

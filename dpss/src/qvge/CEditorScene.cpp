@@ -1,3 +1,12 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L.Masiuk(ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #include "CEditorScene.h"
 #include "CItem.h"
 #include "CSimpleUndoManager.h"
@@ -376,6 +385,7 @@ CItem* CEditorScene::createItemOfType(const QByteArray &id) const
 	return NULL;
 }
 
+
 // attributes
 
 void CEditorScene::setClassAttribute(const CAttribute& attr, bool vis) 
@@ -383,6 +393,15 @@ void CEditorScene::setClassAttribute(const CAttribute& attr, bool vis)
 	m_classAttributes[attr.classId][attr.id] = attr;
 
 	setClassAttributeVisible(attr.classId, attr.id, vis);
+}
+
+bool CEditorScene::removeClassAttribute(const QByteArray& classId, const QByteArray& attrId)
+{
+	auto it = m_classAttributes.find(classId);
+	if (it == m_classAttributes.end())
+		return false;
+
+	return (*it).remove(attrId);
 }
 
 void CEditorScene::setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis)

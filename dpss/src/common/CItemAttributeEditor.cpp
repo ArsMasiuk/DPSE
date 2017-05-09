@@ -212,7 +212,7 @@ void CItemAttributeEditor::on_AddButton_clicked()
 
 void CItemAttributeEditor::on_RemoveButton_clicked()
 {
-	QList<QTreeWidgetItem *> selItems = ui.Editor->selectedItems();
+	QList<QTreeWidgetItem*> selItems = ui.Editor->selectedItems();
 	if (selItems.isEmpty())
 		return;
 

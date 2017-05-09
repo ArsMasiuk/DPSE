@@ -15,8 +15,13 @@ public:
     explicit CNewAttributeDialog(QWidget *parent = 0);
     ~CNewAttributeDialog();
 
+    QByteArray getAttrId() const;
+    QString getAttrName() const;
+    QVariant getDefaultValue() const;
+
 private:
     Ui::CNewAttributeDialog *ui;
 };
+
 
 #endif // CNEWATTRIBUTEDIALOG_H

@@ -1,3 +1,12 @@
+/*
+This file is a part of
+DPSE - Distributed Parallel Simulation Environment
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #ifndef CMPISIMULATORDIALOG_H
 #define CMPISIMULATORDIALOG_H
 

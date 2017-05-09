@@ -1,3 +1,12 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #ifndef CEDITORSCENE_H
 #define CEDITORSCENE_H
 
@@ -66,10 +75,9 @@ public:
 	virtual bool storeTo(QDataStream& out) const;
 	virtual bool restoreFrom(QDataStream& out);
 
-	// items factory
+	// item factories
 	template<class T>
-	bool registerItemFactory()
-	{
+	bool registerItemFactory() {
 		static T f;
 		return addItemFactory(&f);
 	}
@@ -92,24 +100,9 @@ public:
         return m_classAttributes[classId][attrId].defaultValue;
     }
 
-	bool removeClassAttribute(const QByteArray& classId, const QByteArray& attrId) {
-		auto it = m_classAttributes.find(classId);
-		if (it == m_classAttributes.end())
-			return false;
-		return (*it).remove(attrId);
-	}
-
-	void setClassAttribute(const CAttribute& attr, bool vis = false);
-
-	AttributesMap getClassAttributes(const QByteArray& classId, bool inherited) const;
-	
 	QByteArrayList getClasses() const {
 		return m_classAttributes.keys();
 	}
-
-	QSet<QByteArray> getVisibleClassAttributes(const QByteArray& classId, bool inherited) const;
-
-	void setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis = true);
 
 	QByteArray getSuperClassId(const QByteArray& classId) const {
 		if (m_classToSuperIds.contains(classId))
@@ -117,6 +110,16 @@ public:
 
 		return QByteArray();
 	}
+
+	bool removeClassAttribute(const QByteArray& classId, const QByteArray& attrId);
+
+	void setClassAttribute(const CAttribute& attr, bool vis = false);
+
+	AttributesMap getClassAttributes(const QByteArray& classId, bool inherited) const;
+	
+	QSet<QByteArray> getVisibleClassAttributes(const QByteArray& classId, bool inherited) const;
+
+	void setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis = true);
 
 	// selections
 	QList<QGraphicsItem*> createSelectedList(const CItemsEvaluator&) const;

@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2E8457F7-0A87-3F05-93CD-88BF986AF94B}</ProjectGuid>
+    <RootNamespace>dpss</RootNamespace>
+    <Keyword>Qt4VSv1.0</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;" Label="Configuration">
+    <PlatformToolSet>v140</PlatformToolSet>
+    <OutputDirectory>..\bin.msvc\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>dpss</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;" Label="Configuration">
+    <PlatformToolSet>v140</PlatformToolSet>
+    <OutputDirectory>..\bin.msvc_debug\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>debug\</IntermediateDirectory>
+    <PrimaryOutput>dpss</PrimaryOutput>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists(&apos;$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props&apos;)" />
+  </ImportGroup>
+  <ImportGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists(&apos;$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props&apos;)" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">..\bin.msvc\</OutDir>
+    <IntDir Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\</IntDir>
+    <TargetName Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">dpss</TargetName>
+    <IgnoreImportLibrary Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</IgnoreImportLibrary>
+    <LinkIncremental Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">false</LinkIncremental>
+    <OutDir Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">..\bin.msvc_debug\</OutDir>
+    <IntDir Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\</IntDir>
+    <TargetName Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">dpss</TargetName>
+    <IgnoreImportLibrary Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</IgnoreImportLibrary>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;simu\mpisch;simu;simu\graph_om;simu;qvge;ds;common;simu;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtCharts;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtCore;release;.;$(QTDIR)\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>release\</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_OPENGL_LIB;QT_CHARTS_LIB;QT_WIDGETS_LIB;QT_GUI_LIB;QT_XML_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName></ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(QTDIR)\lib\qtmain.lib;shell32.lib;opengl32.lib;Glu32.lib;$(QTDIR)\lib\Qt5OpenGL.lib;$(QTDIR)\lib\Qt5Charts.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Xml.lib;$(QTDIR)\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;C:\utils\postgresql\pgsql\lib;C:\utils\my_sql\my_sql\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>$(OutDir)\dpss.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_OPENGL_LIB;QT_CHARTS_LIB;QT_WIDGETS_LIB;QT_GUI_LIB;QT_XML_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.;simu\mpisch;simu;simu\graph_om;simu;qvge;ds;common;simu;$(QTDIR)\include;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtCharts;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtCore;debug;.;$(QTDIR)\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>debug\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>debug\</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_OPENGL_LIB;QT_CHARTS_LIB;QT_WIDGETS_LIB;QT_GUI_LIB;QT_XML_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;shell32.lib;opengl32.lib;Glu32.lib;$(QTDIR)\lib\Qt5OpenGLd.lib;$(QTDIR)\lib\Qt5Chartsd.lib;$(QTDIR)\lib\Qt5Widgetsd.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Xmld.lib;$(QTDIR)\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;C:\utils\postgresql\pgsql\lib;C:\utils\my_sql\my_sql\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>&quot;/MANIFESTDEPENDENCY:type=&apos;win32&apos; name=&apos;Microsoft.Windows.Common-Controls&apos; version=&apos;6.0.0.0&apos; publicKeyToken=&apos;6595b64144ccf1df&apos; language=&apos;*&apos; processorArchitecture=&apos;*&apos;&quot; %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <OutputFile>$(OutDir)\dpss.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_OPENGL_LIB;QT_CHARTS_LIB;QT_WIDGETS_LIB;QT_GUI_LIB;QT_XML_LIB;QT_CORE_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="qvge\CAttribute.cpp" />
+    <ClCompile Include="common\CAttributeEditor.cpp" />
+    <ClCompile Include="ds\CBranchEditorScene.cpp" />
+    <ClCompile Include="common\CCommutationTable.cpp" />
+    <ClCompile Include="qvge\CConnection.cpp" />
+    <ClCompile Include="qvge\CEditorScene.cpp" />
+    <ClCompile Include="qvge\CEditorView.cpp" />
+    <ClCompile Include="qvge\CFileSerializerGEXF.cpp" />
+    <ClCompile Include="ds\CFileSerializerGR.cpp" />
+    <ClCompile Include="qvge\CFileSerializerGraphML.cpp" />
+    <ClCompile Include="simu\graph_om\CGraphSimulator.cpp" />
+    <ClCompile Include="simu\graph_om\CGraphSimulatorDialog.cpp" />
+    <ClCompile Include="qvge\CItem.cpp" />
+    <ClCompile Include="common\CItemAttributeEditor.cpp" />
+    <ClCompile Include="simu\mpisch\CMPISimulator.cpp" />
+    <ClCompile Include="simu\mpisch\CMPISimulatorDialog.cpp" />
+    <ClCompile Include="common\CNewAttributeDialog.cpp" />
+    <ClCompile Include="qvge\CNode.cpp" />
+    <ClCompile Include="qvge\CNodeEditorScene.cpp" />
+    <ClCompile Include="qvge\CSimpleUndoManager.cpp" />
+    <ClCompile Include="qvge\CTextLabel.cpp" />
+    <ClCompile Include="qvge\Utils.cpp" />
+    <ClCompile Include="simu\graph_om\graph.cpp" />
+    <ClCompile Include="ds\main.cpp" />
+    <ClCompile Include="ds\mainwindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="qvge\CAttribute.h" />
+    <CustomBuild Include="common\CAttributeEditor.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">common\CAttributeEditor.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CAttributeEditor.h -o release\moc_CAttributeEditor.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC common/CAttributeEditor.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CAttributeEditor.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">common\CAttributeEditor.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CAttributeEditor.h -o debug\moc_CAttributeEditor.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC common/CAttributeEditor.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CAttributeEditor.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="ds\CBranchEditorScene.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ds\CBranchEditorScene.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore ds\CBranchEditorScene.h -o release\moc_CBranchEditorScene.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC ds/CBranchEditorScene.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CBranchEditorScene.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ds\CBranchEditorScene.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore ds\CBranchEditorScene.h -o debug\moc_CBranchEditorScene.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC ds/CBranchEditorScene.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CBranchEditorScene.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="common\CCommutationTable.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">common\CCommutationTable.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CCommutationTable.h -o release\moc_CCommutationTable.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC common/CCommutationTable.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CCommutationTable.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">common\CCommutationTable.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CCommutationTable.h -o debug\moc_CCommutationTable.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC common/CCommutationTable.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CCommutationTable.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="qvge\CConnection.h" />
+    <CustomBuild Include="qvge\CEditorScene.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">qvge\CEditorScene.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore qvge\CEditorScene.h -o release\moc_CEditorScene.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC qvge/CEditorScene.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CEditorScene.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">qvge\CEditorScene.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore qvge\CEditorScene.h -o debug\moc_CEditorScene.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC qvge/CEditorScene.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CEditorScene.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="qvge\CEditorView.h" />
+    <ClInclude Include="qvge\CFileSerializerGEXF.h" />
+    <ClInclude Include="ds\CFileSerializerGR.h" />
+    <ClInclude Include="qvge\CFileSerializerGraphML.h" />
+    <CustomBuild Include="simu\graph_om\CGraphSimulator.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">simu\graph_om\CGraphSimulator.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore simu\graph_om\CGraphSimulator.h -o release\moc_CGraphSimulator.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC simu/graph_om/CGraphSimulator.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CGraphSimulator.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">simu\graph_om\CGraphSimulator.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore simu\graph_om\CGraphSimulator.h -o debug\moc_CGraphSimulator.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC simu/graph_om/CGraphSimulator.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CGraphSimulator.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="simu\graph_om\CGraphSimulatorDialog.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">simu\graph_om\CGraphSimulatorDialog.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore simu\graph_om\CGraphSimulatorDialog.h -o release\moc_CGraphSimulatorDialog.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC simu/graph_om/CGraphSimulatorDialog.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CGraphSimulatorDialog.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">simu\graph_om\CGraphSimulatorDialog.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore simu\graph_om\CGraphSimulatorDialog.h -o debug\moc_CGraphSimulatorDialog.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC simu/graph_om/CGraphSimulatorDialog.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CGraphSimulatorDialog.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="qvge\CItem.h" />
+    <CustomBuild Include="common\CItemAttributeEditor.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">common\CItemAttributeEditor.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CItemAttributeEditor.h -o release\moc_CItemAttributeEditor.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC common/CItemAttributeEditor.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CItemAttributeEditor.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">common\CItemAttributeEditor.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CItemAttributeEditor.h -o debug\moc_CItemAttributeEditor.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC common/CItemAttributeEditor.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CItemAttributeEditor.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="simu\mpisch\CMPISimulator.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">simu\mpisch\CMPISimulator.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore simu\mpisch\CMPISimulator.h -o release\moc_CMPISimulator.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC simu/mpisch/CMPISimulator.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CMPISimulator.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">simu\mpisch\CMPISimulator.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore simu\mpisch\CMPISimulator.h -o debug\moc_CMPISimulator.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC simu/mpisch/CMPISimulator.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CMPISimulator.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="simu\mpisch\CMPISimulatorDialog.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">simu\mpisch\CMPISimulatorDialog.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore simu\mpisch\CMPISimulatorDialog.h -o release\moc_CMPISimulatorDialog.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC simu/mpisch/CMPISimulatorDialog.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CMPISimulatorDialog.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">simu\mpisch\CMPISimulatorDialog.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore simu\mpisch\CMPISimulatorDialog.h -o debug\moc_CMPISimulatorDialog.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC simu/mpisch/CMPISimulatorDialog.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CMPISimulatorDialog.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="common\CNewAttributeDialog.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">common\CNewAttributeDialog.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CNewAttributeDialog.h -o release\moc_CNewAttributeDialog.cpp&#x000D;&#x000A;if errorlevel 1 goto VCEnd&#x000D;&#x000A;$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CNewAttributeDialog.h -o release\moc_CNewAttributeDialog.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC common/CNewAttributeDialog.h, MOC common/CNewAttributeDialog.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CNewAttributeDialog.cpp;release\moc_CNewAttributeDialog.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">common\CNewAttributeDialog.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CNewAttributeDialog.h -o debug\moc_CNewAttributeDialog.cpp&#x000D;&#x000A;if errorlevel 1 goto VCEnd&#x000D;&#x000A;$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore common\CNewAttributeDialog.h -o debug\moc_CNewAttributeDialog.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC common/CNewAttributeDialog.h, MOC common/CNewAttributeDialog.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CNewAttributeDialog.cpp;debug\moc_CNewAttributeDialog.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="qvge\CNode.h" />
+    <CustomBuild Include="qvge\CNodeEditorScene.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">qvge\CNodeEditorScene.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore qvge\CNodeEditorScene.h -o release\moc_CNodeEditorScene.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC qvge/CNodeEditorScene.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_CNodeEditorScene.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">qvge\CNodeEditorScene.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore qvge\CNodeEditorScene.h -o debug\moc_CNodeEditorScene.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC qvge/CNodeEditorScene.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_CNodeEditorScene.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="qvge\CSimpleUndoManager.h" />
+    <ClInclude Include="qvge\CTextLabel.h" />
+    <ClInclude Include="qvge\IFileSerializer.h" />
+    <ClInclude Include="simu\ILogger.h" />
+    <ClInclude Include="simu\ISimulator.h" />
+    <ClInclude Include="simu\ISimulatorEngine.h" />
+    <ClInclude Include="qvge\IUndoManager.h" />
+    <ClInclude Include="qvge\Properties.h" />
+    <ClInclude Include="qvge\Utils.h" />
+    <ClInclude Include="simu\graph_om\graph.h" />
+    <CustomBuild Include="ds\mainwindow.h">
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ds\mainwindow.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore ds\mainwindow.h -o release\moc_mainwindow.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC ds/mainwindow.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_mainwindow.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ds\mainwindow.h;$(QTDIR)\bin\moc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_OPENGL_LIB -DQT_CHARTS_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt5.7/5.7/msvc2015_64/mkspecs/win32-msvc2015 -IG:/Doctor/DPSE/dpss/src -IG:/Doctor/DPSE/dpss/src/simu/mpisch -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/simu/graph_om -IG:/Doctor/DPSE/dpss/src/simu -IG:/Doctor/DPSE/dpss/src/qvge -IG:/Doctor/DPSE/dpss/src/ds -IG:/Doctor/DPSE/dpss/src/common -IG:/Doctor/DPSE/dpss/src/simu -IC:/Qt5.7/5.7/msvc2015_64/include -IC:/Qt5.7/5.7/msvc2015_64/include/QtOpenGL -IC:/Qt5.7/5.7/msvc2015_64/include/QtCharts -IC:/Qt5.7/5.7/msvc2015_64/include/QtWidgets -IC:/Qt5.7/5.7/msvc2015_64/include/QtGui -IC:/Qt5.7/5.7/msvc2015_64/include/QtANGLE -IC:/Qt5.7/5.7/msvc2015_64/include/QtXml -IC:/Qt5.7/5.7/msvc2015_64/include/QtCore ds\mainwindow.h -o debug\moc_mainwindow.cpp</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC ds/mainwindow.h</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_mainwindow.cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="debug\moc_CAttributeEditor.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CAttributeEditor.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CBranchEditorScene.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CBranchEditorScene.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CCommutationTable.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CCommutationTable.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CEditorScene.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CEditorScene.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CGraphSimulator.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CGraphSimulator.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CGraphSimulatorDialog.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CGraphSimulatorDialog.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CItemAttributeEditor.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CItemAttributeEditor.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CMPISimulator.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CMPISimulator.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CMPISimulatorDialog.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CMPISimulatorDialog.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CNewAttributeDialog.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CNewAttributeDialog.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_CNodeEditorScene.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_CNodeEditorScene.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="debug\moc_mainwindow.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="release\moc_mainwindow.cpp">
+      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClInclude Include="ui_CAttributeEditor.h" />
+    <ClInclude Include="ui_CCommutationTable.h" />
+    <ClInclude Include="ui_CGraphSimulatorDialog.h" />
+    <ClInclude Include="ui_CItemAttributeEditor.h" />
+    <ClInclude Include="ui_CMPISimulatorDialog.h" />
+    <ClInclude Include="ui_CNewAttributeDialog.h" />
+    <ClInclude Include="ui_mainwindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="common\CAttributeEditor.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">common\CAttributeEditor.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\uic.exe common\CAttributeEditor.ui -o ui_CAttributeEditor.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">UIC common/CAttributeEditor.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ui_CAttributeEditor.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">common\CAttributeEditor.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\uic.exe common\CAttributeEditor.ui -o ui_CAttributeEditor.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">UIC common/CAttributeEditor.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ui_CAttributeEditor.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="common\CCommutationTable.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">common\CCommutationTable.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\uic.exe common\CCommutationTable.ui -o ui_CCommutationTable.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">UIC common/CCommutationTable.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ui_CCommutationTable.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">common\CCommutationTable.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\uic.exe common\CCommutationTable.ui -o ui_CCommutationTable.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">UIC common/CCommutationTable.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ui_CCommutationTable.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="simu\graph_om\CGraphSimulatorDialog.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">simu\graph_om\CGraphSimulatorDialog.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\uic.exe simu\graph_om\CGraphSimulatorDialog.ui -o ui_CGraphSimulatorDialog.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">UIC simu/graph_om/CGraphSimulatorDialog.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ui_CGraphSimulatorDialog.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">simu\graph_om\CGraphSimulatorDialog.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\uic.exe simu\graph_om\CGraphSimulatorDialog.ui -o ui_CGraphSimulatorDialog.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">UIC simu/graph_om/CGraphSimulatorDialog.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ui_CGraphSimulatorDialog.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="common\CItemAttributeEditor.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">common\CItemAttributeEditor.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\uic.exe common\CItemAttributeEditor.ui -o ui_CItemAttributeEditor.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">UIC common/CItemAttributeEditor.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ui_CItemAttributeEditor.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">common\CItemAttributeEditor.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\uic.exe common\CItemAttributeEditor.ui -o ui_CItemAttributeEditor.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">UIC common/CItemAttributeEditor.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ui_CItemAttributeEditor.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="simu\mpisch\CMPISimulatorDialog.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">simu\mpisch\CMPISimulatorDialog.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\uic.exe simu\mpisch\CMPISimulatorDialog.ui -o ui_CMPISimulatorDialog.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">UIC simu/mpisch/CMPISimulatorDialog.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ui_CMPISimulatorDialog.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">simu\mpisch\CMPISimulatorDialog.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\uic.exe simu\mpisch\CMPISimulatorDialog.ui -o ui_CMPISimulatorDialog.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">UIC simu/mpisch/CMPISimulatorDialog.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ui_CMPISimulatorDialog.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="common\CNewAttributeDialog.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">common\CNewAttributeDialog.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\uic.exe common\CNewAttributeDialog.ui -o ui_CNewAttributeDialog.h&#x000D;&#x000A;if errorlevel 1 goto VCEnd&#x000D;&#x000A;$(QTDIR)\bin\uic.exe common\CNewAttributeDialog.ui -o ui_CNewAttributeDialog.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">UIC common/CNewAttributeDialog.ui, UIC common/CNewAttributeDialog.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ui_CNewAttributeDialog.h;ui_CNewAttributeDialog.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">common\CNewAttributeDialog.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\uic.exe common\CNewAttributeDialog.ui -o ui_CNewAttributeDialog.h&#x000D;&#x000A;if errorlevel 1 goto VCEnd&#x000D;&#x000A;$(QTDIR)\bin\uic.exe common\CNewAttributeDialog.ui -o ui_CNewAttributeDialog.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">UIC common/CNewAttributeDialog.ui, UIC common/CNewAttributeDialog.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ui_CNewAttributeDialog.h;ui_CNewAttributeDialog.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="ds\mainwindow.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ds\mainwindow.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">$(QTDIR)\bin\uic.exe ds\mainwindow.ui -o ui_mainwindow.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">UIC ds/mainwindow.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">ui_mainwindow.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ds\mainwindow.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">$(QTDIR)\bin\uic.exe ds\mainwindow.ui -o ui_mainwindow.h</Command>
+      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">UIC ds/mainwindow.ui</Message>
+      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">ui_mainwindow.h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

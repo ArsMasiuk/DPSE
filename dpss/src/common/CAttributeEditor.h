@@ -1,3 +1,12 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #ifndef CATTRIBUTEEDITOR_H
 #define CATTRIBUTEEDITOR_H
 
@@ -28,6 +37,7 @@ protected:
 protected Q_SLOTS:
 	void onSceneChanged();
 	void on_AttributeList_itemChanged(QTreeWidgetItem *item, int column);
+	void on_AddButton_clicked();
 	void on_RemoveButton_clicked();
 
 private:

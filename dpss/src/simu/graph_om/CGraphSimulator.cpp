@@ -1,4 +1,13 @@
-﻿#include <stdio.h>
+﻿/*
+This file is a part of
+DPSE - Distributed Parallel Simulation Environment
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
+#include <stdio.h>
 
 #include <QApplication>
 #include <QFileInfo>
