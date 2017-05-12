@@ -239,3 +239,23 @@ void MainWindow::on_actionGraph_OM_triggered()
 	}
 }
 
+
+// test
+
+void MainWindow::on_actionImportTest_triggered()
+{
+	QFile dds("g:\\Doctor\\DPSE\\dpss\\data\\test\\Graph-117_DDS.txt");
+	dds.open(QFile::ReadOnly);
+	while (!dds.atEnd())
+	{
+		QByteArray ba = dds.readLine().simplified();
+		auto data = ba.split(' ');
+		auto id = data[2];
+		auto k = data[3];
+		CConnection* edge = m_editorScene->edgeById(id);
+		if (!edge) {
+			return;
+		}
+		edge->setAttribute("K", k);
+	}
+}

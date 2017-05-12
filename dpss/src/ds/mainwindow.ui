@@ -42,6 +42,7 @@
      <string>Test</string>
     </property>
     <addaction name="actionUndoTest"/>
+    <addaction name="actionImportTest"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -225,6 +226,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionImportTest">
+   <property name="text">
+    <string>ImportTest</string>
    </property>
   </action>
  </widget>

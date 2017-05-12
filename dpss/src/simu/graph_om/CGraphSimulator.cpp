@@ -137,7 +137,7 @@ bool CGraphSimulator::createSceneFile()
 		ts << "0" << "\t ";
 		ts << "0" << "\t ";
 		ts << branch->getAttribute("L").toFloat() << "\t ";
-		ts << branch->getAttribute("L").toFloat() << "\t ";	// TEMP: must be K here
+		ts << branch->getAttribute("K").toFloat() << "\t ";
 		//ts << "0" << " ";
 
 		ts << "\n";

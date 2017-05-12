@@ -3,10 +3,11 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <Windows.h>
-#include <algorithm>    // std::sort
 
+#include <algorithm>    // std::sort
 #include <queue>
+#include <map>
+
 #include "Graph.h"
 
 char MATRIX_INTSID_FILE_NAME[] = "MIn.txt";
@@ -3420,16 +3421,27 @@ int Graph::getmax(int a, int b)
 
 void Graph::SaveStepValuesToVector(std::vector<double>& qvec) const
 {
-	qvec.clear();
+	std::map<int, double> Qi_Vec;
 
 	for (int i = 0; i < iNumTreeVariables; i++)
 	{
-		qvec.push_back(EX.coeffRef(i));
+		int Qi = iTreeInd[i];
+		Qi_Vec[Qi] = EX.coeffRef(i);
+		//qvec.push_back(EX.coeffRef(i));
 	}
 
 	for (int i = 0; i < iNumATreeVariables; i++)
 	{
-		qvec.push_back(EY.coeffRef(i));
+		int Qi = iATreeInd[i];
+		Qi_Vec[Qi] = EY.coeffRef(i);
+		//qvec.push_back(EY.coeffRef(i));
+	}
+
+	qvec.clear();
+
+	for (int i = 0; i < Qi_Vec.size(); i++)
+	{
+		qvec.push_back(Qi_Vec[i]);
 	}
 }
 
