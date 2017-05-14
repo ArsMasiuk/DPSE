@@ -3,11 +3,13 @@
 
 #include <QOpenGLWidget> 
 #include <QMouseEvent> 
+#include <QTimer> 
 #include <QDebug> 
 
 
 CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
-	: Super(parent)
+	: Super(parent),
+	m_menuModeTmp(Qt::PreventContextMenu)
 {
 	//setViewport(new QOpenGLWidget());
 	setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -42,6 +44,9 @@ void CEditorView::mouseMoveEvent(QMouseEvent *e)
 	{
 		if (dragMode() != ScrollHandDrag)
 		{
+			m_menuModeTmp = contextMenuPolicy();
+			setContextMenuPolicy(Qt::PreventContextMenu);
+
 			setDragMode(ScrollHandDrag);
 
 			QMouseEvent fake(e->type(), e->pos(), Qt::LeftButton, Qt::LeftButton, e->modifiers());
@@ -52,6 +57,7 @@ void CEditorView::mouseMoveEvent(QMouseEvent *e)
 	Super::mouseMoveEvent(e);
 }
 
+
 void CEditorView::mouseReleaseEvent(QMouseEvent *e)
 {
 	// disabel RMB pan
@@ -61,9 +67,17 @@ void CEditorView::mouseReleaseEvent(QMouseEvent *e)
 		Super::mouseReleaseEvent(&fake);
 
 		setDragMode(RubberBandDrag);
+
+		QTimer::singleShot(100, this, SLOT(restoreContextMenu()));
 	}
 	else
 	{
 		Super::mouseReleaseEvent(e);
 	}
+}
+
+
+void CEditorView::restoreContextMenu()
+{
+	setContextMenuPolicy(m_menuModeTmp);
 }

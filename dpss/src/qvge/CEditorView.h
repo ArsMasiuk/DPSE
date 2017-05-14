@@ -16,6 +16,7 @@ class CEditorScene;
 
 class CEditorView : public QGraphicsView
 {
+	Q_OBJECT
 public:
 	typedef QGraphicsView Super;
 
@@ -28,7 +29,10 @@ public:
 	virtual void mouseReleaseEvent(QMouseEvent *e);
 
 private:
-	
+	Qt::ContextMenuPolicy m_menuModeTmp;
+
+private slots:
+	void restoreContextMenu();
 };
 
 #endif // CEDITORVIEW_H
