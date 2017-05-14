@@ -1,4 +1,8 @@
 <RCC>
-    <qresource prefix="MainWindow">
-    </qresource>
+  <qresource prefix="/Icons">
+    <file alias="Unzoom">Icons/icon16_unzoom.png</file>
+    <file alias="Zoom">Icons/icon16_zoom.png</file>
+    <file alias="Edge">Icons/edge.bmp</file>
+    <file alias="Fan">Icons/fan.bmp</file>
+  </qresource>
 </RCC>

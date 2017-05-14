@@ -121,6 +121,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="mainwindow.qrc">
+     <normaloff>:/Icons/Edge</normaloff>:/Icons/Edge</iconset>
+   </property>
    <property name="text">
     <string>Branches</string>
    </property>
@@ -131,6 +135,10 @@
   <action name="actionFans">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="mainwindow.qrc">
+     <normaloff>:/Icons/Fan</normaloff>:/Icons/Fan</iconset>
    </property>
    <property name="text">
     <string>Fans</string>
@@ -156,11 +164,19 @@
    </property>
   </action>
   <action name="actionZoom">
+   <property name="icon">
+    <iconset resource="mainwindow.qrc">
+     <normaloff>:/Icons/Zoom</normaloff>:/Icons/Zoom</iconset>
+   </property>
    <property name="text">
     <string>Zoom</string>
    </property>
   </action>
   <action name="actionUnzoom">
+   <property name="icon">
+    <iconset resource="mainwindow.qrc">
+     <normaloff>:/Icons/Unzoom</normaloff>:/Icons/Unzoom</iconset>
+   </property>
    <property name="text">
     <string>Unzoom</string>
    </property>
@@ -235,6 +251,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="mainwindow.qrc"/>
+ </resources>
  <connections/>
 </ui>
