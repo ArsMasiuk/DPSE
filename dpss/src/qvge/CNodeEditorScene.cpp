@@ -141,7 +141,6 @@ void CNodeEditorScene::onActionEdgeMutual()
 	addUndoState();
 }
 
-
 void CNodeEditorScene::onActionEdgeUndirected()
 {
 	QList<CConnection*> edges = getSelectedItems<CConnection>(true);

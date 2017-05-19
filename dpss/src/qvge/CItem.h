@@ -130,6 +130,9 @@ protected:
 	virtual void updateTextInfo();
 	virtual void setLabelText(const QString& text);
 
+	// called after restoring data (reimplement to update cached attribute values)
+	virtual void updateCachedItems() {}
+
 protected:
 	int m_itemFlags;
 	int m_internalStateFlags;

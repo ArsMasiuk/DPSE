@@ -42,44 +42,51 @@ bool CConnection::setAttribute(const QByteArray& attrId, const QVariant& v)
 {
 	if (attrId == "direction")
 	{
-		auto val = v.toString();
-		if (val == "directed")
-		{
-			setItemFlag(CF_End_Arrow);
-			resetItemFlag(CF_Start_Arrow);
-			return true;
-		}
-		else if (val == "mutual")
-		{
-			setItemFlag(CF_Mutual_Arrows);
-			return true;
-		}
-		else if (val == "undirected")
-		{
-			resetItemFlag(CF_Mutual_Arrows);
-			return true;
-		}
-
-		return false;
+		updateArrowFlags(v.toString());
 	}
 
 	return Super::setAttribute(attrId, v);
 }
 
 
-QVariant CConnection::getAttribute(const QByteArray& attrId) const
+bool CConnection::removeAttribute(const QByteArray& attrId)
 {
+	bool res = Super::removeAttribute(attrId);
+
 	if (attrId == "direction")
 	{
-		if ((itemFlags() & CF_Mutual_Arrows) == CF_Mutual_Arrows)
-			return "mutual";
-		else if (itemFlags() & CF_End_Arrow)
-			return "directed";
-		else
-			return "undirected";
+		updateArrowFlags(getAttribute("direction").toString());
 	}
 
-	return Super::getAttribute(attrId);
+	return res;
+}
+
+
+// cached attributes
+
+void CConnection::updateCachedItems()
+{
+	Super::updateCachedItems();
+
+	updateArrowFlags(getAttribute("direction").toString());
+}
+
+
+void CConnection::updateArrowFlags(const QString& direction)
+{
+	if (direction == "directed")
+	{
+		setItemFlag(CF_End_Arrow);
+		resetItemFlag(CF_Start_Arrow);
+	}
+	else if (direction == "mutual")
+	{
+		setItemFlag(CF_Mutual_Arrows);
+	}
+	else if (direction == "undirected")
+	{
+		resetItemFlag(CF_Mutual_Arrows);
+	}
 }
 
 
@@ -242,6 +249,7 @@ bool CConnection::linkAfterRestore(const CItemLinkMap &idToItem)
 
 	return true;
 }
+
 
 // impl
 

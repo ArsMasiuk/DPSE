@@ -67,7 +67,7 @@ public:
 
 	// attributes
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
-	virtual QVariant getAttribute(const QByteArray& attrId) const;
+	virtual bool removeAttribute(const QByteArray& attrId);
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
@@ -89,6 +89,10 @@ protected:
 	virtual QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value);
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
 	virtual QPointF labelOffset(const QRectF& itemRect, const QSizeF& labelSize) const;
+
+	// cached attributes
+	virtual void updateCachedItems();
+	virtual void updateArrowFlags(const QString& direction);
 
 protected:
     CNode *m_firstNode, *m_lastNode;

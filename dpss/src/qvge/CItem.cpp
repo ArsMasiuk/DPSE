@@ -58,7 +58,7 @@ bool CItem::restoreFrom(QDataStream &out, quint64 version64)
 		}
 
 		// ?
-		//updateTextInfo();
+		updateCachedItems();
 
 		return true;
 	}
@@ -85,7 +85,7 @@ bool CItem::setAttribute(const QByteArray& attrId, const QVariant& v)
 	return true;
 }
 
-bool CItem::removeAttribute(const QByteArray & attrId)
+bool CItem::removeAttribute(const QByteArray& attrId)
 {
 	return m_attributes.remove(attrId);
 }
@@ -161,7 +161,7 @@ void CItem::copyDataFrom(CItem* from)
 	// copy attrs
 	m_attributes = from->m_attributes;
 
-	//updateTextInfo();
+	updateCachedItems();
 }
 
 
@@ -199,6 +199,7 @@ void CItem::drawLabel(QPainter *painter, const QStyleOptionGraphicsItem* /*optio
 		}
 	}
 }
+
 
 QPointF CItem::labelOffset(const QRectF& itemRect, const QSizeF& labelSize) const
 {
