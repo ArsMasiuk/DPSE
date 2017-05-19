@@ -22,6 +22,7 @@ It can be used freely, maintaining the information above.
 #include <QInputDialog>
 #include <QMimeData>
 #include <QClipboard>
+#include <QElapsedTimer>
 
 #include <qopengl.h>
 
@@ -134,6 +135,7 @@ void CEditorScene::enableItemLabels(bool on)
 	update();
 }
 
+
 // undo-redo
 
 void CEditorScene::undo()
@@ -194,6 +196,7 @@ void CEditorScene::checkUndoState()
 	Q_EMIT undoAvailable(m_undoManager->availableUndoCount() > 0);
 	Q_EMIT redoAvailable(m_undoManager->availableRedoCount() > 0);
 }
+
 
 // io
 
@@ -543,6 +546,8 @@ void CEditorScene::paste()
 	}
 
 	// link items
+	QSignalBlocker blocker(this);
+
 	for (CItem* item : idToItem.values())
 	{
 		if (item->linkAfterPaste(idToItem))
@@ -564,7 +569,16 @@ void CEditorScene::paste()
 		return;
 
 	// shift & rename pasted items which were not removed
-	for (auto sceneItem : selectedItems())
+	QElapsedTimer tm;
+	tm.start();
+
+	QMap<QString, int> ids;
+	auto allItems = getItems<CItem>();
+	for (auto item : allItems)
+		ids[item->getId()]++;
+
+	auto selItems = selectedItems();
+	for (auto sceneItem : selItems)
 	{
 		sceneItem->moveBy(100, 0);
 
@@ -572,18 +586,23 @@ void CEditorScene::paste()
 		if (item)
 		{
 			QString id = item->getId();
-			if (getItemsById(id).size() > 1)
+			if (ids[id] > 1)
 			{
 				int counter = 1;
 				QString newId = id;
 
-				while (getItemsById(newId).size())
+				while (ids.contains(newId))
 					newId = QString("Copy%1 of %2").arg(counter++).arg(id);
 
 				item->setId(newId);
 			}
 		}
 	}
+
+	qDebug() << "Time: " << tm.elapsed();
+
+	blocker.unblock();
+	Q_EMIT selectionChanged();
 
 	// finish
 	addUndoState();
@@ -655,6 +674,7 @@ bool CEditorScene::checkLabelRegion(const QRectF &r)
 	m_usedLabelsRegion.addRect(r);
 	return true;
 }
+
 
 // mousing
 
@@ -904,6 +924,7 @@ void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, Q
 	}
 }
 
+
 // private
 
 void CEditorScene::updateSceneCursor()
@@ -913,6 +934,7 @@ void CEditorScene::updateSceneCursor()
 		v->setCursor(m_sceneCursor);
 	}
 }
+
 
 // keys
 
@@ -938,6 +960,7 @@ void CEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 		return;
 	}
 }
+
 
 // menu stuff 
 

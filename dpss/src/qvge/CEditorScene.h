@@ -279,7 +279,8 @@ QList<L*> CEditorScene::getItems() const
 {
 	QList<L*> result;
 
-	for (auto* item : items())
+	auto allItems = items();
+	for (auto item : allItems)
 	{
 		L* titem = dynamic_cast<T*>(item);
 		if (titem)
@@ -295,11 +296,13 @@ QList<T*> CEditorScene::getItemsById(const QString& id) const
 {
 	QList<T*> res;
 
-	QList<T*> allItems = getItems<T>();
-	for (T* item : allItems)
+	auto allItems = items();
+	for (auto item : allItems)
 	{
-		if (item->getId() == id)
-			res << item;
+		T* titem = dynamic_cast<T*>(item);
+
+		if (titem && titem->getId() == id)
+			res << titem;
 	}
 
 	return res;
