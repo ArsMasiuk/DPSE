@@ -130,6 +130,9 @@ public:
 	template<class T, class L = T>
 	QList<L*> getItems() const;
 
+	template<class T = CItem>
+	QList<T*> getItemsById(const QString& id) const;
+ 
 	// callbacks
 	virtual void onItemDestroyed(CItem *citem);
 
@@ -251,7 +254,7 @@ T* CEditorScene::createItemOfType(QPointF* at) const
 
 // selections
 
-template<class T, class L = T>
+template<class T, class L>
 QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
 {
 	QList<L*> result;
@@ -271,7 +274,7 @@ QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
 }
 
  
-template<class T, class L = T>
+template<class T, class L>
 QList<L*> CEditorScene::getItems() const
 {
 	QList<L*> result;
@@ -284,6 +287,22 @@ QList<L*> CEditorScene::getItems() const
 	}
 
 	return result;
+}
+
+
+template<class T>
+QList<T*> CEditorScene::getItemsById(const QString& id) const
+{
+	QList<T*> res;
+
+	QList<T*> allItems = getItems<T>();
+	for (T* item : allItems)
+	{
+		if (item->getId() == id)
+			res << item;
+	}
+
+	return res;
 }
 
 

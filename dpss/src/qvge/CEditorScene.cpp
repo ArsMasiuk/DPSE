@@ -95,6 +95,7 @@ void CEditorScene::activate()
 	addUndoState();
 }
 
+
 // properties
 
 void CEditorScene::setGridSize(int newSize)
@@ -561,6 +562,28 @@ void CEditorScene::paste()
 
 	if (lifeList.isEmpty())
 		return;
+
+	// shift & rename pasted items which were not removed
+	for (auto sceneItem : selectedItems())
+	{
+		sceneItem->moveBy(100, 0);
+
+		CItem* item = dynamic_cast<CItem*>(sceneItem);
+		if (item)
+		{
+			QString id = item->getId();
+			if (getItemsById(id).size() > 1)
+			{
+				int counter = 1;
+				QString newId = id;
+
+				while (getItemsById(newId).size())
+					newId = QString("Copy%1 of %2").arg(counter++).arg(id);
+
+				item->setId(newId);
+			}
+		}
+	}
 
 	// finish
 	addUndoState();

@@ -107,8 +107,8 @@ public:
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);
 
     typedef QMap<quint64, CItem*> CItemLinkMap;
-	virtual bool linkAfterRestore(const CItemLinkMap& /*idToItem*/) { return true; }
-	virtual bool linkAfterPaste(const CItemLinkMap& /*idToItem*/) { return true; }
+	virtual bool linkAfterRestore(const CItemLinkMap& /*idToItem*/)		{ return true; }
+	virtual bool linkAfterPaste(const CItemLinkMap& idToItem)			{ return linkAfterRestore(idToItem); }	// default the same
 
 	// returns new item of this class
 	virtual CItem* clone() = 0;

@@ -106,6 +106,7 @@ QPainterPath CConnection::shape() const
 	return m_shapePath;
 }
 
+
 void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* /*widget*/)
 {
 	updateTextInfo();
@@ -172,11 +173,13 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 		drawLabel(painter, option);
 }
 
+
 QPointF CConnection::labelOffset(const QRectF& /*itemRect*/, const QSizeF& labelSize) const
 {
 	// center label over line rect
 	return m_controlPos - QPointF(labelSize.width() / 2, -labelSize.height() / 2);
 }
+
 
 void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, bool first, const QLineF& direction)
 {
@@ -218,6 +221,7 @@ void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /
 	painter->restore();
 }
 
+
 // IO 
 
 bool CConnection::storeTo(QDataStream &out, quint64 version64) const
@@ -228,6 +232,7 @@ bool CConnection::storeTo(QDataStream &out, quint64 version64) const
 
 	return true;
 }
+
 
 bool CConnection::restoreFrom(QDataStream &out, quint64 version64)
 {
@@ -282,6 +287,7 @@ void CConnection::setFirstNode(CNode *node)
 	onPositionUpdated();
 }
 
+
 void CConnection::setLastNode(CNode *node)
 {
     if (m_lastNode)
@@ -295,6 +301,7 @@ void CConnection::setLastNode(CNode *node)
 	onPositionUpdated();
 }
 
+
 void CConnection::reattach(CNode *oldNode, CNode *newNode)
 {
 	if (oldNode == newNode)
@@ -307,6 +314,7 @@ void CConnection::reattach(CNode *oldNode, CNode *newNode)
 		setLastNode(newNode);
 }
 
+
 void CConnection::reverse()
 {
 	qSwap(m_firstNode, m_lastNode);
@@ -314,12 +322,14 @@ void CConnection::reverse()
 	onPositionUpdated();
 }
 
+
 void CConnection::setBendFactor(int bf) 
 { 
 	m_bendFactor = bf; 
 
 	onPositionUpdated();
 }
+
 
 // reimp
 
@@ -331,12 +341,14 @@ CConnection* CConnection::clone()
 	return c;
 }
 
+
 QString CConnection::createNewId() const
 {
 	static int count = 0;
 
 	return QString("C%1").arg(++count);
 }
+
 
 // callbacks
 
@@ -347,6 +359,7 @@ void CConnection::onNodeMoved(CNode *node)
 
 	onPositionUpdated();
 }
+
 
 void CConnection::onNodeDetached(CNode *node)
 {
@@ -361,12 +374,14 @@ void CConnection::onNodeDetached(CNode *node)
 	}
 }
 
+
 void CConnection::onNodeDeleted(CNode *node)
 {
 	onNodeDetached(node);
 
 	delete this;	// die as well
 }
+
 
 // protected
 
@@ -414,16 +429,23 @@ void CConnection::onPositionUpdated()
 	m_shapePath = stroker.createStroke(path);
 }
 
+
 // reimp
 
 QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
-	if (change == QGraphicsItem::ItemSceneHasChanged)
+	if (change == ItemSceneHasChanged)
 	{
 		// set default ID
 		setDefaultId();
 
 		return value;
+	}
+
+	if (change == ItemPositionChange)
+	{
+		// discard any movement
+		return QVariant();
 	}
 
 	return value;

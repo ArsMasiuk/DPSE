@@ -25,6 +25,7 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	setAcceptHoverEvents(true);
 }
 
+
 CNode::~CNode()
 {
 	for (CConnection *conn : m_connections)
@@ -43,6 +44,7 @@ QString CNode::createNewId() const
 	return QString("N%1").arg(++count);
 }
 
+
 void CNode::copyDataFrom(CItem* from)
 {
 	Super::copyDataFrom(from);
@@ -56,13 +58,6 @@ void CNode::copyDataFrom(CItem* from)
 	}
 }
 
-bool CNode::linkAfterPaste(const CItemLinkMap& idToItem)
-{
-	// shift it
-	setPos(pos() + QPoint(200, 0));
-
-	return true;
-}
 
 CItem* CNode::clone()
 {
@@ -76,6 +71,7 @@ CItem* CNode::clone()
 
 	return item;
 }
+
 
 // attributes
 
@@ -119,6 +115,7 @@ bool CNode::setAttribute(const QByteArray& attrId, const QVariant& v)
 	return Super::setAttribute(attrId, v);
 }
 
+
 QVariant CNode::getAttribute(const QByteArray& attrId) const
 {
 	if (attrId == "size")
@@ -150,6 +147,7 @@ QVariant CNode::getAttribute(const QByteArray& attrId) const
 	return Super::getAttribute(attrId);
 }
 
+
 // serialization 
 
 bool CNode::storeTo(QDataStream& out, quint64 version64) const
@@ -169,6 +167,7 @@ bool CNode::storeTo(QDataStream& out, quint64 version64) const
 
 	return Super::storeTo(out, version64);
 }
+
 
 bool CNode::restoreFrom(QDataStream& out, quint64 version64)
 {
