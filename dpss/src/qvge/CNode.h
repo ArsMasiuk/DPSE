@@ -88,6 +88,7 @@ public:
 
 protected:
 	virtual void copyDataFrom(CItem* from);
+	virtual bool linkAfterPaste(const CItemLinkMap& idToItem);
 
 	// reimp 
 	virtual QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value);

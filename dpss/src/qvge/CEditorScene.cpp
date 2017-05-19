@@ -20,6 +20,8 @@ It can be used freely, maintaining the information above.
 #include <QDebug>
 #include <QKeyEvent>
 #include <QInputDialog>
+#include <QMimeData>
+#include <QClipboard>
 
 #include <qopengl.h>
 
@@ -203,15 +205,12 @@ bool CEditorScene::storeTo(QDataStream& out) const
 
 	QList<QGraphicsItem*> allItems = items();
 
-	for(QGraphicsItem* item : allItems)
+	for (QGraphicsItem* item : allItems)
 	{
 		CItem* citem = dynamic_cast<CItem*>(item);
 		if (citem)
 		{
             sortedMap[citem] = quint64(citem);
-			//out << citem->typeId() << quintptr(citem);
-
-			//citem->storeTo(out);
 		}
 	}
 
@@ -335,6 +334,7 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 	return true;
 }
 
+
 // factorization
 
 bool CEditorScene::addItemFactory(CItem *factoryItem)
@@ -361,6 +361,7 @@ bool CEditorScene::addItemFactory(CItem *factoryItem)
 	return false;
 }
 
+
 CItem* CEditorScene::activateItemFactory(const QByteArray &factoryId)
 {
 	if (factoryId.isEmpty() || !m_itemFactories.contains(factoryId))
@@ -374,6 +375,7 @@ CItem* CEditorScene::activateItemFactory(const QByteArray &factoryId)
 
 	return NULL;
 }
+
 
 CItem* CEditorScene::createItemOfType(const QByteArray &id) const
 {
@@ -395,6 +397,7 @@ void CEditorScene::setClassAttribute(const CAttribute& attr, bool vis)
 	setClassAttributeVisible(attr.classId, attr.id, vis);
 }
 
+
 bool CEditorScene::removeClassAttribute(const QByteArray& classId, const QByteArray& attrId)
 {
 	auto it = m_classAttributes.find(classId);
@@ -403,6 +406,7 @@ bool CEditorScene::removeClassAttribute(const QByteArray& classId, const QByteAr
 
 	return (*it).remove(attrId);
 }
+
 
 void CEditorScene::setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis)
 {
@@ -417,6 +421,7 @@ void CEditorScene::setClassAttributeVisible(const QByteArray& classId, const QBy
 	// schedule update
 	invalidate();
 }
+
 
 QSet<QByteArray> CEditorScene::getVisibleClassAttributes(const QByteArray& classId, bool inherited) const
 {
@@ -435,6 +440,7 @@ QSet<QByteArray> CEditorScene::getVisibleClassAttributes(const QByteArray& class
 	return result;
 }
 
+
 AttributesMap CEditorScene::getClassAttributes(const QByteArray& classId, bool inherited) const
 {
 	AttributesMap result = m_classAttributes[classId];
@@ -452,12 +458,122 @@ AttributesMap CEditorScene::getClassAttributes(const QByteArray& classId, bool i
 	return result;
 }
 
+
+// copy-paste
+
+void CEditorScene::copy()
+{
+	// store selected items only
+	QMap<CItem*, uint> sortedMap;
+
+	QList<QGraphicsItem*> allItems = selectedItems();
+
+	for (QGraphicsItem* item : allItems)
+	{
+		CItem* citem = dynamic_cast<CItem*>(item);
+		if (citem)
+		{
+			sortedMap[citem] = quint64(citem);
+		}
+	}
+
+	if (sortedMap.isEmpty())
+		return;
+
+	// write version and items
+	QByteArray buffer;
+	QDataStream out(&buffer, QIODevice::WriteOnly);
+
+	out << version64;
+
+	for (CItem* citem : sortedMap.keys())
+	{
+		out << citem->typeId() << quint64(citem);
+
+		citem->storeTo(out, version64);
+	}
+
+	// create mime object
+	QMimeData* mimeData = new QMimeData;
+	mimeData->setData("qvge/selection", buffer);
+
+	QClipboard* clipboard = QApplication::clipboard();
+	clipboard->setMimeData(mimeData);
+}
+
+
+void CEditorScene::paste()
+{
+	deselectAll();
+
+	const QClipboard *clipboard = QApplication::clipboard();
+	const QMimeData *mimeData = clipboard->mimeData();
+	if (mimeData == NULL)
+		return;
+	if (!mimeData->hasFormat("qvge/selection"))
+		return;
+
+	// read items from the buffer
+	QByteArray buffer = mimeData->data("qvge/selection");
+	QDataStream out(buffer);
+
+	// version
+	quint64 storedVersion = 0;
+	out >> storedVersion;
+
+	CItem::CItemLinkMap idToItem;
+	QList<CItem*> deathList, lifeList;
+
+	while (!out.atEnd())
+	{
+		QByteArray typeId; out >> typeId;
+		quint64 ptrId; out >> ptrId;
+
+		CItem* item = createItemOfType(typeId);
+		if (item)
+		{
+			if (item->restoreFrom(out, storedVersion))
+			{
+				idToItem[ptrId] = item;
+			}
+			else
+				deathList << item;
+		}
+	}
+
+	// link items
+	for (CItem* item : idToItem.values())
+	{
+		if (item->linkAfterPaste(idToItem))
+		{
+			auto sceneItem = dynamic_cast<QGraphicsItem*>(item);
+			addItem(sceneItem);
+			sceneItem->setSelected(true);
+			
+			lifeList << item;
+		}
+		else
+			deathList << item;
+	}
+
+	// cleanup
+	qDeleteAll(deathList);
+
+	if (lifeList.isEmpty())
+		return;
+
+	// finish
+	addUndoState();
+}
+
+
 // callbacks
 
 void CEditorScene::onItemDestroyed(CItem *citem)
 {
 	Q_ASSERT(citem);
 }
+
 
 // protected
 

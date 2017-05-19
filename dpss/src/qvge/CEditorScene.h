@@ -144,11 +144,15 @@ public Q_SLOTS:
 	void undo();
 	void redo();
 
-	virtual void onActionDelete();
-	virtual void onActionSelectAll();
+	void onActionDelete();
+	void onActionSelectAll();
 
 	void selectAll();
 	void deselectAll();
+
+	// copy-paste
+	void copy();
+	void paste();
 
 Q_SIGNALS:
 	void undoAvailable(bool);

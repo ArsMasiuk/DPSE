@@ -73,6 +73,7 @@ public:
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);
 	virtual bool linkAfterRestore(const CItemLinkMap& idToItem);
+	virtual bool linkAfterPaste(const CItemLinkMap& idToItem);
 
     // external callbacks 
     void onNodeMoved(CNode *node);
@@ -101,7 +102,6 @@ protected:
 	int m_bendFactor;
 	QPointF m_controlPoint, m_controlPos;
 };
-
 
 
 /// CLineItems evaluator

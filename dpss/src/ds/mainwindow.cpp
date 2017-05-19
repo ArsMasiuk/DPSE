@@ -90,6 +90,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(m_editorScene, SIGNAL(undoAvailable(bool)), ui->actionUndo, SLOT(setEnabled(bool)));
 	connect(m_editorScene, SIGNAL(redoAvailable(bool)), ui->actionRedo, SLOT(setEnabled(bool)));
 
+	connect(ui->actionCopy, SIGNAL(triggered()), m_editorScene, SLOT(copy()));
+	connect(ui->actionPaste, SIGNAL(triggered()), m_editorScene, SLOT(paste()));
+
 	connect(m_editorScene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()));
 
 	// new scene by default

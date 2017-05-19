@@ -1,3 +1,12 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #include "CConnection.h"
 #include "CNode.h"
 
@@ -235,6 +244,7 @@ bool CConnection::restoreFrom(QDataStream &out, quint64 version64)
 	return false;
 }
 
+
 bool CConnection::linkAfterRestore(const CItemLinkMap &idToItem)
 {
     CNode *node1 = dynamic_cast<CNode*>(idToItem.value((quint64)m_firstNode));
@@ -245,9 +255,15 @@ bool CConnection::linkAfterRestore(const CItemLinkMap &idToItem)
 	setFirstNode(node1);
 	setLastNode(node2);
 
-	setVisible(true);
-
 	return true;
+}
+
+
+bool CConnection::linkAfterPaste(const CItemLinkMap& idToItem)
+{
+	bool res = linkAfterRestore(idToItem);
+
+	return res && isValid();
 }
 
 

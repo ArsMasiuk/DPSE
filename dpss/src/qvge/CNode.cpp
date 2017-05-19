@@ -56,6 +56,14 @@ void CNode::copyDataFrom(CItem* from)
 	}
 }
 
+bool CNode::linkAfterPaste(const CItemLinkMap& idToItem)
+{
+	// shift it
+	setPos(pos() + QPoint(200, 0));
+
+	return true;
+}
+
 CItem* CNode::clone()
 {
 	CItem *item = create();

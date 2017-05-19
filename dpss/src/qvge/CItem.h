@@ -108,6 +108,7 @@ public:
 
     typedef QMap<quint64, CItem*> CItemLinkMap;
 	virtual bool linkAfterRestore(const CItemLinkMap& /*idToItem*/) { return true; }
+	virtual bool linkAfterPaste(const CItemLinkMap& /*idToItem*/) { return true; }
 
 	// returns new item of this class
 	virtual CItem* clone() = 0;
