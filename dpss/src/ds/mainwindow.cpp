@@ -255,10 +255,10 @@ void MainWindow::on_actionImportTest_triggered()
 		auto data = ba.split(' ');
 		auto id = data[2];
 		auto k = data[3];
-		CConnection* edge = m_editorScene->edgeById(id);
-		if (!edge) {
+		auto edges = m_editorScene->getItemsById<CConnection>(id);
+		if (edges.isEmpty()) {
 			return;
 		}
-		edge->setAttribute("K", k);
+		edges.first()->setAttribute("K", k);
 	}
 }

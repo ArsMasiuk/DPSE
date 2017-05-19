@@ -37,10 +37,6 @@ public:
 
 	CConnection* activateConnectionFactory(const QByteArray& factoryId);
 
-	// search
-	CNode* nodeById(const QString& id) const;
-	CConnection* edgeById(const QString& id) const;
-
 public Q_SLOTS:
 	virtual void onActionUnlink();
 	virtual void onActionNodeColor();

@@ -164,24 +164,24 @@ void CCommutationTable::on_Table_itemDoubleClicked(QTreeWidgetItem *item, int co
 
 	if (column < 2)
 	{
-		CNode* node = m_scene->nodeById(item->text(column));
-		if (node)
+		auto nodes = m_scene->getItemsById<CNode>(item->text(column));
+		if (nodes.count())
 		{
 			m_scene->deselectAll();
-			node->setSelected(true);
-			node->ensureVisible();
+			nodes.first()->setSelected(true);
+			nodes.first()->ensureVisible();
 			return;
 		}
 	}
 
 	if (column == 2)
 	{
-		auto* edge = m_scene->edgeById(item->text(column));
-		if (edge)
+		auto edges = m_scene->getItemsById<CConnection>(item->text(column));
+		if (edges.count())
 		{
 			m_scene->deselectAll();
-			edge->setSelected(true);
-			edge->ensureVisible();
+			edges.first()->setSelected(true);
+			edges.first()->ensureVisible();
 			return;
 		}
 	}

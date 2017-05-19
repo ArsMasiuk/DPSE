@@ -167,8 +167,8 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 
 		if (classId == "node")
 		{
-			CNode* node = m_scene->nodeById(val);
-			if (node) 
+			auto nodes = m_scene->getItemsById<CNode>(val);
+			if (nodes.count()) 
 			{
 				int r = QMessageBox::warning(NULL, tr("Changing ID"),
 					tr("Such ID exists already. Existing ID will be marked with _old if continued."),
@@ -177,14 +177,14 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 				if (r == QMessageBox::Cancel)
 					return;
 
-				node->setId(val + "_old");
+				nodes.first()->setId(val + "_old");
 			}
 		}
 		else
 		if (classId == "edge")
 		{
-			CConnection* edge = m_scene->edgeById(val);
-			if (edge)
+			auto edges = m_scene->getItemsById<CConnection>(val);
+			if (edges.count())
 			{
 				int r = QMessageBox::warning(NULL, tr("Changing ID"),
 					tr("Such ID exists already. Existing ID will be marked with _old if continued."),
@@ -193,7 +193,7 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 				if (r == QMessageBox::Cancel)
 					return;
 
-				edge->setId(val + "_old");
+				edges.first()->setId(val + "_old");
 			}
 		}
 

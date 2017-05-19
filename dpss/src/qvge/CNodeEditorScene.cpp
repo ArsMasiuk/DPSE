@@ -402,29 +402,3 @@ bool CNodeItems::evaluate(const QGraphicsItem& item) const
 {
 	return (dynamic_cast<const CNode*>(&item) != NULL);
 }
-
-// search
-
-CNode* CNodeEditorScene::nodeById(const QString& id) const
-{
-	auto nodes = getItems<CNode>();
-	for (auto node : nodes)
-	{
-		if (node->getId() == id)
-			return node;
-	}
-
-	return NULL;
-}
-
-CConnection* CNodeEditorScene::edgeById(const QString& id) const
-{
-	auto edges = getItems<CConnection>();
-	for (auto edge : edges)
-	{
-		if (edge->getId() == id)
-			return edge;
-	}
-
-	return NULL;
-}
