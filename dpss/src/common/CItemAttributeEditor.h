@@ -32,6 +32,8 @@ protected:
 	void onSceneAttached(CEditorScene* scene);
 	void onSceneDetached(CEditorScene* scene);
 
+	virtual QVariant editValue(const QByteArray& classId, const QByteArray& attrId, const QVariant& attrValue);
+
 protected Q_SLOTS:
 	void onSceneChanged();
 	void onSelectionChanged();

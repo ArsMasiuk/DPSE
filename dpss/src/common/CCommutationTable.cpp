@@ -13,6 +13,9 @@ It can be used freely, maintaining the information above.
 #include <qvge/CConnection.h>
 #include <qvge/CNode.h>
 
+#include <QDebug>
+#include <QElapsedTimer>
+
 
 // NumSortItem: numeric sorting by ids
 
@@ -40,6 +43,7 @@ CCommutationTable::CCommutationTable(QWidget *parent)
 	m_scene(NULL)
 {
 	ui.setupUi(this);
+	ui.Table->setUniformRowHeights(true);
 }
 
 CCommutationTable::~CCommutationTable()
@@ -109,7 +113,13 @@ void CCommutationTable::onSelectionChanged()
 
 	ui.Table->clearSelection();
 
+	QTreeWidgetItem* scrollItem = NULL;
+
 	QList<CConnection*> edges = m_scene->getSelectedItems<CConnection>();
+
+	QElapsedTimer tm;
+	tm.start();
+
 	for (auto edge : edges)
 	{
 		auto edgeId = edge->getId();
@@ -117,9 +127,15 @@ void CCommutationTable::onSelectionChanged()
 		for (auto item : foundItems)
 		{
 			item->setSelected(true);
-			ui.Table->scrollToItem(item);
+			scrollItem = item;
 		}
 	}
+
+
+	qDebug() << "Time: " << tm.elapsed();
+
+	if (scrollItem)
+		ui.Table->scrollToItem(scrollItem);
 
 	ui.Table->setUpdatesEnabled(true);
 	ui.Table->blockSignals(false);

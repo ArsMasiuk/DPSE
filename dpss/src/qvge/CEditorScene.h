@@ -100,6 +100,10 @@ public:
         return m_classAttributes[classId][attrId].defaultValue;
     }
 
+	CAttribute getClassAttributeInfo(const QByteArray& classId, const QByteArray& attrId) const {
+		return m_classAttributes[classId][attrId];
+	}
+
 	QByteArrayList getClasses() const {
 		return m_classAttributes.keys();
 	}

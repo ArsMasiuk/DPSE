@@ -15,6 +15,7 @@ It can be used freely, maintaining the information above.
 #include <qvge/CConnection.h>
 
 #include <QInputDialog>
+#include <QColorDialog>
 #include <QMessageBox>
 
 
@@ -137,23 +138,75 @@ void CItemAttributeEditor::listAttributes(QTreeWidgetItem* rootItem, const QList
 
 // edit attrs
 
+QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteArray& attrId, const QVariant& attrValue)
+{
+	CAttribute attr = m_scene->getClassAttributeInfo(classId, attrId);
+
+	// color editor
+	if (attr.valueType == QVariant::Color)
+	{
+		QColor color = QColorDialog::getColor(attrValue.value<QColor>());
+		if (!color.isValid())
+			return QVariant();
+		else
+			return color;
+	}
+
+	// int editor
+	if (attr.valueType == QVariant::Int || attr.valueType == QVariant::LongLong || attr.valueType == QVariant::UInt || attr.valueType == QVariant::ULongLong)
+	{
+		bool ok = true;
+		int val = QInputDialog::getInt(NULL, tr("Set Attribute"), attrId, attrValue.toInt(), INT_MIN, INT_MAX, 1, &ok);
+		if (!ok)
+			return QVariant();
+		else
+			return val;
+	}
+
+	// double editor
+	if (attr.valueType == QVariant::Double)
+	{
+		bool ok = true;
+		double val = QInputDialog::getDouble(NULL, tr("Set Attribute"), attrId, attrValue.toDouble(), DBL_MIN, DBL_MAX, 4, &ok);
+		if (!ok)
+			return QVariant();
+		else
+			return val;
+	}
+
+	// default: edit as string
+	QString val = QInputDialog::getText(NULL, tr("Set Attribute"), attrId, QLineEdit::Normal, attrValue.toString());
+	if (val.isEmpty())
+		return QVariant();
+	else
+		return val;
+}
+
+
 void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
-    auto attrV = item->data(0, AttrRole);
+	auto classId = item->data(0, ClassRole).toByteArray();
+	auto attrV = item->data(0, AttrRole);
     if (attrV.isNull())
         return;
 
     QByteArray attrId = attrV.toByteArray();
 
-    QString val = QInputDialog::getText(NULL, tr("Set Attribute"), attrId, QLineEdit::Normal, item->text(1));
-    if (val.isEmpty())
-        return;
+	QVariant v = editValue(classId, attrId, item->text(1));
+	if (!v.isValid())
+		return;
 
-	QList<CItem*> sceneItems = m_scene->getSelectedItems<CItem>();
+	bool isNode = (classId == "node");
+	bool isEdge = (classId == "edge");
+
+	QList<CItem*> selectedItems = 
+		isNode ? m_scene->getSelectedItems<CNode, CItem>() : 
+		isEdge ? m_scene->getSelectedItems<CConnection, CItem>() :
+				 m_scene->getSelectedItems<CItem>();
 
 	if (attrId == "id")
 	{
-		if (sceneItems.size() > 1)
+		if (selectedItems.size() > 1)
 		{
 			int r = QMessageBox::warning(NULL, tr("Changing ID"),
 				tr("More than one item selected, ID will be set to the 1st one. Continue?"),
@@ -163,9 +216,9 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 				return;
 		}
 
-		auto classId = item->data(0, ClassRole).toByteArray();
+		QString val = v.toString();
 
-		if (classId == "node")
+		if (isNode)
 		{
 			auto nodes = m_scene->getItemsById<CNode>(val);
 			if (nodes.count()) 
@@ -181,7 +234,7 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 			}
 		}
 		else
-		if (classId == "edge")
+		if (isEdge)
 		{
 			auto edges = m_scene->getItemsById<CConnection>(val);
 			if (edges.count())
@@ -198,12 +251,12 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 		}
 
 		// some other class...
-		sceneItems.first()->setId(val);
+		selectedItems.first()->setId(val);
 	}
 	else // other attr
-		for (auto sceneItem : sceneItems)
+		for (auto sceneItem : selectedItems)
 		{
-			sceneItem->setAttribute(attrId, val);
+			sceneItem->setAttribute(attrId, v);
 		}
 
     // store state

@@ -17,12 +17,10 @@ It can be used freely, maintaining the information above.
 #include <QGraphicsView>
 #include <QMessageBox>
 #include <QApplication>
-#include <QDebug>
 #include <QKeyEvent>
 #include <QInputDialog>
 #include <QMimeData>
 #include <QClipboard>
-#include <QElapsedTimer>
 
 #include <qopengl.h>
 
@@ -569,9 +567,6 @@ void CEditorScene::paste()
 		return;
 
 	// shift & rename pasted items which were not removed
-	QElapsedTimer tm;
-	tm.start();
-
 	QMap<QString, int> ids;
 	auto allItems = getItems<CItem>();
 	for (auto item : allItems)
@@ -598,8 +593,6 @@ void CEditorScene::paste()
 			}
 		}
 	}
-
-	qDebug() << "Time: " << tm.elapsed();
 
 	blocker.unblock();
 	Q_EMIT selectionChanged();
