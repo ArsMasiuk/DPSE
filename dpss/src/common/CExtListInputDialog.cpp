@@ -13,9 +13,13 @@ CExtListInputDialog::~CExtListInputDialog()
     delete ui;
 }
 
-int CExtListInputDialog::getItemIndex(const QStringList &texts, const QList<QIcon> &icons, int selectedIndex)
+int CExtListInputDialog::getItemIndex(const QString& title, const QString& label,
+                                      const QStringList &texts, const QList<QIcon> &icons, int selectedIndex)
 {
     static CExtListInputDialog dialog(NULL);
+
+    dialog.setWindowTitle(title);
+    dialog.ui->label->setText(label);
 
     dialog.ui->comboBox->clear();
     dialog.ui->comboBox->addItems(texts);

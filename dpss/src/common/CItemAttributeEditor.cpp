@@ -9,6 +9,7 @@ It can be used freely, maintaining the information above.
 
 
 #include "CItemAttributeEditor.h"
+#include "CExtListInputDialog.h"
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CNode.h>
@@ -30,10 +31,11 @@ CItemAttributeEditor::CItemAttributeEditor(QWidget *parent)
 	ui.setupUi(this);
 }
 
+
 CItemAttributeEditor::~CItemAttributeEditor()
 {
-
 }
+
 
 void CItemAttributeEditor::setScene(CNodeEditorScene* scene)
 {
@@ -50,22 +52,26 @@ void CItemAttributeEditor::setScene(CNodeEditorScene* scene)
 		onSceneAttached(m_scene);
 }
 
+
 void CItemAttributeEditor::onSceneAttached(CEditorScene* scene)
 {
 	connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()), Qt::QueuedConnection);
 	connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()), Qt::QueuedConnection);
 }
 
+
 void CItemAttributeEditor::onSceneDetached(CEditorScene* scene)
 {
 	scene->disconnect(this);
 }
+
 
 void CItemAttributeEditor::onSceneChanged()
 {
 	// test
 	onSelectionChanged();
 }
+
 
 void CItemAttributeEditor::onSelectionChanged()
 {
@@ -85,6 +91,7 @@ void CItemAttributeEditor::onSelectionChanged()
 	listAttributes(inodes, nodes, "node");
     listAttributes(iedges, edges, "edge");
 }
+
 
 void CItemAttributeEditor::listAttributes(QTreeWidgetItem* rootItem, const QList<CItem*>& sceneItems, const QByteArray& classId)
 {
@@ -173,6 +180,20 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 		else
 			return val;
 	}
+
+    // predefined attrs (TO CHANGE)
+    if (attrId == "direction" && classId == "edge")
+    {
+        QStringList texts; texts << "Directed (one end)" << "Mutual (both ends)" << "None (no ends)";
+        QStringList ids; ids << "directed" << "mutual" << "undirected";
+        QList<QIcon> icons; icons << QIcon(":/Icons/Edge-Directed") << QIcon(":/Icons/Edge-Mutual")<< QIcon(":/Icons/Edge-Undirected");
+        int index = ids.indexOf(attrValue.toString());
+        int newIndex = CExtListInputDialog::getItemIndex(tr("Set Attribute"), tr("Edge Direction"), texts, icons, index);
+        if (newIndex >= 0)
+            return ids.at(newIndex);
+        else
+            return QVariant();
+    }
 
 	// default: edit as string
 	QString val = QInputDialog::getText(NULL, tr("Set Attribute"), attrId, QLineEdit::Normal, attrValue.toString());

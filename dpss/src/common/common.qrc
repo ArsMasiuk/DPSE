@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file alias="Edge-Mutual">Icons/Direction-Both.png</file>
+        <file alias="Edge-Directed">Icons/Direction-One.png</file>
+        <file alias="Edge-Undirected">Icons/Direction-None.png</file>
+        <file alias="Grid-Show">Icons/Grid.png</file>
+        <file alias="Grid-Snap">Icons/Grid-Snap.png</file>
+        <file alias="Zoom">Icons/Zoom-In.png</file>
+        <file alias="Unzoom">Icons/Zoom-Out.png</file>
+        <file>Icons/Zoom-Reset.png</file>
+    </qresource>
+</RCC>

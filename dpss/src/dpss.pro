@@ -44,7 +44,7 @@ RESOURCES += $$files($$PWD/ds/*.qrc)
 SOURCES += $$files($$PWD/common/*.cpp)
 HEADERS  += $$files($$PWD/common/*.h)
 FORMS    += $$files($$PWD/common/*.ui)
-#RESOURCES += $$files($$PWD/common/*.qrc)
+RESOURCES += $$files($$PWD/common/*.qrc)
 
 HEADERS  += $$files($$PWD/simu/*.h)
 

@@ -15,7 +15,8 @@ public:
     explicit CExtListInputDialog(QWidget *parent = 0);
     ~CExtListInputDialog();
 
-    static int getItemIndex(const QStringList& texts, const QList<QIcon>& icons, int selectedIndex = -1);
+    static int getItemIndex(const QString &title, const QString &label,
+                            const QStringList& texts, const QList<QIcon>& icons, int selectedIndex = -1);
 
 private:
     Ui::CExtListInputDialog *ui;

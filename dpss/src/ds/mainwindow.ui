@@ -71,6 +71,9 @@
    <addaction name="menuTest"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -91,6 +94,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../common/common.qrc">
+     <normaloff>:/Icons/Grid-Show</normaloff>:/Icons/Grid-Show</iconset>
+   </property>
    <property name="text">
     <string>Show Grid</string>
    </property>
@@ -101,6 +108,10 @@
   <action name="actionSnapGrid">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../common/common.qrc">
+     <normaloff>:/Icons/Grid-Snap</normaloff>:/Icons/Grid-Snap</iconset>
    </property>
    <property name="text">
     <string>Snap to Grid</string>
@@ -168,7 +179,7 @@
   </action>
   <action name="actionZoom">
    <property name="icon">
-    <iconset resource="mainwindow.qrc">
+    <iconset resource="../common/common.qrc">
      <normaloff>:/Icons/Zoom</normaloff>:/Icons/Zoom</iconset>
    </property>
    <property name="text">
@@ -177,7 +188,7 @@
   </action>
   <action name="actionUnzoom">
    <property name="icon">
-    <iconset resource="mainwindow.qrc">
+    <iconset resource="../common/common.qrc">
      <normaloff>:/Icons/Unzoom</normaloff>:/Icons/Unzoom</iconset>
    </property>
    <property name="text">
@@ -272,6 +283,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="mainwindow.qrc"/>
+  <include location="../common/common.qrc"/>
  </resources>
  <connections/>
 </ui>
