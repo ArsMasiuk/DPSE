@@ -88,6 +88,7 @@ public:
 	virtual CItem* create() const		{ return new CBranchConnection(parentItem()); }
 
 protected:
+	virtual void setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
 };
 
@@ -103,6 +104,7 @@ public:
 	~CBranchEditorScene();
 
 	virtual void initialize();
+	virtual void initializeOnce();
 
 	BranchEditorMode mode() const { return m_mode;  }
 

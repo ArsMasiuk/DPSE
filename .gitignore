@@ -54,3 +54,5 @@ _builds
 /dpss/build-dpss-Qt_5_7_MSVC_2015_64bit-Debug
 /dpss/build-dpss-Qt_5_7_MSVC_2015_64bit-Release
 /dpss/data/test/Graph.txt
+/dpss/bin.mingw
+/dpss/build-dpss-Qt_5_7_MinGW_32bit-Release

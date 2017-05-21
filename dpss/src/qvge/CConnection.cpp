@@ -107,10 +107,8 @@ QPainterPath CConnection::shape() const
 }
 
 
-void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* /*widget*/)
+void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* /*widget*/)
 {
-	updateTextInfo();
-
 	// weight
 	bool ok = false;
 	double weight = qMax(0.0, getAttribute("weight").toDouble(&ok));
@@ -129,7 +127,7 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 	bool isSelected = (option->state & QStyle::State_Selected);
 	if (isSelected)
 	{
-		painter->setPen(QPen(QColor("orange"), weight+1, penStyle));
+		painter->setPen(QPen(QColor("orange"), weight + 1, penStyle));
 	}
 	else
 	{
@@ -138,6 +136,15 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 		painter->setPen(QPen(color, weight, penStyle));
 	}
+}
+
+
+void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
+{
+	updateTextInfo();
+
+	// called before draw 
+	setupPainter(painter, option, widget);
 
 	// straight line
 	if (m_bendFactor == 0)

@@ -81,6 +81,7 @@ public:
 	void onNodeDeleted(CNode *node);
 
 protected:
+	virtual void setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
 	virtual void drawArrow(QPainter *painter, const QStyleOptionGraphicsItem *option, bool first, const QLineF& direction);
 
 	// internal callbacks

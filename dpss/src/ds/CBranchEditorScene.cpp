@@ -36,6 +36,7 @@ CBranchEditorScene::~CBranchEditorScene()
 {
 }
 
+
 void CBranchEditorScene::initialize()
 {
 	Super::initialize();
@@ -45,12 +46,23 @@ void CBranchEditorScene::initialize()
 	setClassAttribute(fanAttr);
 
     // default branch attributes
-    setClassAttribute(CAttribute("edge", "MODEL", "Model", ""));
+    setClassAttribute(CAttribute("edge", "MODEL", "Model", "branch"));
     setClassAttribute(CAttribute("edge", "L", "L", 0.0));
     setClassAttribute(CAttribute("edge", "S", "S", 0.0));
     setClassAttribute(CAttribute("edge", "R", "R", 0.0));
     //setClassAttribute(CAttribute("edge", "H", "H", 0));
     setClassAttribute(CAttribute("edge", "Q", "Q", 0.0));
+}
+
+
+void CBranchEditorScene::initializeOnce()
+{
+	Super::initializeOnce();
+
+	static CAttributeConstrainsList branchModels;
+	branchModels.names << "Branch" << "Flow" << "Regulator" << "Group Regulator";
+	branchModels.ids << "branch" << "flow" << "rrv" << "grrv";
+	CAttributeConstrains::setClassConstrains("edge", "MODEL", &branchModels);
 }
 
 
@@ -61,12 +73,14 @@ void CBranchEditorScene::setBranchesMode()
 	activateItemFactory("CBranchNode");
 }
 
+
 void CBranchEditorScene::setFansMode()
 {
 	m_mode = EM_ADD_FAN;
 
 	activateItemFactory("CFanNode");
 }
+
 
 // reimp
 
@@ -172,6 +186,22 @@ CBranchConnection::CBranchConnection(QGraphicsItem *parent): Super(parent)
 {
 	setItemFlag(CF_End_Arrow);
 }
+
+
+void CBranchConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+	Super::setupPainter(painter, option, widget);
+
+	QString modelType = getAttribute("MODEL").toString();
+
+	if (modelType == "flow")
+	{
+		QPen pen = painter->pen();
+		pen.setStyle(Qt::DashLine);
+		painter->setPen(pen);
+	}
+}
+
 
 void CBranchConnection::paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget)
 {
