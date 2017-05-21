@@ -45,6 +45,25 @@ void CNodeEditorScene::initialize()
 	setClassAttribute(directionAttr);
 }
 
+
+void CNodeEditorScene::initializeOnce()
+{
+	Super::initializeOnce();
+
+	static CAttributeConstrainsList edgeDirections;
+	edgeDirections.names << "Directed (one end)" << "Mutual (both ends)" << "None (no ends)";
+	edgeDirections.ids << "directed" << "mutual" << "undirected";
+	edgeDirections.icons << QIcon(":/Icons/Edge-Directed") << QIcon(":/Icons/Edge-Mutual") << QIcon(":/Icons/Edge-Undirected");
+	CAttributeConstrains::setClassConstrains("edge", "direction", &edgeDirections);
+
+	static CAttributeConstrainsList nodeShapes;
+	nodeShapes.names << "Dics" << "Square" << "Triangle" << "Diamond";
+	nodeShapes.ids << "disc" << "square" << "triangle" << "diamond";
+	nodeShapes.icons << QIcon(":/Icons/Node-Disc") << QIcon(":/Icons/Node-Square") << QIcon(":/Icons/Node-Triangle") << QIcon(":/Icons/Node-Diamond");
+	CAttributeConstrains::setClassConstrains("node", "shape", &nodeShapes);
+}
+
+
 // menu slots
 
 void CNodeEditorScene::onActionUnlink()

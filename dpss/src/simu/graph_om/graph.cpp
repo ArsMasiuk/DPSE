@@ -8,6 +8,13 @@
 #include <queue>
 #include <map>
 
+#ifndef MSC_VER
+// Linux equivalent of sprintf_s
+#define sprintf_s snprintf
+// Linux equivalent of fscanf_s
+#define fscanf_s fscanf
+#endif
+
 #include "Graph.h"
 
 char MATRIX_INTSID_FILE_NAME[] = "MIn.txt";

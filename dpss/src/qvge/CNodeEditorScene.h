@@ -26,6 +26,7 @@ public:
 
 	// reimp
 	virtual void initialize();
+	virtual void initializeOnce();
 
 	// operations
 	bool startNewConnection(const QPointF& pos);

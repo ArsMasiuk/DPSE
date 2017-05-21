@@ -174,26 +174,36 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	if (attr.valueType == QVariant::Double)
 	{
 		bool ok = true;
-		double val = QInputDialog::getDouble(NULL, tr("Set Attribute"), attrId, attrValue.toDouble(), DBL_MIN, DBL_MAX, 4, &ok);
+        double val = QInputDialog::getDouble(NULL,
+                                             tr("Set Attribute"), attrId, attrValue.toDouble(),
+                                             std::numeric_limits<double>::min(),
+                                             std::numeric_limits<double>::max(),
+                                             4, &ok);
 		if (!ok)
 			return QVariant();
 		else
 			return val;
 	}
 
-    // predefined attrs (TO CHANGE)
-    if (attrId == "direction" && classId == "edge")
-    {
-        QStringList texts; texts << "Directed (one end)" << "Mutual (both ends)" << "None (no ends)";
-        QStringList ids; ids << "directed" << "mutual" << "undirected";
-        QList<QIcon> icons; icons << QIcon(":/Icons/Edge-Directed") << QIcon(":/Icons/Edge-Mutual")<< QIcon(":/Icons/Edge-Undirected");
-        int index = ids.indexOf(attrValue.toString());
-        int newIndex = CExtListInputDialog::getItemIndex(tr("Set Attribute"), tr("Edge Direction"), texts, icons, index);
-        if (newIndex >= 0)
-            return ids.at(newIndex);
-        else
-            return QVariant();
-    }
+    // predefined attrs
+	auto constrains = CAttributeConstrains::getClassConstrains(classId, attrId);
+	if (constrains)
+	{
+		auto constrainsList = dynamic_cast<CAttributeConstrainsList*>(constrains);
+		if (constrainsList)
+		{
+			int index = constrainsList->ids.indexOf(attrValue.toString());
+			int newIndex = CExtListInputDialog::getItemIndex(
+				tr("Set Attribute"), attr.name, 
+				constrainsList->names, constrainsList->icons, 
+				index);
+			
+			if (newIndex >= 0)
+				return constrainsList->ids.at(newIndex);
+			else
+				return QVariant();
+		}
+	}
 
 	// default: edit as string
 	QString val = QInputDialog::getText(NULL, tr("Set Attribute"), attrId, QLineEdit::Normal, attrValue.toString());

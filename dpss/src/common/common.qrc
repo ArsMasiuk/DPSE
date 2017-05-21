@@ -8,5 +8,9 @@
         <file alias="Zoom">Icons/Zoom-In.png</file>
         <file alias="Unzoom">Icons/Zoom-Out.png</file>
         <file>Icons/Zoom-Reset.png</file>
+        <file alias="Node-Diamond">Icons/Node-Romb.png</file>
+        <file alias="Node-Disc">Icons/Node-Round.png</file>
+        <file alias="Node-Square">Icons/Node-Square.png</file>
+        <file alias="Node-Triangle">Icons/Node-Triangle.png</file>
     </qresource>
 </RCC>

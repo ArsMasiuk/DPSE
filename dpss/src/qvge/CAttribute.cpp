@@ -9,6 +9,9 @@ It can be used freely, maintaining the information above.
 
 #include "CAttribute.h"
 
+
+// attributes
+
 CAttribute::CAttribute()
     : isVirtual(false),
 	valueType(QVariant::String)
@@ -40,4 +43,37 @@ bool CAttribute::restoreFrom(QDataStream& out, quint64 /*version64*/)
 	valueType = defaultValue.type();
 
 	return true;
+}
+
+
+// attribute constrains
+
+AttributeConstrainsMap CAttributeConstrains::s_constrains;
+
+
+CAttributeConstrains::~CAttributeConstrains()
+{
+	// dummy
+}
+
+
+CAttributeConstrains* CAttributeConstrains::getClassConstrains(const QByteArray& classId, const QByteArray& attrId)
+{
+	ClassAttrIndex index(classId, attrId);
+
+	if (s_constrains.contains(index))
+		return s_constrains[index];
+	else
+		return NULL;
+}
+
+
+void CAttributeConstrains::setClassConstrains(const QByteArray& classId, const QByteArray& attrId, CAttributeConstrains* cptr)
+{
+	ClassAttrIndex index(classId, attrId);
+
+	if (cptr)
+		s_constrains[index] = cptr;
+	else
+		s_constrains.remove(index);
 }

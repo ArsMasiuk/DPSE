@@ -48,6 +48,7 @@ public:
 
 	virtual void reset();
 	virtual void initialize();
+	virtual void initializeOnce() {}	// static initialization (called once)
 	virtual void activate();
 
 	// properties
