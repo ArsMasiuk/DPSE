@@ -15,7 +15,7 @@ It can be used freely, maintaining the information above.
 #include <QMenu>
 #include <QByteArrayList>
 
-#include <CAttribute.h>
+#include "CAttribute.h"
 
 
 class CItem;

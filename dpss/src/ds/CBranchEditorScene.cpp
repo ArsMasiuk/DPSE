@@ -60,8 +60,8 @@ void CBranchEditorScene::initializeOnce()
 	Super::initializeOnce();
 
 	static CAttributeConstrainsList branchModels;
-	branchModels.names << "Branch" << "Flow" << "Regulator" << "Group Regulator";
-	branchModels.ids << "branch" << "flow" << "rrv" << "grrv";
+	branchModels.names << "Branch" << "Flow Leak" << "Regulator" << "Group Regulator";
+	branchModels.ids << "branch" << "leak" << "rrv" << "grrv";
 	CAttributeConstrains::setClassConstrains("edge", "MODEL", &branchModels);
 }
 
@@ -194,7 +194,7 @@ void CBranchConnection::setupPainter(QPainter *painter, const QStyleOptionGraphi
 
 	QString modelType = getAttribute("MODEL").toString();
 
-	if (modelType == "flow")
+	if (modelType == "leak")
 	{
 		QPen pen = painter->pen();
 		pen.setStyle(Qt::DashLine);
