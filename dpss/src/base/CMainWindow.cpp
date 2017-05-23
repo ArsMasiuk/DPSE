@@ -6,6 +6,9 @@
 #include <QMenuBar>
 #include <QInputDialog>
 #include <QTimer>
+#include <QDebug>
+#include <QProcess>
+#include <QCoreApplication>
 
 
 CMainWindow::CMainWindow(QWidget *parent) :
@@ -18,6 +21,17 @@ CMainWindow::CMainWindow(QWidget *parent) :
 
 CMainWindow::~CMainWindow()
 {
+}
+
+
+void CMainWindow::addDocument(const CDocument& doc)
+{
+    if (doc.canCreate)
+    {
+        m_docTypeCreate << doc.type;
+    }
+
+    m_docTypes[doc.type] = doc;
 }
 
 
@@ -37,22 +51,13 @@ void CMainWindow::createMainMenu()
 {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
 
-//    m_newMenu = new QMenu(tr("&New"));
-//    m_newDocument = m_fileMenu->addMenu(m_newMenu);
-//    m_newDocument->setIcon(QIcon(":/Icons/New"));
-//    m_newMenu->setEnabled(false);
-
     m_newDocument = m_fileMenu->addAction(QIcon(":/Icons/New"), tr("&New..."));
-    m_newDocument->setEnabled(false);
+
+    fillNewFileMenu();
 
     m_openDocument = m_fileMenu->addAction(QIcon(":/Icons/Open"), tr("&Open..."), this, SLOT(on_actionOpen_triggered()));
-    m_openDocument->setEnabled(false);
-
     m_saveDocument = m_fileMenu->addAction(QIcon(":/Icons/Save"), tr("&Save"), this, SLOT(on_actionSave_triggered()));
-    m_saveDocument->setEnabled(false);
-
     m_saveAsDocument = m_fileMenu->addAction(tr("Save As..."), this, SLOT(on_actionSaveAs_triggered()));
-    m_saveAsDocument->setEnabled(false);
 
     m_fileMenu->addSeparator();
 
@@ -60,9 +65,44 @@ void CMainWindow::createMainMenu()
 }
 
 
+void CMainWindow::fillNewFileMenu()
+{
+    if (m_docTypeCreate.isEmpty())
+        return;
+
+    if (m_docTypeCreate.count() == 1)
+    {
+        const CDocument& doc = m_docTypes[*m_docTypeCreate.begin()];
+        m_newDocument->setText(tr("New") + " " + doc.name);
+        m_newDocument->setStatusTip(doc.description);
+
+        connect(m_newDocument, SIGNAL(triggered()), this, SLOT(createNewDocument()));
+        m_newDocument->setEnabled(true);
+    }
+    else
+    {
+        QMenu *newActionsMenu = new QMenu();
+        m_newDocument->setMenu(newActionsMenu);
+
+        for (const QByteArray& docType : m_docTypeCreate)
+        {
+            const CDocument& doc = m_docTypes[docType];
+            QAction *newAction = newActionsMenu->addAction(doc.name);
+            newAction->setData(docType);
+            newAction->setStatusTip(doc.description);
+        }
+
+        connect(newActionsMenu, SIGNAL(triggered(QAction*)), this, SLOT(createNewDocument(QAction*)));
+        m_newDocument->setEnabled(true);
+    }
+}
+
+
 void CMainWindow::createFileToolbar()
 {
     QToolBar *fileToolbar = addToolBar(tr("File"));
+    fileToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     fileToolbar->addAction(m_newDocument);
     fileToolbar->addAction(m_openDocument);
     fileToolbar->addAction(m_saveDocument);
@@ -94,6 +134,51 @@ void CMainWindow::onDocumentChanged()
 
 // actions
 
+void CMainWindow::createNewDocument()
+{
+    doCreateNewDocument(m_docTypes[*m_docTypeCreate.begin()]);
+}
+
+
+void CMainWindow::createNewDocument(QAction *act)
+{
+    QByteArray docType = act->data().toByteArray();
+    doCreateNewDocument(m_docTypes[docType]);
+}
+
+
+void CMainWindow::doCreateNewDocument(const CDocument& doc)
+{
+    // document presents - run new instance
+    if (m_currentDocType.size())
+    {
+        QStringList args;
+        args << "create" << doc.type;
+        QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
+
+        return;
+    }
+
+    // no document - create in place
+    if (onCreateNewDocument(doc))
+    {
+        m_currentDocType = doc.type;
+        return;
+    }
+
+    // failed
+    qDebug() << "Cannot create document.";
+}
+
+
+bool CMainWindow::onCreateNewDocument(const CDocument& doc)
+{
+    qDebug() << doc.description;
+
+    return true;
+}
+
+
 void CMainWindow::on_actionOpen_triggered()
 {
     QString title = tr("Open File");
@@ -110,12 +195,72 @@ void CMainWindow::on_actionOpen_triggered()
 }
 
 
+void CMainWindow::onOpenDocumentDialog(QString &title, QString &filter)
+{
+    filter = "";
+
+    QString allFilters;
+
+    for (const CDocument& doc : m_docTypes)
+    {
+        for (const auto& format : doc.formats)
+        {
+            if (format.canRead)
+            {
+                filter += format.name + " (" + format.filters + ") ;;";
+                allFilters += format.filters + " ";
+            }
+        }
+    }
+
+    if (allFilters.size())
+    {
+        allFilters.chop(1);
+        filter += tr("Any supported format (%1)").arg(allFilters);
+    }
+}
+
+
 void CMainWindow::on_actionSave_triggered()
 {
+    if (m_currentFileName.isEmpty())
+    {
+        on_actionSaveAs_triggered();
+        return;
+    }
+
+
 }
 
 
 void CMainWindow::on_actionSaveAs_triggered()
+{
+    if (m_currentDocType.isEmpty())
+        return;
+
+    QString filter;
+    const CDocument& doc = m_docTypes[m_currentDocType];
+    for (const auto& format : doc.formats)
+    {
+        if (format.canSave)
+        {
+            filter += format.name + " (" + format.filters + ") ;;";
+        }
+    }
+
+    if (filter.size())
+        filter.chop(3);
+
+    QString title = tr("Save File");
+    onSaveDocumentDialog(title, filter);
+
+    QString fileName = QFileDialog::getSaveFileName(NULL, title, m_currentFileName, filter);
+    if (fileName.isEmpty())
+        return;
+}
+
+
+void CMainWindow::onSaveDocumentDialog(QString &title, QString &filter)
 {
 }
 

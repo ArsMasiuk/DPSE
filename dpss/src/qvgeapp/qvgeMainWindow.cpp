@@ -1,15 +1,22 @@
 #include "qvgeMainWindow.h"
 
+#include <QtWidgets/QPlainTextEdit>
+
 
 qvgeMainWindow::qvgeMainWindow()
 {
-//    QMenu *newActions = new QMenu();
-//    m_newDocument->setMenu(newActions);
-//    QAction *newGraph = newActions->addAction(tr("New Graph"));
-//    QAction *newGraph2 = newActions->addAction(tr("New Graph 2"));
+    m_appName = "Qt Visual Graph Editor";
 
-    //QAction *newGraph = m_newDocument->addAction(tr("New Graph"), this, SLOT(newGraphDocument()));
+    CDocumentFormat gexf = { "GEXF", "*.gexf", false, true };
+    CDocumentFormat graphml = { "GraphML", "*.graphml", true, true };
+//    CDocumentFormat gr = { "Old plain GR", "*.gr", false, true };
+//    CDocumentFormat xgr = { "XML Graph", "*.xgr", true, true };
+    CDocument graph = { tr("Graph Document"), tr("Directed or undirected graph"), "graph", true, {gexf, graphml} };
+    addDocument(graph);
 
+    CDocumentFormat txt = { tr("Plain Text"), "*.txt", true, true };
+    CDocument text = { tr("Text Document"), tr("Simple text document"), "text", true, {txt} };
+    addDocument(text);
 }
 
 
@@ -18,39 +25,40 @@ void qvgeMainWindow::initUI()
     Super::initUI();
 
     statusBar();
-
-    // actions
-    m_newDocument->setText(tr("New Graph"));
-    connect(m_newDocument, &QAction::triggered, this, &qvgeMainWindow::newGraphDocument);
-    m_newDocument->setEnabled(true);
-
-    m_openDocument->setEnabled(true);
-
-    // default
-    createDefaultDocument();
 }
 
 
-void qvgeMainWindow::createDefaultDocument()
+bool qvgeMainWindow::onCreateNewDocument(const CDocument& doc)
 {
     // scene
-    m_editorScene = new CNodeEditorScene(this);
-    m_editorView = new CEditorView(m_editorScene, this);
-    setCentralWidget(m_editorView);
+    if (doc.type == "graph")
+    {
+        m_editorScene = new CNodeEditorScene(this);
+        m_editorView = new CEditorView(m_editorScene, this);
+        setCentralWidget(m_editorView);
 
-    connect(m_editorScene, &CEditorScene::sceneChanged, this, &CMainWindow::onDocumentChanged);
-}
+        connect(m_editorScene, &CEditorScene::sceneChanged, this, &CMainWindow::onDocumentChanged);
+        return true;
+    }
 
+    // text
+    if (doc.type == "text")
+    {
+        QPlainTextEdit *textEditor = new QPlainTextEdit(this);
+        setCentralWidget(textEditor);
 
-void qvgeMainWindow::newGraphDocument()
-{
+        connect(textEditor, &QPlainTextEdit::textChanged, this, &CMainWindow::onDocumentChanged);
+        return true;
+    }
 
+    // unknown type
+    return false;
 }
 
 
 void qvgeMainWindow::onOpenDocumentDialog(QString &title, QString &filter)
 {
+    Super::onOpenDocumentDialog(title, filter);
+
     title = tr("Open Graph Document");
-    filter = tr("Any supported format") + " (*.gexf *.graphml)";
-    filter += ";;GEXF (*.gexf);;GraphML (*.graphml)";
 }

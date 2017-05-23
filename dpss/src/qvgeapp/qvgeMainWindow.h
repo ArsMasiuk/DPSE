@@ -19,10 +19,8 @@ public:
 protected Q_SLOTS:
     virtual void initUI();
 
-    void newGraphDocument();
-
 protected:
-    virtual void createDefaultDocument();
+    virtual bool onCreateNewDocument(const CDocument& doc);
     virtual void onOpenDocumentDialog(QString &title, QString &filter);
 
 private:
