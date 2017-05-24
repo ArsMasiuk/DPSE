@@ -49,7 +49,10 @@ protected:
     virtual bool onCreateNewDocument(const CDocument& doc);
 
     virtual void onOpenDocumentDialog(QString &title, QString &filter);
-    virtual void onSaveDocumentDialog(QString &title, QString &filter);
+
+    virtual void onSaveDocumentDialog(QString &title, QString &filter) {}
+    virtual void doSaveDocument(const QString &fileName);
+    virtual bool onSaveDocument(const QString &fileName) { return true; }
 
 protected Q_SLOTS:
     virtual void initUI();

@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QProcess>
 #include <QCoreApplication>
+#include <QMessageBox>
 
 
 CMainWindow::CMainWindow(QWidget *parent) :
@@ -52,16 +53,27 @@ void CMainWindow::createMainMenu()
     m_fileMenu = menuBar()->addMenu(tr("&File"));
 
     m_newDocument = m_fileMenu->addAction(QIcon(":/Icons/New"), tr("&New..."));
+    m_newDocument->setStatusTip(tr("Create new document"));
 
     fillNewFileMenu();
 
     m_openDocument = m_fileMenu->addAction(QIcon(":/Icons/Open"), tr("&Open..."), this, SLOT(on_actionOpen_triggered()));
+    m_openDocument->setStatusTip(tr("Open a document"));
+    m_openDocument->setShortcut(QKeySequence::Open);
+
     m_saveDocument = m_fileMenu->addAction(QIcon(":/Icons/Save"), tr("&Save"), this, SLOT(on_actionSave_triggered()));
+    m_saveDocument->setStatusTip(tr("Save current document"));
+    m_saveDocument->setShortcut(QKeySequence::Save);
+
     m_saveAsDocument = m_fileMenu->addAction(tr("Save As..."), this, SLOT(on_actionSaveAs_triggered()));
+    m_saveAsDocument->setStatusTip(tr("Save current document under another name"));
+    m_saveAsDocument->setShortcut(QKeySequence::SaveAs);
 
     m_fileMenu->addSeparator();
 
-    /*QAction *exitApp =*/ m_fileMenu->addAction(tr("E&xit"), this, SLOT(close()));
+    QAction *exitApp = m_fileMenu->addAction(tr("E&xit"), this, SLOT(close()));
+    exitApp->setStatusTip(tr("Leave the application"));
+    exitApp->setShortcut(QKeySequence::Quit);
 }
 
 
@@ -115,7 +127,7 @@ void CMainWindow::updateTitle()
     QString docName = m_currentFileName;
 
     if (m_currentFileName.isEmpty())
-        docName = "New File";
+        docName = tr("New File");
 
     if (m_isChanged)
         docName += "*";
@@ -229,7 +241,7 @@ void CMainWindow::on_actionSave_triggered()
         return;
     }
 
-
+    doSaveDocument(m_currentFileName);
 }
 
 
@@ -257,10 +269,26 @@ void CMainWindow::on_actionSaveAs_triggered()
     QString fileName = QFileDialog::getSaveFileName(NULL, title, m_currentFileName, filter);
     if (fileName.isEmpty())
         return;
+
+    doSaveDocument(fileName);
 }
 
 
-void CMainWindow::onSaveDocumentDialog(QString &title, QString &filter)
+void CMainWindow::doSaveDocument(const QString &fileName)
 {
+    if (onSaveDocument(fileName))
+    {
+        m_currentFileName = fileName;
+        m_isChanged = false;
+
+        statusBar()->showMessage(tr("Document saved successfully."));
+
+        updateTitle();
+    }
+    else
+    {
+        QMessageBox::critical(NULL, tr("Save Error"), tr("Document cannot be saved. Check access rights and path."));
+    }
 }
+
 
