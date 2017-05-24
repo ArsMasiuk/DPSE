@@ -36,27 +36,32 @@ public:
     explicit CMainWindow(QWidget *parent = 0);
     ~CMainWindow();
 
+    virtual void init(int argc, char *argv[]);
+
     void addDocument(const CDocument& doc);
 
 protected:
+    virtual void processParams(int argc, char *argv[]);
+
     virtual void createMainMenu();
     virtual void fillNewFileMenu();
     virtual void createFileToolbar();
 
     virtual void updateTitle();
+    virtual void updateActions();
 
-    virtual void doCreateNewDocument(const CDocument& doc);
-    virtual bool onCreateNewDocument(const CDocument& doc);
+    virtual void doCreateNewDocument(const QByteArray &docType);
+    virtual bool onCreateNewDocument(const QByteArray &docType);
 
     virtual void onOpenDocumentDialog(QString &title, QString &filter);
+    virtual void doOpenDocument(const QString &fileName);
+    virtual bool onOpenDocument(const QString &fileName, QByteArray &docType) { return false; }
 
     virtual void onSaveDocumentDialog(QString &title, QString &filter) {}
     virtual void doSaveDocument(const QString &fileName);
     virtual bool onSaveDocument(const QString &fileName) { return true; }
 
 protected Q_SLOTS:
-    virtual void initUI();
-
     void createNewDocument();
     void createNewDocument(QAction*);
 
@@ -77,7 +82,6 @@ protected:
     QAction *m_saveDocument;
     QAction *m_saveAsDocument;
 
-	QString m_lastFileName;
     QString m_currentFileName;
     bool m_isChanged;
     QByteArray m_currentDocType;

@@ -1,6 +1,9 @@
 #ifndef QVGEMAINWINDOW_H
 #define QVGEMAINWINDOW_H
 
+#include <QtWidgets/QPlainTextEdit>
+#include <QtWidgets/QStatusBar>
+
 #include <base/CMainWindow.h>
 
 #include <qvge/CNodeEditorScene.h>
@@ -16,16 +19,17 @@ public:
 
     qvgeMainWindow();
 
-protected Q_SLOTS:
-    virtual void initUI();
+    virtual void init(int argc, char *argv[]);
 
 protected:
-    virtual bool onCreateNewDocument(const CDocument& doc);
-    virtual void onOpenDocumentDialog(QString &title, QString &filter);
+    virtual bool onCreateNewDocument(const QByteArray &docType);
+    virtual bool onOpenDocument(const QString &fileName, QByteArray &docType);
 
 private:
     CNodeEditorScene *m_editorScene;
     CEditorView *m_editorView;
+
+    QPlainTextEdit *m_textEditor;
 };
 
 #endif // QVGEMAINWINDOW_H

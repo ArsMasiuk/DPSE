@@ -17,7 +17,6 @@ CMainWindow::CMainWindow(QWidget *parent) :
     m_appName("MyApp"),
     m_isChanged(false)
 {
-    QTimer::singleShot(0, this, SLOT(initUI()));
 }
 
 CMainWindow::~CMainWindow()
@@ -38,13 +37,38 @@ void CMainWindow::addDocument(const CDocument& doc)
 
 // protected
 
-void CMainWindow::initUI()
+void CMainWindow::init(int argc, char *argv[])
 {
     createMainMenu();
 
     createFileToolbar();
 
     updateTitle();
+
+    updateActions();
+
+    processParams(argc, argv);
+}
+
+
+void CMainWindow::processParams(int argc, char *argv[])
+{
+    if (argc >= 3)
+    {
+        QByteArray command(argv[1]);
+
+        if (command == "create")
+        {
+            doCreateNewDocument(argv[2]);
+            return;
+        }
+
+        if (command == "open")
+        {
+            doOpenDocument(argv[2]);
+            return;
+        }
+    }
 }
 
 
@@ -130,17 +154,29 @@ void CMainWindow::updateTitle()
         docName = tr("New File");
 
     if (m_isChanged)
-        docName += "*";
+        docName = "* " + docName;
 
     setWindowTitle(QString("%1 - %2").arg(docName, m_appName));
 }
 
 
+void CMainWindow::updateActions()
+{
+    m_saveDocument->setEnabled(m_currentDocType.size());
+    m_saveAsDocument->setEnabled(m_currentDocType.size());
+}
+
+
 void CMainWindow::onDocumentChanged()
 {
+    // already changed - do nothing
+    if (m_isChanged)
+        return;
+
     m_isChanged = true;
 
     updateTitle();
+    updateActions();
 }
 
 
@@ -148,33 +184,37 @@ void CMainWindow::onDocumentChanged()
 
 void CMainWindow::createNewDocument()
 {
-    doCreateNewDocument(m_docTypes[*m_docTypeCreate.begin()]);
+    doCreateNewDocument(*m_docTypeCreate.begin());
 }
 
 
 void CMainWindow::createNewDocument(QAction *act)
 {
     QByteArray docType = act->data().toByteArray();
-    doCreateNewDocument(m_docTypes[docType]);
+    doCreateNewDocument(docType);
 }
 
 
-void CMainWindow::doCreateNewDocument(const CDocument& doc)
+void CMainWindow::doCreateNewDocument(const QByteArray &docType)
 {
     // document presents - run new instance
     if (m_currentDocType.size())
     {
         QStringList args;
-        args << "create" << doc.type;
+        args << "create" << docType;
         QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
 
         return;
     }
 
     // no document - create in place
-    if (onCreateNewDocument(doc))
+    if (onCreateNewDocument(docType))
     {
-        m_currentDocType = doc.type;
+        m_currentDocType = docType;
+        m_isChanged = false;
+
+        updateTitle();
+        updateActions();
         return;
     }
 
@@ -183,9 +223,9 @@ void CMainWindow::doCreateNewDocument(const CDocument& doc)
 }
 
 
-bool CMainWindow::onCreateNewDocument(const CDocument& doc)
+bool CMainWindow::onCreateNewDocument(const QByteArray &docType)
 {
-    qDebug() << doc.description;
+    qDebug() << docType;
 
     return true;
 }
@@ -197,13 +237,49 @@ void CMainWindow::on_actionOpen_triggered()
     QString filter = tr("Any File (*.*)");
     onOpenDocumentDialog(title, filter);
 
-    QString fileName = QFileDialog::getOpenFileName(NULL, title, m_lastFileName, filter);
+    QString fileName = QFileDialog::getOpenFileName(NULL, title, m_currentFileName, filter);
     if (fileName.isEmpty())
         return;
 
+    doOpenDocument(fileName);
+}
 
 
-    updateTitle();
+void CMainWindow::doOpenDocument(const QString &fileName)
+{
+    // file does not exist
+    if (!QFile::exists(fileName))
+    {
+        QMessageBox::critical(NULL, tr("Open Error: %1").arg(fileName), tr("Document file does not exist or not accessible."));
+
+        return;
+    }
+
+    // document presents - run new instance
+    if (m_currentDocType.size())
+    {
+        QStringList args;
+        args << "open" << fileName;
+        QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
+
+        return;
+    }
+
+    // no document - open in place
+    if (onOpenDocument(fileName, m_currentDocType))
+    {
+        m_currentFileName = fileName;
+        m_isChanged = false;
+
+        statusBar()->showMessage(tr("Document opened successfully."));
+
+        updateTitle();
+        updateActions();
+    }
+    else
+    {
+        QMessageBox::critical(NULL, tr("Open Error: %1").arg(fileName), tr("Document cannot be opened. Check access rights and path."));
+    }
 }
 
 
@@ -284,6 +360,7 @@ void CMainWindow::doSaveDocument(const QString &fileName)
         statusBar()->showMessage(tr("Document saved successfully."));
 
         updateTitle();
+        updateActions();
     }
     else
     {

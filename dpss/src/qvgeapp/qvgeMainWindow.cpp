@@ -1,6 +1,7 @@
 #include "qvgeMainWindow.h"
 
-#include <QtWidgets/QPlainTextEdit>
+#include <QFile>
+#include <QTextStream>
 
 
 qvgeMainWindow::qvgeMainWindow()
@@ -20,18 +21,18 @@ qvgeMainWindow::qvgeMainWindow()
 }
 
 
-void qvgeMainWindow::initUI()
+void qvgeMainWindow::init(int argc, char *argv[])
 {
-    Super::initUI();
+    Super::init(argc, argv);
 
-    statusBar();
+    statusBar()->showMessage(tr("qvge started."));
 }
 
 
-bool qvgeMainWindow::onCreateNewDocument(const CDocument& doc)
+bool qvgeMainWindow::onCreateNewDocument(const QByteArray &docType)
 {
     // scene
-    if (doc.type == "graph")
+    if (docType == "graph")
     {
         m_editorScene = new CNodeEditorScene(this);
         m_editorView = new CEditorView(m_editorScene, this);
@@ -42,12 +43,12 @@ bool qvgeMainWindow::onCreateNewDocument(const CDocument& doc)
     }
 
     // text
-    if (doc.type == "text")
+    if (docType == "text")
     {
-        QPlainTextEdit *textEditor = new QPlainTextEdit(this);
-        setCentralWidget(textEditor);
+        m_textEditor = new QPlainTextEdit(this);
+        setCentralWidget(m_textEditor);
 
-        connect(textEditor, &QPlainTextEdit::textChanged, this, &CMainWindow::onDocumentChanged);
+        connect(m_textEditor, &QPlainTextEdit::textChanged, this, &CMainWindow::onDocumentChanged);
         return true;
     }
 
@@ -56,9 +57,24 @@ bool qvgeMainWindow::onCreateNewDocument(const CDocument& doc)
 }
 
 
-void qvgeMainWindow::onOpenDocumentDialog(QString &title, QString &filter)
+bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType)
 {
-    Super::onOpenDocumentDialog(title, filter);
+    if (fileName.toLower().endsWith(".txt"))
+    {
+        docType = "text";
 
-    title = tr("Open Graph Document");
+        if (onCreateNewDocument(docType))
+        {
+            QFile f(fileName);
+            if (f.open(QFile::ReadOnly))
+            {
+                QTextStream ts(&f);
+                m_textEditor->setPlainText(ts.readAll());
+                f.close();
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
