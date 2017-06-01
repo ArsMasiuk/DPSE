@@ -58,8 +58,8 @@ protected:
     virtual bool onOpenDocument(const QString &fileName, QByteArray &docType) { return false; }
 
     virtual void onSaveDocumentDialog(QString &title, QString &filter) {}
-    virtual void doSaveDocument(const QString &fileName);
-    virtual bool onSaveDocument(const QString &fileName) { return true; }
+    virtual void doSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType);
+    virtual bool onSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType) { return true; }
 
 protected Q_SLOTS:
     void createNewDocument();
@@ -83,8 +83,10 @@ protected:
     QAction *m_saveAsDocument;
 
     QString m_currentFileName;
-    bool m_isChanged;
     QByteArray m_currentDocType;
+    bool m_isChanged;
+
+    QString m_lastOpenFilter, m_lastSaveFilter;
 
     QMap<QByteArray, CDocument> m_docTypes;
     QList<QByteArray> m_docTypeCreate;

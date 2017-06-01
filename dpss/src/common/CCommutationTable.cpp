@@ -120,16 +120,26 @@ void CCommutationTable::onSelectionChanged()
 	QElapsedTimer tm;
 	tm.start();
 
+	QItemSelection sel;
+
 	for (auto edge : edges)
 	{
 		auto edgeId = edge->getId();
 		auto foundItems = ui.Table->findItems(edgeId, Qt::MatchCaseSensitive, 2);
 		for (auto item : foundItems)
 		{
-			item->setSelected(true);
 			scrollItem = item;
+
+			//item->setSelected(true);
+			// version with QModelIndex is many ways faster...
+			int row = ui.Table->indexOfTopLevelItem(item);
+			QModelIndex index = ui.Table->model()->index(row, 0);
+			QModelIndex index2 = ui.Table->model()->index(row, 2);
+			sel.merge(QItemSelection(index, index2), QItemSelectionModel::Select);
 		}
 	}
+
+	ui.Table->selectionModel()->select(sel, QItemSelectionModel::Select);
 
 
 	qDebug() << "Time: " << tm.elapsed();
@@ -147,7 +157,8 @@ void CCommutationTable::on_Table_itemSelectionChanged()
 		return;
 
 	ui.Table->blockSignals(true);
-	m_scene->disconnect(this);
+
+	m_scene->beginSelection();
 
 	m_scene->deselectAll();
 
@@ -169,7 +180,8 @@ void CCommutationTable::on_Table_itemSelectionChanged()
 	}
 
 	ui.Table->blockSignals(false);
-	connectSignals(m_scene);
+
+	m_scene->endSelection();
 }
 
 

@@ -3,6 +3,9 @@
 #include <QFile>
 #include <QTextStream>
 
+#include <qvge/CFileSerializerGEXF.h>
+#include <qvge/CFileSerializerGraphML.h>
+
 
 qvgeMainWindow::qvgeMainWindow()
 {
@@ -74,7 +77,59 @@ bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType
                 return true;
             }
         }
+        return false;
     }
+
+
+    if (fileName.toLower().endsWith(".graphml"))
+    {
+        docType = "graph";
+
+        if (onCreateNewDocument(docType))
+        {
+            return CFileSerializerGraphML().load(fileName, *m_editorScene);
+        }
+        return false;
+    }
+
+
+    if (fileName.toLower().endsWith(".gexf"))
+    {
+        docType = "graph";
+
+        if (onCreateNewDocument(docType))
+        {
+            return CFileSerializerGEXF().load(fileName, *m_editorScene);
+        }
+        return false;
+    }
+
 
     return false;
 }
+
+
+bool qvgeMainWindow::onSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType)
+{
+    // text
+    if (docType == "text")
+    {
+        QFile f(fileName);
+        if (f.open(QFile::WriteOnly))
+        {
+            QTextStream ts(&f);
+            ts << m_textEditor->toPlainText();
+            f.close();
+            return true;
+        }
+        return false;
+    }
+
+    // graph
+    // to do...
+
+    // unknown type
+    return false;
+}
+
+

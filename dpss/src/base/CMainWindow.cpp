@@ -40,11 +40,9 @@ void CMainWindow::addDocument(const CDocument& doc)
 void CMainWindow::init(int argc, char *argv[])
 {
     createMainMenu();
-
     createFileToolbar();
 
     updateTitle();
-
     updateActions();
 
     processParams(argc, argv);
@@ -237,7 +235,7 @@ void CMainWindow::on_actionOpen_triggered()
     QString filter = tr("Any File (*.*)");
     onOpenDocumentDialog(title, filter);
 
-    QString fileName = QFileDialog::getOpenFileName(NULL, title, m_currentFileName, filter);
+    QString fileName = QFileDialog::getOpenFileName(NULL, title, m_currentFileName, filter, &m_lastOpenFilter);
     if (fileName.isEmpty())
         return;
 
@@ -304,7 +302,11 @@ void CMainWindow::onOpenDocumentDialog(QString &title, QString &filter)
     if (allFilters.size())
     {
         allFilters.chop(1);
-        filter += tr("Any supported format (%1)").arg(allFilters);
+        allFilters = tr("Any supported format (%1)").arg(allFilters);
+        filter += allFilters;
+
+        if (m_lastOpenFilter.isEmpty())
+            m_lastOpenFilter = allFilters;
     }
 }
 
@@ -317,7 +319,7 @@ void CMainWindow::on_actionSave_triggered()
         return;
     }
 
-    doSaveDocument(m_currentFileName);
+    doSaveDocument(m_currentFileName, "", m_currentDocType);
 }
 
 
@@ -342,20 +344,22 @@ void CMainWindow::on_actionSaveAs_triggered()
     QString title = tr("Save File");
     onSaveDocumentDialog(title, filter);
 
-    QString fileName = QFileDialog::getSaveFileName(NULL, title, m_currentFileName, filter);
+    QString selectedFilter = m_lastSaveFilter;
+    QString fileName = QFileDialog::getSaveFileName(NULL, title, m_currentFileName, filter, &selectedFilter);
     if (fileName.isEmpty())
         return;
 
-    doSaveDocument(fileName);
+    doSaveDocument(fileName, selectedFilter, m_currentDocType);
 }
 
 
-void CMainWindow::doSaveDocument(const QString &fileName)
+void CMainWindow::doSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType)
 {
-    if (onSaveDocument(fileName))
+    if (onSaveDocument(fileName, selectedFilter, docType))
     {
         m_currentFileName = fileName;
         m_isChanged = false;
+        m_lastSaveFilter = selectedFilter;
 
         statusBar()->showMessage(tr("Document saved successfully."));
 

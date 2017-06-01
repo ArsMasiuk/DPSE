@@ -137,6 +137,9 @@ public:
 
 	template<class T = CItem>
 	QList<T*> getItemsById(const QString& id) const;
+
+	virtual void beginSelection();
+	virtual void endSelection();
  
 	// callbacks
 	virtual void onItemDestroyed(CItem *citem);

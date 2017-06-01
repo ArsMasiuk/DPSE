@@ -1016,6 +1016,8 @@ void CEditorScene::onActionSelectAll()
 }
 
 
+// selections
+
 void CEditorScene::selectAll() 
 {
 	QList<QGraphicsItem*> itemList = items();
@@ -1045,6 +1047,20 @@ void CEditorScene::deselectAll()
 		item->setSelected(false);
 
 	blocker.unblock();
+
+	Q_EMIT selectionChanged();
+}
+
+
+void CEditorScene::beginSelection()
+{
+	blockSignals(true);
+}
+
+
+void CEditorScene::endSelection()
+{
+	blockSignals(false);
 
 	Q_EMIT selectionChanged();
 }

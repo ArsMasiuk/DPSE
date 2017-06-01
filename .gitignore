@@ -56,3 +56,6 @@ _builds
 /dpss/data/test/Graph.txt
 /dpss/bin.mingw
 /dpss/build-dpss-Qt_5_7_MinGW_32bit-Release
+/dpss/src/build-qvgeapp-Desktop_Qt_5_7_0_MSVC2015_64bit-Release
+/dpss/src/build-qvgeapp-Qt_5_7_MinGW_32bit-Debug
+*.c10008
