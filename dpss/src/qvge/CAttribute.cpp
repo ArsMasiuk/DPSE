@@ -18,14 +18,18 @@ CAttribute::CAttribute()
 {
 }
 
-CAttribute::CAttribute(const QByteArray& classId, const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue)
-    : isVirtual(false),
+CAttribute::CAttribute(
+	const QByteArray& classId, const QByteArray& attrId, const QString& attrName, 
+	const QVariant& defaultValue, const RangeVariant& range)
+	: isVirtual(false),
 	valueType(defaultValue.type())
 {
 	this->classId = classId;
 	this->id = attrId;
 	this->name = attrName;
 	this->defaultValue = defaultValue;
+
+	valueRange = range;
 }
 
 bool CAttribute::storeTo(QDataStream& out, quint64 /*version64*/) const

@@ -18,12 +18,45 @@ It can be used freely, maintaining the information above.
 #include <QIcon>
 
 
+// type constrains
+
+union RangeVariant
+{
+	int rangeType = 0;
+
+	RangeVariant(): rangeType(0)
+	{}
+
+	// real value range
+	RangeVariant(double minV, double maxV, int dec) : rangeType(QVariant::Double)
+	{
+		real.minValue = minV;
+		real.maxValue = maxV;
+		real.decPoints = dec;
+	}
+
+	struct RealRange
+	{
+		int rangeType = QVariant::Double;
+		double minValue = std::numeric_limits<double>::lowest();
+		double maxValue = std::numeric_limits<double>::max();
+		int decPoints = 4;
+	} real;
+
+	RealRange getRealRange() const
+	{
+		return rangeType == QVariant::Double ? real : RealRange();
+	}
+};
+
+
 // attribute class
 
 struct CAttribute
 {
 	CAttribute();
-    CAttribute(const QByteArray& classId, const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue);
+    CAttribute(const QByteArray& classId, const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue,
+		const RangeVariant& range = RangeVariant());
 
 	QByteArray id, classId;
 	QString name;
@@ -31,6 +64,7 @@ struct CAttribute
 	bool isVirtual;	// x,y,label,color etc.
 
 	int valueType;
+	RangeVariant valueRange;
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;

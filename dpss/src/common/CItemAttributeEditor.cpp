@@ -70,7 +70,7 @@ void CItemAttributeEditor::onSceneDetached(CEditorScene* scene)
 
 void CItemAttributeEditor::onSceneChanged()
 {
-	// test
+	// update selected items after scene change
 	onSelectionChanged();
 }
 
@@ -166,11 +166,15 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 			return color;
 	}
 
+	// others
+	QString headerText = tr("Set Attribute");
+	QString labelText = attr.name + " (" + attrId + "):";
+
 	// int editor
 	if (attr.valueType == QVariant::Int || attr.valueType == QVariant::LongLong || attr.valueType == QVariant::UInt || attr.valueType == QVariant::ULongLong)
 	{
 		bool ok = true;
-		int val = QInputDialog::getInt(NULL, tr("Set Attribute"), attrId, attrValue.toInt(), INT_MIN, INT_MAX, 1, &ok);
+		int val = QInputDialog::getInt(NULL, headerText, labelText, attrValue.toInt(), INT_MIN, INT_MAX, 1, &ok);
 		if (!ok)
 			return QVariant();
 		else
@@ -178,14 +182,18 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	}
 
 	// double editor
-	if (attr.valueType == QVariant::Double)
+	if (attr.valueType == QVariant::Double || attr.valueType == QMetaType::Float)
 	{
+		auto range = attr.valueRange.getRealRange();
+
 		bool ok = true;
-        double val = QInputDialog::getDouble(NULL,
-                                             tr("Set Attribute"), attrId, attrValue.toDouble(),
-                                             std::numeric_limits<double>::min(),
-                                             std::numeric_limits<double>::max(),
-                                             4, &ok);
+        double val = QInputDialog::getDouble(NULL, headerText, labelText,
+			attrValue.toDouble(),
+			range.minValue,
+			range.maxValue,
+			range.decPoints,
+			&ok);
+
 		if (!ok)
 			return QVariant();
 		else
@@ -201,7 +209,7 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 		{
 			int index = constrainsList->ids.indexOf(attrValue.toString());
 			int newIndex = CExtListInputDialog::getItemIndex(
-				tr("Set Attribute"), attr.name, 
+				headerText, labelText,
 				constrainsList->names, constrainsList->icons, 
 				index);
 			
@@ -213,7 +221,7 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	}
 
 	// default: edit as string
-	QString val = QInputDialog::getText(NULL, tr("Set Attribute"), attrId, QLineEdit::Normal, attrValue.toString());
+	QString val = QInputDialog::getText(NULL, headerText, labelText, QLineEdit::Normal, attrValue.toString());
 	if (val.isEmpty())
 		return QVariant();
 	else

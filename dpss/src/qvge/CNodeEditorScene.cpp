@@ -34,8 +34,7 @@ void CNodeEditorScene::initialize()
     CAttribute shapeAttr("node", "shape", "Shape", "disc");
 	setClassAttribute(shapeAttr);
 
-	CAttribute sizeAttr("node", "size", "Size", 11.0f);
-	sizeAttr.valueType = QMetaType::Float;
+	CAttribute sizeAttr("node", "size", "Size", 11.0, RangeVariant(0.1, 1000.0, 1));
 	setClassAttribute(sizeAttr);
 
     CAttribute posAttr("node", "pos", "Position", QPointF());
@@ -48,8 +47,7 @@ void CNodeEditorScene::initialize()
 	CAttribute directionAttr("edge", "direction", "Direction", "directed");
 	setClassAttribute(directionAttr);
 
-	CAttribute weightAttr("edge", "weight", "Weight", 1.0f);
-	weightAttr.valueType = QMetaType::Float;
+	CAttribute weightAttr("edge", "weight", "Weight", 1.0);
 	setClassAttribute(weightAttr);
 }
 
