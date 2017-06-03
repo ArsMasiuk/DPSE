@@ -18,6 +18,8 @@ It can be used freely, maintaining the information above.
 #include <QInputDialog>
 #include <QColorDialog>
 #include <QMessageBox>
+#include <QDebug>
+#include <QElapsedTimer>
 
 
 static int ClassRole = Qt::UserRole + 1;
@@ -77,6 +79,9 @@ void CItemAttributeEditor::onSelectionChanged()
 {
 	ui.Editor->clear();
 
+	QElapsedTimer tm;
+	tm.start();
+
 	QList<CItem*> nodes = m_scene->getSelectedItems<CNode, CItem>();
 	QList<CItem*> edges = m_scene->getSelectedItems<CConnection, CItem>();
 
@@ -90,6 +95,8 @@ void CItemAttributeEditor::onSelectionChanged()
 
 	listAttributes(inodes, nodes, "node");
     listAttributes(iedges, edges, "edge");
+
+	qDebug() << "CItemAttributeEditor::onSelectionChanged(): " << tm.elapsed();
 }
 
 

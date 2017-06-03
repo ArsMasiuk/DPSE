@@ -91,7 +91,7 @@ void CAttributeEditor::onSceneChanged()
 
 void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem* classTreeItem)
 {
-	AttributesMap attrs = m_scene->getClassAttributes(classId, false);
+	AttributesMap attrs = m_scene->getClassAttributes(classId, true);
     QSet<QByteArray> visIds = m_scene->getVisibleClassAttributes(classId, false);
 
 	for (auto attr : attrs)

@@ -90,12 +90,15 @@ void CCommutationTable::onSceneChanged()
 	ui.Table->blockSignals(true);
 
 	ui.Table->clear();
+	m_edgeItemMap.clear();
 
 	QList<CConnection*> edges = m_scene->getItems<CConnection>();
 	for (auto edge : edges)
 	{
 		auto item = new NumSortItem();
 		ui.Table->addTopLevelItem(item);
+
+		m_edgeItemMap[edge] = item;
 
 		item->setText(0, edge->firstNode()->getId());
 		item->setText(1, edge->lastNode()->getId());
@@ -104,6 +107,9 @@ void CCommutationTable::onSceneChanged()
 
 	ui.Table->setUpdatesEnabled(true);
 	ui.Table->blockSignals(false);
+
+	// update active selections if any
+	onSelectionChanged();
 }
 
 void CCommutationTable::onSelectionChanged()
@@ -120,29 +126,31 @@ void CCommutationTable::onSelectionChanged()
 	QElapsedTimer tm;
 	tm.start();
 
-	QItemSelection sel;
+	QItemSelection selection;
 
 	for (auto edge : edges)
 	{
-		auto edgeId = edge->getId();
-		auto foundItems = ui.Table->findItems(edgeId, Qt::MatchCaseSensitive, 2);
-		for (auto item : foundItems)
+		if (m_edgeItemMap.contains(edge))
 		{
+			auto item = m_edgeItemMap[edge];
 			scrollItem = item;
 
 			//item->setSelected(true);
 			// version with QModelIndex is many ways faster...
 			int row = ui.Table->indexOfTopLevelItem(item);
-			QModelIndex index = ui.Table->model()->index(row, 0);
-			QModelIndex index2 = ui.Table->model()->index(row, 2);
-			sel.merge(QItemSelection(index, index2), QItemSelectionModel::Select);
+
+			QModelIndex leftIndex = ui.Table->model()->index(row, 0);
+			QModelIndex rightIndex = ui.Table->model()->index(row, ui.Table->columnCount() - 1);
+
+			QItemSelection rowSelection(leftIndex, rightIndex);
+			selection.append(rowSelection);
+			//selection.merge(rowSelection, QItemSelectionModel::Select);	// slow
 		}
 	}
 
-	ui.Table->selectionModel()->select(sel, QItemSelectionModel::Select);
+	ui.Table->selectionModel()->select(selection, QItemSelectionModel::Select);
 
-
-	qDebug() << "Time: " << tm.elapsed();
+	qDebug() << "CCommutationTable::onSelectionChanged(): " << tm.elapsed();
 
 	if (scrollItem)
 		ui.Table->scrollToItem(scrollItem);

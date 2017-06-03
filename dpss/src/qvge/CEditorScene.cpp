@@ -460,7 +460,11 @@ AttributesMap CEditorScene::getClassAttributes(const QByteArray& classId, bool i
 		QByteArray superId = getSuperClassId(classId);
 		while (!superId.isEmpty())
 		{
-			result = result.unite(m_classAttributes[superId]);
+			//result = result.unite(m_classAttributes[superId]);
+			// unite does not check for existing elements :(
+			// there must be insertUnique
+			Utils::insertUnique(result, m_classAttributes[superId]);
+
 			superId = getSuperClassId(superId);
 		}
 	}

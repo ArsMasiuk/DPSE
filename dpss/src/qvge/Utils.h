@@ -17,4 +17,18 @@ class Utils
 {
 public:
 	static QString variantToText(const QVariant& v);
+
+	template<class X>
+	static void insertUnique(X& dest, const X& from);
 };
+
+
+template<class X>
+void Utils::insertUnique(X& dest, const X& from)
+{
+	for (auto it = from.constBegin(); it != from.constEnd(); ++it)
+	{
+		if (!dest.contains(it.key()))
+			dest[it.key()] = it.value();
+	}
+}
