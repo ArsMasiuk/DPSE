@@ -39,10 +39,8 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	// cache
 	setCacheMode(DeviceCoordinateCache);
 
-
 	// test
 	m_labelItem = new QGraphicsTextItem(this);
-	m_labelItem->setVisible(true);
 	m_labelItem->setCacheMode(DeviceCoordinateCache);
 }
 
@@ -123,7 +121,7 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 {
 	// weight
 	bool ok = false;
-	double weight = qMax(0.0, getAttribute("weight").toDouble(&ok));
+	double weight = qMax(0.1, getAttribute("weight").toDouble(&ok));
 	if (!ok) weight = 1;
 	if (weight > 10) weight = 10;	// safety
 
@@ -153,8 +151,6 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 
 void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
-	//updateTextInfo();
-
 	// called before draw 
 	setupPainter(painter, option, widget);
 
@@ -237,9 +233,8 @@ void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /
 void CConnection::updateLabelPosition()
 {
 	int w = m_labelItem->boundingRect().width();
-	int h = m_labelItem->boundingRect().height();
 
-	m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() + h / 2);
+	m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y());
 }
 
 

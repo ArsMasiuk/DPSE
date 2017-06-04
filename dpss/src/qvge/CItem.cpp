@@ -28,9 +28,6 @@ CItem::~CItem()
 	CEditorScene *scene = getScene();
 	if (scene)
 		scene->onItemDestroyed(this);
-
-	//if (m_labelItem)
-	//	delete m_labelItem;
 }
 
 
@@ -177,45 +174,7 @@ void CItem::copyDataFrom(CItem* from)
 
 // painting
 
-void CItem::drawLabel(QPainter *painter, const QStyleOptionGraphicsItem* /*option*/)
-{
-	return;
-	/*
-
-	if (m_label && !m_label->text().isEmpty())
-	{
-		QRectF r = getSceneItem()->boundingRect();
-		QPointF p = labelOffset(r, m_label->localSize());
-
-		QRectF labelRect(getSceneItem()->mapToScene(p), m_label->localSize());
-		if (getScene()->checkLabelRegion(labelRect))
-		{
-			painter->setBrush(Qt::NoBrush);
-
-			QColor c = getAttribute("label.color").value<QColor>();
-			if (c.isValid())
-				painter->setPen(c);
-
-			bool ok = false;
-			int s = getAttribute("label.size").toInt(&ok);
-			if (ok && s > 0)
-			{
-				QFont f(painter->font());
-				f.setPointSize(s);
-				painter->setFont(f);
-			}
-
-			//painter->drawStaticText(p, *m_label);
-			painter->drawText(p.x(), p.y(), 1, 1,
-				Qt::TextDontClip,
-				m_label->text());
-		}
-	}
-	*/
-}
-
-
-void CItem::updateTextInfo()
+void CItem::updateLabelContent()
 {
 	if (!(m_internalStateFlags & IS_Attribute_Changed) && 
 		!(getScene()->itemLabelsEnabled()) &&
@@ -225,16 +184,32 @@ void CItem::updateTextInfo()
 
 	resetItemStateFlag(IS_Attribute_Changed);
 
+	if (!m_labelItem)
+		return;
+
 	QString labelToShow;
 	auto idsToShow = getVisibleAttributeIds(CItem::VF_LABEL);
 	for (const QByteArray& id : idsToShow)
 	{
 		QString text = Utils::variantToText(getAttribute(id));
 		if (labelToShow.size()) labelToShow += "\n";
-		labelToShow += QString("%1: \t%2").arg(QString(id)).arg(text);
+		labelToShow += QString("%1: %2").arg(QString(id)).arg(text);
 	}
 	
 	setLabelText(labelToShow);
+
+	QColor c = getAttribute("label.color").value<QColor>();
+	if (c.isValid())
+		m_labelItem->setDefaultTextColor(c);
+
+	bool ok = false;
+	int s = getAttribute("label.size").toInt(&ok);
+	if (ok && s > 0)
+	{
+		QFont f(m_labelItem->font());
+		f.setPointSize(s);
+		m_labelItem->setFont(f);
+	}
 }
 
 
@@ -273,7 +248,7 @@ void CItem::onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent*)
 	{
 		QString text = Utils::variantToText(getAttribute(id));
 		if (tooltipToShow.size()) tooltipToShow += "\n";
-		tooltipToShow += QString("%1: %2").arg(QString(id)).arg(text);
+		tooltipToShow += QString("%1: \t%2").arg(QString(id)).arg(text);
 	}
 
 	sceneItem->setToolTip(tooltipToShow);

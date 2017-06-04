@@ -99,11 +99,10 @@ public:
 	}
 
 	// labels
-	virtual void drawLabel(QPainter *painter, const QStyleOptionGraphicsItem *option);
-	virtual void updateTextInfo();
-	virtual void setLabelText(const QString& text);
-	virtual void showLabel(bool on);
+	virtual void updateLabelContent();
 	virtual void updateLabelPosition() {}
+	void setLabelText(const QString& text);
+	void showLabel(bool on);
 	QRectF getSceneLabelRect() const; 
 
 	// serialization 

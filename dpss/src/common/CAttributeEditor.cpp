@@ -34,7 +34,6 @@ CAttributeEditor::~CAttributeEditor()
 
 void CAttributeEditor::setScene(CEditorScene* scene)
 {
-	ui.ClassSelectorCB->clear();
 	ui.AttributeList->clear();
 
 	if (m_scene)
@@ -68,7 +67,6 @@ void CAttributeEditor::onSceneChanged()
 	ui.AttributeList->setUpdatesEnabled(false);
 	ui.AttributeList->blockSignals(true);
 
-	ui.ClassSelectorCB->clear();
 	ui.AttributeList->clear();
 
 	QByteArrayList classIds = m_scene->getClasses();

@@ -69,6 +69,9 @@ struct CAttribute
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);
+
+	// dummy member
+	QByteArray classId;
 };
 
 typedef QMap<QByteArray, CAttribute> AttributesMap;		// <attr.id, attr>

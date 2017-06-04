@@ -27,7 +27,7 @@ It can be used freely, maintaining the information above.
 #include <qopengl.h>
 
 
-const quint64 version64 = 5;	// build
+const quint64 version64 = 6;	// build
 const char* versionId = "VersionId";
 
 
@@ -316,7 +316,7 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 	}
 
 	// attributes
-	if (version64 >= 3)
+	if (storedVersion >= 3)
 	{
 		int classAttrSize = 0;
 		out >> classAttrSize;
@@ -324,7 +324,8 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 		for (int i = 0; i < classAttrSize; ++i)
 		{
 			QByteArray classId;
-			out >> classId;
+			if (storedVersion >= 6)
+				out >> classId;
 
 			int attrSize = 0;
 			out >> attrSize;
@@ -332,8 +333,13 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 			for (int j = 0; j < attrSize; ++j)
 			{
 				CAttribute attr;
-				if (attr.restoreFrom(out, version64))
+				if (attr.restoreFrom(out, storedVersion))
+				{
+					if (storedVersion < 6)
+						classId = attr.classId;		// deprecated for now
+
 					setClassAttribute(classId, attr);
+				}
 				else
 					return false;
 			}
@@ -341,7 +347,7 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 	}
 
 	// visible attributes
-	if (version64 >= 5)
+	if (storedVersion >= 5)
 	{
 		out >> m_classToSuperIds;
 		out >> m_classAttributesVis;
@@ -721,7 +727,7 @@ void CEditorScene::layoutItemLabels()
 	// else layout texts
 	for (auto citem : allItems)
 	{
-		citem->updateTextInfo();
+		citem->updateLabelContent();
 
 		citem->updateLabelPosition();
 

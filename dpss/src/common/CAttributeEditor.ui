@@ -27,10 +27,10 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QComboBox" name="ClassSelectorCB"/>
-   </item>
-   <item>
     <widget class="QTreeWidget" name="AttributeList">
+     <property name="indentation">
+      <number>8</number>
+     </property>
      <property name="allColumnsShowFocus">
       <bool>true</bool>
      </property>

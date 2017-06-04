@@ -38,10 +38,16 @@ bool CAttribute::storeTo(QDataStream& out, quint64 /*version64*/) const
 	return true;
 }
 
-bool CAttribute::restoreFrom(QDataStream& out, quint64 /*version64*/)
+bool CAttribute::restoreFrom(QDataStream& out, quint64 version64)
 {
+	out >> id;
+
     static bool dummy;
-    out >> id >> name >> defaultValue >> dummy >> isVirtual;
+
+	if (version64 < 6)
+		out >> classId;	// dummy value
+
+    out >> name >> defaultValue >> dummy >> isVirtual;
 
 	valueType = defaultValue.type();
 

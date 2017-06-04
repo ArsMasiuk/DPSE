@@ -31,10 +31,8 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	// cache
 	setCacheMode(DeviceCoordinateCache);
 
-
 	// test
 	m_labelItem = new QGraphicsTextItem(this);
-	m_labelItem->setVisible(true);
 	m_labelItem->setCacheMode(DeviceCoordinateCache);
 }
 
@@ -466,10 +464,8 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 }
 
 
-void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget * /*widget*/)
+void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 {
-	//updateTextInfo();
-
 	QRectF r = Shape::boundingRect();
 
 	// get color (to optimize!)
@@ -529,12 +525,6 @@ QRectF CNode::boundingRect() const
 {
 	QRectF r = Shape::boundingRect();
 
-	//if (getScene()->itemLabelsEnabled() && m_label && !m_label->text().isEmpty())
-	//{
-	//	QPointF p = labelOffset(r, m_label->localSize());
-	//	r |= QRectF(p, m_label->localSize());
-	//}
-
 	// in case of bold selection
 	return r.adjusted(-3, -3, 3, 3);
 }
@@ -544,7 +534,7 @@ void CNode::updateLabelPosition()
 {
 	int w = m_labelItem->boundingRect().width();
 
-	m_labelItem->setPos(-w / 2, boundingRect().height() );
+	m_labelItem->setPos(-w / 2, boundingRect().height());
 }
 
 
