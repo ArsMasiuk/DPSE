@@ -74,11 +74,11 @@ void CEditorScene::initialize()
 	m_classAttributesVis.clear();
 
 	// default item attr
-    CAttribute labelAttr("item", "label", "Label", "");
-    setClassAttribute(labelAttr, true);
+    CAttribute labelAttr("label", "Label", "");
+    setClassAttribute("item", labelAttr, true);
 
-    CAttribute idAttr("item", "id", "ID", "");
-    setClassAttribute(idAttr, true); 
+    CAttribute idAttr("id", "ID", "");
+    setClassAttribute("item", idAttr, true);
 
 	// static init
 	static bool s_init = false;
@@ -236,10 +236,11 @@ bool CEditorScene::storeTo(QDataStream& out) const
 	out << (quint64)0x12345678;
 
 	out << m_classAttributes.size();
-	for (auto classAttrs : m_classAttributes)
+	for (auto classAttrsIt = m_classAttributes.constBegin(); classAttrsIt != m_classAttributes.constEnd(); ++classAttrsIt)
 	{
-		out << classAttrs.size();
-		for (auto attr : classAttrs)
+		out << classAttrsIt.key();
+		out << classAttrsIt.value().size();
+		for (auto attr : classAttrsIt.value())
 		{
 			attr.storeTo(out, version64);
 		}
@@ -320,6 +321,9 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 
 		for (int i = 0; i < classAttrSize; ++i)
 		{
+			QByteArray classId;
+			out >> classId;
+
 			int attrSize = 0;
 			out >> attrSize;
 
@@ -327,7 +331,7 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 			{
 				CAttribute attr;
 				if (attr.restoreFrom(out, version64))
-					setClassAttribute(attr);
+					setClassAttribute(classId, attr);
 				else
 					return false;
 			}
@@ -400,11 +404,11 @@ CItem* CEditorScene::createItemOfType(const QByteArray &id) const
 
 // attributes
 
-void CEditorScene::setClassAttribute(const CAttribute& attr, bool vis) 
+void CEditorScene::setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis)
 {
-	m_classAttributes[attr.classId][attr.id] = attr;
+	m_classAttributes[classId][attr.id] = attr;
 
-	setClassAttributeVisible(attr.classId, attr.id, vis);
+	setClassAttributeVisible(classId, attr.id, vis);
 }
 
 
@@ -661,6 +665,21 @@ void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 	//qDebug() << lines.size();
 
 	painter->drawLines(lines.data(), lines.size());
+
+	// labels
+	if (itemLabelsEnabled())
+	{
+		QList<CItem*> allItems = getItems<CItem>();
+		for (auto citem : allItems)
+		{
+			if (citem)
+			{
+				//citem->updateTextInfo();
+				//citem->drawLabel(painter, NULL);
+				painter->drawText(citem->getSceneItem()->pos(), citem->getId());
+			}
+		}
+	}
 }
 
 void CEditorScene::drawForeground(QPainter *painter, const QRectF &r)

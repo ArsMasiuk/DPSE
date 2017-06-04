@@ -55,10 +55,10 @@ union RangeVariant
 struct CAttribute
 {
 	CAttribute();
-    CAttribute(const QByteArray& classId, const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue,
+    CAttribute(const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue,
 		const RangeVariant& range = RangeVariant());
 
-	QByteArray id, classId;
+	QByteArray id;
 	QString name;
 	QVariant defaultValue;
 	bool isVirtual;	// x,y,label,color etc.

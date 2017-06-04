@@ -28,27 +28,27 @@ void CNodeEditorScene::initialize()
 	Super::initialize();
 
 	// default node attr
-    CAttribute nodeAttr("node", "color", "Color", QColor(Qt::magenta));
-	setClassAttribute(nodeAttr);
+    CAttribute nodeAttr("color", "Color", QColor(Qt::magenta));
+	setClassAttribute("node", nodeAttr);
 
-    CAttribute shapeAttr("node", "shape", "Shape", "disc");
-	setClassAttribute(shapeAttr);
+    CAttribute shapeAttr("shape", "Shape", "disc");
+	setClassAttribute("node", shapeAttr);
 
-	CAttribute sizeAttr("node", "size", "Size", 11.0, RangeVariant(0.1, 1000.0, 1));
-	setClassAttribute(sizeAttr);
+	CAttribute sizeAttr("size", "Size", 11.0, RangeVariant(0.1, 1000.0, 1));
+	setClassAttribute("node", sizeAttr);
 
-    CAttribute posAttr("node", "pos", "Position", QPointF());
-    setClassAttribute(posAttr, true);
+    CAttribute posAttr("pos", "Position", QPointF());
+    setClassAttribute("node", posAttr, true);
 
 	// default edge attr
-    CAttribute edgeAttr("edge", "color", "Color", QColor(Qt::gray));
-	setClassAttribute(edgeAttr);
+    CAttribute edgeAttr("color", "Color", QColor(Qt::gray));
+	setClassAttribute("edge", edgeAttr);
 
-	CAttribute directionAttr("edge", "direction", "Direction", "directed");
-	setClassAttribute(directionAttr);
+	CAttribute directionAttr("direction", "Direction", "directed");
+	setClassAttribute("edge", directionAttr);
 
-	CAttribute weightAttr("edge", "weight", "Weight", 1.0);
-	setClassAttribute(weightAttr);
+	CAttribute weightAttr("weight", "Weight", 1.0);
+	setClassAttribute("edge", weightAttr);
 }
 
 

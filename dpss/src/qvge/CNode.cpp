@@ -3,11 +3,12 @@
 
 #include <QPen>
 #include <QBrush>
+#include <QEvent>
 
 ////////////////////////////////////////////////////////////////////
 /// \brief CNode::CNode
 
-CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
+CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent) 
 {
 	// no selection frame
 	setItemFlag(IF_FramelessSelection);
@@ -23,6 +24,9 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	
 	// accept hovers
 	setAcceptHoverEvents(true);
+
+	// cache
+	setCacheMode(DeviceCoordinateCache);
 }
 
 
@@ -455,7 +459,7 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 
 void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget * /*widget*/)
 {
-	updateTextInfo();
+	//updateTextInfo();
 
 	QRectF r = Shape::boundingRect();
 
@@ -516,32 +520,33 @@ QRectF CNode::boundingRect() const
 {
 	QRectF r = Shape::boundingRect();
 
-	if (getScene()->itemLabelsEnabled() && m_label && !m_label->text().isEmpty())
-	{
-		QPointF p = labelOffset(r, m_label->localSize());
-		r |= QRectF(p, m_label->localSize());
-	}
+	//if (getScene()->itemLabelsEnabled() && m_label && !m_label->text().isEmpty())
+	//{
+	//	QPointF p = labelOffset(r, m_label->localSize());
+	//	r |= QRectF(p, m_label->localSize());
+	//}
 
 	// in case of bold selection
 	return r.adjusted(-3, -3, 3, 3);
 }
 
 
-void CNode::hoverEnterEvent(QGraphicsSceneHoverEvent* /*event*/)
+void CNode::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
 	m_internalStateFlags |= IS_Hover;
 
-	onHoverEnter();
+	onHoverEnter(this, event);
 
 	update();
 }
 
 
-void CNode::hoverLeaveEvent(QGraphicsSceneHoverEvent* /*event*/)
+void CNode::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
 	m_internalStateFlags &= ~IS_Hover;
 
-	onHoverLeave();
+	onHoverLeave(this, event);
 
 	update();
 }
+

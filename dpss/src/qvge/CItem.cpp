@@ -108,7 +108,7 @@ QVariant CItem::getAttribute(const QByteArray& attrId) const
 	if (m_attributes.contains(attrId))
 		return m_attributes[attrId];
 
-	return  getClassAttribute(attrId);
+	return getClassAttribute(attrId);
 }
 
 QSet<QByteArray> CItem::getVisibleAttributeIds(int flags) const
@@ -179,6 +179,8 @@ void CItem::copyDataFrom(CItem* from)
 
 void CItem::drawLabel(QPainter *painter, const QStyleOptionGraphicsItem* /*option*/)
 {
+	return;
+
 	if (m_label && !m_label->text().isEmpty())
 	{
 		QRectF r = getSceneItem()->boundingRect();
@@ -259,3 +261,21 @@ void CItem::setLabelText(const QString& text)
 	m_label->setText(text);
 }
 
+
+// callbacks
+
+void CItem::onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent*)
+{
+	// update tooltip
+	QString tooltipToShow;
+
+	auto idsToShow = getVisibleAttributeIds(CItem::VF_TOOLTIP);
+	for (const QByteArray& id : idsToShow)
+	{
+		QString text = Utils::variantToText(getAttribute(id));
+		if (tooltipToShow.size()) tooltipToShow += "\n";
+		tooltipToShow += QString("%1: \t%2").arg(QString(id)).arg(text);
+	}
+
+	sceneItem->setToolTip(tooltipToShow);
+}

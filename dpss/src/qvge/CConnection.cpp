@@ -32,6 +32,12 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	
 	// no selection frame
 	setItemFlag(IF_FramelessSelection);
+
+	// accept hovers
+	setAcceptHoverEvents(true);
+
+	// cache
+	setCacheMode(DeviceCoordinateCache);
 }
 
 
@@ -141,7 +147,7 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 
 void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
-	updateTextInfo();
+	//updateTextInfo();
 
 	// called before draw 
 	setupPainter(painter, option, widget);
@@ -456,5 +462,11 @@ QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const
 	}
 
 	return value;
+}
+
+
+void CConnection::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
+	onHoverEnter(this, event);
 }
 

@@ -101,6 +101,8 @@ public:
 	// painting
 	virtual void drawLabel(QPainter *painter, const QStyleOptionGraphicsItem *option);
 	virtual QPointF labelOffset(const QRectF& itemRect, const QSizeF& labelSize) const;
+	virtual void updateTextInfo();
+	virtual void setLabelText(const QString& text);
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
@@ -116,8 +118,8 @@ public:
 
 	// callbacks
 	virtual void onItemMoved() {}
-	virtual void onHoverEnter() {}
-	virtual void onHoverLeave() {}
+	virtual void onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent* event);
+	virtual void onHoverLeave(QGraphicsItem* /*sceneItem*/, QGraphicsSceneHoverEvent* /*event*/) {}
 	virtual void onDraggedOver(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
 	virtual void onDroppedOn(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
 
@@ -127,9 +129,6 @@ public:
 
 protected:
 	virtual void copyDataFrom(CItem* from);
-
-	virtual void updateTextInfo();
-	virtual void setLabelText(const QString& text);
 
 	// called after restoring data (reimplement to update cached attribute values)
 	virtual void updateCachedItems() {}

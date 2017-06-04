@@ -118,7 +118,7 @@ public:
 
 	bool removeClassAttribute(const QByteArray& classId, const QByteArray& attrId);
 
-	void setClassAttribute(const CAttribute& attr, bool vis = false);
+	void setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis = false);
 
 	AttributesMap getClassAttributes(const QByteArray& classId, bool inherited) const;
 	

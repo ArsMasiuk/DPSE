@@ -147,8 +147,8 @@ void CAttributeEditor::on_AddButton_clicked()
     if (!selItems.isEmpty())
         classId = selItems.first()->data(0, ClassRole).toByteArray();
 
-    CAttribute attr(classId, attrId, name, v);
-    m_scene->setClassAttribute(attr, false);
+    CAttribute attr(attrId, name, v);
+    m_scene->setClassAttribute(classId, attr, false);
 
     m_scene->addUndoState();
 }

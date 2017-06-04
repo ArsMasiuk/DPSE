@@ -80,7 +80,7 @@ bool CFileSerializerGraphML::readAttrKey(int /*index*/, const QDomNode & domNode
 
 	CAttribute attr;
 	attr.id = valueId.toLower().toLatin1();
-	attr.classId = classId.toLower().toLatin1();
+	QByteArray attrclassId = classId.toLower().toLatin1();
 	attr.name = valueId; // ?
 
 	if (valueType == "integer")			
@@ -92,9 +92,9 @@ bool CFileSerializerGraphML::readAttrKey(int /*index*/, const QDomNode & domNode
 	else
 		attr.defaultValue.setValue(elem.text());
 
-	scene.setClassAttribute(attr);
+	scene.setClassAttribute(attrclassId, attr);
 
-	cka[key.toLatin1()] = ClassAttrId(attr.classId, attr.id);	// d0 = node:x
+	cka[key.toLatin1()] = ClassAttrId(attrclassId, attr.id);	// d0 = node:x
 
 	return true;
 }
