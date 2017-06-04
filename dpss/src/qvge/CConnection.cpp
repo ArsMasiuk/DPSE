@@ -38,6 +38,12 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 
 	// cache
 	setCacheMode(DeviceCoordinateCache);
+
+
+	// test
+	m_labelItem = new QGraphicsTextItem(this);
+	m_labelItem->setVisible(true);
+	m_labelItem->setCacheMode(DeviceCoordinateCache);
 }
 
 
@@ -183,14 +189,7 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 	// draw text label
 	if (getScene()->itemLabelsEnabled())
-		drawLabel(painter, option);
-}
-
-
-QPointF CConnection::labelOffset(const QRectF& /*itemRect*/, const QSizeF& labelSize) const
-{
-	// center label over line rect
-	return m_controlPos - QPointF(labelSize.width() / 2, -labelSize.height() / 2);
+		updateLabelPosition();
 }
 
 
@@ -228,10 +227,19 @@ void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /
 
 	painter->translate(first ? direction.p1() : direction.p2());
 	painter->rotate(first ? a : 180 + a);
-	painter->translate(QPointF(0, shift+1));
+	painter->translate(QPointF(0, shift + 1));
 	painter->drawPolygon(arrowHead);
 
 	painter->restore();
+}
+
+
+void CConnection::updateLabelPosition()
+{
+	int w = m_labelItem->boundingRect().width();
+	int h = m_labelItem->boundingRect().height();
+
+	m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() + h / 2);
 }
 
 

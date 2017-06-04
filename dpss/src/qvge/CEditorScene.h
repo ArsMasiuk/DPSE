@@ -146,6 +146,7 @@ public:
 
 	// other
 	bool checkLabelRegion(const QRectF& r);
+	void layoutItemLabels();
 
 public Q_SLOTS:
     void enableGrid(bool on = true);
@@ -194,6 +195,8 @@ protected:
 	virtual void onLeftClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* /*clickedItem*/) {}
 	virtual void onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 
+	virtual void onSceneChanged();
+
 private:
 	void updateSceneCursor();
 	void removeItems();
@@ -218,7 +221,6 @@ private:
     bool m_gridEnabled;
     bool m_gridSnap;
     QPen m_gridPen;
-	bool m_labelsEnabled, m_labelsUpdate;
 
 	QSet<CItem*> m_acceptedHovers, m_rejectedHovers;
 
@@ -227,8 +229,9 @@ private:
 
 	QCursor m_sceneCursor;
 
-	// paint speedups
+	// labels
 	QPainterPath m_usedLabelsRegion;
+	bool m_labelsEnabled, m_labelsUpdate;
 };
 
 

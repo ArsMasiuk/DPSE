@@ -21,6 +21,8 @@ It can be used freely, maintaining the information above.
 #include <QInputDialog>
 #include <QMimeData>
 #include <QClipboard>
+#include <QDebug>
+#include <QElapsedTimer>
 
 #include <qopengl.h>
 
@@ -138,7 +140,7 @@ void CEditorScene::enableItemLabels(bool on)
 {
 	m_labelsEnabled = on;
 
-	update();
+	layoutItemLabels();
 }
 
 
@@ -152,7 +154,7 @@ void CEditorScene::undo()
 
 		checkUndoState();
 
-		Q_EMIT sceneChanged();
+		onSceneChanged();
 	}
 }
 
@@ -164,7 +166,7 @@ void CEditorScene::redo()
 
 		checkUndoState();
 
-		Q_EMIT sceneChanged();
+		onSceneChanged();
 	}
 }
 
@@ -184,7 +186,7 @@ void CEditorScene::addUndoState()
 	}
 
 	// notification
-	Q_EMIT sceneChanged();
+	onSceneChanged();
 }
 
 int CEditorScene::availableUndoCount() const 
@@ -626,13 +628,18 @@ void CEditorScene::onItemDestroyed(CItem *citem)
 }
 
 
+void CEditorScene::onSceneChanged()
+{
+	Q_EMIT sceneChanged();
+
+	layoutItemLabels();
+}
+
+
 // protected
 
 void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 {
-	// reset region
-	m_usedLabelsRegion = QPainterPath();
-
 //	if (painter->paintEngine()->type() == QPaintEngine::OpenGL || painter->paintEngine()->type() == QPaintEngine::OpenGL2)
 //	{
 //		glClearColor(1, 1, 1, 1.0f);
@@ -665,22 +672,8 @@ void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 	//qDebug() << lines.size();
 
 	painter->drawLines(lines.data(), lines.size());
-
-	// labels
-	if (itemLabelsEnabled())
-	{
-		QList<CItem*> allItems = getItems<CItem>();
-		for (auto citem : allItems)
-		{
-			if (citem)
-			{
-				//citem->updateTextInfo();
-				//citem->drawLabel(painter, NULL);
-				painter->drawText(citem->getSceneItem()->pos(), citem->getId());
-			}
-		}
-	}
 }
+
 
 void CEditorScene::drawForeground(QPainter *painter, const QRectF &r)
 {
@@ -690,13 +683,54 @@ void CEditorScene::drawForeground(QPainter *painter, const QRectF &r)
 	m_labelsUpdate = false;
 }
 
+
 bool CEditorScene::checkLabelRegion(const QRectF &r)
 {
+	if (!r.isValid())
+		return false;
+
 	if (m_usedLabelsRegion.intersects(r))
 		return false;
 
 	m_usedLabelsRegion.addRect(r);
 	return true;
+}
+
+
+void CEditorScene::layoutItemLabels()
+{
+	// reset region
+	m_usedLabelsRegion = QPainterPath();
+
+	QList<CItem*> allItems = getItems<CItem>();
+
+	// hide all if disabled
+	if (!m_labelsEnabled)
+	{
+		for (auto citem : allItems)
+		{
+			citem->showLabel(false);
+		}
+
+		return;
+	}
+
+	QElapsedTimer tm;
+	tm.start();
+
+	// else layout texts
+	for (auto citem : allItems)
+	{
+		citem->updateTextInfo();
+
+		citem->updateLabelPosition();
+
+		QRectF labelRect = citem->getSceneLabelRect();
+		
+		citem->showLabel(checkLabelRegion(labelRect));
+	}
+
+	qDebug() << "layout labels: " << tm.elapsed();
 }
 
 

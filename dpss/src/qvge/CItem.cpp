@@ -16,7 +16,7 @@ It can be used freely, maintaining the information above.
 
 CItem::CItem()
 {
-	m_label = NULL;
+	m_labelItem = NULL;
 
 	// default item flags
 	m_itemFlags = IF_DeleteAllowed | IF_FramelessSelection;
@@ -29,8 +29,8 @@ CItem::~CItem()
 	if (scene)
 		scene->onItemDestroyed(this);
 
-	if (m_label)
-		delete m_label;
+	//if (m_labelItem)
+	//	delete m_labelItem;
 }
 
 
@@ -180,6 +180,7 @@ void CItem::copyDataFrom(CItem* from)
 void CItem::drawLabel(QPainter *painter, const QStyleOptionGraphicsItem* /*option*/)
 {
 	return;
+	/*
 
 	if (m_label && !m_label->text().isEmpty())
 	{
@@ -210,15 +211,9 @@ void CItem::drawLabel(QPainter *painter, const QStyleOptionGraphicsItem* /*optio
 				m_label->text());
 		}
 	}
+	*/
 }
 
-
-QPointF CItem::labelOffset(const QRectF& itemRect, const QSizeF& labelSize) const
-{
-	qreal rx = labelSize.width() / 2;
-	qreal ry = itemRect.bottom() + 2;
-	return QPointF(-rx, ry - labelSize.height() / 2);
-}
 
 void CItem::updateTextInfo()
 {
@@ -238,27 +233,31 @@ void CItem::updateTextInfo()
 		if (labelToShow.size()) labelToShow += "\n";
 		labelToShow += QString("%1: \t%2").arg(QString(id)).arg(text);
 	}
+	
 	setLabelText(labelToShow);
-
-	QString tooltipToShow;
-	idsToShow = getVisibleAttributeIds(CItem::VF_TOOLTIP);
-	for (const QByteArray& id : idsToShow)
-	{
-		QString text = Utils::variantToText(getAttribute(id));
-		if (tooltipToShow.size()) tooltipToShow += "\n";
-		tooltipToShow += QString("%1: \t%2").arg(QString(id)).arg(text);
-	}
-	getSceneItem()->setToolTip(tooltipToShow);
 }
+
 
 void CItem::setLabelText(const QString& text)
 {
-	if (!m_label)
-	{
-		m_label = new CTextLabel();
-	}
+	if (m_labelItem)
+		m_labelItem->setPlainText(text);
+}
 
-	m_label->setText(text);
+
+void CItem::showLabel(bool on)
+{
+	if (m_labelItem)
+		m_labelItem->setVisible(on);
+}
+
+
+QRectF CItem::getSceneLabelRect() const 
+{
+	if (!m_labelItem)
+		return QRectF();
+	
+	return m_labelItem->mapRectToScene(m_labelItem->boundingRect());
 }
 
 
@@ -274,7 +273,7 @@ void CItem::onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent*)
 	{
 		QString text = Utils::variantToText(getAttribute(id));
 		if (tooltipToShow.size()) tooltipToShow += "\n";
-		tooltipToShow += QString("%1: \t%2").arg(QString(id)).arg(text);
+		tooltipToShow += QString("%1: %2").arg(QString(id)).arg(text);
 	}
 
 	sceneItem->setToolTip(tooltipToShow);

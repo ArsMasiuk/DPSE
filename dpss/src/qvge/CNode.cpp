@@ -5,6 +5,9 @@
 #include <QBrush>
 #include <QEvent>
 
+// test
+#include <QGraphicsTextItem>
+
 ////////////////////////////////////////////////////////////////////
 /// \brief CNode::CNode
 
@@ -27,6 +30,12 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 
 	// cache
 	setCacheMode(DeviceCoordinateCache);
+
+
+	// test
+	m_labelItem = new QGraphicsTextItem(this);
+	m_labelItem->setVisible(true);
+	m_labelItem->setCacheMode(DeviceCoordinateCache);
 }
 
 
@@ -512,7 +521,7 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 	// draw text label
 	if (getScene()->itemLabelsEnabled())
-		drawLabel(painter, option);
+		updateLabelPosition();
 }
 
 
@@ -530,6 +539,16 @@ QRectF CNode::boundingRect() const
 	return r.adjusted(-3, -3, 3, 3);
 }
 
+
+void CNode::updateLabelPosition()
+{
+	int w = m_labelItem->boundingRect().width();
+
+	m_labelItem->setPos(-w / 2, boundingRect().height() );
+}
+
+
+// events
 
 void CNode::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {

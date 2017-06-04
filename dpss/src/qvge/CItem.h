@@ -98,11 +98,13 @@ public:
 		return NULL;
 	}
 
-	// painting
+	// labels
 	virtual void drawLabel(QPainter *painter, const QStyleOptionGraphicsItem *option);
-	virtual QPointF labelOffset(const QRectF& itemRect, const QSizeF& labelSize) const;
 	virtual void updateTextInfo();
 	virtual void setLabelText(const QString& text);
+	virtual void showLabel(bool on);
+	virtual void updateLabelPosition() {}
+	QRectF getSceneLabelRect() const; 
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
@@ -138,7 +140,7 @@ protected:
 	int m_internalStateFlags;
 	QMap<QByteArray, QVariant> m_attributes;
 	QString m_id;
-	CTextLabel *m_label;
+	QGraphicsTextItem *m_labelItem;
 };
 
 

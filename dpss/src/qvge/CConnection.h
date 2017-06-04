@@ -92,7 +92,7 @@ protected:
 	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
-	virtual QPointF labelOffset(const QRectF& itemRect, const QSizeF& labelSize) const;
+	virtual void updateLabelPosition();
 
 	// cached attributes
 	virtual void updateCachedItems();
