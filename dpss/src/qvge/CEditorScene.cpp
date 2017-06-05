@@ -414,11 +414,34 @@ CItem* CEditorScene::createItemOfType(const QByteArray &id) const
 
 // attributes
 
+bool CEditorScene::createClassAttribute(const QByteArray& classId,
+	const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue,
+	CAttributeConstrains* constrains,
+	bool vis) 
+{
+	if (m_classAttributes[classId].contains(attrId))
+		return false;
+
+	CAttribute attr(attrId, attrName, defaultValue);
+
+	m_classAttributes[classId][attrId] = attr;
+
+	setClassAttributeVisible(classId, attrId, vis);
+
+	if (constrains)
+		setClassAttributeConstrains(classId, attrId, constrains);
+
+	return true;
+}
+
+
 void CEditorScene::setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis)
 {
 	m_classAttributes[classId][attr.id] = attr;
 
 	setClassAttributeVisible(classId, attr.id, vis);
+
+	update();
 }
 
 
@@ -427,6 +450,8 @@ bool CEditorScene::removeClassAttribute(const QByteArray& classId, const QByteAr
 	auto it = m_classAttributes.find(classId);
 	if (it == m_classAttributes.end())
 		return false;
+
+	update();
 
 	return (*it).remove(attrId);
 }
@@ -511,7 +536,6 @@ void CEditorScene::setClassAttributeConstrains(const QByteArray& classId, const 
 	else
 		m_classAttributesConstrains.remove(index);
 }
-
 
 
 // copy-paste

@@ -90,6 +90,8 @@ bool CNode::setAttribute(const QByteArray& attrId, const QVariant& v)
 {
 	setItemStateFlag(IS_Attribute_Changed);
 
+	update();
+
 	if (attrId == "size")
 	{
 		float s = v.toFloat();

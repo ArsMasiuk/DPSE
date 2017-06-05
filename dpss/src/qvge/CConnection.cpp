@@ -64,7 +64,10 @@ bool CConnection::setAttribute(const QByteArray& attrId, const QVariant& v)
 		updateArrowFlags(v.toString());
 	}
 
-	return Super::setAttribute(attrId, v);
+	bool res = Super::setAttribute(attrId, v);
+
+	if (res) update();
+	return res;
 }
 
 
@@ -77,6 +80,7 @@ bool CConnection::removeAttribute(const QByteArray& attrId)
 		updateArrowFlags(getAttribute("direction").toString());
 	}
 
+	if (res) update();
 	return res;
 }
 

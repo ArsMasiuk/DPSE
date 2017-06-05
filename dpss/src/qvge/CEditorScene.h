@@ -116,10 +116,16 @@ public:
 		return QByteArray();
 	}
 
-	bool removeClassAttribute(const QByteArray& classId, const QByteArray& attrId);
-	void setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis = false);
 	AttributesMap getClassAttributes(const QByteArray& classId, bool inherited) const;
-	
+	void setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis = false);
+	bool removeClassAttribute(const QByteArray& classId, const QByteArray& attrId);
+
+	// convenience method to create a class attribute by single call
+	bool createClassAttribute(const QByteArray& classId, 
+		const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue, 
+		CAttributeConstrains* constrains = NULL,
+		bool vis = false);
+
 	QSet<QByteArray> getVisibleClassAttributes(const QByteArray& classId, bool inherited) const;
 	void setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis = true);
 

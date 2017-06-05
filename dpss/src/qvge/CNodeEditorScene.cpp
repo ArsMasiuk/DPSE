@@ -34,9 +34,10 @@ void CNodeEditorScene::initialize()
     CAttribute shapeAttr("shape", "Shape", "disc");
 	setClassAttribute("node", shapeAttr);
 
-	CAttribute sizeAttr("size", "Size", 11.0);
-	setClassAttribute("node", sizeAttr);
-	setClassAttributeConstrains("node", "size", new CDoubleConstrains(0.1, 1000.0));
+	//CAttribute sizeAttr("size", "Size", 11.0);
+	//setClassAttribute("node", sizeAttr);
+	//setClassAttributeConstrains("node", "size", new CDoubleConstrains(0.1, 1000.0));
+	createClassAttribute("node", "size", "Size", 11.0, new CDoubleConstrains(0.1, 1000.0));
 
     CAttribute posAttr("pos", "Position", QPointF());
     setClassAttribute("node", posAttr, true);
