@@ -42,3 +42,24 @@ QString Utils::variantToText(const QVariant& v)
 	return v.toString();
 }
 
+
+QPointF Utils::closestIntersection(const QLineF& line, const QPolygonF& endPolygon)
+{
+	QPointF intersectPoint;
+
+	QPointF p1 = endPolygon.first();
+	QPointF p2;
+
+	for (int i = 1; i < endPolygon.count(); ++i) 
+	{
+		p2 = endPolygon.at(i);
+		QLineF polyLine = QLineF(p1, p2);
+		QLineF::IntersectType intersectType = polyLine.intersect(line, &intersectPoint);
+		if (intersectType == QLineF::BoundedIntersection)
+			break;
+
+		p1 = p2;
+	}
+
+	return intersectPoint;
+}

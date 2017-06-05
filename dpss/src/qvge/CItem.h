@@ -15,7 +15,6 @@ It can be used freely, maintaining the information above.
 #include <QStyleOptionGraphicsItem>
 
 #include "CEditorScene.h"
-#include "CTextLabel.h"
 #include "Properties.h"
 #include "Utils.h"
 

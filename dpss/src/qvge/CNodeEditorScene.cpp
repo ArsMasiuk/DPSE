@@ -423,10 +423,3 @@ bool CNodeEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QLis
 
 	return true;
 }
-
-// evaluators
-
-bool CNodeItems::evaluate(const QGraphicsItem& item) const
-{
-	return (dynamic_cast<const CNode*>(&item) != NULL);
-}

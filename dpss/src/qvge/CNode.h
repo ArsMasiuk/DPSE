@@ -75,8 +75,11 @@ public:
 	// returns all connections of the node.
 	QSet<CConnection*> getConnections() const { return m_connections; }
 
-	// returns true if new connection from this node is allowed
+	// returns true if new connection from this node is allowed.
 	virtual bool allowStartConnection() const;
+
+	// calculates distance to the line's end point (used to draw connections to this item).
+	virtual double getDistanceToLineEnd(const QLineF& line) const;
 
 	// callbacks
 	virtual void onConnectionAttach(CConnection *conn);
@@ -104,16 +107,10 @@ private:
 protected:
 	QSet<CConnection*> m_connections;
 	int m_nodeFlags;
+
+	QPolygonF m_shapeCache;
 };
 
-
-/// CNodeItems evaluator
-
-class CNodeItems : public CItemsEvaluator
-{
-public:
-	virtual bool evaluate(const QGraphicsItem& item) const;
-};
 
 
 #endif // CNODE_H

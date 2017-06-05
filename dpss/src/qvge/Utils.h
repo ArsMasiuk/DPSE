@@ -11,6 +11,9 @@ It can be used freely, maintaining the information above.
 
 #include <QString>
 #include <QVariant>
+#include <QPointF>
+#include <QLineF>
+#include <QPolygonF>
 
 
 class Utils
@@ -20,6 +23,8 @@ public:
 
 	template<class X>
 	static void insertUnique(X& dest, const X& from);
+
+	static QPointF closestIntersection(const QLineF& line, const QPolygonF& with);
 };
 
 

@@ -289,6 +289,22 @@ bool CNode::allowStartConnection() const
 }
 
 
+double CNode::getDistanceToLineEnd(const QLineF& line) const
+{
+	// circle 
+	if (m_shapeCache.isEmpty())
+	{
+		double shift = qMax(rect().width() / 2, rect().height() / 2);
+		return shift;
+	}
+
+	// polygon (must be cashed)
+	QPolygonF scenePolygon = m_shapeCache.translated(pos());
+	QPointF intersectionPoint = Utils::closestIntersection(line, scenePolygon);
+	return QLineF(intersectionPoint, line.p2()).length();
+}
+
+
 ///
 /// \brief CNode::onConnectionAttach
 /// \param conn
@@ -491,6 +507,7 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 	QByteArray shapeType = getAttribute("shape").toByteArray();
 	if (shapeType == "square")
 	{
+		m_shapeCache = r;
 		painter->drawRect(r);
 	}
 	else if (shapeType == "diamond")
@@ -498,22 +515,23 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 		float rx = r.center().x();
 		float ry = r.center().y();
 
-		QPolygonF pf;
-		pf << QPointF(rx, ry - r.height() / 2)
+		m_shapeCache.clear();
+		m_shapeCache << QPointF(rx, ry - r.height() / 2)
 			<< QPointF(rx + r.width() / 2, ry)
 			<< QPointF(rx, ry + r.height() / 2)
 			<< QPointF(rx - r.width() / 2, ry)
 			<< QPointF(rx, ry - r.height() / 2);
-		painter->drawPolygon(pf);
+		painter->drawPolygon(m_shapeCache);
 	}
 	else if (shapeType == "triangle")
 	{
-		QPolygonF pf;
-		pf << r.bottomLeft() << r.bottomRight() << QPointF(r.topRight() + r.topLeft()) / 2 << r.bottomLeft();
-		painter->drawPolygon(pf);
+		m_shapeCache.clear();
+		m_shapeCache << r.bottomLeft() << r.bottomRight() << QPointF(r.topRight() + r.topLeft()) / 2 << r.bottomLeft();
+		painter->drawPolygon(m_shapeCache);
 	}
 	else // "disc"
 	{
+		m_shapeCache.clear();
 		painter->drawEllipse(r);
 	}
 

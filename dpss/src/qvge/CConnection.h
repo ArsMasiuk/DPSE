@@ -107,16 +107,4 @@ protected:
 };
 
 
-/// CLineItems evaluator
-
-class CLineItems : public CItemsEvaluator
-{
-public:
-	virtual bool evaluate(const QGraphicsItem& item) const
-	{
-		return dynamic_cast<const CConnection*>(&item) != NULL;
-	}
-};
-
-
 #endif // CCONNECTION_H

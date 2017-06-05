@@ -165,7 +165,7 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 		// arrows
 		if (m_itemFlags & CF_Start_Arrow)
-			drawArrow(painter, option, true, line());
+			drawArrow(painter, option, true, QLineF(line().p2(), line().p1()));
 
 		if (m_itemFlags & CF_End_Arrow)
 			drawArrow(painter, option, false, line());
@@ -181,7 +181,7 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 		// arrows
 		if (m_itemFlags & CF_Start_Arrow)
-			drawArrow(painter, option, true, QLineF(line().p1(), m_controlPos));
+			drawArrow(painter, option, true, QLineF(m_controlPos, line().p1()));
 
 		if (m_itemFlags & CF_End_Arrow)
 			drawArrow(painter, option, false, QLineF(m_controlPos, line().p2()));
@@ -198,20 +198,12 @@ void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /
 	qreal shift = 0;
 	if (first && m_firstNode)
 	{
-		QRectF rect = m_firstNode->rect();
-		shift = qMax(rect.width() / 2, rect.height() / 2);
+		shift = m_firstNode->getDistanceToLineEnd(direction);
 	}
 	else if (!first && m_lastNode)
 	{
-		QRectF rect = m_lastNode->rect();
-		shift = qMax(rect.width() / 2, rect.height() / 2);
+		shift = m_lastNode->getDistanceToLineEnd(direction);
 	}
-
-	//qreal lineLength = line().length() - shift;
-
-	//qreal arrowSize = qMin((qreal)10, (qreal)lineLength / 3);
-	//if (arrowSize <= 1)
-	//	return;
 
 	static QPolygonF arrowHead;
 	if (arrowHead.isEmpty())
@@ -219,14 +211,13 @@ void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /
 
 	painter->save();
 
-	// painter->setPen(painter->pen().color().darker());
 	painter->setBrush(painter->pen().color());
 
 	static QLineF hl(0, 0, 0, 100);
 	qreal a = direction.angleTo(hl);
 
-	painter->translate(first ? direction.p1() : direction.p2());
-	painter->rotate(first ? a : 180 + a);
+	painter->translate(direction.p2());
+	painter->rotate(180 + a);
 	painter->translate(QPointF(0, shift + 1));
 	painter->drawPolygon(arrowHead);
 
