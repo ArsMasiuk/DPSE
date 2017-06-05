@@ -47,6 +47,12 @@ void CBranchEditorScene::initialize()
 
     // default branch attributes
     setClassAttribute("edge", CAttribute("MODEL", "Model", "branch"));
+	CAttributeConstrainsList *branchModels = new CAttributeConstrainsList;
+	branchModels->names << "Branch" << "Flow Leak" << "Regulator" << "Group Regulator";
+	branchModels->ids << "branch" << "leak" << "rrv" << "grrv";
+	setClassAttributeConstrains("edge", "MODEL", branchModels);
+
+
     setClassAttribute("edge", CAttribute("L", "L", 0.0));
     setClassAttribute("edge", CAttribute("S", "S", 0.0));
     setClassAttribute("edge", CAttribute("R", "R", 0.0));
@@ -58,11 +64,6 @@ void CBranchEditorScene::initialize()
 void CBranchEditorScene::initializeOnce()
 {
 	Super::initializeOnce();
-
-	static CAttributeConstrainsList branchModels;
-	branchModels.names << "Branch" << "Flow Leak" << "Regulator" << "Group Regulator";
-	branchModels.ids << "branch" << "leak" << "rrv" << "grrv";
-	CAttributeConstrains::setClassConstrains("edge", "MODEL", &branchModels);
 }
 
 

@@ -20,15 +20,13 @@ CAttribute::CAttribute()
 
 CAttribute::CAttribute(
 	const QByteArray& attrId, const QString& attrName, 
-	const QVariant& defaultValue, const RangeVariant& range)
+	const QVariant& defaultValue)
 	: isVirtual(false),
 	valueType(defaultValue.type())
 {
 	this->id = attrId;
 	this->name = attrName;
 	this->defaultValue = defaultValue;
-
-	valueRange = range;
 }
 
 bool CAttribute::storeTo(QDataStream& out, quint64 /*version64*/) const
@@ -57,32 +55,8 @@ bool CAttribute::restoreFrom(QDataStream& out, quint64 version64)
 
 // attribute constrains
 
-AttributeConstrainsMap CAttributeConstrains::s_constrains;
-
-
 CAttributeConstrains::~CAttributeConstrains()
 {
 	// dummy
 }
 
-
-CAttributeConstrains* CAttributeConstrains::getClassConstrains(const QByteArray& classId, const QByteArray& attrId)
-{
-	ClassAttrIndex index(classId, attrId);
-
-	if (s_constrains.contains(index))
-		return s_constrains[index];
-	else
-		return NULL;
-}
-
-
-void CAttributeConstrains::setClassConstrains(const QByteArray& classId, const QByteArray& attrId, CAttributeConstrains* cptr)
-{
-	ClassAttrIndex index(classId, attrId);
-
-	if (cptr)
-		s_constrains[index] = cptr;
-	else
-		s_constrains.remove(index);
-}

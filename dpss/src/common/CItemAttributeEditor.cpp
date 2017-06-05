@@ -173,8 +173,14 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	// int editor
 	if (attr.valueType == QVariant::Int || attr.valueType == QVariant::LongLong || attr.valueType == QVariant::UInt || attr.valueType == QVariant::ULongLong)
 	{
+		CIntegerConstrains constrains(m_scene->getClassAttributeConstrains(classId, attrId));
+
 		bool ok = true;
-		int val = QInputDialog::getInt(NULL, headerText, labelText, attrValue.toInt(), INT_MIN, INT_MAX, 1, &ok);
+		int val = QInputDialog::getInt(NULL, headerText, labelText, 
+			attrValue.toInt(), 
+			constrains.minValue, constrains.maxValue, 1, 
+			&ok);
+
 		if (!ok)
 			return QVariant();
 		else
@@ -184,14 +190,14 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	// double editor
 	if (attr.valueType == QVariant::Double || attr.valueType == QMetaType::Float)
 	{
-		auto range = attr.valueRange.getRealRange();
+		CDoubleConstrains constrains(m_scene->getClassAttributeConstrains(classId, attrId));
 
 		bool ok = true;
         double val = QInputDialog::getDouble(NULL, headerText, labelText,
 			attrValue.toDouble(),
-			range.minValue,
-			range.maxValue,
-			range.decPoints,
+			constrains.minValue,
+			constrains.maxValue,
+			constrains.decPoints,
 			&ok);
 
 		if (!ok)
@@ -201,7 +207,7 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	}
 
     // predefined attrs
-	auto constrains = CAttributeConstrains::getClassConstrains(classId, attrId);
+	auto constrains = m_scene->getClassAttributeConstrains(classId, attrId);
 	if (constrains)
 	{
 		auto constrainsList = dynamic_cast<CAttributeConstrainsList*>(constrains);

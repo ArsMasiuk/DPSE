@@ -18,45 +18,12 @@ It can be used freely, maintaining the information above.
 #include <QIcon>
 
 
-// type constrains
-
-union RangeVariant
-{
-	int rangeType = 0;
-
-	RangeVariant(): rangeType(0)
-	{}
-
-	// real value range
-	RangeVariant(double minV, double maxV, int dec) : rangeType(QVariant::Double)
-	{
-		real.minValue = minV;
-		real.maxValue = maxV;
-		real.decPoints = dec;
-	}
-
-	struct RealRange
-	{
-		int rangeType = QVariant::Double;
-		double minValue = std::numeric_limits<double>::lowest();
-		double maxValue = std::numeric_limits<double>::max();
-		int decPoints = 4;
-	} real;
-
-	RealRange getRealRange() const
-	{
-		return rangeType == QVariant::Double ? real : RealRange();
-	}
-};
-
-
 // attribute class
 
 struct CAttribute
 {
 	CAttribute();
-    CAttribute(const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue,
-		const RangeVariant& range = RangeVariant());
+    CAttribute(const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue);
 
 	QByteArray id;
 	QString name;
@@ -64,7 +31,6 @@ struct CAttribute
 	bool isVirtual;	// x,y,label,color etc.
 
 	int valueType;
-	RangeVariant valueRange;
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
@@ -89,12 +55,59 @@ typedef QMap<ClassAttrIndex, CAttributeConstrains*> AttributeConstrainsMap;
 struct CAttributeConstrains
 {
 	virtual ~CAttributeConstrains();
+};
 
-	static CAttributeConstrains* getClassConstrains(const QByteArray& classId, const QByteArray& attrId);
-	static void setClassConstrains(const QByteArray& classId, const QByteArray& attrId, CAttributeConstrains* cptr);
 
-private:
-	static AttributeConstrainsMap s_constrains;
+// integer values
+
+struct CIntegerConstrains : public CAttributeConstrains
+{
+	CIntegerConstrains(int minV = INT_MIN, int maxV = INT_MAX)
+	{
+		minValue = minV;
+		maxValue = maxV;
+	}
+
+	CIntegerConstrains(CAttributeConstrains *ptr = NULL)
+	{
+		CIntegerConstrains *dptr = dynamic_cast<CIntegerConstrains*>(ptr);
+		if (dptr)
+		{
+			minValue = dptr->minValue;
+			maxValue = dptr->maxValue;
+		}
+	}
+
+	int minValue = INT_MIN;
+	int maxValue = INT_MAX;
+};
+
+
+// double values
+
+struct CDoubleConstrains : public CAttributeConstrains
+{
+	CDoubleConstrains(double minV, double maxV, int decs = 4)
+	{
+		minValue = minV;
+		maxValue = maxV;
+		decPoints = decs;
+	}
+
+	CDoubleConstrains(CAttributeConstrains *ptr = NULL)
+	{
+		CDoubleConstrains *dptr = dynamic_cast<CDoubleConstrains*>(ptr);
+		if (dptr) 
+		{
+			minValue = dptr->minValue;
+			maxValue = dptr->maxValue;
+			decPoints = dptr->decPoints;
+		}
+	}
+
+	double minValue = std::numeric_limits<double>::lowest();
+	double maxValue = std::numeric_limits<double>::max();
+	int decPoints = 4;
 };
 
 
@@ -104,8 +117,6 @@ typedef QList<QIcon> IconsList;
 
 struct CAttributeConstrainsList: public CAttributeConstrains
 {
-	virtual ~CAttributeConstrainsList() {}
-
 	QStringList names;
 	QStringList ids;
 	IconsList icons;

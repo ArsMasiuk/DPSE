@@ -117,14 +117,14 @@ public:
 	}
 
 	bool removeClassAttribute(const QByteArray& classId, const QByteArray& attrId);
-
 	void setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis = false);
-
 	AttributesMap getClassAttributes(const QByteArray& classId, bool inherited) const;
 	
 	QSet<QByteArray> getVisibleClassAttributes(const QByteArray& classId, bool inherited) const;
-
 	void setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis = true);
+
+	CAttributeConstrains* getClassAttributeConstrains(const QByteArray& classId, const QByteArray& attrId) const;
+	void setClassAttributeConstrains(const QByteArray& classId, const QByteArray& attrId, CAttributeConstrains* cptr);
 
 	// selections
 	QList<QGraphicsItem*> createSelectedList(const CItemsEvaluator&) const;
@@ -215,6 +215,7 @@ protected:
 
 	ClassAttributesMap m_classAttributes;
     QMap<QByteArray, QSet<QByteArray>> m_classAttributesVis;
+	AttributeConstrainsMap m_classAttributesConstrains;
 
 private:
     int m_gridSize;

@@ -34,8 +34,9 @@ void CNodeEditorScene::initialize()
     CAttribute shapeAttr("shape", "Shape", "disc");
 	setClassAttribute("node", shapeAttr);
 
-	CAttribute sizeAttr("size", "Size", 11.0, RangeVariant(0.1, 1000.0, 1));
+	CAttribute sizeAttr("size", "Size", 11.0);
 	setClassAttribute("node", sizeAttr);
+	setClassAttributeConstrains("node", "size", new CDoubleConstrains(0.1, 1000.0));
 
     CAttribute posAttr("pos", "Position", QPointF());
     setClassAttribute("node", posAttr, true);
@@ -49,24 +50,25 @@ void CNodeEditorScene::initialize()
 
 	CAttribute weightAttr("weight", "Weight", 1.0);
 	setClassAttribute("edge", weightAttr);
+
+
+	CAttributeConstrainsList *edgeDirections = new CAttributeConstrainsList();
+	edgeDirections->names << "Directed (one end)" << "Mutual (both ends)" << "None (no ends)";
+	edgeDirections->ids << "directed" << "mutual" << "undirected";
+	edgeDirections->icons << QIcon(":/Icons/Edge-Directed") << QIcon(":/Icons/Edge-Mutual") << QIcon(":/Icons/Edge-Undirected");
+	setClassAttributeConstrains("edge", "direction", edgeDirections);
+
+	CAttributeConstrainsList *nodeShapes = new CAttributeConstrainsList();
+	nodeShapes->names << "Dics" << "Square" << "Triangle" << "Diamond";
+	nodeShapes->ids << "disc" << "square" << "triangle" << "diamond";
+	nodeShapes->icons << QIcon(":/Icons/Node-Disc") << QIcon(":/Icons/Node-Square") << QIcon(":/Icons/Node-Triangle") << QIcon(":/Icons/Node-Diamond");
+	setClassAttributeConstrains("node", "shape", nodeShapes);
 }
 
 
 void CNodeEditorScene::initializeOnce()
 {
 	Super::initializeOnce();
-
-	static CAttributeConstrainsList edgeDirections;
-	edgeDirections.names << "Directed (one end)" << "Mutual (both ends)" << "None (no ends)";
-	edgeDirections.ids << "directed" << "mutual" << "undirected";
-	edgeDirections.icons << QIcon(":/Icons/Edge-Directed") << QIcon(":/Icons/Edge-Mutual") << QIcon(":/Icons/Edge-Undirected");
-	CAttributeConstrains::setClassConstrains("edge", "direction", &edgeDirections);
-
-	static CAttributeConstrainsList nodeShapes;
-	nodeShapes.names << "Dics" << "Square" << "Triangle" << "Diamond";
-	nodeShapes.ids << "disc" << "square" << "triangle" << "diamond";
-	nodeShapes.icons << QIcon(":/Icons/Node-Disc") << QIcon(":/Icons/Node-Square") << QIcon(":/Icons/Node-Triangle") << QIcon(":/Icons/Node-Diamond");
-	CAttributeConstrains::setClassConstrains("node", "shape", &nodeShapes);
 }
 
 

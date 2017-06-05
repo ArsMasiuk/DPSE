@@ -74,6 +74,8 @@ void CEditorScene::initialize()
 
 	m_classAttributes.clear();
 	m_classAttributesVis.clear();
+	qDeleteAll(m_classAttributesConstrains);
+	m_classAttributesConstrains.clear();
 
 	// default item attr
     CAttribute labelAttr("label", "Label", "");
@@ -483,6 +485,33 @@ AttributesMap CEditorScene::getClassAttributes(const QByteArray& classId, bool i
 
 	return result;
 }
+
+
+CAttributeConstrains* CEditorScene::getClassAttributeConstrains(const QByteArray& classId, const QByteArray& attrId) const
+{
+	ClassAttrIndex index(classId, attrId);
+
+	if (m_classAttributesConstrains.contains(index))
+		return m_classAttributesConstrains[index];
+	else
+		return NULL;
+}
+
+
+void CEditorScene::setClassAttributeConstrains(const QByteArray& classId, const QByteArray& attrId, CAttributeConstrains* cptr)
+{
+	ClassAttrIndex index(classId, attrId);
+
+	// do we need to clean up?
+	if (m_classAttributesConstrains.contains(index))
+		delete m_classAttributesConstrains[index];
+
+	if (cptr)
+		m_classAttributesConstrains[index] = cptr;
+	else
+		m_classAttributesConstrains.remove(index);
+}
+
 
 
 // copy-paste
