@@ -20,8 +20,13 @@ CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
 	: Super(parent),
 	m_menuModeTmp(Qt::PreventContextMenu)
 {
-	//setViewport(new QOpenGLWidget());
-	//setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+	//auto glw = new QOpenGLWidget();
+	//glw->setUpdateBehavior(QOpenGLWidget::PartialUpdate);
+	//QSurfaceFormat sf;
+	//sf.setRenderableType(QSurfaceFormat::OpenGLES);
+	//glw->setFormat(sf);
+	//setViewport(glw);
+	
 	setAttribute(Qt::WA_TranslucentBackground, false);
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);

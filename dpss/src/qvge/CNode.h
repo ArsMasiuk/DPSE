@@ -109,6 +109,7 @@ protected:
 	int m_nodeFlags;
 
 	QPolygonF m_shapeCache;
+	QRectF m_sizeCache;
 };
 
 

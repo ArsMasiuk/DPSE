@@ -699,11 +699,11 @@ void CEditorScene::onSceneChanged()
 
 void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 {
-//	if (painter->paintEngine()->type() == QPaintEngine::OpenGL || painter->paintEngine()->type() == QPaintEngine::OpenGL2)
-//	{
-//		glClearColor(1, 1, 1, 1.0f);
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//	}
+	if (painter->paintEngine()->type() == QPaintEngine::OpenGL || painter->paintEngine()->type() == QPaintEngine::OpenGL2)
+	{
+		glClearColor(1, 1, 1, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 
 	painter->setPen(QPen(Qt::darkGray, 2, Qt::SolidLine));
 	QColor fillColor("lightsteelblue");

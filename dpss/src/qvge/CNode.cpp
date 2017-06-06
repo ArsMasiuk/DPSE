@@ -6,7 +6,7 @@
 #include <QEvent>
 
 // test
-#include <QGraphicsTextItem>
+#include <QGraphicsDropShadowEffect>
 
 ////////////////////////////////////////////////////////////////////
 /// \brief CNode::CNode
@@ -31,9 +31,14 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	// cache
 	setCacheMode(DeviceCoordinateCache);
 
-	// test
+	// label
 	m_labelItem = new QGraphicsTextItem(this);
 	m_labelItem->setCacheMode(DeviceCoordinateCache);
+
+	// test
+	//auto effect = new QGraphicsDropShadowEffect();
+	//effect->setBlurRadius(10);
+	//setGraphicsEffect(effect);
 }
 
 
@@ -484,6 +489,8 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 
 void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 {
+	painter->setClipRect(option->exposedRect);
+
 	QRectF r = Shape::boundingRect();
 
 	// get color (to optimize!)
@@ -495,19 +502,17 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 	bool isSelected = (option->state & QStyle::State_Selected);
 	if (isSelected)
-	{
 		painter->setPen(QPen(QColor("orange"), 2));
-	}
 	else
-	{
 		painter->setPen(QPen(Qt::black, 1));
-	}
 
 	// get shape (to optimize!)
+	QPolygonF shapeCache;
+
 	QByteArray shapeType = getAttribute("shape").toByteArray();
 	if (shapeType == "square")
 	{
-		m_shapeCache = r;
+		shapeCache = r;
 		painter->drawRect(r);
 	}
 	else if (shapeType == "diamond")
@@ -515,29 +520,37 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 		float rx = r.center().x();
 		float ry = r.center().y();
 
-		m_shapeCache.clear();
-		m_shapeCache << QPointF(rx, ry - r.height() / 2)
+		shapeCache << QPointF(rx, ry - r.height() / 2)
 			<< QPointF(rx + r.width() / 2, ry)
 			<< QPointF(rx, ry + r.height() / 2)
 			<< QPointF(rx - r.width() / 2, ry)
 			<< QPointF(rx, ry - r.height() / 2);
-		painter->drawPolygon(m_shapeCache);
+		painter->drawPolygon(shapeCache);
 	}
 	else if (shapeType == "triangle")
 	{
-		m_shapeCache.clear();
-		m_shapeCache << r.bottomLeft() << r.bottomRight() << QPointF(r.topRight() + r.topLeft()) / 2 << r.bottomLeft();
-		painter->drawPolygon(m_shapeCache);
+		shapeCache << r.bottomLeft() << r.bottomRight() << QPointF(r.topRight() + r.topLeft()) / 2 << r.bottomLeft();
+		painter->drawPolygon(shapeCache);
 	}
 	else // "disc"
 	{
-		m_shapeCache.clear();
+		shapeCache.clear();
 		painter->drawEllipse(r);
 	}
 
 	// draw text label
 	if (getScene()->itemLabelsEnabled())
 		updateLabelPosition();
+
+	// update caches & connections 
+	if (m_shapeCache != shapeCache || m_sizeCache != rect())
+	{
+		m_shapeCache = shapeCache;
+		m_sizeCache = rect();
+
+		for (auto edge : m_connections)
+			edge->update();	
+	}
 }
 
 

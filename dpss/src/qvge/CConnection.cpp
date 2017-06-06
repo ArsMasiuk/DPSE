@@ -155,6 +155,8 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 
 void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
+	painter->setClipRect(option->exposedRect);
+
 	// called before draw 
 	setupPainter(painter, option, widget);
 
