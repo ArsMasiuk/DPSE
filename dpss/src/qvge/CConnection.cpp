@@ -18,6 +18,9 @@ It can be used freely, maintaining the information above.
 #include <math.h>
 
 
+const int ARROW_SIZE = 6;
+
+
 CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 {
     m_firstNode = m_lastNode = NULL;
@@ -183,15 +186,44 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 		// arrows
 		if (m_itemFlags & CF_Start_Arrow)
-			drawArrow(painter, option, true, QLineF(m_controlPos, line().p1()));
+		{
+			QLineF arrowLine = calculateArrowLine(pp, true, QLineF(m_controlPos, line().p1()));
+			drawArrow(painter, option, true, QLineF(arrowLine.p2(), line().p1()));
+		}
 
 		if (m_itemFlags & CF_End_Arrow)
-			drawArrow(painter, option, false, QLineF(m_controlPos, line().p2()));
+		{
+			QLineF arrowLine = calculateArrowLine(pp, false, QLineF(m_controlPos, line().p2()));
+			drawArrow(painter, option, false, QLineF(arrowLine.p1(), line().p2()));
+		}
 	}
 
 	// draw text label
 	if (getScene()->itemLabelsEnabled())
 		updateLabelPosition();
+}
+
+
+QLineF CConnection::calculateArrowLine(const QPainterPath &path, bool first, const QLineF &direction) const
+{
+	qreal len = path.length();
+
+	if (first && m_firstNode)
+	{
+		qreal shift = m_firstNode->getDistanceToLineEnd(direction);
+		qreal arrowEnd = path.percentAtLength(shift);
+		qreal arrowStart = path.percentAtLength(shift + ARROW_SIZE);
+		return QLineF(path.pointAtPercent(arrowStart), path.pointAtPercent(arrowEnd));
+	}
+	else if (!first && m_lastNode)
+	{
+		qreal shift = m_lastNode->getDistanceToLineEnd(direction);
+		qreal arrowEnd = path.percentAtLength(len - shift);
+		qreal arrowStart = path.percentAtLength(len - shift - ARROW_SIZE);
+		return QLineF(path.pointAtPercent(arrowStart), path.pointAtPercent(arrowEnd));
+	}
+
+	return direction;
 }
 
 
@@ -206,10 +238,12 @@ void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /
 	{
 		shift = m_lastNode->getDistanceToLineEnd(direction);
 	}
+	else 
+		return;
 
 	static QPolygonF arrowHead;
 	if (arrowHead.isEmpty())
-		arrowHead << QPointF(0, 0) << QPointF(-3, 6) << QPointF(3, 6) << QPointF(0, 0);
+		arrowHead << QPointF(0, 0) << QPointF(-ARROW_SIZE/2, ARROW_SIZE) << QPointF(ARROW_SIZE/2, ARROW_SIZE) << QPointF(0, 0);
 
 	painter->save();
 

@@ -567,7 +567,7 @@ void CNode::updateLabelPosition()
 {
 	int w = m_labelItem->boundingRect().width();
 
-	m_labelItem->setPos(-w / 2, boundingRect().height());
+    m_labelItem->setPos(-w / 2, boundingRect().height() / 2);
 }
 
 
