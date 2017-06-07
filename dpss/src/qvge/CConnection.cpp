@@ -188,13 +188,13 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 		if (m_itemFlags & CF_Start_Arrow)
 		{
 			QLineF arrowLine = calculateArrowLine(pp, true, QLineF(m_controlPos, line().p1()));
-			drawArrow(painter, option, true, QLineF(arrowLine.p2(), line().p1()));
+			drawArrow(painter, option, true, arrowLine);
 		}
 
 		if (m_itemFlags & CF_End_Arrow)
 		{
 			QLineF arrowLine = calculateArrowLine(pp, false, QLineF(m_controlPos, line().p2()));
-			drawArrow(painter, option, false, QLineF(arrowLine.p1(), line().p2()));
+			drawArrow(painter, option, false, arrowLine);
 		}
 	}
 
@@ -211,36 +211,37 @@ QLineF CConnection::calculateArrowLine(const QPainterPath &path, bool first, con
 	if (first && m_firstNode)
 	{
 		qreal shift = m_firstNode->getDistanceToLineEnd(direction);
-		qreal arrowEnd = path.percentAtLength(shift);
 		qreal arrowStart = path.percentAtLength(shift + ARROW_SIZE);
-		return QLineF(path.pointAtPercent(arrowStart), path.pointAtPercent(arrowEnd));
+		return QLineF(path.pointAtPercent(arrowStart), direction.p2());
 	}
 	else if (!first && m_lastNode)
 	{
 		qreal shift = m_lastNode->getDistanceToLineEnd(direction);
-		qreal arrowEnd = path.percentAtLength(len - shift);
 		qreal arrowStart = path.percentAtLength(len - shift - ARROW_SIZE);
-		return QLineF(path.pointAtPercent(arrowStart), path.pointAtPercent(arrowEnd));
+		return QLineF(path.pointAtPercent(arrowStart), direction.p2());
 	}
 
 	return direction;
 }
 
 
-void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, bool first, const QLineF& direction)
+void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, bool first, const QLineF& direction) const
 {
-	qreal shift = 0;
 	if (first && m_firstNode)
 	{
-		shift = m_firstNode->getDistanceToLineEnd(direction);
+		qreal shift = m_firstNode->getDistanceToLineEnd(direction);
+		drawArrow(painter, shift, direction);
 	}
 	else if (!first && m_lastNode)
 	{
-		shift = m_lastNode->getDistanceToLineEnd(direction);
+		qreal shift = m_lastNode->getDistanceToLineEnd(direction);
+		drawArrow(painter, shift, direction);
 	}
-	else 
-		return;
+}
 
+
+void CConnection::drawArrow(QPainter* painter, qreal shift, const QLineF& direction) const
+{
 	static QPolygonF arrowHead;
 	if (arrowHead.isEmpty())
 		arrowHead << QPointF(0, 0) << QPointF(-ARROW_SIZE/2, ARROW_SIZE) << QPointF(ARROW_SIZE/2, ARROW_SIZE) << QPointF(0, 0);
