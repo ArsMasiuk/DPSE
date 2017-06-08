@@ -101,8 +101,16 @@ protected:
 	virtual void updateArrowFlags(const QString& direction);
 
 protected:
-    CNode *m_firstNode, *m_lastNode;
-	
+    union{
+    CNode *m_firstNode;
+    quint64 m_tempFirstNodeId;
+    };
+
+    union{
+    CNode *m_lastNode;
+    quint64 m_tempLastNodeId;
+    };
+
 	QPainterPath m_shapePath;
 	int m_bendFactor;
 	QPointF m_controlPoint, m_controlPos;

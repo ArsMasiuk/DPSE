@@ -287,9 +287,7 @@ bool CConnection::restoreFrom(QDataStream &out, quint64 version64)
 	if (Super::restoreFrom(out, version64))
 	{
 		// these are TEMP ids
-        quint64 t1, t2; out >> t1 >> t2;
-		m_firstNode = (CNode*)t1;
-		m_lastNode = (CNode*)t2;
+        out >> m_tempFirstNodeId >> m_tempLastNodeId;
 
 		return true;
 	}
@@ -300,8 +298,8 @@ bool CConnection::restoreFrom(QDataStream &out, quint64 version64)
 
 bool CConnection::linkAfterRestore(const CItemLinkMap &idToItem)
 {
-    CNode *node1 = dynamic_cast<CNode*>(idToItem.value((quint64)m_firstNode));
-    CNode *node2 = dynamic_cast<CNode*>(idToItem.value((quint64)m_lastNode));
+    CNode *node1 = dynamic_cast<CNode*>(idToItem.value(m_tempFirstNodeId));
+    CNode *node2 = dynamic_cast<CNode*>(idToItem.value(m_tempLastNodeId));
 
 	m_firstNode = m_lastNode = NULL;
 
@@ -475,6 +473,8 @@ void CConnection::onPositionUpdated()
 	QPainterPathStroker stroker;
 	stroker.setWidth(6);
 	m_shapePath = stroker.createStroke(path);
+
+	prepareGeometryChange();
 }
 
 

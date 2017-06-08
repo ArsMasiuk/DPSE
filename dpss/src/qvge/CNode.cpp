@@ -101,7 +101,10 @@ bool CNode::setAttribute(const QByteArray& attrId, const QVariant& v)
 	{
 		float s = v.toFloat();
 		if (s > 0)
+		{
+			prepareGeometryChange();
 			resize(s);
+		}
 		return true;
 	}
 
