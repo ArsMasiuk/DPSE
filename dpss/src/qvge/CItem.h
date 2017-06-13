@@ -99,6 +99,7 @@ public:
 
 	// labels
 	virtual void updateLabelContent();
+	virtual void updateLabelDecoration();
 	virtual void updateLabelPosition() {}
 	void setLabelText(const QString& text);
 	void showLabel(bool on);
@@ -111,6 +112,8 @@ public:
     typedef QMap<quint64, CItem*> CItemLinkMap;
 	virtual bool linkAfterRestore(const CItemLinkMap& /*idToItem*/)		{ return true; }
 	virtual bool linkAfterPaste(const CItemLinkMap& idToItem)			{ return linkAfterRestore(idToItem); }	// default the same
+	static void beginRestore() { s_duringRestore = true; }
+	static void endRestore() { s_duringRestore = false; }
 
 	// returns new item of this class
 	virtual CItem* clone() = 0;
@@ -118,6 +121,8 @@ public:
 
 	// callbacks
 	virtual void onItemMoved() {}
+	virtual void onItemRestored() {}
+	virtual void onItemSelected(bool state);
 	virtual void onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent* event);
 	virtual void onHoverLeave(QGraphicsItem* /*sceneItem*/, QGraphicsSceneHoverEvent* /*event*/) {}
 	virtual void onDraggedOver(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
@@ -139,6 +144,9 @@ protected:
 	QMap<QByteArray, QVariant> m_attributes;
 	QString m_id;
 	QGraphicsTextItem *m_labelItem;
+
+	// restore optimization
+	static bool s_duringRestore;
 };
 
 

@@ -13,6 +13,7 @@ It can be used freely, maintaining the information above.
 #include <QPen>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QDebug>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -200,7 +201,10 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
 	// draw text label
 	if (getScene()->itemLabelsEnabled())
+	{
 		updateLabelPosition();
+		updateLabelDecoration();
+	}
 }
 
 
@@ -438,7 +442,15 @@ void CConnection::onPositionUpdated()
 
 	// update line position
 	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();
-	setLine(QLineF(p1, p2));
+	QLineF l(p1, p2);
+	setLine(l);
+
+	// update label rotation
+	qreal angle = 180 - l.angle();
+	if (angle > 90) angle -= 180;
+	else if (angle < -90) angle += 180;
+	//qDebug() << angle;
+	m_labelItem->setRotation(angle);
 
 	// update shape path
 	QPainterPath path;
@@ -494,6 +506,13 @@ QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const
 	{
 		// discard any movement
 		return QVariant();
+	}
+
+	if (change == ItemSelectedHasChanged)
+	{
+		onItemSelected(value.toBool());
+
+		return value;
 	}
 
 	return value;

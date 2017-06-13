@@ -87,6 +87,7 @@ public:
 	virtual void onConnectionDeleted(CConnection *conn);
 
 	virtual void onItemMoved();
+	virtual void onItemRestored();
 	virtual void onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
 
 protected:

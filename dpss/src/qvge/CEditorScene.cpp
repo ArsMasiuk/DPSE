@@ -95,10 +95,14 @@ void CEditorScene::initialize()
 
 void CEditorScene::removeItems()
 {
+	CItem::beginRestore();
+
 	while (!items().isEmpty())
 		delete items().first();
 
 	clear();
+
+	CItem::endRestore();
 }
 
 void CEditorScene::activate()
@@ -300,6 +304,8 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 	}
 
 	// link items
+	CItem::beginRestore();
+
 	for (CItem* item : idToItem.values())
 	{
 		if (item->linkAfterRestore(idToItem))
@@ -313,8 +319,17 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 
 			clear();
 
+			CItem::endRestore();
+
 			return false;
 		}
+	}
+
+	CItem::endRestore();
+	
+	for (CItem* item : idToItem.values())
+	{
+		item->onItemRestored();
 	}
 
 	// attributes

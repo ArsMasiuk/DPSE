@@ -320,7 +320,6 @@ double CNode::getDistanceToLineEnd(const QLineF& line) const
 void CNode::onConnectionAttach(CConnection *conn)
 {
 	Q_ASSERT(conn != NULL);
-	//Q_ASSERT(!m_connections.contains(conn));
 
 	m_connections.insert(conn);
 
@@ -343,6 +342,10 @@ void CNode::onConnectionDetach(CConnection *conn)
 
 void CNode::updateConnections()
 {
+	// optimize: no update while restoring
+	if (s_duringRestore)
+		return;
+
 	//QMap<CNode*, int> indexMap;
 
 	//for (auto conn : m_connections)
@@ -429,6 +432,12 @@ void CNode::onItemMoved()
 }
 
 
+void CNode::onItemRestored()
+{
+	updateConnections();
+}
+
+
 void CNode::onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& /*rejectedItems*/)
 {
 	if (acceptedItems.size())
@@ -484,6 +493,13 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 
 			return newPos;
 		}
+	}
+
+	if (change == ItemSelectedHasChanged)
+	{
+		onItemSelected(value.toBool());
+
+		return value;
 	}
 
 	return value;
@@ -543,7 +559,10 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 	// draw text label
 	if (getScene()->itemLabelsEnabled())
+	{
 		updateLabelPosition();
+		updateLabelDecoration();
+	}
 
 	// update caches & connections 
 	if (m_shapeCache != shapeCache || m_sizeCache != rect())

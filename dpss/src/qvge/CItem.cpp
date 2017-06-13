@@ -14,6 +14,9 @@ It can be used freely, maintaining the information above.
 #include <QMenu>
 
 
+bool CItem::s_duringRestore = false;
+
+
 CItem::CItem()
 {
 	m_labelItem = NULL;
@@ -198,10 +201,6 @@ void CItem::updateLabelContent()
 	
 	setLabelText(labelToShow);
 
-	QColor c = getAttribute("label.color").value<QColor>();
-	if (c.isValid())
-		m_labelItem->setDefaultTextColor(c);
-
 	bool ok = false;
 	int s = getAttribute("label.size").toInt(&ok);
 	if (ok && s > 0)
@@ -209,6 +208,22 @@ void CItem::updateLabelContent()
 		QFont f(m_labelItem->font());
 		f.setPointSize(s);
 		m_labelItem->setFont(f);
+	}
+}
+
+
+void CItem::updateLabelDecoration()
+{
+	if (!m_labelItem)
+		return;
+
+	if (m_internalStateFlags & IS_Selected)
+		m_labelItem->setDefaultTextColor(QColor("orange"));
+	else
+	{
+		QColor c = getAttribute("label.color").value<QColor>();
+		//if (c.isValid())
+			m_labelItem->setDefaultTextColor(c);
 	}
 }
 
@@ -223,7 +238,12 @@ void CItem::setLabelText(const QString& text)
 void CItem::showLabel(bool on)
 {
 	if (m_labelItem)
+	{
 		m_labelItem->setVisible(on);
+
+		if (on)
+			updateLabelDecoration();
+	}
 }
 
 
@@ -237,6 +257,15 @@ QRectF CItem::getSceneLabelRect() const
 
 
 // callbacks
+
+void CItem::onItemSelected(bool state)
+{
+	if (state)
+		m_internalStateFlags |= IS_Selected;
+	else
+		m_internalStateFlags &= ~IS_Selected;
+}
+
 
 void CItem::onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent*)
 {
