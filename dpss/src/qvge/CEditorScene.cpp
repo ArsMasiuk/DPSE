@@ -850,14 +850,11 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 			QSet<CItem*> oldHovers = m_acceptedHovers + m_rejectedHovers;
 
 			QList<QGraphicsItem*> hoveredItems = dragItem->collidingItems();
+
 			for (int i = 0; i < hoveredItems.size(); ++i)
 			{
 				// dont drop on disabled
 				if (!hoveredItems.at(i)->isEnabled())
-					continue;
-
-				// if many items being dragged: dont drop on selected
-				if (hoveredItems.at(i)->isSelected())
 					continue;
 
 				CItem* item = dynamic_cast<CItem*>(hoveredItems.at(i));

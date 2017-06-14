@@ -21,6 +21,7 @@ CNodeEditorScene::CNodeEditorScene(QObject * parent) : Super(parent),
 	registerItemFactory<CNode>();
 }
 
+
 // reimp
 
 void CNodeEditorScene::initialize()
@@ -89,6 +90,7 @@ void CNodeEditorScene::onActionUnlink()
 	addUndoState();
 }
 
+
 void CNodeEditorScene::onActionNodeColor()
 {
 	QList<CNode*> nodes = getSelectedItems<CNode>(true);
@@ -106,6 +108,7 @@ void CNodeEditorScene::onActionNodeColor()
 
 	addUndoState();
 }
+
 
 void CNodeEditorScene::onActionEdgeColor()
 {
@@ -125,6 +128,7 @@ void CNodeEditorScene::onActionEdgeColor()
 	addUndoState();
 }
 
+
 void CNodeEditorScene::onActionEdgeReverse()
 {
 	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
@@ -138,6 +142,7 @@ void CNodeEditorScene::onActionEdgeReverse()
 
 	addUndoState();
 }
+
 
 void CNodeEditorScene::onActionEdgeDirected()
 {
@@ -154,6 +159,7 @@ void CNodeEditorScene::onActionEdgeDirected()
 	addUndoState();
 }
 
+
 void CNodeEditorScene::onActionEdgeMutual()
 {
 	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
@@ -169,6 +175,7 @@ void CNodeEditorScene::onActionEdgeMutual()
 	addUndoState();
 }
 
+
 void CNodeEditorScene::onActionEdgeUndirected()
 {
 	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
@@ -183,6 +190,7 @@ void CNodeEditorScene::onActionEdgeUndirected()
 
 	addUndoState();
 }
+
 
 // actions
 
@@ -225,6 +233,7 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 	return true;
 }
 
+
 void CNodeEditorScene::cancel(const QPointF& /*pos*/)
 {
 	m_state = IS_None;
@@ -254,6 +263,7 @@ void CNodeEditorScene::cancel(const QPointF& /*pos*/)
 	m_realStart = false;
 }
 
+
 CNode* CNodeEditorScene::createNewNode() const
 {
 	if (getActiveItemFactory()) 
@@ -271,6 +281,7 @@ CNode* CNodeEditorScene::createNewNode() const
 	// here default
 	return new CNode();
 }
+
 
 CConnection* CNodeEditorScene::createNewConnection() const
 {
@@ -290,6 +301,7 @@ CConnection* CNodeEditorScene::createNewConnection() const
 	return new CConnection();
 }
 
+
 CConnection* CNodeEditorScene::activateConnectionFactory(const QByteArray& factoryId)
 {
 	if (factoryId.isEmpty() || !m_itemFactories.contains(factoryId))
@@ -304,6 +316,7 @@ CConnection* CNodeEditorScene::activateConnectionFactory(const QByteArray& facto
 	return NULL;
 }
 
+
 // events
 
 void CNodeEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -312,6 +325,7 @@ void CNodeEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEven
 
 	Super::mouseDoubleClickEvent(mouseEvent);
 }
+
 
 void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
@@ -333,6 +347,7 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 	moveDrag(mouseEvent, dynamic_cast<QGraphicsItem*>(m_endNode));
 }
+
 
 void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
@@ -376,6 +391,7 @@ void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	m_state = IS_None;
 }
 
+
 void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 {
 	if (keyEvent->key() == Qt::Key_Escape)
@@ -386,6 +402,7 @@ void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 
 	Super::keyPressEvent(keyEvent);
 }
+
 
 // reimp
 

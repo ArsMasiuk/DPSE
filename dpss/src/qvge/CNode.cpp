@@ -213,10 +213,12 @@ bool CNode::restoreFrom(QDataStream& out, quint64 version64)
 
 // node operations
 
-void CNode::merge(CNode *node, bool allowCircled)
+void CNode::merge(CNode *node)
 {
-	if (node == this || !node)
+	if (!node || (node == this))
 		return;
+
+	bool allowCircled = allowCircledConnection();
 
 	// make a copy because node's connections list will be updated
 	QSet<CConnection*> toReconnect = node->m_connections;
@@ -291,12 +293,6 @@ QList<CNode*> CNode::getCollidingNodes() const
 }
 
 
-bool CNode::allowStartConnection() const
-{
-	return true;
-}
-
-
 double CNode::getDistanceToLineEnd(const QLineF& line) const
 {
 	// circle 
@@ -346,50 +342,18 @@ void CNode::updateConnections()
 	if (s_duringRestore)
 		return;
 
-	//QMap<CNode*, int> indexMap;
-
-	//for (auto conn : m_connections)
-	//{
-	//	if (!conn->isCircled())
-	//	{
-	//		CNode* node = conn->firstNode() == this ? conn->lastNode() : conn->firstNode();
-	//		
-	//		if (indexMap.contains(node))
-	//		{
-	//			int mi = indexMap[node];
-	//			indexMap[node] = ++mi;
-	//			
-	//			int bf = (mi + 1) / 2;
-	//			if (mi & 1)
-	//				bf = -bf;
-
-	//			conn->setBendFactor(bf);
-	//		}
-	//		else
-	//		{
-	//			indexMap[node] = 0;
-	//			
-	//			conn->setBendFactor(0);
-	//		}
-	//	}
-	//}
-
-	typedef QSet<CNode*> MultiIndex;
-
-	QMultiHash<MultiIndex, CConnection*> multiHash;
+	typedef QList<CConnection*> EdgeList;
+	QMap<CNode*, EdgeList> edgeGroups;
 
 	for (auto conn : m_connections)
 	{
-		MultiIndex index;
-		index.insert(conn->firstNode());
-		index.insert(conn->lastNode());
-
-		multiHash.insert(index, conn);
+		CNode* node = conn->firstNode() == this ? conn->lastNode() : conn->firstNode();
+		edgeGroups[node].append(conn);
 	}
 
-	for (auto it = multiHash.constBegin(); it != multiHash.constEnd(); it++)
+	for (auto it = edgeGroups.constBegin(); it != edgeGroups.constEnd(); ++it)
 	{
-		auto values = multiHash.values(it.key());
+		const EdgeList& values = it.value();
 
 		if (values.count() == 1)
 		{
@@ -397,16 +361,28 @@ void CNode::updateConnections()
 		}
 		else
 		{
-			int bf = (values.count() & 1) ? 0 : 1;
-
-			for (auto conn : values)
+			if (values.first()->isCircled())
 			{
-				conn->setBendFactor(bf);
+				int bf = 1;
 
-				if (bf > 0)
-					bf = 0 - bf;
-				else
-					bf = 1 - bf;
+				for (auto conn : values)
+				{
+					conn->setBendFactor(bf++);
+				}
+			}
+			else
+			{
+				int bf = (values.count() & 1) ? 0 : 1;
+
+				for (auto conn : values)
+				{
+					conn->setBendFactor(bf);
+
+					if (bf > 0)
+						bf = 0 - bf;
+					else
+						bf = 1 - bf;
+				}
 			}
 		}
 	}

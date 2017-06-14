@@ -164,8 +164,17 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 	// called before draw 
 	setupPainter(painter, option, widget);
 
-	// straight line
-	if (m_bendFactor == 0)
+	// circled connection
+	if (isCircled())
+	{
+		int nodeDiameter = m_firstNode->boundingRect().height();
+
+		double r = nodeDiameter + qAbs(m_bendFactor) * 5;
+
+		painter->drawEllipse(m_controlPos, r, r);
+	}
+	else 
+	if (m_bendFactor == 0)	// straight line
 	{
 		painter->drawLine(line());
 
@@ -176,7 +185,7 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 		if (m_itemFlags & CF_End_Arrow)
 			drawArrow(painter, option, false, line());
 	}
-	else
+	else // curve
 	{
 		QPainterPath pp;
 		pp.moveTo(line().p1());
@@ -269,8 +278,17 @@ void CConnection::drawArrow(QPainter* painter, qreal shift, const QLineF& direct
 void CConnection::updateLabelPosition()
 {
 	int w = m_labelItem->boundingRect().width();
+	int h = m_labelItem->boundingRect().height();
+	m_labelItem->setTransformOriginPoint(w / 2, h / 2);
 
-	m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y());
+	if (isCircled())
+	{
+		m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - boundingRect().height() / 2 - h);
+	}
+	else
+	{
+		m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - h / 2);
+	}
 }
 
 
@@ -354,7 +372,7 @@ void CConnection::setLastNode(CNode *node)
 
 void CConnection::reattach(CNode *oldNode, CNode *newNode)
 {
-	if (oldNode == newNode)
+	if (oldNode == newNode && !newNode->allowCircledConnection())
 		return;
 
 	if (m_firstNode == oldNode)
@@ -454,32 +472,47 @@ void CConnection::onPositionUpdated()
 
 	// update shape path
 	QPainterPath path;
-	path.moveTo(p1);
-
-	// center
-	m_controlPos = (p1 + p2) / 2;
 	
-	if (m_bendFactor == 0)
+	// circled connection 
+	if (isCircled())
 	{
-		path.lineTo(p2);
+		int nodeDiameter = m_firstNode->boundingRect().height();
+		
+		double r = nodeDiameter + qAbs(m_bendFactor) * 5;
+		
+		m_controlPos = p1 + QPointF(0, -r);
+		
+		path.addEllipse(m_controlPos, r, r);
 	}
-	else
+	else // not circled
 	{
-		QPointF t1 = m_controlPos;
-		float posFactor = qAbs(m_bendFactor);
+		path.moveTo(p1);
 
-		bool bendDirection = (quint64(m_firstNode) > quint64(m_lastNode));
-		if (m_bendFactor < 0)
-			bendDirection = !bendDirection;
+		// center
+		m_controlPos = (p1 + p2) / 2;
 
-		QLineF f1(t1, p2);
-		f1.setAngle(bendDirection ? f1.angle() + 90 : f1.angle() - 90);
-		f1.setLength(f1.length() * 0.2 * posFactor);
+		if (m_bendFactor == 0)
+		{
+			path.lineTo(p2);
+		}
+		else
+		{
+			QPointF t1 = m_controlPos;
+			float posFactor = qAbs(m_bendFactor);
 
-		m_controlPos = f1.p2();
-		m_controlPoint = m_controlPos - (t1 - m_controlPos) * 0.33;
+			bool bendDirection = (quint64(m_firstNode) > quint64(m_lastNode));
+			if (m_bendFactor < 0)
+				bendDirection = !bendDirection;
 
-		path.cubicTo(m_controlPoint, m_controlPoint, p2);
+			QLineF f1(t1, p2);
+			f1.setAngle(bendDirection ? f1.angle() + 90 : f1.angle() - 90);
+			f1.setLength(f1.length() * 0.2 * posFactor);
+
+			m_controlPos = f1.p2();
+			m_controlPoint = m_controlPos - (t1 - m_controlPos) * 0.33;
+
+			path.cubicTo(m_controlPoint, m_controlPoint, p2);
+		}
 	}
 	
 	QPainterPathStroker stroker;

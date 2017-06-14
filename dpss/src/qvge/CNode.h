@@ -61,9 +61,8 @@ public:
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);
 
 	// merges node with the current one.
-	// node will be deleted afterwards.
-	// if allowCircled = false then all the connections from node to this will be removed as well.
-	virtual void merge(CNode *node, bool allowCircled = false);
+	// node will be deleted afterwards if no circled connection allowed.
+	virtual void merge(CNode *node);
 
 	// splits all the connections from this node.
 	// result is the list of the newly created nodes (or empty list if connections < 2).
@@ -76,7 +75,10 @@ public:
 	QSet<CConnection*> getConnections() const { return m_connections; }
 
 	// returns true if new connection from this node is allowed.
-	virtual bool allowStartConnection() const;
+	virtual bool allowStartConnection() const { return true; }
+
+	// returns true if a connection from this node to itself is allowed.
+	virtual bool allowCircledConnection() const { return true; }
 
 	// calculates distance to the line's end point (used to draw connections to this item).
 	virtual double getDistanceToLineEnd(const QLineF& line) const;
@@ -90,13 +92,15 @@ public:
 	virtual void onItemRestored();
 	virtual void onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
 
+	// reimp 
+	virtual QRectF boundingRect() const;
+
 protected:
 	virtual void copyDataFrom(CItem* from);
 
 	// reimp 
 	virtual QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value);
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
-	virtual QRectF boundingRect() const;
 	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 	virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event); 
 
