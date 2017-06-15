@@ -123,8 +123,8 @@ void CCommutationTable::onSelectionChanged()
 
 	QList<CConnection*> edges = m_scene->getSelectedItems<CConnection>();
 
-	QElapsedTimer tm;
-	tm.start();
+	//QElapsedTimer tm;
+	//tm.start();
 
 	QItemSelection selection;
 
@@ -150,7 +150,7 @@ void CCommutationTable::onSelectionChanged()
 
 	ui.Table->selectionModel()->select(selection, QItemSelectionModel::Select);
 
-	qDebug() << "CCommutationTable::onSelectionChanged(): " << tm.elapsed();
+	//qDebug() << "CCommutationTable::onSelectionChanged(): " << tm.elapsed();
 
 	if (scrollItem)
 		ui.Table->scrollToItem(scrollItem);
@@ -191,7 +191,6 @@ void CCommutationTable::on_Table_itemSelectionChanged()
 
 	m_scene->endSelection();
 }
-
 
 void CCommutationTable::on_Table_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {

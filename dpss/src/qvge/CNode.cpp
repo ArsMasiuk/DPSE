@@ -32,7 +32,7 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	setCacheMode(DeviceCoordinateCache);
 
 	// label
-	m_labelItem = new QGraphicsTextItem(this);
+	m_labelItem = new QGraphicsSimpleTextItem(this);
 	m_labelItem->setCacheMode(DeviceCoordinateCache);
 
 	// test
@@ -363,7 +363,7 @@ void CNode::updateConnections()
 		{
 			if (values.first()->isCircled())
 			{
-				int bf = 1;
+				int bf = 0;
 
 				for (auto conn : values)
 				{
@@ -547,7 +547,7 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 		m_sizeCache = rect();
 
 		for (auto edge : m_connections)
-			edge->update();	
+			edge->onParentGeometryChanged();	
 	}
 }
 

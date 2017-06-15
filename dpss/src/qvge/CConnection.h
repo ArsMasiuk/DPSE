@@ -75,19 +75,17 @@ public:
 	virtual bool linkAfterRestore(const CItemLinkMap& idToItem);
 	virtual bool linkAfterPaste(const CItemLinkMap& idToItem);
 
-    // external callbacks 
-    void onNodeMoved(CNode *node);
-	void onNodeDetached(CNode *node);
-	void onNodeDeleted(CNode *node);
+    // callbacks 
+	virtual void onNodeMoved(CNode *node);
+	virtual void onNodeDetached(CNode *node);
+	virtual void onNodeDeleted(CNode *node);
+	virtual void onParentGeometryChanged();
 
 protected:
 	virtual void setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
 	virtual void drawArrow(QPainter *painter, const QStyleOptionGraphicsItem *option, bool first, const QLineF &direction) const;
 	virtual void drawArrow(QPainter *painter, qreal shift, const QLineF &direction) const;
 	QLineF calculateArrowLine(const QPainterPath &path, bool first, const QLineF &direction) const;
-
-	// internal callbacks
-	virtual void onPositionUpdated();
 
 	// reimp
 	virtual QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value);
@@ -111,7 +109,7 @@ protected:
     quint64 m_tempLastNodeId;
     };
 
-	QPainterPath m_shapePath;
+	QPainterPath m_selectionShapePath;
 	int m_bendFactor;
 	QPointF m_controlPoint, m_controlPos;
 };

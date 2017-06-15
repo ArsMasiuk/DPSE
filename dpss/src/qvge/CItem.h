@@ -11,6 +11,7 @@ It can be used freely, maintaining the information above.
 #define CITEM_H
 
 #include <QGraphicsItem>
+#include <QGraphicsSimpleTextItem> 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
@@ -143,7 +144,7 @@ protected:
 	int m_internalStateFlags;
 	QMap<QByteArray, QVariant> m_attributes;
 	QString m_id;
-	QGraphicsTextItem *m_labelItem;
+	QGraphicsSimpleTextItem *m_labelItem;
 
 	// restore optimization
 	static bool s_duringRestore;

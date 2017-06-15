@@ -218,12 +218,12 @@ void CItem::updateLabelDecoration()
 		return;
 
 	if (m_internalStateFlags & IS_Selected)
-		m_labelItem->setDefaultTextColor(QColor("orange"));
+		m_labelItem->setBrush(QColor("orange"));
 	else
 	{
 		QColor c = getAttribute("label.color").value<QColor>();
 		//if (c.isValid())
-			m_labelItem->setDefaultTextColor(c);
+			m_labelItem->setBrush(c);
 	}
 }
 
@@ -231,7 +231,7 @@ void CItem::updateLabelDecoration()
 void CItem::setLabelText(const QString& text)
 {
 	if (m_labelItem)
-		m_labelItem->setPlainText(text);
+		m_labelItem->setText(text);
 }
 
 

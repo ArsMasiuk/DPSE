@@ -44,7 +44,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	setCacheMode(DeviceCoordinateCache);
 
 	// test
-	m_labelItem = new QGraphicsTextItem(this);
+	m_labelItem = new QGraphicsSimpleTextItem(this);
 	m_labelItem->setCacheMode(DeviceCoordinateCache);
 }
 
@@ -121,7 +121,7 @@ void CConnection::updateArrowFlags(const QString& direction)
 
 QPainterPath CConnection::shape() const
 {
-	return m_shapePath;
+	return m_selectionShapePath;
 }
 
 
@@ -168,8 +168,8 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 	if (isCircled())
 	{
 		int nodeDiameter = m_firstNode->boundingRect().height();
-
-		double r = nodeDiameter + qAbs(m_bendFactor) * 5;
+		double nr = nodeDiameter / 2;
+		double r = nr + qAbs(m_bendFactor) * nr / 2;
 
 		painter->drawEllipse(m_controlPos, r, r);
 	}
@@ -352,7 +352,7 @@ void CConnection::setFirstNode(CNode *node)
     if (m_firstNode)
         m_firstNode->onConnectionAttach(this);
 
-	onPositionUpdated();
+	onParentGeometryChanged();
 }
 
 
@@ -366,7 +366,7 @@ void CConnection::setLastNode(CNode *node)
     if (m_lastNode)
         m_lastNode->onConnectionAttach(this);
 
-	onPositionUpdated();
+	onParentGeometryChanged();
 }
 
 
@@ -387,7 +387,7 @@ void CConnection::reverse()
 {
 	qSwap(m_firstNode, m_lastNode);
 
-	onPositionUpdated();
+	onParentGeometryChanged();
 }
 
 
@@ -395,7 +395,7 @@ void CConnection::setBendFactor(int bf)
 { 
 	m_bendFactor = bf; 
 
-	onPositionUpdated();
+	onParentGeometryChanged();
 }
 
 
@@ -425,7 +425,7 @@ void CConnection::onNodeMoved(CNode *node)
 	Q_ASSERT(node == m_firstNode || node == m_lastNode);
 	Q_ASSERT(node != NULL);
 
-	onPositionUpdated();
+	onParentGeometryChanged();
 }
 
 
@@ -453,7 +453,7 @@ void CConnection::onNodeDeleted(CNode *node)
 
 // protected
 
-void CConnection::onPositionUpdated()
+void CConnection::onParentGeometryChanged()
 {
 	if (!m_firstNode || !m_lastNode)
 		return;
@@ -477,11 +477,10 @@ void CConnection::onPositionUpdated()
 	if (isCircled())
 	{
 		int nodeDiameter = m_firstNode->boundingRect().height();
-		
-		double r = nodeDiameter + qAbs(m_bendFactor) * 5;
+		double nr = nodeDiameter / 2;
+		double r = nr + qAbs(m_bendFactor) * nr / 2;
 		
 		m_controlPos = p1 + QPointF(0, -r);
-		
 		path.addEllipse(m_controlPos, r, r);
 	}
 	else // not circled
@@ -517,9 +516,10 @@ void CConnection::onPositionUpdated()
 	
 	QPainterPathStroker stroker;
 	stroker.setWidth(6);
-	m_shapePath = stroker.createStroke(path);
+	m_selectionShapePath = stroker.createStroke(path);
 
 	prepareGeometryChange();
+	update();
 }
 
 

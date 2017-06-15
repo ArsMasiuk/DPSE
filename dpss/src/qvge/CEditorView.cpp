@@ -34,9 +34,12 @@ CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
 	setScene(scene);
 
 	setDragMode(RubberBandDrag);
+
 	setRenderHint(QPainter::Antialiasing);
 	setRenderHint(QPainter::HighQualityAntialiasing);
 	setOptimizationFlags(DontSavePainterState);
+	setOptimizationFlags(DontClipPainter);
+	setOptimizationFlags(DontAdjustForAntialiasing);
 }
 
 CEditorView::~CEditorView()

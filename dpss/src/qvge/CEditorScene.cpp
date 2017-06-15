@@ -49,6 +49,7 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
     //setSceneRect(-1000, -1000, 2000, 2000);
 
 	setItemIndexMethod(QGraphicsScene::NoIndex);
+	setMinimumRenderSize(1);
 
 	// init scene 
 	activate();
@@ -800,8 +801,9 @@ void CEditorScene::layoutItemLabels()
 		citem->updateLabelPosition();
 
 		QRectF labelRect = citem->getSceneLabelRect();
+		QRectF reducedRect(labelRect.topLeft() / 10, labelRect.size() / 10);
 		
-		citem->showLabel(checkLabelRegion(labelRect));
+		citem->showLabel(checkLabelRegion(reducedRect));
 	}
 
 	qDebug() << "layout labels: " << tm.elapsed();
@@ -1148,35 +1150,16 @@ void CEditorScene::onActionSelectAll()
 
 void CEditorScene::selectAll() 
 {
-	QList<QGraphicsItem*> itemList = items();
-	if (itemList.isEmpty())
-		return;
-
-	QSignalBlocker blocker(this);
-
-	for (auto item : itemList)
-		item->setSelected(true);
-
-	blocker.unblock();
-
-	Q_EMIT selectionChanged();
+	QPainterPath path;
+	path.addRect(sceneRect());
+	setSelectionArea(path, QTransform());
 }
 
 
 void CEditorScene::deselectAll()
 {
-	QList<QGraphicsItem*> itemList = items();
-	if (itemList.isEmpty())
-		return;
-
-	QSignalBlocker blocker(this);
-
-	for (auto item : itemList)
-		item->setSelected(false);
-
-	blocker.unblock();
-
-	Q_EMIT selectionChanged();
+	QPainterPath path;
+	setSelectionArea(path, QTransform());
 }
 
 

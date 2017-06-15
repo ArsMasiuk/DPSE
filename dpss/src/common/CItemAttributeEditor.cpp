@@ -79,8 +79,8 @@ void CItemAttributeEditor::onSelectionChanged()
 {
 	ui.Editor->clear();
 
-	QElapsedTimer tm;
-	tm.start();
+	//QElapsedTimer tm;
+	//tm.start();
 
 	QList<CItem*> nodes = m_scene->getSelectedItems<CNode, CItem>();
 	QList<CItem*> edges = m_scene->getSelectedItems<CConnection, CItem>();
@@ -96,7 +96,7 @@ void CItemAttributeEditor::onSelectionChanged()
 	listAttributes(inodes, nodes, "node");
     listAttributes(iedges, edges, "edge");
 
-	qDebug() << "CItemAttributeEditor::onSelectionChanged(): " << tm.elapsed();
+	//qDebug() << "CItemAttributeEditor::onSelectionChanged(): " << tm.elapsed();
 }
 
 
