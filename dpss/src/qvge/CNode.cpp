@@ -33,6 +33,7 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 
 	// label
 	m_labelItem = new QGraphicsSimpleTextItem(this);
+	m_labelItem->setFlags(0);
 	m_labelItem->setCacheMode(DeviceCoordinateCache);
 
 	// test
@@ -403,7 +404,7 @@ void CNode::onItemMoved()
 {
 	for (CConnection *conn : m_connections)
 	{
-		conn->onNodeMoved(this);
+		conn->onNodeMoved(this); 
 	}
 }
 
@@ -533,21 +534,26 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 		painter->drawEllipse(r);
 	}
 
-	// draw text label
-	if (getScene()->itemLabelsEnabled())
-	{
-		updateLabelPosition();
-		updateLabelDecoration();
-	}
-
 	// update caches & connections 
 	if (m_shapeCache != shapeCache || m_sizeCache != rect())
 	{
+		prepareGeometryChange();
+
 		m_shapeCache = shapeCache;
 		m_sizeCache = rect();
 
+		// update edges
 		for (auto edge : m_connections)
-			edge->onParentGeometryChanged();	
+		{
+			edge->onParentGeometryChanged();
+		}
+
+		// update text label
+		if (getScene() && getScene()->itemLabelsEnabled())
+		{
+			updateLabelPosition();
+			updateLabelDecoration();
+		}
 	}
 }
 

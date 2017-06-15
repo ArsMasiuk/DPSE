@@ -339,7 +339,8 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 		}
 
 		// start connection at click point
-		startNewConnection(m_leftClickPos);
+		if (!startNewConnection(m_leftClickPos))
+			return;
 	}
 
 	// custom dragging

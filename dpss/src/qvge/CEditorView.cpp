@@ -10,6 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CEditorView.h"
 #include "CEditorScene.h"
 
+#include <QGLWidget> 
 #include <QOpenGLWidget> 
 #include <QMouseEvent> 
 #include <QTimer> 
@@ -26,7 +27,10 @@ CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
 	//sf.setRenderableType(QSurfaceFormat::OpenGLES);
 	//glw->setFormat(sf);
 	//setViewport(glw);
-	
+
+	//auto glw = new QGLWidget();
+	//setViewport(glw);
+
 	setAttribute(Qt::WA_TranslucentBackground, false);
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -40,6 +44,8 @@ CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
 	setOptimizationFlags(DontSavePainterState);
 	setOptimizationFlags(DontClipPainter);
 	setOptimizationFlags(DontAdjustForAntialiasing);
+
+	setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 }
 
 CEditorView::~CEditorView()

@@ -43,8 +43,9 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	// cache
 	setCacheMode(DeviceCoordinateCache);
 
-	// test
+	// label
 	m_labelItem = new QGraphicsSimpleTextItem(this);
+	m_labelItem->setFlags(0);
 	m_labelItem->setCacheMode(DeviceCoordinateCache);
 }
 
@@ -208,12 +209,6 @@ void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 		}
 	}
 
-	// draw text label
-	if (getScene()->itemLabelsEnabled())
-	{
-		updateLabelPosition();
-		updateLabelDecoration();
-	}
 }
 
 
@@ -458,6 +453,8 @@ void CConnection::onParentGeometryChanged()
 	if (!m_firstNode || !m_lastNode)
 		return;
 
+	prepareGeometryChange();
+
 	// update line position
 	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();
 	QLineF l(p1, p2);
@@ -518,8 +515,14 @@ void CConnection::onParentGeometryChanged()
 	stroker.setWidth(6);
 	m_selectionShapePath = stroker.createStroke(path);
 
-	prepareGeometryChange();
 	update();
+
+	// update text label
+	if (getScene() && getScene()->itemLabelsEnabled())
+	{
+		updateLabelPosition();
+		updateLabelDecoration();
+	}
 }
 
 
