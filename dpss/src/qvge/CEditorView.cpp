@@ -45,7 +45,7 @@ CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
 	setOptimizationFlags(DontClipPainter);
 	setOptimizationFlags(DontAdjustForAntialiasing);
 
-	setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+	//setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 }
 
 CEditorView::~CEditorView()

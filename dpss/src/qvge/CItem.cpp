@@ -68,7 +68,7 @@ bool CItem::restoreFrom(QDataStream &out, quint64 version64)
 		}
 
 		// ?
-		updateCachedItems();
+		//updateCachedItems();
 
 		return true;
 	}

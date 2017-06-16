@@ -73,6 +73,8 @@ void CNode::copyDataFrom(CItem* from)
 		setPos(fromNode->pos());
 		setZValue(fromNode->zValue());
 	}
+
+	updateCachedItems();
 }
 
 
@@ -103,9 +105,16 @@ bool CNode::setAttribute(const QByteArray& attrId, const QVariant& v)
 		float s = v.toFloat();
 		if (s > 0)
 		{
-			prepareGeometryChange();
 			resize(s);
+			updateCachedItems();
 		}
+		return true;
+	}
+
+	if (attrId == "shape")
+	{
+		Super::setAttribute(attrId, v);
+		updateCachedItems();
 		return true;
 	}
 
@@ -411,6 +420,8 @@ void CNode::onItemMoved()
 
 void CNode::onItemRestored()
 {
+	updateCachedItems();
+
 	updateConnections();
 }
 
@@ -487,8 +498,6 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 {
 	painter->setClipRect(option->exposedRect);
 
-	QRectF r = Shape::boundingRect();
-
 	// get color (to optimize!)
 	QVariant color = getAttribute("color");
 	if (color.canConvert<QColor>())
@@ -502,45 +511,39 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 	else
 		painter->setPen(QPen(Qt::black, 1));
 
-	// get shape (to optimize!)
-	QPolygonF shapeCache;
-
-	QByteArray shapeType = getAttribute("shape").toByteArray();
-	if (shapeType == "square")
+	// draw shape 
+	if (m_shapeCache.isEmpty())
 	{
-		shapeCache = r;
-		painter->drawRect(r);
-	}
-	else if (shapeType == "diamond")
-	{
-		float rx = r.center().x();
-		float ry = r.center().y();
-
-		shapeCache << QPointF(rx, ry - r.height() / 2)
-			<< QPointF(rx + r.width() / 2, ry)
-			<< QPointF(rx, ry + r.height() / 2)
-			<< QPointF(rx - r.width() / 2, ry)
-			<< QPointF(rx, ry - r.height() / 2);
-		painter->drawPolygon(shapeCache);
-	}
-	else if (shapeType == "triangle")
-	{
-		shapeCache << r.bottomLeft() << r.bottomRight() << QPointF(r.topRight() + r.topLeft()) / 2 << r.bottomLeft();
-		painter->drawPolygon(shapeCache);
-	}
-	else // "disc"
-	{
-		shapeCache.clear();
+		QRectF r = Shape::boundingRect();
 		painter->drawEllipse(r);
 	}
+	else
+	{
+		painter->drawPolygon(m_shapeCache);
+	}
+}
+
+
+QRectF CNode::boundingRect() const
+{
+	QRectF r = Shape::boundingRect();
+
+	// in case of bold selection
+	return r.adjusted(-3, -3, 3, 3);
+}
+
+
+void CNode::updateCachedItems()
+{
+	auto shapeCache = m_shapeCache;
+	auto sizeCache = m_sizeCache;
+
+	recalculateShape();
 
 	// update caches & connections 
-	if (m_shapeCache != shapeCache || m_sizeCache != rect())
+	if (m_shapeCache != shapeCache || m_sizeCache != sizeCache)
 	{
 		prepareGeometryChange();
-
-		m_shapeCache = shapeCache;
-		m_sizeCache = rect();
 
 		// update edges
 		for (auto edge : m_connections)
@@ -558,20 +561,47 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 }
 
 
-QRectF CNode::boundingRect() const
-{
-	QRectF r = Shape::boundingRect();
-
-	// in case of bold selection
-	return r.adjusted(-3, -3, 3, 3);
-}
-
-
 void CNode::updateLabelPosition()
 {
 	int w = m_labelItem->boundingRect().width();
 
     m_labelItem->setPos(-w / 2, boundingRect().height() / 2);
+}
+
+
+// priv
+
+void CNode::recalculateShape()
+{
+	QRectF r = Shape::boundingRect();
+
+	m_shapeCache.clear();
+	m_sizeCache = r;
+
+	QByteArray shapeType = getAttribute("shape").toByteArray();
+	if (shapeType == "square")
+	{
+		m_shapeCache = r;
+	}
+	else if (shapeType == "diamond")
+	{
+		float rx = r.center().x();
+		float ry = r.center().y();
+
+		m_shapeCache << QPointF(rx, ry - r.height() / 2)
+			<< QPointF(rx + r.width() / 2, ry)
+			<< QPointF(rx, ry + r.height() / 2)
+			<< QPointF(rx - r.width() / 2, ry)
+			<< QPointF(rx, ry - r.height() / 2);
+	}
+	else if (shapeType == "triangle")
+	{
+		m_shapeCache << r.bottomLeft() << r.bottomRight() << QPointF(r.topRight() + r.topLeft()) / 2 << r.bottomLeft();
+	}
+	else // "disc"
+	{
+		// no cache
+	}
 }
 
 

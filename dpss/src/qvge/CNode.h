@@ -105,8 +105,10 @@ protected:
 	virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event); 
 
 	virtual void updateLabelPosition();
+	virtual void updateCachedItems();
 
 private:
+	void recalculateShape();
 	void updateConnections();
 
 protected:

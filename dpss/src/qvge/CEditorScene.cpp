@@ -326,13 +326,6 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 		}
 	}
 
-	CItem::endRestore();
-	
-	for (CItem* item : idToItem.values())
-	{
-		item->onItemRestored();
-	}
-
 	// attributes
 	if (storedVersion >= 3)
 	{
@@ -359,7 +352,11 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 					setClassAttribute(classId, attr);
 				}
 				else
+				{
+					CItem::endRestore();
+
 					return false;
+				}
 			}
 		}
 	}
@@ -369,6 +366,14 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 	{
 		out >> m_classToSuperIds;
 		out >> m_classAttributesVis;
+	}
+
+	// finish
+	CItem::endRestore();
+
+	for (CItem* item : idToItem.values())
+	{
+		item->onItemRestored();
 	}
 
 	return true;

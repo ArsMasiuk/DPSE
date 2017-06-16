@@ -64,6 +64,7 @@ public:
 
 	// reimp
 	virtual QPainterPath shape() const;
+	virtual QRectF boundingRect() const;
 
 	// attributes
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);

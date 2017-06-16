@@ -46,7 +46,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	// label
 	m_labelItem = new QGraphicsSimpleTextItem(this);
 	m_labelItem->setFlags(0);
-	m_labelItem->setCacheMode(DeviceCoordinateCache);
+	//m_labelItem->setCacheMode(DeviceCoordinateCache);
 }
 
 
@@ -126,6 +126,15 @@ QPainterPath CConnection::shape() const
 }
 
 
+QRectF CConnection::boundingRect() const
+{
+	//QRectF r(line().p1(), line().p2());
+	//r = r.united(QRectF(m_controlPos, m_controlPos + QPointF(1,1)));
+	//return r.adjusted(-2,-2,2,2);
+	return Shape::boundingRect();
+}
+
+
 void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* /*widget*/)
 {
 	// weight
@@ -160,7 +169,7 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 
 void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
-	painter->setClipRect(option->exposedRect);
+	//painter->setClipRect(option->exposedRect);
 
 	// called before draw 
 	setupPainter(painter, option, widget);
@@ -272,17 +281,27 @@ void CConnection::drawArrow(QPainter* painter, qreal shift, const QLineF& direct
 
 void CConnection::updateLabelPosition()
 {
-	int w = m_labelItem->boundingRect().width();
-	int h = m_labelItem->boundingRect().height();
+	auto r = m_labelItem->boundingRect();
+	int w = r.width();
+	int h = r.height();
 	m_labelItem->setTransformOriginPoint(w / 2, h / 2);
 
 	if (isCircled())
 	{
 		m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - boundingRect().height() / 2 - h);
+
+		m_labelItem->setRotation(0);
 	}
 	else
 	{
 		m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - h / 2);
+
+		// update label rotation
+		qreal angle = 180 - line().angle();
+		if (angle > 90) angle -= 180;
+		else if (angle < -90) angle += 180;
+		//qDebug() << angle;
+		m_labelItem->setRotation(angle);
 	}
 }
 
@@ -388,9 +407,12 @@ void CConnection::reverse()
 
 void CConnection::setBendFactor(int bf) 
 { 
-	m_bendFactor = bf; 
+	if (bf != m_bendFactor)
+	{
+		m_bendFactor = bf;
 
-	onParentGeometryChanged();
+		onParentGeometryChanged();
+	}
 }
 
 
@@ -453,19 +475,16 @@ void CConnection::onParentGeometryChanged()
 	if (!m_firstNode || !m_lastNode)
 		return;
 
+	// optimize: no update while restoring
+	if (s_duringRestore)
+		return;
+
 	prepareGeometryChange();
 
 	// update line position
 	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();
 	QLineF l(p1, p2);
 	setLine(l);
-
-	// update label rotation
-	qreal angle = 180 - l.angle();
-	if (angle > 90) angle -= 180;
-	else if (angle < -90) angle += 180;
-	//qDebug() << angle;
-	m_labelItem->setRotation(angle);
 
 	// update shape path
 	QPainterPath path;
