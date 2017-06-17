@@ -10,6 +10,7 @@ It can be used freely, maintaining the information above.
 
 #include "CItemAttributeEditor.h"
 #include "CExtListInputDialog.h"
+#include "CSizeInputDialog.h"
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CNode.h>
@@ -144,6 +145,7 @@ void CItemAttributeEditor::listAttributes(QTreeWidgetItem* rootItem, const QList
 
         item->setData(0, ClassRole, classId);
         item->setData(0, AttrRole, it.key());
+		item->setData(1, AttrRole, it.value());
     }
 
 	rootItem->setExpanded(true);
@@ -206,6 +208,26 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 			return val;
 	}
 
+    // size editor
+    if (attr.valueType == QVariant::Size)
+    {
+        QSize sz = CSizeInputDialog::getSize(headerText, labelText, attrValue.toSize());
+        if (sz.isValid())
+            return sz;
+        else
+            return QVariant();
+    }
+
+	// sizeF editor
+	if (attr.valueType == QVariant::SizeF)
+	{
+		QSizeF sz = CSizeInputDialog::getSizeF(headerText, labelText, attrValue.toSizeF());
+		if (sz.isValid())
+			return sz;
+		else
+			return QVariant();
+	}
+
     // predefined attrs
 	auto constrains = m_scene->getClassAttributeConstrains(classId, attrId);
 	if (constrains)
@@ -238,13 +260,14 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
 	auto classId = item->data(0, ClassRole).toByteArray();
-	auto attrV = item->data(0, AttrRole);
-    if (attrV.isNull())
+	auto attrIdV = item->data(0, AttrRole);
+    if (attrIdV.isNull())
         return;
 
-    QByteArray attrId = attrV.toByteArray();
+    QByteArray attrId = attrIdV.toByteArray();
 
-	QVariant v = editValue(classId, attrId, item->text(1));
+	QVariant attrValue = item->data(1, AttrRole);
+	QVariant v = editValue(classId, attrId, attrValue);
 	if (!v.isValid())
 		return;
 

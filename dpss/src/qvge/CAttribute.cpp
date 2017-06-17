@@ -47,6 +47,13 @@ bool CAttribute::restoreFrom(QDataStream& out, quint64 version64)
 
     out >> name >> defaultValue >> dummy >> isVirtual;
 
+	// size must be converted
+	if (version64 < 7)
+	{
+		if (id == "size")
+			defaultValue = QSizeF(defaultValue.toDouble(), defaultValue.toDouble());
+	}
+
 	valueType = defaultValue.type();
 
 	return true;

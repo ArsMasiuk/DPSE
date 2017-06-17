@@ -24,7 +24,9 @@ int CExtListInputDialog::getItemIndex(const QString& title, const QString& label
     dialog->ui->comboBox->clear();
     dialog->ui->comboBox->addItems(texts);
     while (dialog->ui->comboBox->count() < icons.size())
+    {
         dialog->ui->comboBox->addItem("");
+    }
 
     for (int i = 0; i < icons.size(); i++)
     {

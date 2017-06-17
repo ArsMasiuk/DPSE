@@ -42,6 +42,8 @@ private Q_SLOTS:
     //void on_actionUndoTest_triggered();
 	void on_actionImportTest_triggered();
 
+	void on_actionAbout_triggered();
+
 	void onSceneChanged();
 
     // simu

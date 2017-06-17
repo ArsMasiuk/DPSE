@@ -67,9 +67,6 @@ bool CItem::restoreFrom(QDataStream &out, quint64 version64)
 			out >> m_id;
 		}
 
-		// ?
-		//updateCachedItems();
-
 		return true;
 	}
 
@@ -264,6 +261,8 @@ void CItem::onItemSelected(bool state)
 		m_internalStateFlags |= IS_Selected;
 	else
 		m_internalStateFlags &= ~IS_Selected;
+
+	updateLabelDecoration();
 }
 
 

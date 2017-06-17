@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Distributed Parallel Simulation System</string>
+   <string>Problem Oriented Simulation Environment</string>
   </property>
   <widget class="QWidget" name="centralWidget"/>
   <widget class="QMenuBar" name="menuBar">
@@ -64,11 +64,18 @@
     <addaction name="actionMPI_Sch"/>
     <addaction name="actionGraph_OM"/>
    </widget>
+   <widget class="QMenu" name="menuHep">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuSimulation"/>
    <addaction name="menuTest"/>
+   <addaction name="menuHep"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="toolButtonStyle">
@@ -277,6 +284,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About...</string>
    </property>
   </action>
  </widget>

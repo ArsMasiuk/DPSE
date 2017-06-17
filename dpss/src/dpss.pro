@@ -36,9 +36,12 @@ include(simu/graph_om/graph_om.pri)
 
 INCLUDEPATH += qvge ds common simu
 
-SOURCES += $$files($$PWD/ds/*.cpp)
-HEADERS  += $$files($$PWD/ds/*.h)
-FORMS    += $$files($$PWD/ds/*.ui)
+SOURCES += $$files($$PWD/ds/*.cpp) \
+    common/CSizeInputDialog.cpp
+HEADERS  += $$files($$PWD/ds/*.h) \
+    common/CSizeInputDialog.h
+FORMS    += $$files($$PWD/ds/*.ui) \
+    common/CSizeInputDialog.ui
 RESOURCES += $$files($$PWD/ds/*.qrc)
 
 SOURCES += $$files($$PWD/common/*.cpp)

@@ -262,3 +262,17 @@ void MainWindow::on_actionImportTest_triggered()
 		edges.first()->setAttribute("K", k);
 	}
 }
+
+
+// about
+
+void MainWindow::on_actionAbout_triggered()
+{
+	QMessageBox::about(this, tr("About POSE-DS"), 
+		tr("Problem oriented simulation environment\n"
+			"Dialog subsystem\n\n"
+			"Donetsk National Technical University\n"
+			"Chair of Computing Systems\n\n"
+			"(c) A.L.Masyuk 2002-2017\n"
+			"Supervisor: Dr.Dr.Prof. V.A.Svjatnyj"));
+}

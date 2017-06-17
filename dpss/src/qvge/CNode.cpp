@@ -34,7 +34,9 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	// label
 	m_labelItem = new QGraphicsSimpleTextItem(this);
 	m_labelItem->setFlags(0);
-	m_labelItem->setCacheMode(DeviceCoordinateCache);
+	//m_labelItem->setCacheMode(DeviceCoordinateCache);
+	m_labelItem->setPen(Qt::NoPen);
+
 
 	// test
 	//auto effect = new QGraphicsDropShadowEffect();
@@ -100,17 +102,6 @@ bool CNode::setAttribute(const QByteArray& attrId, const QVariant& v)
 
 	update();
 
-	if (attrId == "size")
-	{
-		float s = v.toFloat();
-		if (s > 0)
-		{
-			resize(s);
-			updateCachedItems();
-		}
-		return true;
-	}
-
 	if (attrId == "shape")
 	{
 		Super::setAttribute(attrId, v);
@@ -119,6 +110,31 @@ bool CNode::setAttribute(const QByteArray& attrId, const QVariant& v)
 	}
 
 	// virtual attributes
+	if (attrId == "size")
+	{
+		if (v.type() == QVariant::Size || v.type() == QVariant::SizeF)
+		{
+			QSizeF sp = v.toSizeF();
+			if (!sp.isNull())
+			{
+				resize(sp);
+				updateCachedItems();
+				return true;
+			}
+			return false;
+		}
+
+		float s = v.toFloat();
+		if (s > 0)
+		{
+			resize(s);
+			updateCachedItems();
+			return true;
+		}
+
+		return false;
+	}
+
 	if (attrId == "x")
 	{
 		setX(v.toDouble());
@@ -149,12 +165,12 @@ bool CNode::setAttribute(const QByteArray& attrId, const QVariant& v)
 
 QVariant CNode::getAttribute(const QByteArray& attrId) const
 {
+	// virtual attributes
 	if (attrId == "size")
 	{
 		return getSize();
 	}
 
-	// virtual attributes
 	if (attrId == "x")
 	{
 		return x();
@@ -183,9 +199,13 @@ QVariant CNode::getAttribute(const QByteArray& attrId) const
 
 bool CNode::storeTo(QDataStream& out, quint64 version64) const
 {
-	if (version64 > 0)
+	if (version64 >= 7)
 	{
 		out << getSize();
+	}
+	else if (version64 > 0)
+	{
+		out << getSize().width();
 	}
 
 	out << pos() << itemFlags();
@@ -202,7 +222,11 @@ bool CNode::storeTo(QDataStream& out, quint64 version64) const
 
 bool CNode::restoreFrom(QDataStream& out, quint64 version64)
 {
-	if (version64 > 0)
+	if (version64 >= 7)
+	{
+		QSizeF size; out >> size; resize(size);
+	}
+	else if (version64 > 0)
 	{
 		float size; out >> size; resize(size);
 	}

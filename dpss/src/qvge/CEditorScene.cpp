@@ -27,7 +27,7 @@ It can be used freely, maintaining the information above.
 #include <qopengl.h>
 
 
-const quint64 version64 = 6;	// build
+const quint64 version64 = 7;	// build
 const char* versionId = "VersionId";
 
 

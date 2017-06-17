@@ -14,6 +14,12 @@ QString Utils::variantToText(const QVariant& v)
 	case QVariant::PointF:
 		return QString("%1;%2").arg(v.toPointF().x()).arg(v.toPointF().y());
 
+	case QVariant::Size:
+		return QString("%1:%2").arg(v.toSize().width()).arg(v.toSize().height());
+
+	case QVariant::SizeF:
+		return QString("%1:%2").arg(v.toSizeF().width()).arg(v.toSizeF().height());
+
 	case QVariant::Bool:
 		return v.toBool() ? "true" : "false";
 

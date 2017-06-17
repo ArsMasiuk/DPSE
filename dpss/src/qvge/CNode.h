@@ -48,8 +48,10 @@ public:
 	virtual CItem* create() const		{ return new CNode(parentItem()); }
 	virtual CItem* clone();
 
-	virtual float getSize() const		{ return rect().width(); }
+	virtual QSizeF getSize() const		{ return rect().size(); }
 	virtual void resize(float size)		{ setRect(-size / 2, -size / 2, size, size); }
+	virtual void resize(float w, float h) { setRect(-w / 2, -h / 2, w, h); }
+	virtual void resize(const QSizeF& size) { resize(size.width(), size.height()); }
 
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
 	virtual QVariant getAttribute(const QByteArray& attrId) const;
