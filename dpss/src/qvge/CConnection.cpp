@@ -46,7 +46,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	// label
 	m_labelItem = new QGraphicsSimpleTextItem(this);
 	m_labelItem->setFlags(0);
-	//m_labelItem->setCacheMode(DeviceCoordinateCache);
+	m_labelItem->setCacheMode(DeviceCoordinateCache);
 }
 
 
@@ -155,14 +155,14 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 	bool isSelected = (option->state & QStyle::State_Selected);
 	if (isSelected)
 	{
-		painter->setPen(QPen(QColor("orange"), weight + 1, penStyle));
+		painter->setPen(QPen(QColor("orange"), weight + 1.0, penStyle, Qt::FlatCap, Qt::MiterJoin));
 	}
 	else
 	{
 		// get color (to optimize!)
 		QColor color = getAttribute("color").value<QColor>();
 
-		painter->setPen(QPen(color, weight, penStyle));
+		painter->setPen(QPen(color, weight, penStyle, Qt::FlatCap, Qt::MiterJoin));
 	}
 }
 
@@ -272,7 +272,7 @@ void CConnection::drawArrow(QPainter* painter, qreal shift, const QLineF& direct
 
 	painter->translate(direction.p2());
 	painter->rotate(180 + a);
-	painter->translate(QPointF(0, shift + 1));
+	painter->translate(QPointF(0, shift + painter->pen().widthF()));
 	painter->drawPolygon(arrowHead);
 
 	painter->restore();
