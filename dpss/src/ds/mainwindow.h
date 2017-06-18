@@ -19,6 +19,7 @@ class MainWindow;
 }
 
 class CAttributeEditor;
+class CEditorView;
 
 
 class MainWindow : public QMainWindow
@@ -36,6 +37,7 @@ private Q_SLOTS:
 
 	void on_actionZoom_triggered();
 	void on_actionUnzoom_triggered();
+	void on_actionResetZoom_triggered();
 
 	void on_actionFactorNodes_triggered();
 
@@ -45,6 +47,7 @@ private Q_SLOTS:
 	void on_actionAbout_triggered();
 
 	void onSceneChanged();
+	void onZoomChanged(double currentZoom);
 
     // simu
     void on_actionMPI_Sch_triggered();
@@ -56,7 +59,7 @@ private:
 	class CItemAttributeEditor* m_attrItemEditor;
 
     class CBranchEditorScene* m_editorScene;
-    class QGraphicsView* m_editorView;
+    class CEditorView* m_editorView;
 
 	QLabel* m_countSection;
 

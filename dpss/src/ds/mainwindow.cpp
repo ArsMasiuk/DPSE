@@ -94,9 +94,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionPaste, SIGNAL(triggered()), m_editorScene, SLOT(paste()));
 
 	connect(m_editorScene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()));
+	connect(m_editorView, SIGNAL(scaleChanged(double)), this, SLOT(onZoomChanged(double)));
 
 	// new scene by default
 	on_actionNew_triggered();
+
+	onZoomChanged(1);
 }
 
 MainWindow::~MainWindow()
@@ -107,12 +110,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionZoom_triggered()
 {
-	m_editorView->scale(2, 2);
+	m_editorView->zoomBy(1.3);
 }
 
 void MainWindow::on_actionUnzoom_triggered()
 {
-	m_editorView->scale(0.5, 0.5);
+	m_editorView->zoomBy(1.0 / 1.3);
+}
+
+void MainWindow::on_actionResetZoom_triggered()
+{
+	m_editorView->zoomTo(1.0);
+}
+
+void MainWindow::onZoomChanged(double currentZoom)
+{
+	ui->actionResetZoom->setText(QString("%1%").arg((int)(currentZoom*100)));
 }
 
 void MainWindow::on_actionFactorNodes_triggered()
@@ -273,6 +286,8 @@ void MainWindow::on_actionAbout_triggered()
 			"Dialog subsystem\n\n"
 			"Donetsk National Technical University\n"
 			"Chair of Computing Systems\n\n"
-			"(c) A.L.Masyuk 2002-2017\n"
-			"Supervisor: Dr.Dr.Prof. V.A.Svjatnyj"));
+			"(c) Dipl.eng. A.L.Masyuk 2002-2017\n"
+			"Research supervisor: Dr.Dr.Prof. V.A.Svjatnyj\n"
+			"Airing simulator code: Dr. O.M.Miroshkin\n"
+		));
 }

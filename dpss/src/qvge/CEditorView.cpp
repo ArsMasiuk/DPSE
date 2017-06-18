@@ -19,7 +19,8 @@ It can be used freely, maintaining the information above.
 
 CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
 	: Super(parent),
-	m_menuModeTmp(Qt::PreventContextMenu)
+	m_menuModeTmp(Qt::PreventContextMenu),
+	m_currentZoom(1.0)
 {
 	//auto glw = new QOpenGLWidget();
 	//glw->setUpdateBehavior(QOpenGLWidget::PartialUpdate);
@@ -50,7 +51,28 @@ CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
 
 CEditorView::~CEditorView()
 {
+}
 
+
+// zoom
+
+void CEditorView::zoomTo(double target)
+{
+	QTransform mat;
+	mat.scale(target, target);
+	setTransform(mat);
+	
+	m_currentZoom = target;
+
+	Q_EMIT scaleChanged(m_currentZoom);
+}
+
+
+void CEditorView::zoomBy(double factor)
+{
+	double target = m_currentZoom * factor;
+
+	zoomTo(target);
 }
 
 

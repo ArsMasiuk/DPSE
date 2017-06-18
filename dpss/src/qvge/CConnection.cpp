@@ -26,7 +26,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 {
     m_firstNode = m_lastNode = NULL;
 
-	m_bendFactor = 2;
+	m_bendFactor = 0;
 
     setZValue(-1);
 
@@ -47,6 +47,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	m_labelItem = new QGraphicsSimpleTextItem(this);
 	m_labelItem->setFlags(0);
 	m_labelItem->setCacheMode(DeviceCoordinateCache);
+	m_labelItem->setPen(Qt::NoPen);
 }
 
 
