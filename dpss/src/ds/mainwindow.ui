@@ -293,6 +293,10 @@
    </property>
   </action>
   <action name="actionResetZoom">
+   <property name="icon">
+    <iconset resource="../common/common.qrc">
+     <normaloff>:/Icons/Zoom-Reset</normaloff>:/Icons/Zoom-Reset</iconset>
+   </property>
    <property name="text">
     <string>Reset Zoom</string>
    </property>
