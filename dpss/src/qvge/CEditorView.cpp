@@ -76,6 +76,16 @@ void CEditorView::zoomBy(double factor)
 }
 
 
+void CEditorView::fitToView()
+{
+	fitInView(scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
+
+	m_currentZoom = matrix().m11();
+
+	Q_EMIT scaleChanged(m_currentZoom);
+}
+
+
 // reimp
 
 void CEditorView::mousePressEvent(QMouseEvent *e)

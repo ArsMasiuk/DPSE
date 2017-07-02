@@ -38,6 +38,7 @@ private Q_SLOTS:
 	void on_actionZoom_triggered();
 	void on_actionUnzoom_triggered();
 	void on_actionResetZoom_triggered();
+	void on_actionFitToView_triggered();
 
 	void on_actionFactorNodes_triggered();
 

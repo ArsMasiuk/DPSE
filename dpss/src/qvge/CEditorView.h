@@ -30,6 +30,8 @@ public:
 	// factor if relative % value to zoom by (2 = 2x from current etc.)
 	void zoomBy(double factor);
 
+	void fitToView();
+
 	// reimp
 	virtual void mousePressEvent(QMouseEvent *e);
 	virtual void mouseMoveEvent(QMouseEvent *e);

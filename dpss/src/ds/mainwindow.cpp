@@ -123,6 +123,11 @@ void MainWindow::on_actionResetZoom_triggered()
 	m_editorView->zoomTo(1.0);
 }
 
+void MainWindow::on_actionFitToView_triggered()
+{
+	m_editorView->fitToView();
+}
+
 void MainWindow::onZoomChanged(double currentZoom)
 {
 	ui->actionResetZoom->setText(QString("%1%").arg((int)(currentZoom*100)));
