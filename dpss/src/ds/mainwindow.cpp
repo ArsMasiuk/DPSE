@@ -11,6 +11,7 @@ It can be used freely, maintaining the information above.
 #include "qvge/CFileSerializerGEXF.h"
 #include "qvge/CFileSerializerGraphML.h"
 #include "qvge/CEditorView.h"
+#include "qvge/CImageExport.h"
 
 #include <QFileDialog>
 #include <QDockWidget>
@@ -155,7 +156,10 @@ void MainWindow::on_actionNew_triggered()
 {
 	m_editorScene->reset();
 	m_editorScene->activate();
+
+	m_editorView->zoomTo(1.0);
 }
+
 
 void MainWindow::on_actionSave_triggered()
 {
@@ -173,6 +177,13 @@ void MainWindow::on_actionSave_triggered()
 	}
 }
 
+
+void MainWindow::on_actionExport_triggered()
+{
+	CImageExport::write(*m_editorScene, m_lastFileName);
+}
+
+
 void MainWindow::on_actionOpen_triggered()
 {
 	QString fileName = QFileDialog::getOpenFileName(NULL, "Open Scene", m_lastFileName, "*.xgr | *.gr | *.gexf | *.graphml");
@@ -181,18 +192,21 @@ void MainWindow::on_actionOpen_triggered()
 		if (QFileInfo(fileName).suffix() == "gr")
 		{
 			CFileSerializerGR().load(fileName, *m_editorScene);
+			m_editorView->zoomTo(1.0);
 			return;
 		}
 
 		if (QFileInfo(fileName).suffix() == "gexf")
 		{
 			CFileSerializerGEXF().load(fileName, *m_editorScene);
+			m_editorView->zoomTo(1.0);
 			return;
 		}
 
 		if (QFileInfo(fileName).suffix() == "graphml")
 		{
 			CFileSerializerGraphML().load(fileName, *m_editorScene);
+			m_editorView->zoomTo(1.0);
 			return;
 		}
 
@@ -208,6 +222,8 @@ void MainWindow::on_actionOpen_triggered()
 			m_editorScene->activate();
 
 			m_lastFileName = fileName;
+
+			m_editorView->zoomTo(1.0);
 		}
 	}
 }

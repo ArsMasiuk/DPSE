@@ -29,6 +29,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionSave"/>
+    <addaction name="actionExport"/>
     <addaction name="actionOpen"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -306,11 +307,23 @@
    </property>
   </action>
   <action name="actionFitToView">
+   <property name="icon">
+    <iconset resource="../common/common.qrc">
+     <normaloff>:/Icons/Zoom-Fit</normaloff>:/Icons/Zoom-Fit</iconset>
+   </property>
    <property name="text">
     <string>Fit to View</string>
    </property>
    <property name="toolTip">
     <string>Fit all visible items to the view</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export to Image File</string>
    </property>
   </action>
  </widget>
