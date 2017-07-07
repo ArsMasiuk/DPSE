@@ -117,8 +117,10 @@ public:
 	}
 
 	AttributesMap getClassAttributes(const QByteArray& classId, bool inherited) const;
-	void setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis = false);
 	bool removeClassAttribute(const QByteArray& classId, const QByteArray& attrId);
+
+	void setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis = false);
+	void setClassAttribute(const QByteArray& classId, const QByteArray& attrId, const QVariant& defaultValue);
 
 	// convenience method to create a class attribute by single call
 	bool createClassAttribute(const QByteArray& classId, 

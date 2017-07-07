@@ -37,6 +37,7 @@ protected:
 protected Q_SLOTS:
 	void onSceneChanged();
 	void on_AttributeList_itemChanged(QTreeWidgetItem *item, int column);
+	void on_AttributeList_itemDoubleClicked(QTreeWidgetItem *item, int column);
 	void on_AddButton_clicked();
 	void on_RemoveButton_clicked();
 

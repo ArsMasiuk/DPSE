@@ -466,6 +466,17 @@ void CEditorScene::setClassAttribute(const QByteArray& classId, const CAttribute
 }
 
 
+void CEditorScene::setClassAttribute(const QByteArray& classId, const QByteArray& attrId, const QVariant& defaultValue)
+{
+	if (m_classAttributes[classId].contains(attrId))
+	{
+		m_classAttributes[classId][attrId].defaultValue = defaultValue;
+
+		update();
+	}
+}
+
+
 bool CEditorScene::removeClassAttribute(const QByteArray& classId, const QByteArray& attrId)
 {
 	auto it = m_classAttributes.find(classId);

@@ -28,11 +28,11 @@ public:
 
 	void setScene(CNodeEditorScene* scene);
 
+	static QVariant editValue(CEditorScene* scene, const QByteArray& classId, const QByteArray& attrId, const QVariant& attrValue);
+
 protected:
 	void onSceneAttached(CEditorScene* scene);
 	void onSceneDetached(CEditorScene* scene);
-
-	virtual QVariant editValue(const QByteArray& classId, const QByteArray& attrId, const QVariant& attrValue);
 
 protected Q_SLOTS:
 	void onSceneChanged();

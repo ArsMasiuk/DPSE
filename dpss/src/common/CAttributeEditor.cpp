@@ -8,9 +8,11 @@ It can be used freely, maintaining the information above.
 */
 
 #include "CAttributeEditor.h"
+#include "CItemAttributeEditor.h"
 #include "CNewAttributeDialog.h"
 
 #include <qvge/CEditorScene.h>
+#include <qvge/Utils.h>
 
 #include <QMessageBox>
 
@@ -98,7 +100,7 @@ void CAttributeEditor::fillClassAttr(const QByteArray& classId, QTreeWidgetItem*
 		attrItem->setText(0, QString(attr.id));
         attrItem->setCheckState(0, visIds.contains(attr.id) ? Qt::Checked : Qt::Unchecked);
 		attrItem->setText(1, attr.name);
-		attrItem->setText(2, attr.defaultValue.toString());
+		attrItem->setText(2, Utils::variantToText(attr.defaultValue));
 
 		attrItem->setData(0, AttrRole, attr.id);
 		attrItem->setData(0, ClassRole, classId);
@@ -120,6 +122,27 @@ void CAttributeEditor::on_AttributeList_itemChanged(QTreeWidgetItem *item, int c
 
 		m_scene->addUndoState();
 	}
+}
+
+
+void CAttributeEditor::on_AttributeList_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+	if (!item)
+		return;
+
+	QByteArray attrId = item->data(0, AttrRole).toByteArray();
+	QByteArray classId = item->data(0, ClassRole).toByteArray();
+	if (classId.isEmpty() || attrId.isEmpty())
+		return;
+
+	QVariant attrValue = m_scene->getClassAttribute(classId, attrId);
+	QVariant newValue = CItemAttributeEditor::editValue(m_scene, classId, attrId, attrValue);
+	if (newValue.isNull())
+		return;
+
+	m_scene->setClassAttribute(classId, attrId, newValue);
+
+	m_scene->addUndoState();
 }
 
 

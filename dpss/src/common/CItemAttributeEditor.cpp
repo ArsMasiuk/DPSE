@@ -15,6 +15,7 @@ It can be used freely, maintaining the information above.
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CNode.h>
 #include <qvge/CConnection.h>
+#include <qvge/Utils.h>
 
 #include <QInputDialog>
 #include <QColorDialog>
@@ -154,9 +155,9 @@ void CItemAttributeEditor::listAttributes(QTreeWidgetItem* rootItem, const QList
 
 // edit attrs
 
-QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteArray& attrId, const QVariant& attrValue)
+QVariant CItemAttributeEditor::editValue(CEditorScene* scene, const QByteArray& classId, const QByteArray& attrId, const QVariant& attrValue)
 {
-	CAttribute attr = m_scene->getClassAttributeInfo(classId, attrId);
+	CAttribute attr = scene->getClassAttributeInfo(classId, attrId);
 
 	// color editor
 	if (attr.valueType == QVariant::Color)
@@ -175,7 +176,7 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	// int editor
 	if (attr.valueType == QVariant::Int || attr.valueType == QVariant::LongLong || attr.valueType == QVariant::UInt || attr.valueType == QVariant::ULongLong)
 	{
-		CIntegerConstrains constrains(m_scene->getClassAttributeConstrains(classId, attrId));
+		CIntegerConstrains constrains(scene->getClassAttributeConstrains(classId, attrId));
 
 		bool ok = true;
 		int val = QInputDialog::getInt(NULL, headerText, labelText, 
@@ -192,7 +193,7 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	// double editor
 	if (attr.valueType == QVariant::Double || attr.valueType == QMetaType::Float)
 	{
-		CDoubleConstrains constrains(m_scene->getClassAttributeConstrains(classId, attrId));
+		CDoubleConstrains constrains(scene->getClassAttributeConstrains(classId, attrId));
 
 		bool ok = true;
         double val = QInputDialog::getDouble(NULL, headerText, labelText,
@@ -229,7 +230,7 @@ QVariant CItemAttributeEditor::editValue(const QByteArray& classId, const QByteA
 	}
 
     // predefined attrs
-	auto constrains = m_scene->getClassAttributeConstrains(classId, attrId);
+	auto constrains = scene->getClassAttributeConstrains(classId, attrId);
 	if (constrains)
 	{
 		auto constrainsList = dynamic_cast<CAttributeConstrainsList*>(constrains);
@@ -267,7 +268,7 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
     QByteArray attrId = attrIdV.toByteArray();
 
 	QVariant attrValue = item->data(1, AttrRole);
-	QVariant v = editValue(classId, attrId, attrValue);
+	QVariant v = editValue(m_scene, classId, attrId, attrValue);
 	if (!v.isValid())
 		return;
 
