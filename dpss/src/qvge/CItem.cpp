@@ -174,6 +174,14 @@ void CItem::copyDataFrom(CItem* from)
 
 // painting
 
+void CItem::invalidate()
+{
+	updateCachedItems();
+
+	getSceneItem()->update();
+}
+
+
 void CItem::updateLabelContent()
 {
 	if (!(m_internalStateFlags & IS_Attribute_Changed) && 

@@ -555,6 +555,8 @@ QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const
 		// set default ID
 		setDefaultId();
 
+		invalidate();
+
 		return value;
 	}
 

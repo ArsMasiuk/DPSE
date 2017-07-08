@@ -36,7 +36,8 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 	m_draggedItem(NULL),
 	m_activeItemFactory(NULL),
 	m_undoManager(new CSimpleUndoManager(*this)),
-	m_doubleClick(false)
+	m_doubleClick(false),
+	m_needUpdateItems(true)
 {
     m_gridSize = 25;
     m_gridEnabled = true;
@@ -462,6 +463,7 @@ void CEditorScene::setClassAttribute(const QByteArray& classId, const CAttribute
 
 	setClassAttributeVisible(classId, attr.id, vis);
 
+	m_needUpdateItems = true;
 	update();
 }
 
@@ -472,6 +474,7 @@ void CEditorScene::setClassAttribute(const QByteArray& classId, const QByteArray
 	{
 		m_classAttributes[classId][attrId].defaultValue = defaultValue;
 
+		m_needUpdateItems = true;
 		update();
 	}
 }
@@ -483,6 +486,7 @@ bool CEditorScene::removeClassAttribute(const QByteArray& classId, const QByteAr
 	if (it == m_classAttributes.end())
 		return false;
 
+	m_needUpdateItems = true;
 	update();
 
 	return (*it).remove(attrId);
@@ -731,6 +735,16 @@ void CEditorScene::onSceneChanged()
 
 void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 {
+	// invalidate items if needed
+	if (m_needUpdateItems)
+	{
+		m_needUpdateItems = false;
+		auto citems = getItems<CItem>();
+		for (auto citem : citems)
+			citem->invalidate();
+	}
+
+	// fill background
 	if (painter->paintEngine()->type() == QPaintEngine::OpenGL || painter->paintEngine()->type() == QPaintEngine::OpenGL2)
 	{
 		glClearColor(1, 1, 1, 1.0f);
@@ -743,6 +757,7 @@ void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 	painter->setBrush(fillColor);
 	painter->drawRect(sceneRect());
 
+	// draw grid if needed
 	if (m_gridSize < 0 || !m_gridEnabled)
 		return;
 

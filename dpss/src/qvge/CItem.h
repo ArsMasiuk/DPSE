@@ -133,6 +133,9 @@ public:
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Accepted; }
 	virtual void leaveDragFromItem(QGraphicsItem* /*draggedItem*/) {}
 
+	// call from scene paint
+	void invalidate();
+
 protected:
 	virtual void copyDataFrom(CItem* from);
 

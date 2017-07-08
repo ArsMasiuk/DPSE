@@ -470,6 +470,12 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 		// set default ID
 		setDefaultId();
 
+		// set default size
+		QSizeF sz = getScene()->getClassAttribute(classId(), "size").toSizeF();
+		resize(sz);
+
+		invalidate();
+
 		return value;
 	}
 
@@ -597,6 +603,9 @@ void CNode::updateLabelPosition()
 
 void CNode::recalculateShape()
 {
+	QSizeF sz = getAttribute("size").toSizeF();
+	resize(sz);
+
 	QRectF r = Shape::boundingRect();
 
 	m_shapeCache.clear();

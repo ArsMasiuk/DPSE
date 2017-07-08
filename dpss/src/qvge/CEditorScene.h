@@ -238,6 +238,8 @@ private:
 
 	QCursor m_sceneCursor;
 
+	bool m_needUpdateItems;
+
 	// labels
 	QPainterPath m_usedLabelsRegion;
 	bool m_labelsEnabled, m_labelsUpdate;
