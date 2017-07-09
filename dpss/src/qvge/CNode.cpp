@@ -470,12 +470,6 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 		// set default ID
 		setDefaultId();
 
-		// set default size
-		QSizeF sz = getScene()->getClassAttribute(classId(), "size").toSizeF();
-		resize(sz);
-
-		invalidate();
-
 		return value;
 	}
 
