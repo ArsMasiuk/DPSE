@@ -9,14 +9,19 @@
 #include <QDebug>
 #include <QProcess>
 #include <QCoreApplication>
+#include <QApplication>
 #include <QMessageBox>
+#include <QSettings>
+#include <QDesktopWidget>
+#include <QCloseEvent>
 
 
 CMainWindow::CMainWindow(QWidget *parent) :
     QMainWindow(parent),
-    m_appName("MyApp"),
     m_isChanged(false)
 {
+	QApplication::setOrganizationName("home");
+	QApplication::setApplicationName("application");
 }
 
 CMainWindow::~CMainWindow()
@@ -45,7 +50,21 @@ void CMainWindow::init(int argc, char *argv[])
     updateTitle();
     updateActions();
 
+	readSettings();
+
     processParams(argc, argv);
+}
+
+
+void CMainWindow::closeEvent(QCloseEvent *event)
+{
+	if (saveOnExit()) {
+		writeSettings();
+		event->accept();
+	}
+	else {
+		event->ignore();
+	}
 }
 
 
@@ -154,7 +173,7 @@ void CMainWindow::updateTitle()
     if (m_isChanged)
         docName = "* " + docName;
 
-    setWindowTitle(QString("%1 - %2").arg(docName, m_appName));
+    setWindowTitle(QString("%1 - %2").arg(docName, QApplication::applicationName()));
 }
 
 
@@ -239,12 +258,25 @@ void CMainWindow::on_actionOpen_triggered()
     if (fileName.isEmpty())
         return;
 
-    doOpenDocument(fileName);
+    QString normalizedName = QDir::toNativeSeparators(fileName);
+
+    doOpenDocument(normalizedName);
 }
 
 
 void CMainWindow::doOpenDocument(const QString &fileName)
 {
+    // check if the document already opened in another instance
+    CMainWindow *window = findDocumentWindow(fileName);
+    if (window == this)
+        return;
+    else
+        if (window)
+        {
+            window->raise();
+            return;
+        }
+
     // file does not exist
     if (!QFile::exists(fileName))
     {
@@ -313,20 +345,29 @@ void CMainWindow::onOpenDocumentDialog(QString &title, QString &filter)
 
 void CMainWindow::on_actionSave_triggered()
 {
-    if (m_currentFileName.isEmpty())
-    {
-        on_actionSaveAs_triggered();
-        return;
-    }
-
-    doSaveDocument(m_currentFileName, "", m_currentDocType);
+	save();
 }
 
 
 void CMainWindow::on_actionSaveAs_triggered()
 {
+	saveAs();
+}
+
+
+bool CMainWindow::save()
+{
+	if (m_currentFileName.isEmpty())
+		return saveAs();
+
+	return doSaveDocument(m_currentFileName, "", m_currentDocType);
+}
+
+
+bool CMainWindow::saveAs()
+{
     if (m_currentDocType.isEmpty())
-        return;
+        return true;
 
     QString filter;
     const CDocument& doc = m_docTypes[m_currentDocType];
@@ -347,13 +388,15 @@ void CMainWindow::on_actionSaveAs_triggered()
     QString selectedFilter = m_lastSaveFilter;
     QString fileName = QFileDialog::getSaveFileName(NULL, title, m_currentFileName, filter, &selectedFilter);
     if (fileName.isEmpty())
-        return;
+        return false;
 
-    doSaveDocument(fileName, selectedFilter, m_currentDocType);
+    QString normalizedName = QDir::toNativeSeparators(fileName);
+
+    return doSaveDocument(normalizedName, selectedFilter, m_currentDocType);
 }
 
 
-void CMainWindow::doSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType)
+bool CMainWindow::doSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType)
 {
     if (onSaveDocument(fileName, selectedFilter, docType))
     {
@@ -365,11 +408,97 @@ void CMainWindow::doSaveDocument(const QString &fileName, const QString &selecte
 
         updateTitle();
         updateActions();
+
+		return true;
     }
     else
     {
         QMessageBox::critical(NULL, tr("Save Error"), tr("Document cannot be saved. Check access rights and path."));
     }
+
+	return false;
 }
 
 
+bool CMainWindow::saveOnExit()
+{
+	if (!m_isChanged)
+		return true;
+
+	const QMessageBox::StandardButton ret = QMessageBox::warning(
+		this, 
+		QApplication::applicationName(),
+		tr("The document has been modified.\n"
+				"Do you want to save your changes?"),
+		QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+	switch (ret) 
+	{
+	case QMessageBox::Save:
+		return save();
+	case QMessageBox::Cancel:
+		return false;
+	default:
+		break;
+	}
+
+	return true;
+}
+
+
+CMainWindow* CMainWindow::findDocumentWindow(const QString &fileName)
+{
+    QString normalizedName = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
+#ifdef WIN32
+    normalizedName = normalizedName.toLower();
+#endif
+
+    if (normalizedName == m_currentFileName)
+        return this;
+
+    foreach (QWidget *widget, QApplication::topLevelWidgets())
+    {
+        CMainWindow *mainWin = qobject_cast<CMainWindow*>(widget);
+        if (mainWin)
+        {
+            QString curFileName = mainWin->m_currentFileName;
+#ifdef WIN32
+            curFileName = curFileName.toLower();
+#endif
+           if (normalizedName == curFileName)
+                return mainWin;
+        }
+    }
+
+    return NULL;
+}
+
+
+void CMainWindow::readSettings()
+{
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	
+	const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
+	if (geometry.isEmpty()) {
+		const QRect availableGeometry = QApplication::desktop()->availableGeometry(this);
+		resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
+		move((availableGeometry.width() - width()) / 2,
+			(availableGeometry.height() - height()) / 2);
+	}
+	else {
+		restoreGeometry(geometry);
+	}
+
+	if (settings.value("maximized", true).toBool())
+		showMaximized();
+	else
+		showNormal();
+}
+
+
+void CMainWindow::writeSettings()
+{
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	settings.setValue("geometry", saveGeometry());
+	settings.setValue("maximized", isMaximized());
+}

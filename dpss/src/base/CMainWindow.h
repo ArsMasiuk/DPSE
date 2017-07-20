@@ -34,13 +34,18 @@ class CMainWindow : public QMainWindow
 
 public:
     explicit CMainWindow(QWidget *parent = 0);
-    ~CMainWindow();
+    virtual ~CMainWindow();
 
     virtual void init(int argc, char *argv[]);
 
     void addDocument(const CDocument& doc);
 
+public Q_SLOTS:
+	virtual void onDocumentChanged();
+
 protected:
+	virtual void closeEvent(QCloseEvent *event);
+
     virtual void processParams(int argc, char *argv[]);
 
     virtual void createMainMenu();
@@ -58,23 +63,27 @@ protected:
     virtual bool onOpenDocument(const QString &fileName, QByteArray &docType) { return false; }
 
     virtual void onSaveDocumentDialog(QString &title, QString &filter) {}
-    virtual void doSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType);
+    virtual bool doSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType);
     virtual bool onSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType) { return true; }
+
+	virtual bool saveOnExit();
+	virtual bool save();
+	virtual bool saveAs();
+
+    CMainWindow* findDocumentWindow(const QString &fileName);
+
+	virtual void readSettings();
+	virtual void writeSettings();
 
 protected Q_SLOTS:
     void createNewDocument();
     void createNewDocument(QAction*);
 
-    virtual void on_actionOpen_triggered();
-    virtual void on_actionSave_triggered();
-    virtual void on_actionSaveAs_triggered();
-
-public Q_SLOTS:
-    virtual void onDocumentChanged();
+    void on_actionOpen_triggered();
+    void on_actionSave_triggered();
+    void on_actionSaveAs_triggered();
 
 protected:
-    QString m_appName;
-
     QMenu *m_fileMenu;
     QMenu *m_newMenu;
     QAction *m_newDocument;

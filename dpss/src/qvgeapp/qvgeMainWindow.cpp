@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QApplication>
 
 #include <qvge/CFileSerializerGEXF.h>
 #include <qvge/CFileSerializerGraphML.h>
@@ -9,7 +10,7 @@
 
 qvgeMainWindow::qvgeMainWindow()
 {
-    m_appName = "Qt Visual Graph Editor";
+    QApplication::setApplicationName("Qt Visual Graph Editor");
 
     CDocumentFormat gexf = { "GEXF", "*.gexf", false, true };
     CDocumentFormat graphml = { "GraphML", "*.graphml", true, true };

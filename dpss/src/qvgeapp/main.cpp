@@ -7,6 +7,6 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
     qvgeMainWindow w;
     w.init(argc, argv);
-    w.showMaximized();
+    w.show();
 	return a.exec();
 }

@@ -10,7 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CEditorView.h"
 #include "CEditorScene.h"
 
-#include <QGLWidget> 
+//#include <QGLWidget>
 #include <QOpenGLWidget> 
 #include <QMouseEvent> 
 #include <QTimer> 
