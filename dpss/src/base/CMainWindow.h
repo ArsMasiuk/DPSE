@@ -78,6 +78,8 @@ protected:
 	virtual void removeInstance();
 	virtual QVariantMap getActiveInstances();
 
+	virtual void updateRecentFiles();
+
 	virtual void readSettings();
 	virtual void writeSettings();
 
@@ -89,12 +91,16 @@ protected Q_SLOTS:
     void on_actionSave_triggered();
     void on_actionSaveAs_triggered();
 
+	void fillRecentFilesMenu();
+	void onRecentFilesMenuAction(QAction*);
+
 	void fillWindowsMenu();
 	void onWindowsMenuAction(QAction*);
 
 protected:
     QMenu *m_fileMenu;
     QMenu *m_newMenu;
+	QMenu *m_recentFilesMenu;
     QAction *m_newDocument;
     QAction *m_openDocument;
     QAction *m_saveDocument;

@@ -99,7 +99,7 @@ void CMainWindow::createMainMenu()
 {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
 
-    m_newDocument = m_fileMenu->addAction(QIcon(":/Icons/New"), tr("&New..."));
+    m_newDocument = m_fileMenu->addAction(QIcon(":/Icons/New"), tr("&New"));
     m_newDocument->setStatusTip(tr("Create new document"));
 
     fillNewFileMenu();
@@ -117,6 +117,12 @@ void CMainWindow::createMainMenu()
     m_saveAsDocument->setShortcut(QKeySequence::SaveAs);
 
     m_fileMenu->addSeparator();
+
+	m_recentFilesMenu = m_fileMenu->addMenu(tr("Recent Files"));
+	connect(m_recentFilesMenu, SIGNAL(aboutToShow()), this, SLOT(fillRecentFilesMenu()));
+	connect(m_recentFilesMenu, SIGNAL(triggered(QAction*)), this, SLOT(onRecentFilesMenuAction(QAction*)));
+
+	m_fileMenu->addSeparator();
 
     QAction *exitApp = m_fileMenu->addAction(tr("E&xit"), this, SLOT(close()));
     exitApp->setStatusTip(tr("Leave the application"));
@@ -207,6 +213,7 @@ void CMainWindow::onCurrentFileChanged()
 	updateTitle();
 	updateActions();
 	updateInstance();
+	updateRecentFiles();
 }
 
 
@@ -447,6 +454,55 @@ bool CMainWindow::saveOnExit()
 	}
 
 	return true;
+}
+
+
+// recent files management
+
+void CMainWindow::updateRecentFiles()
+{
+	if (m_currentFileName.isEmpty())
+		return;
+
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	QStringList recentFiles = settings.value("recentFiles").toStringList();
+	int index = recentFiles.indexOf(m_currentFileName);
+	if (index == 0)
+		return;
+
+	if (index > 0) {
+		recentFiles.move(index, 0);
+	}
+	else {
+		recentFiles.prepend(m_currentFileName);
+	}
+
+	settings.setValue("recentFiles", recentFiles);
+}
+
+
+void CMainWindow::fillRecentFilesMenu()
+{
+	m_recentFilesMenu->clear();
+	 
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	QStringList recentFiles = settings.value("recentFiles").toStringList();
+
+	for (auto filePath : recentFiles)
+	{
+		QAction *recentAction = m_recentFilesMenu->addAction(filePath);
+		//recentAction->setData(filePath);
+	}
+}
+
+
+void CMainWindow::onRecentFilesMenuAction(QAction *recentAction)
+{
+	QString filePath = recentAction->text();
+
+	doOpenDocument(filePath);
 }
 
 
