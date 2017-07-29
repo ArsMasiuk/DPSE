@@ -477,6 +477,35 @@ void CMainWindow::removeInstance()
 }
 
 
+QVariantMap CMainWindow::getActiveInstances()
+{
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
+
+	CPlatformServices::PIDs livingPids = CPlatformServices::GetRunningPIDs();
+	bool mapUpdated = false;
+
+	// check if alive
+	for (auto it = pidFileMap.constBegin(); it != pidFileMap.constEnd(); ++it)
+	{
+		if (!livingPids.contains(it.key().toUInt()))
+		{
+			pidFileMap.remove(it.key());
+			mapUpdated = true;
+		}
+	}
+
+	// write cleaned map back
+	if (mapUpdated)
+	{
+		settings.setValue("instances", pidFileMap);
+	}
+
+	return pidFileMap;
+}
+
+
 void CMainWindow::createWindowsMenu()
 {
 	m_windowsMenu = menuBar()->addMenu(tr("&Window"));
@@ -488,27 +517,14 @@ void CMainWindow::createWindowsMenu()
 
 void CMainWindow::fillWindowsMenu()
 {
+	QVariantMap pidFileMap = getActiveInstances();
+
 	m_windowsMenu->clear();
-
-	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-
-	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
-
-	CPlatformServices::PIDs livingPids = CPlatformServices::GetRunningPIDs();
-	bool mapUpdated = false;
 
 	char hotKey = '1';
 
 	for (auto it = pidFileMap.constBegin(); it != pidFileMap.constEnd(); ++it)
 	{
-		// check if alive
-		if (!livingPids.contains(it.key().toUInt()))
-		{
-			pidFileMap.remove(it.key());
-			mapUpdated = true;
-			continue;
-		}
-
 		QVariantMap dataMap = it.value().value<QVariantMap>();
 		QString fileTitle = dataMap["title"].toString();
 
@@ -517,12 +533,6 @@ void CMainWindow::fillWindowsMenu()
 		windowAction->setCheckable(true);
 		windowAction->setChecked(m_stringPID == it.key());
 		windowAction->setData(dataMap);
-	}
-
-	// write cleaned map back
-	if (mapUpdated)
-	{
-		settings.setValue("instances", pidFileMap);
 	}
 }
 
@@ -554,10 +564,8 @@ bool CMainWindow::activateInstance(const QString &fileName)
 		return true;
 	}
 
-	// else enumerate running instances
-	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-
-	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
+	// else check running instances
+	QVariantMap pidFileMap = getActiveInstances();
 
 	for (auto it = pidFileMap.constBegin(); it != pidFileMap.constEnd(); ++it)
 	{

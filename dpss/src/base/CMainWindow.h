@@ -76,6 +76,7 @@ protected:
     virtual bool activateInstance(const QString &fileName);
 	virtual void updateInstance();
 	virtual void removeInstance();
+	virtual QVariantMap getActiveInstances();
 
 	virtual void readSettings();
 	virtual void writeSettings();
