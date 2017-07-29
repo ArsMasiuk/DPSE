@@ -44,7 +44,12 @@ public Q_SLOTS:
 	virtual void onDocumentChanged();
 
 protected:
-	virtual void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent *event);
+
+	void dragEnterEvent(QDragEnterEvent* event);
+	void dragMoveEvent(QDragMoveEvent* event);
+	void dragLeaveEvent(QDragLeaveEvent* event);
+	void dropEvent(QDropEvent* event);
 
     virtual void processParams(int argc, char *argv[]);
 

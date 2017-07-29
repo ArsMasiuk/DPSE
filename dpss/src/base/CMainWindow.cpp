@@ -15,6 +15,8 @@
 #include <QSettings>
 #include <QDesktopWidget>
 #include <QCloseEvent>
+#include <QDropEvent>
+#include <QMimeData>
 
 
 CMainWindow::CMainWindow(QWidget *parent) :
@@ -26,6 +28,8 @@ CMainWindow::CMainWindow(QWidget *parent) :
 
 	QApplication::setOrganizationName("home");
 	QApplication::setApplicationName("application");
+
+	setAcceptDrops(true);
 }
 
 CMainWindow::~CMainWindow()
@@ -68,6 +72,44 @@ void CMainWindow::closeEvent(QCloseEvent *event)
 	}
 	else {
 		event->ignore();
+	}
+}
+
+
+void CMainWindow::dragEnterEvent(QDragEnterEvent* event)
+{
+	event->acceptProposedAction();
+}
+
+
+void CMainWindow::dragMoveEvent(QDragMoveEvent* event)
+{
+	event->acceptProposedAction();
+}
+
+
+void CMainWindow::dragLeaveEvent(QDragLeaveEvent* event)
+{
+	event->accept();
+}
+
+
+void CMainWindow::dropEvent(QDropEvent* event)
+{
+	const QMimeData* mimeData = event->mimeData();
+
+	// check for our needed mime type, here a file or a list of files
+	if (mimeData->hasUrls())
+	{
+		QList<QUrl> urlList = mimeData->urls();
+
+		// extract the local paths of the files
+		for (int i = 0; i < urlList.size() && i < 32; ++i)
+		{
+			QString filePath = urlList.at(i).toLocalFile();
+			if (!filePath.isEmpty())
+				doOpenDocument(filePath);
+		}
 	}
 }
 
@@ -278,22 +320,25 @@ void CMainWindow::on_actionOpen_triggered()
     if (fileName.isEmpty())
         return;
 
-    QString normalizedName = QDir::toNativeSeparators(fileName);
-
-    doOpenDocument(normalizedName);
+    doOpenDocument(fileName);
 }
 
 
 void CMainWindow::doOpenDocument(const QString &fileName)
 {
+	QString normalizedName = QDir::toNativeSeparators(fileName);
+
     // check if the document already opened in another instance
-	if (activateInstance(fileName))
+	if (activateInstance(normalizedName))
 		return;
 
     // file does not exist
-    if (!QFile::exists(fileName))
+    if (!QFile::exists(normalizedName))
     {
-        QMessageBox::critical(NULL, tr("Open Error: %1").arg(fileName), tr("Document file does not exist or not accessible."));
+        QMessageBox::critical(NULL, 
+			normalizedName, 
+			tr("Document file does not exist or not accessible.")
+		);
 
         return;
     }
@@ -302,16 +347,16 @@ void CMainWindow::doOpenDocument(const QString &fileName)
     if (m_currentDocType.size())
     {
         QStringList args;
-        args << "open" << fileName;
+        args << "open" << normalizedName;
         QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
 
         return;
     }
 
     // no document - open in place
-    if (onOpenDocument(fileName, m_currentDocType))
+    if (onOpenDocument(normalizedName, m_currentDocType))
     {
-        m_currentFileName = fileName;
+        m_currentFileName = normalizedName;
         m_isChanged = false;
 
         statusBar()->showMessage(tr("Document opened successfully."));
@@ -320,7 +365,10 @@ void CMainWindow::doOpenDocument(const QString &fileName)
 	}
     else
     {
-        QMessageBox::critical(NULL, tr("Open Error: %1").arg(fileName), tr("Document cannot be opened. Check access rights and path."));
+        QMessageBox::critical(NULL, 
+			normalizedName, 
+			tr("Document cannot be opened. Check access rights and path.")
+		);
     }
 }
 
@@ -438,7 +486,7 @@ bool CMainWindow::saveOnExit()
 
 	const QMessageBox::StandardButton ret = QMessageBox::warning(
 		this, 
-		QApplication::applicationName(),
+		m_currentFileName, //QApplication::applicationName(),
 		tr("The document has been modified.\n"
 				"Do you want to save your changes?"),
 		QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -476,6 +524,10 @@ void CMainWindow::updateRecentFiles()
 	}
 	else {
 		recentFiles.prepend(m_currentFileName);
+		
+		// to parameterize
+		if (recentFiles.size() > 20)
+			recentFiles.removeLast();
 	}
 
 	settings.setValue("recentFiles", recentFiles);
@@ -543,11 +595,12 @@ QVariantMap CMainWindow::getActiveInstances()
 	bool mapUpdated = false;
 
 	// check if alive
-	for (auto it = pidFileMap.constBegin(); it != pidFileMap.constEnd(); ++it)
+	QList<QString> spids = pidFileMap.keys();
+	for (auto spid: spids)
 	{
-		if (!livingPids.contains(it.key().toUInt()))
+		if (!livingPids.contains(spid.toUInt()))
 		{
-			pidFileMap.remove(it.key());
+			pidFileMap.remove(spid);
 			mapUpdated = true;
 		}
 	}

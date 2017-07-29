@@ -63,25 +63,7 @@ bool qvgeMainWindow::onCreateNewDocument(const QByteArray &docType)
 
 bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType)
 {
-    if (fileName.toLower().endsWith(".txt"))
-    {
-        docType = "text";
-
-        if (onCreateNewDocument(docType))
-        {
-            QFile f(fileName);
-            if (f.open(QFile::ReadOnly))
-            {
-                QTextStream ts(&f);
-                m_textEditor->setPlainText(ts.readAll());
-                f.close();
-                return true;
-            }
-        }
-        return false;
-    }
-
-
+	// graphs formats
     if (fileName.toLower().endsWith(".graphml"))
     {
         docType = "graph";
@@ -105,6 +87,25 @@ bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType
         return false;
     }
 
+
+	// fallback: load as text
+	//if (fileName.toLower().endsWith(".txt"))
+	{
+		docType = "text";
+
+		if (onCreateNewDocument(docType))
+		{
+			QFile f(fileName);
+			if (f.open(QFile::ReadOnly))
+			{
+				QTextStream ts(&f);
+				m_textEditor->setPlainText(ts.readAll());
+				f.close();
+				return true;
+			}
+		}
+		return false;
+	}
 
     return false;
 }
