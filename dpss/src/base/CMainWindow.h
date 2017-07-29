@@ -73,7 +73,7 @@ protected:
 	virtual bool save();
 	virtual bool saveAs();
 
-    CMainWindow* findDocumentWindow(const QString &fileName);
+    virtual bool activateInstance(const QString &fileName);
 	virtual void updateInstance();
 	virtual void removeInstance();
 

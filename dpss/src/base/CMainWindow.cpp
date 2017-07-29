@@ -280,15 +280,8 @@ void CMainWindow::on_actionOpen_triggered()
 void CMainWindow::doOpenDocument(const QString &fileName)
 {
     // check if the document already opened in another instance
-    CMainWindow *window = findDocumentWindow(fileName);
-    if (window == this)
-        return;
-    else
-        if (window)
-        {
-            window->raise();
-            return;
-        }
+	if (activateInstance(fileName))
+		return;
 
     // file does not exist
     if (!QFile::exists(fileName))
@@ -466,6 +459,7 @@ void CMainWindow::updateInstance()
 	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
 	QVariantMap dataMap = pidFileMap[m_stringPID].value<QVariantMap>();
 	dataMap["title"] = m_mainTitleText;
+	dataMap["file"] = m_currentFileName;
 	dataMap["hwnd"] = (uint)effectiveWinId();
 	dataMap["spid"] = m_stringPID;
 	pidFileMap[m_stringPID] = dataMap; 
@@ -500,10 +494,21 @@ void CMainWindow::fillWindowsMenu()
 
 	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
 
+	CPlatformServices::PIDs livingPids = CPlatformServices::GetRunningPIDs();
+	bool mapUpdated = false;
+
 	char hotKey = '1';
 
 	for (auto it = pidFileMap.constBegin(); it != pidFileMap.constEnd(); ++it)
 	{
+		// check if alive
+		if (!livingPids.contains(it.key().toUInt()))
+		{
+			pidFileMap.remove(it.key());
+			mapUpdated = true;
+			continue;
+		}
+
 		QVariantMap dataMap = it.value().value<QVariantMap>();
 		QString fileTitle = dataMap["title"].toString();
 
@@ -512,6 +517,12 @@ void CMainWindow::fillWindowsMenu()
 		windowAction->setCheckable(true);
 		windowAction->setChecked(m_stringPID == it.key());
 		windowAction->setData(dataMap);
+	}
+
+	// write cleaned map back
+	if (mapUpdated)
+	{
+		settings.setValue("instances", pidFileMap);
 	}
 }
 
@@ -528,31 +539,44 @@ void CMainWindow::onWindowsMenuAction(QAction *windowAction)
 }
 
 
-CMainWindow* CMainWindow::findDocumentWindow(const QString &fileName)
+bool CMainWindow::activateInstance(const QString &fileName)
 {
     QString normalizedName = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
 #ifdef WIN32
     normalizedName = normalizedName.toLower();
 #endif
 
-    if (normalizedName == m_currentFileName)
-        return this;
+	// current instance?
+	if (normalizedName == m_currentFileName)
+	{
+		raise();
+		activateWindow();
+		return true;
+	}
 
-    foreach (QWidget *widget, QApplication::topLevelWidgets())
-    {
-        CMainWindow *mainWin = qobject_cast<CMainWindow*>(widget);
-        if (mainWin)
-        {
-            QString curFileName = mainWin->m_currentFileName;
+	// else enumerate running instances
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
+
+	for (auto it = pidFileMap.constBegin(); it != pidFileMap.constEnd(); ++it)
+	{
+		QVariantMap dataMap = it.value().value<QVariantMap>();
+
+		QString fileName = dataMap["file"].toString();
 #ifdef WIN32
-            curFileName = curFileName.toLower();
+		fileName = fileName.toLower();
 #endif
-           if (normalizedName == curFileName)
-                return mainWin;
-        }
-    }
 
-    return NULL;
+		if (normalizedName == fileName)
+		{
+			// found: switch to instance
+			CPlatformServices::SetActiveWindow(dataMap["hwnd"].toUInt());
+			return true;
+		}
+	}
+
+    return false;
 }
 
 
