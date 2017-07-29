@@ -1,4 +1,5 @@
 #include "CMainWindow.h"
+#include "CPlatformServices.h"
 
 #include <QFileDialog>
 #include <QDockWidget>
@@ -20,12 +21,16 @@ CMainWindow::CMainWindow(QWidget *parent) :
     QMainWindow(parent),
     m_isChanged(false)
 {
+	qint64 pid = qApp->applicationPid();
+	m_stringPID = QString::number(pid);
+
 	QApplication::setOrganizationName("home");
 	QApplication::setApplicationName("application");
 }
 
 CMainWindow::~CMainWindow()
 {
+	removeInstance();
 }
 
 
@@ -47,8 +52,7 @@ void CMainWindow::init(int argc, char *argv[])
     createMainMenu();
     createFileToolbar();
 
-    updateTitle();
-    updateActions();
+	createWindowsMenu();
 
 	readSettings();
 
@@ -86,6 +90,8 @@ void CMainWindow::processParams(int argc, char *argv[])
             return;
         }
     }
+
+	onCurrentFileChanged();
 }
 
 
@@ -165,15 +171,7 @@ void CMainWindow::createFileToolbar()
 
 void CMainWindow::updateTitle()
 {
-    QString docName = m_currentFileName;
-
-    if (m_currentFileName.isEmpty())
-        docName = tr("New File");
-
-    if (m_isChanged)
-        docName = "* " + docName;
-
-    setWindowTitle(QString("%1 - %2").arg(docName, QApplication::applicationName()));
+    setWindowTitle(QString("%1 - %2").arg(m_mainTitleText, QApplication::applicationName()));
 }
 
 
@@ -192,8 +190,23 @@ void CMainWindow::onDocumentChanged()
 
     m_isChanged = true;
 
-    updateTitle();
-    updateActions();
+	onCurrentFileChanged();
+}
+
+
+void CMainWindow::onCurrentFileChanged()
+{
+	m_mainTitleText = m_currentFileName;
+
+	if (m_currentFileName.isEmpty())
+		m_mainTitleText = tr("New File");
+
+	if (m_isChanged)
+		m_mainTitleText = "* " + m_mainTitleText;
+
+	updateTitle();
+	updateActions();
+	updateInstance();
 }
 
 
@@ -230,8 +243,8 @@ void CMainWindow::doCreateNewDocument(const QByteArray &docType)
         m_currentDocType = docType;
         m_isChanged = false;
 
-        updateTitle();
-        updateActions();
+		onCurrentFileChanged();
+
         return;
     }
 
@@ -303,9 +316,8 @@ void CMainWindow::doOpenDocument(const QString &fileName)
 
         statusBar()->showMessage(tr("Document opened successfully."));
 
-        updateTitle();
-        updateActions();
-    }
+		onCurrentFileChanged();
+	}
     else
     {
         QMessageBox::critical(NULL, tr("Open Error: %1").arg(fileName), tr("Document cannot be opened. Check access rights and path."));
@@ -406,8 +418,7 @@ bool CMainWindow::doSaveDocument(const QString &fileName, const QString &selecte
 
         statusBar()->showMessage(tr("Document saved successfully."));
 
-        updateTitle();
-        updateActions();
+		onCurrentFileChanged();
 
 		return true;
     }
@@ -446,6 +457,77 @@ bool CMainWindow::saveOnExit()
 }
 
 
+// instance management
+
+void CMainWindow::updateInstance()
+{
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
+	QVariantMap dataMap = pidFileMap[m_stringPID].value<QVariantMap>();
+	dataMap["title"] = m_mainTitleText;
+	dataMap["hwnd"] = (uint)effectiveWinId();
+	dataMap["spid"] = m_stringPID;
+	pidFileMap[m_stringPID] = dataMap; 
+	settings.setValue("instances", pidFileMap);
+}
+
+
+void CMainWindow::removeInstance()
+{
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
+	pidFileMap.remove(m_stringPID);
+	settings.setValue("instances", pidFileMap);
+}
+
+
+void CMainWindow::createWindowsMenu()
+{
+	m_windowsMenu = menuBar()->addMenu(tr("&Window"));
+	
+	connect(m_windowsMenu, SIGNAL(aboutToShow()), this, SLOT(fillWindowsMenu()));
+	connect(m_windowsMenu, SIGNAL(triggered(QAction*)), this, SLOT(onWindowsMenuAction(QAction*)));
+}
+
+
+void CMainWindow::fillWindowsMenu()
+{
+	m_windowsMenu->clear();
+
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	QVariantMap pidFileMap = settings.value("instances").value<QVariantMap>();
+
+	char hotKey = '1';
+
+	for (auto it = pidFileMap.constBegin(); it != pidFileMap.constEnd(); ++it)
+	{
+		QVariantMap dataMap = it.value().value<QVariantMap>();
+		QString fileTitle = dataMap["title"].toString();
+
+		QString text = QString("&%1 %2").arg(hotKey++).arg(fileTitle);
+		QAction *windowAction = m_windowsMenu->addAction(text);
+		windowAction->setCheckable(true);
+		windowAction->setChecked(m_stringPID == it.key());
+		windowAction->setData(dataMap);
+	}
+}
+
+
+void CMainWindow::onWindowsMenuAction(QAction *windowAction)
+{
+	QVariantMap dataMap = windowAction->data().value<QVariantMap>();
+
+	QString spid = dataMap["spid"].toString();
+	if (spid.isEmpty() || spid == m_stringPID)
+		return;
+
+	CPlatformServices::SetActiveWindow(dataMap["hwnd"].toUInt());
+}
+
+
 CMainWindow* CMainWindow::findDocumentWindow(const QString &fileName)
 {
     QString normalizedName = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
@@ -473,6 +555,8 @@ CMainWindow* CMainWindow::findDocumentWindow(const QString &fileName)
     return NULL;
 }
 
+
+// settings
 
 void CMainWindow::readSettings()
 {

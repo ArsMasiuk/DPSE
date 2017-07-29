@@ -52,6 +52,9 @@ protected:
     virtual void fillNewFileMenu();
     virtual void createFileToolbar();
 
+	virtual void createWindowsMenu();
+
+	virtual void onCurrentFileChanged();
     virtual void updateTitle();
     virtual void updateActions();
 
@@ -71,6 +74,8 @@ protected:
 	virtual bool saveAs();
 
     CMainWindow* findDocumentWindow(const QString &fileName);
+	virtual void updateInstance();
+	virtual void removeInstance();
 
 	virtual void readSettings();
 	virtual void writeSettings();
@@ -83,6 +88,9 @@ protected Q_SLOTS:
     void on_actionSave_triggered();
     void on_actionSaveAs_triggered();
 
+	void fillWindowsMenu();
+	void onWindowsMenuAction(QAction*);
+
 protected:
     QMenu *m_fileMenu;
     QMenu *m_newMenu;
@@ -91,9 +99,14 @@ protected:
     QAction *m_saveDocument;
     QAction *m_saveAsDocument;
 
+	QMenu *m_windowsMenu;
+
     QString m_currentFileName;
     QByteArray m_currentDocType;
     bool m_isChanged;
+	QString m_mainTitleText;
+	
+	QString m_stringPID;
 
     QString m_lastOpenFilter, m_lastSaveFilter;
 
