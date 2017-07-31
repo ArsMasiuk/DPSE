@@ -326,7 +326,7 @@ void CMainWindow::on_actionOpen_triggered()
 
 void CMainWindow::doOpenDocument(const QString &fileName)
 {
-	QString normalizedName = QDir::toNativeSeparators(fileName);
+	QString normalizedName = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
 
     // check if the document already opened in another instance
 	if (activateInstance(normalizedName))
@@ -486,7 +486,7 @@ bool CMainWindow::saveOnExit()
 
 	const QMessageBox::StandardButton ret = QMessageBox::warning(
 		this, 
-		m_currentFileName, //QApplication::applicationName(),
+		m_currentFileName, 
 		tr("The document has been modified.\n"
 				"Do you want to save your changes?"),
 		QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -660,7 +660,7 @@ void CMainWindow::onWindowsMenuAction(QAction *windowAction)
 
 bool CMainWindow::activateInstance(const QString &fileName)
 {
-    QString normalizedName = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
+	QString normalizedName = fileName; // QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
 #ifdef WIN32
     normalizedName = normalizedName.toLower();
 #endif

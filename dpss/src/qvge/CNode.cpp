@@ -23,8 +23,6 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	auto flags = ItemIsMovable | ItemIsSelectable | ItemSendsGeometryChanges;
 	setFlags(flags);
 
-	setRect(-5, -5, 11, 11);
-	
 	// accept hovers
 	setAcceptHoverEvents(true);
 
@@ -535,7 +533,7 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 	else
 		painter->setPen(QPen(Qt::black, 1));
 
-	// draw shape 
+	// draw shape: disc if no cache
 	if (m_shapeCache.isEmpty())
 	{
 		QRectF r = Shape::boundingRect();

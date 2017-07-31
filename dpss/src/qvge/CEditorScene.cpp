@@ -52,7 +52,7 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 	setItemIndexMethod(QGraphicsScene::NoIndex);
 	setMinimumRenderSize(1);
 
-	// init scene 
+	// init scene
 	activate();
 }
 

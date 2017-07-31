@@ -8,7 +8,7 @@
 #include <QDebug>
 
 
-CNodeEditorScene::CNodeEditorScene(QObject * parent) : Super(parent),
+CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 	m_startNode(NULL),
 	m_endNode(NULL),
 	m_connection(NULL),
@@ -19,6 +19,9 @@ CNodeEditorScene::CNodeEditorScene(QObject * parent) : Super(parent),
 	// default factories
 	registerItemFactory<CConnection>();
 	registerItemFactory<CNode>();
+
+	// go
+	initialize();
 }
 
 
