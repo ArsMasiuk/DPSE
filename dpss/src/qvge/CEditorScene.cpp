@@ -53,7 +53,7 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 	setMinimumRenderSize(1);
 
 	// init scene
-	activate();
+	addUndoState();
 }
 
 CEditorScene::~CEditorScene()
@@ -105,11 +105,6 @@ void CEditorScene::removeItems()
 	clear();
 
 	CItem::endRestore();
-}
-
-void CEditorScene::activate()
-{
-	addUndoState();
 }
 
 

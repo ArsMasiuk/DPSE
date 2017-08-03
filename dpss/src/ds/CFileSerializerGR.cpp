@@ -29,8 +29,6 @@ bool CFileSerializerGR::load(const QString& fileName, CEditorScene& scene) const
 	if (size <= 0)
 	{
 		// done
-		scene.activate();
-
 		return true;
 	}
 
@@ -64,8 +62,6 @@ bool CFileSerializerGR::load(const QString& fileName, CEditorScene& scene) const
 	}
 
 	// done
-	scene.activate();
-
 	return true;
 }
 

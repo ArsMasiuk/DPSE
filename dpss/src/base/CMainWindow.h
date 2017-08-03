@@ -67,7 +67,7 @@ protected:
     virtual bool onCreateNewDocument(const QByteArray &docType);
 
     virtual void onOpenDocumentDialog(QString &title, QString &filter);
-    virtual void doOpenDocument(const QString &fileName);
+    virtual bool doOpenDocument(const QString &fileName);
     virtual bool onOpenDocument(const QString &fileName, QByteArray &docType) { return false; }
 
     virtual void onSaveDocumentDialog(QString &title, QString &filter) {}

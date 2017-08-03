@@ -70,8 +70,13 @@ bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType
 
         if (onCreateNewDocument(docType))
         {
-            return CFileSerializerGraphML().load(fileName, *m_editorScene);
+			if (CFileSerializerGraphML().load(fileName, *m_editorScene))
+			{
+				m_editorScene->addUndoState();
+				return true;
+			}
         }
+
         return false;
     }
 
@@ -82,9 +87,14 @@ bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType
 
         if (onCreateNewDocument(docType))
         {
-            return CFileSerializerGEXF().load(fileName, *m_editorScene);
+			if (CFileSerializerGEXF().load(fileName, *m_editorScene))
+			{
+				m_editorScene->addUndoState();
+				return true;
+			}
         }
-        return false;
+        
+		return false;
     }
 
 
@@ -104,7 +114,6 @@ bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType
 				return true;
 			}
 		}
-		return false;
 	}
 
     return false;

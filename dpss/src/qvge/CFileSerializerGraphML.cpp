@@ -61,8 +61,6 @@ bool CFileSerializerGraphML::load(const QString& fileName, CEditorScene& scene) 
 	}
 
 	// done
-	scene.activate();
-
 	return true;
 }
 

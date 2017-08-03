@@ -324,24 +324,26 @@ void CMainWindow::on_actionOpen_triggered()
 }
 
 
-void CMainWindow::doOpenDocument(const QString &fileName)
+bool CMainWindow::doOpenDocument(const QString &fileName)
 {
 	QString normalizedName = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
-
-    // check if the document already opened in another instance
-	if (activateInstance(normalizedName))
-		return;
 
     // file does not exist
     if (!QFile::exists(normalizedName))
     {
+		statusBar()->showMessage(tr("Failed to open: %1").arg(fileName));
+
         QMessageBox::critical(NULL, 
-			normalizedName, 
+			fileName,
 			tr("Document file does not exist or not accessible.")
 		);
 
-        return;
+        return false;
     }
+
+	// check if the document already opened in another instance
+	if (activateInstance(normalizedName))
+		return true;
 
     // document presents - run new instance
     if (m_currentDocType.size())
@@ -350,7 +352,7 @@ void CMainWindow::doOpenDocument(const QString &fileName)
         args << "open" << normalizedName;
         QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
 
-        return;
+        return true;
     }
 
     // no document - open in place
@@ -359,17 +361,21 @@ void CMainWindow::doOpenDocument(const QString &fileName)
         m_currentFileName = normalizedName;
         m_isChanged = false;
 
-        statusBar()->showMessage(tr("Document opened successfully."));
+        statusBar()->showMessage(tr("Opened successfully: %1").arg(fileName));
 
 		onCurrentFileChanged();
+
+		return true;
 	}
-    else
-    {
-        QMessageBox::critical(NULL, 
-			normalizedName, 
-			tr("Document cannot be opened. Check access rights and path.")
-		);
-    }
+
+	// failure
+	statusBar()->showMessage(tr("Failed to open: %1").arg(fileName));
+
+	QMessageBox::critical(NULL,
+		fileName,
+		tr("Document cannot be opened. Check access rights and path."));
+
+	return false;
 }
 
 
@@ -542,10 +548,10 @@ void CMainWindow::fillRecentFilesMenu()
 
 	QStringList recentFiles = settings.value("recentFiles").toStringList();
 
-	for (auto filePath : recentFiles)
+	for (int i = 0; i < recentFiles.size(); ++i)
 	{
-		QAction *recentAction = m_recentFilesMenu->addAction(filePath);
-		//recentAction->setData(filePath);
+		QAction *recentAction = m_recentFilesMenu->addAction(recentFiles.at(i));
+		recentAction->setData(i);
 	}
 }
 
@@ -554,7 +560,16 @@ void CMainWindow::onRecentFilesMenuAction(QAction *recentAction)
 {
 	QString filePath = recentAction->text();
 
-	doOpenDocument(filePath);
+	if (doOpenDocument(filePath))
+		return;
+
+	// failed - remove
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	QStringList recentFiles = settings.value("recentFiles").toStringList();
+	recentFiles.removeAt(recentAction->data().toInt());
+
+	settings.setValue("recentFiles", recentFiles);
 }
 
 

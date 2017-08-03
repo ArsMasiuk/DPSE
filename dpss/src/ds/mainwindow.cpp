@@ -155,7 +155,7 @@ void MainWindow::on_actionFactorNodes_triggered()
 void MainWindow::on_actionNew_triggered()
 {
 	m_editorScene->reset();
-	m_editorScene->activate();
+	m_editorScene->addUndoState();
 
 	m_editorView->zoomTo(1.0);
 }
@@ -192,6 +192,7 @@ void MainWindow::on_actionOpen_triggered()
 		if (QFileInfo(fileName).suffix() == "gr")
 		{
 			CFileSerializerGR().load(fileName, *m_editorScene);
+			m_editorScene->addUndoState();
 			m_editorView->zoomTo(1.0);
 			return;
 		}
@@ -199,6 +200,7 @@ void MainWindow::on_actionOpen_triggered()
 		if (QFileInfo(fileName).suffix() == "gexf")
 		{
 			CFileSerializerGEXF().load(fileName, *m_editorScene);
+			m_editorScene->addUndoState();
 			m_editorView->zoomTo(1.0);
 			return;
 		}
@@ -206,6 +208,7 @@ void MainWindow::on_actionOpen_triggered()
 		if (QFileInfo(fileName).suffix() == "graphml")
 		{
 			CFileSerializerGraphML().load(fileName, *m_editorScene);
+			m_editorScene->addUndoState();
 			m_editorView->zoomTo(1.0);
 			return;
 		}
@@ -219,11 +222,10 @@ void MainWindow::on_actionOpen_triggered()
 			QDataStream ds(&openFile);
 			m_editorScene->restoreFrom(ds);
 
-			m_editorScene->activate();
+			m_editorScene->addUndoState();
+			m_editorView->zoomTo(1.0);
 
 			m_lastFileName = fileName;
-
-			m_editorView->zoomTo(1.0);
 		}
 	}
 }
