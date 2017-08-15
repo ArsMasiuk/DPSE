@@ -197,12 +197,27 @@ void CItem::updateLabelContent()
 
 	QString labelToShow;
 	auto idsToShow = getVisibleAttributeIds(CItem::VF_LABEL);
+	
+	QMap<QByteArray, QString> visibleLabels;
 	for (const QByteArray& id : idsToShow)
 	{
 		QString text = Utils::variantToText(getAttribute(id));
-		if (labelToShow.size()) labelToShow += "\n";
-		labelToShow += QString("%1: %2").arg(QString(id)).arg(text);
+		if (text.size())
+			visibleLabels[id] = text;
 	}
+
+	if (visibleLabels.size() == 1)
+	{
+		labelToShow = visibleLabels.values().first();
+	}
+	else if (visibleLabels.size() > 1)
+		for (auto it = visibleLabels.constBegin(); it != visibleLabels.constEnd(); ++it)
+		{
+			if (labelToShow.size()) 
+				labelToShow += "\n";
+		
+			labelToShow += QString("%1: %2").arg(QString(it.key())).arg(it.value());
+		}
 	
 	setLabelText(labelToShow);
 

@@ -302,7 +302,7 @@ void CConnection::updateLabelPosition()
 		if (angle > 90) angle -= 180;
 		else if (angle < -90) angle += 180;
 		//qDebug() << angle;
-		m_labelItem->setRotation(angle);
+		//m_labelItem->setRotation(angle);
 	}
 }
 

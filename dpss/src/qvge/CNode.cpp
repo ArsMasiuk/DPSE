@@ -16,6 +16,9 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	// no selection frame
 	setItemFlag(IF_FramelessSelection);
 
+	// default size
+	resize(9);
+
 	// default node flags
 	m_nodeFlags = 0;
 
