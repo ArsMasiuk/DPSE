@@ -11,6 +11,7 @@ It can be used freely, maintaining the information above.
 #include "CItemAttributeEditor.h"
 #include "CExtListInputDialog.h"
 #include "CSizeInputDialog.h"
+#include "CNewAttributeDialog.h"
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CNode.h>
@@ -345,7 +346,35 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 
 void CItemAttributeEditor::on_AddButton_clicked()
 {
+	QList<CItem*> sceneItems = m_scene->getSelectedItems<CItem>();
+	if (sceneItems.isEmpty())
+		return;
+	//QList<CItem*> nodes = m_scene->getSelectedItems<CNode, CItem>();
+	//QList<CItem*> edges = m_scene->getSelectedItems<CConnection, CItem>();
 
+	CNewAttributeDialog::Result r = CNewAttributeDialog::getAttribute();
+	if (r.id.isEmpty())
+		return;
+
+	bool used = false;
+
+	for (auto sceneItem : sceneItems)
+	{
+		if (sceneItem->hasLocalAttribute(r.id))
+			continue;
+
+		sceneItem->setAttribute(r.id, r.v);
+		used = true;
+	}
+
+	if (!used)
+		return;
+
+	// store state
+	m_scene->addUndoState();
+
+	// rebuild tree
+	onSelectionChanged();
 }
 
 
@@ -361,8 +390,8 @@ void CItemAttributeEditor::on_RemoveButton_clicked()
 		return;
 
 	int r = QMessageBox::question(NULL, 
-		tr("Remove attribute"), 
-		tr("Remove attribute %1 from selected items?").arg(QString(attrId)), 
+		tr("Remove Attribute"), 
+		tr("Remove local attribute '%1' from selected item(s)?").arg(QString(attrId)), 
 		QMessageBox::Yes, QMessageBox::Cancel);
 	if (r == QMessageBox::Cancel)
 		return;
@@ -378,10 +407,15 @@ void CItemAttributeEditor::on_RemoveButton_clicked()
 		sceneItems = m_scene->getSelectedItems<CConnection, CItem>();
 	}
 
+	bool used = false;
+
 	for (auto sceneItem : sceneItems)
 	{
-		sceneItem->removeAttribute(attrId);
+		used |= sceneItem->removeAttribute(attrId);
 	}
+
+	if (!used)
+		return;
 
 	// store state
 	m_scene->addUndoState();

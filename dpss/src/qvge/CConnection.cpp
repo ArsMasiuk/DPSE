@@ -63,6 +63,15 @@ CConnection::~CConnection()
 
 // attributes
 
+bool CConnection::hasLocalAttribute(const QByteArray& attrId) const
+{
+	if (attrId == "direction")
+		return true;
+	else
+		return Super::hasLocalAttribute(attrId);
+}
+
+
 bool CConnection::setAttribute(const QByteArray& attrId, const QVariant& v)
 {
 	if (attrId == "direction")

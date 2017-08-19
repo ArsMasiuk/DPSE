@@ -67,6 +67,7 @@ public:
 	virtual QRectF boundingRect() const;
 
 	// attributes
+	virtual bool hasLocalAttribute(const QByteArray& attrId) const;
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
 	virtual bool removeAttribute(const QByteArray& attrId);
 

@@ -97,6 +97,16 @@ CItem* CNode::clone()
 
 // attributes
 
+bool CNode::hasLocalAttribute(const QByteArray& attrId) const
+{
+	if (attrId == "shape" || attrId == "size" || attrId == "pos" || 
+		attrId == "x" || attrId == "y" || attrId == "z") 
+		return true;
+
+	return Super::hasLocalAttribute(attrId);
+}
+
+
 bool CNode::setAttribute(const QByteArray& attrId, const QVariant& v)
 {
 	setItemStateFlag(IS_Attribute_Changed);

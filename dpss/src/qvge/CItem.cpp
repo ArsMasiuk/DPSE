@@ -76,6 +76,14 @@ bool CItem::restoreFrom(QDataStream &out, quint64 version64)
 
 // attributes
 
+bool CItem::hasLocalAttribute(const QByteArray& attrId) const
+{
+	if (attrId == "id")
+		return true;
+	else
+		return m_attributes.contains(attrId);
+}
+
 bool CItem::setAttribute(const QByteArray& attrId, const QVariant& v)
 {
 	setItemStateFlag(IS_Attribute_Changed);
@@ -94,7 +102,13 @@ bool CItem::setAttribute(const QByteArray& attrId, const QVariant& v)
 
 bool CItem::removeAttribute(const QByteArray& attrId)
 {
-	return m_attributes.remove(attrId);
+	if (m_attributes.remove(attrId))
+	{
+		setItemStateFlag(IS_Attribute_Changed);
+		return true;
+	}
+	else
+		return false;
 }
 
 QVariant CItem::getAttribute(const QByteArray& attrId) const

@@ -53,6 +53,8 @@ public:
 	virtual void resize(float w, float h) { setRect(-w / 2, -h / 2, w, h); }
 	virtual void resize(const QSizeF& size) { resize(size.width(), size.height()); }
 
+	// attributes
+	virtual bool hasLocalAttribute(const QByteArray& attrId) const;
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
 	virtual QVariant getAttribute(const QByteArray& attrId) const;
     virtual QByteArray classId() const { return "node"; }

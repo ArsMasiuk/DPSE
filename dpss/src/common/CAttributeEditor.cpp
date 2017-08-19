@@ -148,27 +148,16 @@ void CAttributeEditor::on_AttributeList_itemDoubleClicked(QTreeWidgetItem *item,
 
 void CAttributeEditor::on_AddButton_clicked()
 {
-    CNewAttributeDialog attrDialog;
-    int r = attrDialog.exec();
-    if (r == QDialog::Rejected)
-        return;
-
-    QByteArray attrId = attrDialog.getAttrId();
-    if (attrId.isEmpty())
-        return;
-
-    QString name = attrDialog.getAttrName();
-    if (name.isEmpty())
-        name = attrId;
-
-    QVariant v = attrDialog.getDefaultValue();
+	CNewAttributeDialog::Result r = CNewAttributeDialog::getAttribute();
+	if (r.id.isEmpty())
+		return;
 
     QByteArray classId;
     QList<QTreeWidgetItem*> selItems = ui.AttributeList->selectedItems();
     if (!selItems.isEmpty())
         classId = selItems.first()->data(0, ClassRole).toByteArray();
 
-    CAttribute attr(attrId, name, v);
+    CAttribute attr(r.id, r.name, r.v);
     m_scene->setClassAttribute(classId, attr, false);
 
     m_scene->addUndoState();

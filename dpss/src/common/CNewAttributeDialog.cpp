@@ -30,3 +30,27 @@ QVariant CNewAttributeDialog::getDefaultValue() const
 
     return ui->AttrValue->text();
 }
+
+
+// static
+
+CNewAttributeDialog::Result CNewAttributeDialog::getAttribute()
+{
+	Result res;
+
+	CNewAttributeDialog attrDialog;
+	int r = attrDialog.exec();
+	if (r == QDialog::Rejected)
+		return res;
+
+	res.id = attrDialog.getAttrId();
+	if (res.id.isEmpty())
+		return res;
+
+	res.name = attrDialog.getAttrName();
+	if (res.name.isEmpty())
+		res.name = res.id;
+
+	res.v = attrDialog.getDefaultValue();
+	return res;
+}

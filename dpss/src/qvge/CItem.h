@@ -69,9 +69,13 @@ public:
 	virtual bool setDefaultId();
 	
 	// attributes
+	virtual bool hasLocalAttribute(const QByteArray& attrId) const;
+	const QMap<QByteArray, QVariant>& getLocalAttributes() const { return m_attributes; }
+
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
 	virtual bool removeAttribute(const QByteArray& attrId); 
 	virtual QVariant getAttribute(const QByteArray& attrId) const;
+
 	virtual QVariant getClassAttribute(const QByteArray& attrId) const;
     virtual QByteArray classId() const			{ return "item"; }
     virtual QByteArray superClassId() const		{ return QByteArray(); }
@@ -81,10 +85,6 @@ public:
 
 	enum VisibleFlags { VF_ANY = 0, VF_LABEL = 1, VF_TOOLTIP = 2 };
     virtual QSet<QByteArray> getVisibleAttributeIds(int flags) const;
-
-	const QMap<QByteArray, QVariant>& getLocalAttributes() const { 
-		return m_attributes; 
-	}
 
 	QGraphicsItem* getSceneItem() const {
 		return dynamic_cast<QGraphicsItem*>((CItem*)this);
