@@ -136,10 +136,10 @@ public:
 	// selections
 	QList<QGraphicsItem*> createSelectedList(const CItemsEvaluator&) const;
 
-	template<class T, class L = T>
+	template<class T = CItem, class L = T>
 	QList<L*> getSelectedItems(bool triggeredIfEmpty = false) const;
 
-	template<class T, class L = T>
+	template<class T = CItem, class L = T>
 	QList<L*> getItems() const;
 
 	template<class T = CItem>

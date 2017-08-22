@@ -636,6 +636,10 @@ void CNode::recalculateShape()
 	{
 		m_shapeCache << r.bottomLeft() << r.bottomRight() << QPointF(r.topRight() + r.topLeft()) / 2 << r.bottomLeft();
 	}
+	else if (shapeType == "triangle2")
+	{
+		m_shapeCache << r.topLeft() << r.topRight() << QPointF(r.bottomRight() + r.bottomLeft()) / 2 << r.topLeft();
+	}
 	else // "disc"
 	{
 		// no cache

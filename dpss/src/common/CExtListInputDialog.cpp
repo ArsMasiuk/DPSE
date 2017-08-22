@@ -6,6 +6,10 @@ CExtListInputDialog::CExtListInputDialog(QWidget *parent) :
     ui(new Ui::CExtListInputDialog)
 {
     ui->setupUi(this);
+
+	ui->comboBox->view()->setAlternatingRowColors(true);
+	ui->comboBox->setStyleSheet("QAbstractItemView::item { height: 32px;}");
+	ui->comboBox->setIconSize(QSize(24, 24));
 }
 
 CExtListInputDialog::~CExtListInputDialog()
@@ -33,7 +37,6 @@ int CExtListInputDialog::getItemIndex(const QString& title, const QString& label
         dialog->ui->comboBox->setItemIcon(i, icons.at(i));
     }
 
-	dialog->ui->comboBox->setIconSize(QSize(24, 24));
     dialog->ui->comboBox->setCurrentIndex(selectedIndex);
 
     if (dialog->exec() == QDialog::Rejected)

@@ -109,6 +109,8 @@ MainWindow::~MainWindow()
 }
 
 
+// actions
+
 void MainWindow::on_actionZoom_triggered()
 {
 	m_editorView->zoomBy(1.3);
@@ -152,6 +154,38 @@ void MainWindow::on_actionFactorNodes_triggered()
 	}
 }
 
+void MainWindow::on_actionFind_triggered()
+{
+	QString findText = QInputDialog::getText(NULL, tr("Find items"), tr("Enter item(s) id text to find and select:"));
+	if (findText.isEmpty())
+		return;
+
+	m_editorScene->deselectAll();
+
+	QRegExp re;
+	re.setPatternSyntax(QRegExp::Wildcard);
+	re.setPattern(findText);
+	re.setCaseSensitivity(Qt::CaseInsensitive);
+
+	int count = 0;
+	auto items = m_editorScene->getItems();
+	for (auto item : items)
+	{
+		if (re.exactMatch(item->getId()))
+		{
+			item->getSceneItem()->setSelected(true);
+
+			if (!count++)
+				item->getSceneItem()->ensureVisible();
+		}
+	}
+
+	if (count)
+		QMessageBox::information(NULL, tr("Items found"), tr("%1 item(s) found").arg(count));
+	else
+		QMessageBox::warning(NULL, tr("Items not found"), tr("No matching item(s) found"));
+}
+
 void MainWindow::on_actionNew_triggered()
 {
 	m_editorScene->reset();
@@ -159,7 +193,6 @@ void MainWindow::on_actionNew_triggered()
 
 	m_editorView->zoomTo(1.0);
 }
-
 
 void MainWindow::on_actionSave_triggered()
 {
@@ -177,12 +210,10 @@ void MainWindow::on_actionSave_triggered()
 	}
 }
 
-
 void MainWindow::on_actionExport_triggered()
 {
 	CImageExport::write(*m_editorScene, m_lastFileName);
 }
-
 
 void MainWindow::on_actionOpen_triggered()
 {
@@ -231,6 +262,8 @@ void MainWindow::on_actionOpen_triggered()
 }
 
 
+// callbacks
+
 void MainWindow::onSceneChanged()
 {
 	auto items = m_editorScene->items();
@@ -266,7 +299,6 @@ void MainWindow::on_actionMPI_Sch_triggered()
         QMessageBox::critical(NULL, tr("Error running simulation"), tr("Cannot start MPI_Sch simulator :("));
     }
 }
-
 
 void MainWindow::on_actionGraph_OM_triggered()
 {

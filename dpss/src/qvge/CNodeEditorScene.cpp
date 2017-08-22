@@ -65,9 +65,9 @@ void CNodeEditorScene::initialize()
 	setClassAttributeConstrains("edge", "direction", edgeDirections);
 
 	CAttributeConstrainsList *nodeShapes = new CAttributeConstrainsList();
-	nodeShapes->names << "Dics" << "Square" << "Triangle" << "Diamond";
-	nodeShapes->ids << "disc" << "square" << "triangle" << "diamond";
-	nodeShapes->icons << QIcon(":/Icons/Node-Disc") << QIcon(":/Icons/Node-Square") << QIcon(":/Icons/Node-Triangle") << QIcon(":/Icons/Node-Diamond");
+	nodeShapes->names << "Dics" << "Square" << "Triangle (up)" << "Triangle (down)" << "Diamond";
+	nodeShapes->ids << "disc" << "square" << "triangle" << "triangle2" << "diamond";
+	nodeShapes->icons << QIcon(":/Icons/Node-Disc") << QIcon(":/Icons/Node-Square") << QIcon(":/Icons/Node-Triangle") << QIcon(":/Icons/Node-Triangle-Down") << QIcon(":/Icons/Node-Diamond");
 	setClassAttributeConstrains("node", "shape", nodeShapes);
 }
 
