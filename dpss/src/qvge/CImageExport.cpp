@@ -36,6 +36,8 @@ bool CImageExport::write(/*const*/ CEditorScene &scene, const QString &startPath
 	QImage image(scene.sceneRect().size().toSize(), QImage::Format_ARGB32);
 	image.fill(Qt::white);
 	QPainter painter(&image);
+	painter.setRenderHint(QPainter::Antialiasing);
+	painter.setRenderHint(QPainter::TextAntialiasing);
 	scene.render(&painter);
 
 	return image.save(path);

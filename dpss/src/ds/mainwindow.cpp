@@ -39,6 +39,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	QApplication::setOrganizationName("DonNTU");
+	QApplication::setApplicationName("POSEDS");
+
+	ui->actionNew->setShortcut(QKeySequence::New);
+	ui->actionOpen->setShortcut(QKeySequence::Open);
+	ui->actionSave->setShortcut(QKeySequence::Save);
+	ui->actionExit->setShortcut(QKeySequence::Close);
+
 	// scene & view
     m_editorScene = new CBranchEditorScene(this);
 	m_editorView = new CEditorView(m_editorScene, this);
@@ -97,6 +105,21 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(m_editorScene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()));
 	connect(m_editorView, SIGNAL(scaleChanged(double)), this, SLOT(onZoomChanged(double)));
 
+	// settings
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+
+	const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
+	if (!geometry.isEmpty()) {
+		restoreGeometry(geometry);
+	}
+
+	if (settings.value("maximized", true).toBool())
+		showMaximized();
+	else
+		showNormal();
+
+	m_lastFileName = settings.value("lastDir").toString();
+
 	// new scene by default
 	on_actionNew_triggered();
 
@@ -105,6 +128,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	settings.setValue("geometry", saveGeometry());
+	settings.setValue("maximized", isMaximized());
+	settings.setValue("lastDir", QDir(m_lastFileName).canonicalPath());
+
     delete ui;
 }
 
@@ -223,24 +251,33 @@ void MainWindow::on_actionOpen_triggered()
 		if (QFileInfo(fileName).suffix() == "gr")
 		{
 			CFileSerializerGR().load(fileName, *m_editorScene);
+
 			m_editorScene->addUndoState();
 			m_editorView->zoomTo(1.0);
+
+			m_lastFileName = fileName;
 			return;
 		}
 
 		if (QFileInfo(fileName).suffix() == "gexf")
 		{
 			CFileSerializerGEXF().load(fileName, *m_editorScene);
+
 			m_editorScene->addUndoState();
 			m_editorView->zoomTo(1.0);
+
+			m_lastFileName = fileName;
 			return;
 		}
 
 		if (QFileInfo(fileName).suffix() == "graphml")
 		{
 			CFileSerializerGraphML().load(fileName, *m_editorScene);
+
 			m_editorScene->addUndoState();
 			m_editorView->zoomTo(1.0);
+
+			m_lastFileName = fileName;
 			return;
 		}
 
@@ -259,6 +296,11 @@ void MainWindow::on_actionOpen_triggered()
 			m_lastFileName = fileName;
 		}
 	}
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+	QApplication::exit(0);
 }
 
 
