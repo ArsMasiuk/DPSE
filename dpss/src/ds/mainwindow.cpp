@@ -22,6 +22,7 @@ It can be used freely, maintaining the information above.
 #include "CAttributeEditor.h"
 #include "CItemAttributeEditor.h"
 #include "CCommutationTable.h"
+#include "CSceneOptionsDialog.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -212,6 +213,12 @@ void MainWindow::on_actionFind_triggered()
 		QMessageBox::information(NULL, tr("Items found"), tr("%1 item(s) found").arg(count));
 	else
 		QMessageBox::warning(NULL, tr("Items not found"), tr("No matching item(s) found"));
+}
+
+void MainWindow::on_actionOptions_triggered()
+{
+	CSceneOptionsDialog d;
+	d.exec(*m_editorScene);
 }
 
 void MainWindow::on_actionNew_triggered()

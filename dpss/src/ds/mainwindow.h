@@ -45,6 +45,8 @@ private Q_SLOTS:
 	void on_actionFactorNodes_triggered();
 	void on_actionFind_triggered();
 
+	void on_actionOptions_triggered();
+
     //void on_actionUndoTest_triggered();
 	void on_actionImportTest_triggered();
 

@@ -1,6 +1,9 @@
 #include "CSizeInputDialog.h"
 #include "ui_CSizeInputDialog.h"
 
+#include <limits>
+
+
 CSizeInputDialog::CSizeInputDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CSizeInputDialog)
@@ -52,8 +55,8 @@ QSizeF CSizeInputDialog::getSizeF(const QString & title, const QString & label,
 		dialog->ui->heightBox->setMaximum(maxSize.height());
 	}
 	else {
-		dialog->ui->widthBox->setMaximum(DBL_MAX);
-		dialog->ui->heightBox->setMaximum(DBL_MAX);
+        dialog->ui->widthBox->setMaximum(std::numeric_limits<double>::max());
+        dialog->ui->heightBox->setMaximum(std::numeric_limits<double>::max());
 	}
 
 	if (defaultSize.isValid()) {

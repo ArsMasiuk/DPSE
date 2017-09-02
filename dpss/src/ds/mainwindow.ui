@@ -59,6 +59,8 @@
     <addaction name="separator"/>
     <addaction name="actionFactorNodes"/>
     <addaction name="actionFind"/>
+    <addaction name="separator"/>
+    <addaction name="actionOptions"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
@@ -334,6 +336,11 @@
    </property>
    <property name="toolTip">
     <string>Exit Application</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Scene Options...</string>
    </property>
   </action>
  </widget>

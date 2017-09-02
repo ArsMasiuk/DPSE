@@ -47,6 +47,8 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 	m_labelsEnabled = true;
 	m_labelsUpdate = false;
 
+	setBackgroundBrush(QColor("#f3ffe1"));
+
     //setSceneRect(-1000, -1000, 2000, 2000);
 
 	setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -747,9 +749,7 @@ void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 	}
 
 	painter->setPen(QPen(Qt::darkGray, 2, Qt::SolidLine));
-	QColor fillColor("lightsteelblue");
-	fillColor.setAlpha(50);
-	painter->setBrush(fillColor);
+	painter->setBrush(backgroundBrush());
 	painter->drawRect(sceneRect());
 
 	// draw grid if needed

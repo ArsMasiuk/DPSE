@@ -30,24 +30,17 @@ msvc*{
 DESTDIR = $$PWD/../bin.$$COMPILER_NAME
 CONFIG(debug, debug|release):DESTDIR = $$DESTDIR"_debug"
 
+include(common/common.pri)
 include(qvge/qvge.pri)
 include(simu/mpisch/mpisch.pri)
 include(simu/graph_om/graph_om.pri)
 
 INCLUDEPATH += qvge ds common simu
 
-SOURCES += $$files($$PWD/ds/*.cpp) \
-    common/CSizeInputDialog.cpp
-HEADERS  += $$files($$PWD/ds/*.h) \
-    common/CSizeInputDialog.h
-FORMS    += $$files($$PWD/ds/*.ui) \
-    common/CSizeInputDialog.ui
+SOURCES += $$files($$PWD/ds/*.cpp)
+HEADERS  += $$files($$PWD/ds/*.h)
+FORMS    += $$files($$PWD/ds/*.ui)
 RESOURCES += $$files($$PWD/ds/*.qrc)
-
-SOURCES += $$files($$PWD/common/*.cpp)
-HEADERS  += $$files($$PWD/common/*.h)
-FORMS    += $$files($$PWD/common/*.ui)
-RESOURCES += $$files($$PWD/common/*.qrc)
 
 HEADERS  += $$files($$PWD/simu/*.h)
 
