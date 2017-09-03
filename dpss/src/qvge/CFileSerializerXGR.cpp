@@ -17,15 +17,14 @@ It can be used freely, maintaining the information above.
 bool CFileSerializerXGR::load(const QString& fileName, CEditorScene& scene) const
 {
 	// read file into document
-	QFile file(fileName);
-	if (!file.open(QIODevice::ReadOnly))
+	QFile openFile(fileName);
+	if (!openFile.open(QIODevice::ReadOnly))
 		return false;
 
 	scene.reset();
 
 	QDataStream ds(&openFile);
-	scene.restoreFrom(ds);
-	scene.readOptions(ds);
+	scene.restoreFrom(ds, true);
 
 	return true;
 }
@@ -37,7 +36,7 @@ bool CFileSerializerXGR::save(const QString& fileName, const CEditorScene& scene
 	if (saveFile.open(QFile::WriteOnly))
 	{
 		QDataStream ds(&saveFile);
-		scene.storeTo(ds);
+		scene.storeTo(ds, true);
 
 		return true;
 	}

@@ -31,7 +31,7 @@ void CSimpleUndoManager::addState()
 	// serialize & compress
 	QByteArray snap;
 	QDataStream ds(&snap, QIODevice::WriteOnly);
-	m_scene->storeTo(ds);
+	m_scene->storeTo(ds, false);
 	QByteArray compressedSnap = qCompress(snap);
 
 	// push state into stack
@@ -55,7 +55,7 @@ void CSimpleUndoManager::undo()
 		QByteArray &compressedSnap = m_stateStack[--m_stackIndex];
 		QByteArray snap = qUncompress(compressedSnap);
 		QDataStream ds(&snap, QIODevice::ReadOnly);
-		m_scene->restoreFrom(ds);
+		m_scene->restoreFrom(ds, false);
 	}
 }
 
@@ -66,7 +66,7 @@ void CSimpleUndoManager::redo()
 		QByteArray &compressedSnap = m_stateStack[++m_stackIndex];
 		QByteArray snap = qUncompress(compressedSnap);
 		QDataStream ds(&snap, QIODevice::ReadOnly);
-		m_scene->restoreFrom(ds);
+		m_scene->restoreFrom(ds, false);
 	}
 }
 

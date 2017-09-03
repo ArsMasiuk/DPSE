@@ -60,6 +60,8 @@ private Q_SLOTS:
 	void on_actionGraph_OM_triggered();
 
 private:
+	void updateSceneActions();
+
     Ui::MainWindow *ui;
 	class CAttributeEditor* m_attrEditor;
 	class CItemAttributeEditor* m_attrItemEditor;

@@ -7,7 +7,10 @@ CSceneOptionsDialog::CSceneOptionsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	ui->BackgroundColor->setScheme(QSint::openOfficeColors());
+	//ui->BackgroundColor->setScheme(QSint::openOfficeColors());
+
+	ui->BackgroundColor->setPickModeLeft(QSint::ColorButton::PM_COLORDIALOG);
+	ui->GridColor->setPickModeLeft(QSint::ColorButton::PM_COLORDIALOG);
 }
 
 CSceneOptionsDialog::~CSceneOptionsDialog()
@@ -20,10 +23,26 @@ int CSceneOptionsDialog::exec(CEditorScene &scene)
 {
 	ui->BackgroundColor->setColor(scene.backgroundBrush().color());
 
+	QPen gridPen = scene.getGridPen();
+	ui->GridColor->setColor(gridPen.color());
+
+	ui->GridSize->setValue(scene.getGridSize());
+	ui->GridVisible->setChecked(scene.gridEnabled());
+	ui->GridSnap->setChecked(scene.gridSnapEnabled());
+
+
 	if (QDialog::exec() == QDialog::Rejected)
 		return QDialog::Rejected;
 
+
 	scene.setBackgroundBrush(ui->BackgroundColor->color());
+
+	gridPen.setColor(ui->GridColor->color());
+	scene.setGridPen(gridPen);
+
+	scene.setGridSize(ui->GridSize->value());
+	scene.enableGrid(ui->GridVisible->isChecked());
+	scene.enableGridSnap(ui->GridSnap->isChecked());
 
 	return QDialog::Accepted;
 }

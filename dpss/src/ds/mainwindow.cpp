@@ -10,6 +10,7 @@ It can be used freely, maintaining the information above.
 #include "qvge/CNode.h"
 #include "qvge/CFileSerializerGEXF.h"
 #include "qvge/CFileSerializerGraphML.h"
+#include "qvge/CFileSerializerXGR.h"
 #include "qvge/CEditorView.h"
 #include "qvge/CImageExport.h"
 
@@ -218,7 +219,18 @@ void MainWindow::on_actionFind_triggered()
 void MainWindow::on_actionOptions_triggered()
 {
 	CSceneOptionsDialog d;
-	d.exec(*m_editorScene);
+	if (d.exec(*m_editorScene) == QDialog::Accepted)
+	{
+		// this is to revise...
+		updateSceneActions();
+	}
+}
+
+void MainWindow::updateSceneActions()
+{
+	ui->actionShowGrid->setChecked(m_editorScene->gridEnabled());
+	ui->actionSnapGrid->setChecked(m_editorScene->gridSnapEnabled());
+	ui->actionShowLabels->setChecked(m_editorScene->itemLabelsEnabled());
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -234,12 +246,8 @@ void MainWindow::on_actionSave_triggered()
 	QString fileName = QFileDialog::getSaveFileName(NULL, "Save Scene", m_lastFileName, "*.xgr");
 	if (!fileName.isEmpty())
 	{
-		QFile saveFile(fileName);
-		if (saveFile.open(QFile::WriteOnly))
+		if (CFileSerializerXGR().save(fileName, *m_editorScene))
 		{
-			QDataStream ds(&saveFile);
-			m_editorScene->storeTo(ds);
-
 			m_lastFileName = fileName;
 		}
 	}
@@ -289,18 +297,16 @@ void MainWindow::on_actionOpen_triggered()
 		}
 
 		// default (xgr)
-		QFile openFile(fileName);
-		if (openFile.open(QFile::ReadOnly))
+		if (CFileSerializerXGR().load(fileName, *m_editorScene))
 		{
-			m_editorScene->reset();
-
-			QDataStream ds(&openFile);
-			m_editorScene->restoreFrom(ds);
+			// this is to revise...
+			updateSceneActions();
 
 			m_editorScene->addUndoState();
 			m_editorView->zoomTo(1.0);
 
 			m_lastFileName = fileName;
+			return;
 		}
 	}
 }

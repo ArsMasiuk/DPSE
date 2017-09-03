@@ -27,7 +27,7 @@ It can be used freely, maintaining the information above.
 #include <qopengl.h>
 
 
-const quint64 version64 = 7;	// build
+const quint64 version64 = 8;	// build
 const char* versionId = "VersionId";
 
 
@@ -213,7 +213,7 @@ void CEditorScene::checkUndoState()
 
 // io
 
-bool CEditorScene::storeTo(QDataStream& out) const
+bool CEditorScene::storeTo(QDataStream& out, bool storeOptions) const
 {
     out << versionId << version64;
 
@@ -258,10 +258,19 @@ bool CEditorScene::storeTo(QDataStream& out) const
 	// visible attributes
 	out << m_classAttributesVis;
 
+	// options
+	if (storeOptions)
+	{
+		out << backgroundBrush();
+		out << m_gridPen;
+		out << m_gridSize;
+		out << m_gridEnabled << m_gridSnap;
+	}
+
 	return true;
 }
 
-bool CEditorScene::restoreFrom(QDataStream& out)
+bool CEditorScene::restoreFrom(QDataStream& out, bool readOptions)
 {
 	initialize();
 
@@ -364,6 +373,16 @@ bool CEditorScene::restoreFrom(QDataStream& out)
 	{
 		out >> m_classToSuperIds;
 		out >> m_classAttributesVis;
+	}
+
+	// options
+	if (readOptions && storedVersion >= 8)
+	{
+		QBrush b;
+		out >> b; setBackgroundBrush(b);
+		out >> m_gridPen;
+		out >> m_gridSize;
+		out >> m_gridEnabled >> m_gridSnap;
 	}
 
 	// finish

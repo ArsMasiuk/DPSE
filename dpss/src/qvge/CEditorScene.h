@@ -72,8 +72,8 @@ public:
 	void addUndoState();
 
 	// serialization 
-	virtual bool storeTo(QDataStream& out) const;
-	virtual bool restoreFrom(QDataStream& out);
+	virtual bool storeTo(QDataStream& out, bool storeOptions) const;
+	virtual bool restoreFrom(QDataStream& out, bool readOptions);
 
 	// item factories
 	template<class T>
