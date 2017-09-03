@@ -357,7 +357,7 @@ void MainWindow::on_actionMPI_Sch_triggered()
 
 void MainWindow::on_actionGraph_OM_triggered()
 {
-	CGraphSimulatorDialog grsim;
+	CGraphSimulatorDialog grsim(this);
 
 	if (!grsim.run(*m_editorScene))
 	{

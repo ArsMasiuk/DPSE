@@ -21,6 +21,7 @@ public:
 	typedef QGraphicsView Super;
 
 	CEditorView(CEditorScene *scene, QWidget *parent = NULL);
+	CEditorView(QWidget *parent = NULL);
 	virtual ~CEditorView();
 
 	// zoom
@@ -36,6 +37,7 @@ public:
 	virtual void mousePressEvent(QMouseEvent *e);
 	virtual void mouseMoveEvent(QMouseEvent *e);
 	virtual void mouseReleaseEvent(QMouseEvent *e);
+	virtual void wheelEvent(QWheelEvent *e);
 
 Q_SIGNALS:
 	void scaleChanged(double);
@@ -44,7 +46,7 @@ private:
 	Qt::ContextMenuPolicy m_menuModeTmp;
 	double m_currentZoom;
 
-private slots:
+private Q_SLOTS:
 	void restoreContextMenu();
 };
 

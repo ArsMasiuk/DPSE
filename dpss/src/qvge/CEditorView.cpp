@@ -17,10 +17,26 @@ It can be used freely, maintaining the information above.
 #include <QDebug> 
 
 
-CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
+CEditorView::CEditorView(QWidget *parent)
 	: Super(parent),
 	m_menuModeTmp(Qt::PreventContextMenu),
 	m_currentZoom(1.0)
+{
+	setAttribute(Qt::WA_TranslucentBackground, false);
+
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+	setDragMode(RubberBandDrag);
+
+	setRenderHint(QPainter::Antialiasing);
+	setRenderHint(QPainter::HighQualityAntialiasing);
+	setOptimizationFlags(DontSavePainterState);
+	setOptimizationFlags(DontClipPainter);
+	setOptimizationFlags(DontAdjustForAntialiasing);
+}
+
+CEditorView::CEditorView(CEditorScene *scene, QWidget *parent): CEditorView(parent)
 {
 	//auto glw = new QOpenGLWidget();
 	//glw->setUpdateBehavior(QOpenGLWidget::PartialUpdate);
@@ -32,19 +48,8 @@ CEditorView::CEditorView(CEditorScene *scene, QWidget *parent)
 	//auto glw = new QGLWidget();
 	//setViewport(glw);
 
-	setAttribute(Qt::WA_TranslucentBackground, false);
-
-	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	setScene(scene);
 
-	setDragMode(RubberBandDrag);
-
-	setRenderHint(QPainter::Antialiasing);
-	setRenderHint(QPainter::HighQualityAntialiasing);
-	setOptimizationFlags(DontSavePainterState);
-	setOptimizationFlags(DontClipPainter);
-	setOptimizationFlags(DontAdjustForAntialiasing);
 
 	//setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 }
@@ -93,6 +98,7 @@ void CEditorView::mousePressEvent(QMouseEvent *e)
 	Super::mousePressEvent(e);
 }
 
+
 void CEditorView::mouseMoveEvent(QMouseEvent *e)
 {
 	// enable RMB pan
@@ -129,6 +135,55 @@ void CEditorView::mouseReleaseEvent(QMouseEvent *e)
 	else
 	{
 		Super::mouseReleaseEvent(e);
+	}
+}
+
+
+void CEditorView::wheelEvent(QWheelEvent *e)
+{
+	// original taken from
+	// http://blog.automaton2000.com/2014/04/mouse-centered-zooming-in-qgraphicsview.html
+
+	if ((e->modifiers() & Qt::ControlModifier) == Qt::ControlModifier
+		&& e->angleDelta().x() == 0) 
+	{
+		QPoint  pos = e->pos();
+		QPointF posf = this->mapToScene(pos);
+
+		double by = 1.0;
+		double angle = e->angleDelta().y();
+
+		if (angle > 0) { by = 1 + (angle / 360 * 0.5); }
+		else 
+			if (angle < 0) { by = 1 - (-angle / 360 * 0.5); }
+
+		//this->scale(by, by);
+		zoomBy(by);
+
+		double w = this->viewport()->width();
+		double h = this->viewport()->height();
+
+		double wf = this->mapToScene(QPoint(w - 1, 0)).x() - this->mapToScene(QPoint(0, 0)).x();
+		double hf = this->mapToScene(QPoint(0, h - 1)).y() - this->mapToScene(QPoint(0, 0)).y();
+
+		double lf = posf.x() - pos.x() * wf / w;
+		double tf = posf.y() - pos.y() * hf / h;
+
+		/* try to set viewport properly */
+		this->ensureVisible(lf, tf, wf, hf, 0, 0);
+
+		QPointF newPos = this->mapToScene(pos);
+
+		/* readjust according to the still remaining offset/drift
+		* I don't know how to do this any other way */
+		this->ensureVisible(QRectF(QPointF(lf, tf) - newPos + posf, QSizeF(wf, hf)), 0, 0);
+
+		e->accept();
+	}
+
+	if ((e->modifiers() & Qt::ControlModifier) != Qt::ControlModifier) {
+		/* no scrolling while control is held */
+		Super::wheelEvent(e);
 	}
 }
 

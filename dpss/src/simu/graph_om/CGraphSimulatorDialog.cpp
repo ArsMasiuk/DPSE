@@ -22,9 +22,15 @@ CGraphSimulatorDialog::CGraphSimulatorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	setWindowModality(Qt::WindowModal);
+
 	m_ChartView = new QChartView(ui->ChartBox);
 	ui->ChartBox->layout()->addWidget(m_ChartView);
 	m_ChartView->setChart(&m_Chart);
+
+	m_simuScene = new CBranchEditorScene(this);
+	ui->SceneView->setScene(m_simuScene);
+	ui->SceneView->setInteractive(false);
 
     m_simu.setLogger(this);
 
@@ -46,6 +52,44 @@ bool CGraphSimulatorDialog::run(const CBranchEditorScene& scene)
 {
     m_simu.setScene(scene);
 
+	m_simuScene->reset();
+
+	// to do: copy scenes
+	QByteArray b;
+	QDataStream ds(&b, QIODevice::ReadWrite);
+	scene.storeTo(ds, true);
+	QDataStream ds2(&b, QIODevice::ReadWrite);
+	m_simuScene->restoreFrom(ds2, true);
+
+	m_simuScene->setClassAttributeVisible("edge", "Q");
+
+
+	// sort by ids
+	m_branchMap.clear();
+	auto branches = m_simuScene->getItems<CBranchConnection>();
+	for (auto branch : branches)
+	{
+		m_branchMap[branch->getId()] = branch;
+	}
+
+
+	// table
+	ui->StepTable->clear();
+	ui->StepTable->setRowCount(1);
+	ui->StepTable->setColumnCount(m_branchMap.size());
+
+	auto it = m_branchMap.constBegin();
+	for (int r = 0; r < m_branchMap.size(); ++r, ++it)
+	{
+		ui->StepTable->setItem(0, r, new QTableWidgetItem());
+		ui->StepTable->item(0, r)->setData(Qt::UserRole, r);
+
+		ui->StepTable->setHorizontalHeaderItem(r, new QTableWidgetItem(it.key()));
+	}
+
+
+	//m_simuScene->addUndoState();
+
     //ui->NetInfo->setText(m_simu.getNetInfo());
 
     //QSettings& set = m_simu.getSettings();
@@ -55,6 +99,7 @@ bool CGraphSimulatorDialog::run(const CBranchEditorScene& scene)
 
     ui->Tabs->setCurrentIndex(0);
 
+	showMaximized();
     exec();
 
     return true;
@@ -144,20 +189,14 @@ void CGraphSimulatorDialog::onStepFinished(double time, int step, std::vector<do
 
 		// table
 		ui->StepTable->setUpdatesEnabled(false);
-		ui->StepTable->setRowCount(1);
-
-		int oldRows = ui->StepTable->columnCount();
-		ui->StepTable->setColumnCount(qvec.size());
-		for (int r = oldRows; r < qvec.size(); ++r) 
-		{
-			ui->StepTable->setItem(0, r, new QTableWidgetItem());
-			ui->StepTable->item(0, r)->setData(Qt::UserRole, r);
-		}
 
 		for (int r = 0; r < qvec.size(); ++r)
+		{
 			ui->StepTable->item(0, r)->setText(QString::number(qvec[r]));
-		
+		}
+
 		ui->StepTable->setUpdatesEnabled(true);
+
 
 		// chart update
 		for (int r = 0; r < qvec.size(); ++r)
@@ -167,9 +206,24 @@ void CGraphSimulatorDialog::onStepFinished(double time, int step, std::vector<do
 
 		on_StepTable_itemSelectionChanged();
 
+
+		// scene update
+		int count = qMin((int)qvec.size(), m_branchMap.size());
+
+		int Qi = 0;	// Q number
+
+		auto orderedBranches = m_branchMap.values();
+
+		for (int r = 0; r < count; ++r)
+		{
+			orderedBranches[r]->setAttribute("Q", qvec[r]);
+		}
+
+		//m_simuScene->needUpdate();
+		m_simuScene->addUndoState();
+
 		qApp->processEvents();
 	}
-
 }
 
 
@@ -190,4 +244,10 @@ void CGraphSimulatorDialog::closeEvent(QCloseEvent *event)
 	m_simu.stop();
 
 	QDialog::closeEvent(event);
+}
+
+
+void CGraphSimulatorDialog::showEvent(QShowEvent *event)
+{
+	QDialog::showEvent(event);
 }

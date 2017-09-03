@@ -760,6 +760,12 @@ void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 			citem->invalidate();
 	}
 
+	// update layout if needed
+	if (m_labelsUpdate)
+	{
+		layoutItemLabels();
+	}
+
 	// fill background
 	if (painter->paintEngine()->type() == QPaintEngine::OpenGL || painter->paintEngine()->type() == QPaintEngine::OpenGL2)
 	{
@@ -852,6 +858,14 @@ void CEditorScene::layoutItemLabels()
 	}
 
 	qDebug() << "layout labels: " << tm.elapsed();
+}
+
+
+void CEditorScene::needUpdate()
+{
+	m_labelsUpdate = true;
+
+	update();
 }
 
 

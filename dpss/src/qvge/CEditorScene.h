@@ -155,6 +155,8 @@ public:
 	bool checkLabelRegion(const QRectF& r);
 	void layoutItemLabels();
 
+	void needUpdate();
+
 public Q_SLOTS:
     void enableGrid(bool on = true);
     void enableGridSnap(bool on = true);

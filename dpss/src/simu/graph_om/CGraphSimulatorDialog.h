@@ -13,6 +13,7 @@ It can be used freely, maintaining the information above.
 #include <QtCharts>
 
 #include <CBranchEditorScene.h>
+#include <qvge/CEditorView.h>
 
 #include <ILogger.h>
 
@@ -50,6 +51,7 @@ private Q_SLOTS:
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
+	virtual void showEvent(QShowEvent *event);
 
 private:
     Ui::CGraphSimulatorDialog *ui;
@@ -59,4 +61,7 @@ private:
 	QMap<int, QList<QPointF>> m_testPoints;
 
 	CGraphSimulator m_simu;
+
+	QMap<QString, CBranchConnection*> m_branchMap;
+	CBranchEditorScene *m_simuScene;
 };
