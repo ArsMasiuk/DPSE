@@ -723,6 +723,11 @@ void CEditorScene::paste()
 		}
 	}
 
+	for (CItem* item : idToItem.values())
+	{
+		item->onItemRestored();
+	}
+
 	blocker.unblock();
 	Q_EMIT selectionChanged();
 
