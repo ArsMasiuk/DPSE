@@ -1,6 +1,7 @@
 #include "CNodeEditorScene.h"
 #include "CNode.h"
 #include "CConnection.h"
+#include "CDirectConnection.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QColorDialog> 
@@ -17,7 +18,7 @@ CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 	m_state(IS_None)
 {
 	// default factories
-	registerItemFactory<CConnection>();
+	registerItemFactory<CDirectConnection>();
 	registerItemFactory<CNode>();
 
 	// go
@@ -307,7 +308,7 @@ CConnection* CNodeEditorScene::createNewConnection() const
 	}
 
 	// here default
-	return new CConnection();
+	return new CDirectConnection();
 }
 
 

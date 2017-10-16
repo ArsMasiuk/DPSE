@@ -38,7 +38,6 @@ public:
 	// public
     void setFirstNode(CNode *node);
     void setLastNode(CNode *node);
-	void setBendFactor(int bf);
 
 	void reattach(CNode *oldNode, CNode *newNode);
 	void reverse();
@@ -50,14 +49,14 @@ public:
 	bool isCircled() const	{ return isValid() && m_firstNode == m_lastNode; }
 
 	// reimp
-	static QByteArray factoryId()			{ return "CConnection"; }
-	virtual QByteArray typeId() const		{ return this->factoryId(); }
-    virtual QByteArray classId() const		{ return "edge"; }
-    virtual QByteArray superClassId() const { return Super::classId(); }
+	//static QByteArray factoryId()			{ return "CConnection"; }
+	//virtual QByteArray typeId() const		{ return this->factoryId(); }
+ //   virtual QByteArray classId() const		{ return "edge"; }
+ //   virtual QByteArray superClassId() const { return Super::classId(); }
 
 	virtual QString createNewId() const;
-	virtual CItem* create() const			{ return new CConnection(parentItem());	}
-	CConnection* clone();
+	//virtual CItem* create() const			{ return new CConnection(parentItem());	}
+	//CConnection* clone();
 
 	// reimp
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Ignored; }
@@ -81,7 +80,7 @@ public:
 	virtual void onNodeMoved(CNode *node);
 	virtual void onNodeDetached(CNode *node);
 	virtual void onNodeDeleted(CNode *node);
-	virtual void onParentGeometryChanged();
+	virtual void onParentGeometryChanged() = 0;
 
 protected:
 	virtual void setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
@@ -93,27 +92,22 @@ protected:
 	virtual QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value);
 	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 
-	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
-	virtual void updateLabelPosition();
-
 	// cached attributes
 	virtual void updateCachedItems();
 	virtual void updateArrowFlags(const QString& direction);
 
 protected:
     union{
-    CNode *m_firstNode;
-    quint64 m_tempFirstNodeId;
+		CNode *m_firstNode;
+		quint64 m_tempFirstNodeId;
     };
 
     union{
-    CNode *m_lastNode;
-    quint64 m_tempLastNodeId;
+		CNode *m_lastNode;
+		quint64 m_tempLastNodeId;
     };
 
 	QPainterPath m_selectionShapePath;
-	int m_bendFactor;
-	QPointF m_controlPoint, m_controlPos;
 };
 
 

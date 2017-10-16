@@ -1,5 +1,6 @@
 #include "CNode.h"
 #include "CConnection.h"
+#include "CDirectConnection.h"
 
 #include <QPen>
 #include <QBrush>
@@ -387,13 +388,17 @@ void CNode::updateConnections()
 	if (s_duringRestore)
 		return;
 
-	typedef QList<CConnection*> EdgeList;
+	typedef QList<CDirectConnection*> EdgeList;
 	QMap<CNode*, EdgeList> edgeGroups;
 
 	for (auto conn : m_connections)
 	{
-		CNode* node = conn->firstNode() == this ? conn->lastNode() : conn->firstNode();
-		edgeGroups[node].append(conn);
+		CDirectConnection* dconn = dynamic_cast<CDirectConnection*>(conn);
+		if (dconn)
+		{
+			CNode* node = dconn->firstNode() == this ? dconn->lastNode() : dconn->firstNode();
+			edgeGroups[node].append(dconn);
+		}
 	}
 
 	for (auto it = edgeGroups.constBegin(); it != edgeGroups.constEnd(); ++it)

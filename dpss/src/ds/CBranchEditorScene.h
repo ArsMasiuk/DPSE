@@ -14,7 +14,7 @@ It can be used freely, maintaining the information above.
 
 #include "qvge/CNodeEditorScene.h"
 #include "qvge/CNode.h"
-#include "qvge/CConnection.h"
+#include "qvge/CDirectConnection.h"
 
 
 enum BranchEditorMode
@@ -74,10 +74,10 @@ protected:
 };
 
 
-class CBranchConnection : public CConnection
+class CBranchConnection : public CDirectConnection
 {
 public:
-	typedef CConnection Super;
+	typedef CDirectConnection Super;
 
 	CBranchConnection(QGraphicsItem *parent = Q_NULLPTR);
 	virtual ~CBranchConnection() {}
