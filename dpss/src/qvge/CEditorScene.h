@@ -151,6 +151,9 @@ public:
 	// callbacks
 	virtual void onItemDestroyed(CItem *citem);
 
+	// operations
+	void startDrag(QGraphicsItem* dragItem);
+
 	// other
 	bool checkLabelRegion(const QRectF& r);
 	void layoutItemLabels();
@@ -196,8 +199,7 @@ protected:
 	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);
 
 	// call from reimp
-	void startDrag(QGraphicsItem* dragItem);
-	void moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem);
+	void moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool performDrag);
 	void finishDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool dragCancelled);
 
 	virtual void onDragging(QGraphicsItem* dragItem, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);

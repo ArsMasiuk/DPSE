@@ -17,7 +17,9 @@ CControlPoint::CControlPoint(CItem *parent) :
 {
  	Q_ASSERT(parent != NULL);
 
-	setRect(-3, -3, 7, 7);
+	setRect(-4, -4, 8, 8);
+	setBrush(Qt::black);
+	setPen(QPen(Qt::gray, 1));
 }
 
 

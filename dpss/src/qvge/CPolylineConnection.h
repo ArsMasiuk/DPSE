@@ -41,9 +41,13 @@ public:
 	// mousing
 	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos);
 	virtual void onControlPointMoved(CControlPoint* controlPoint, const QPointF& pos);
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+	// selection
+	virtual void onItemSelected(bool state);
 
 protected:
-	// reimp
+	// painting
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
 	virtual void updateLabelPosition();
 

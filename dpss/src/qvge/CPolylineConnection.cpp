@@ -95,34 +95,49 @@ bool CPolylineConnection::restoreFrom(QDataStream& out, quint64 version64)
 
 bool CPolylineConnection::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
 {
-	// drag closest point
-	for (QPointF& point : m_polyPoints)
-	{
-		if (QLineF(point, clickPos).length() < 3)
-		{
-			point = mouseEvent->scenePos();
-
-			createControlPoints();
-
-			return true;
-		}
-	}
-
-	// else create point at click pos
+	// create control point at click pos
 	if (insertPointAt(clickPos))
 	{
 		createControlPoints();
+
+		// start drag of the inserted point
+		for (auto cp : m_controlPoints)
+		{
+			if (cp->scenePos() == clickPos)
+			{
+				getScene()->startDrag(cp);
+
+				return true;
+			}
+		}
 		 
-		return true;
+		return false;
 	}
 
 	return false;
 }
 
 
-void CPolylineConnection::onControlPointMoved(CControlPoint* controlPoint, const QPointF& pos)
+void CPolylineConnection::onControlPointMoved(CControlPoint* /*controlPoint*/, const QPointF& /*pos*/)
 {
 	updateShapeFromPoints();
+}
+
+
+void CPolylineConnection::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+	createControlPoints();
+}
+
+
+// selection
+
+void CPolylineConnection::onItemSelected(bool state)
+{
+	Super::onItemSelected(state);
+
+	if (!state)
+		dropControlPoints();
 }
 
 

@@ -343,6 +343,7 @@ void CNodeEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEven
 
 void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+	/*
 	if (m_state == IS_None)
 	{
 		if (!m_doubleClick)
@@ -356,18 +357,33 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 		if (!onDoubleClickDrag(mouseEvent, m_leftClickPos))
 			return;
 	}
+	*/
+
+	if (m_doubleClick)
+	{
+		m_doubleClick = false;
+
+		// moved after double click
+		if (!onDoubleClickDrag(mouseEvent, m_leftClickPos))
+			return;
+	}
+
+	if (m_startDragItem == NULL)
+	{
+		// call super
+		Super::mouseMoveEvent(mouseEvent);
+		return;
+	}
 
 	// custom dragging
-	if (m_startDragItem)
-		m_startDragItem->setPos(mouseEvent->scenePos());
-
-	moveDrag(mouseEvent, m_startDragItem);
+	moveDrag(mouseEvent, m_startDragItem, true);
 }
 
 
 void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	if (m_state == IS_None)
+	//if (m_state == IS_None)
+	if (m_startDragItem == NULL)
 	{
 		// call super
  		Super::mouseReleaseEvent(mouseEvent);
@@ -396,7 +412,7 @@ void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	}
 
 	// call super
-	finishDrag(mouseEvent, dynamic_cast<QGraphicsItem*>(m_endNode), m_state == IS_Cancelling);
+	finishDrag(mouseEvent, m_startDragItem /*dynamic_cast<QGraphicsItem*>(m_endNode)*/, m_state == IS_Cancelling);
 
 	// finish
 	if (m_state == IS_Cancelling)

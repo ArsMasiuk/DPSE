@@ -125,7 +125,7 @@ void CAttributeEditor::on_AttributeList_itemChanged(QTreeWidgetItem *item, int c
 }
 
 
-void CAttributeEditor::on_AttributeList_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void CAttributeEditor::on_AttributeList_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
 	if (!item)
 		return;

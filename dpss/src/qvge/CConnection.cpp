@@ -386,7 +386,6 @@ void CConnection::onNodeDeleted(CNode *node)
 }
 
 
-
 // reimp
 
 QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

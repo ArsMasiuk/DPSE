@@ -903,7 +903,7 @@ void CEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 	m_draggedItem = mouseGrabberItem();
 
-	moveDrag(mouseEvent, m_draggedItem);
+	moveDrag(mouseEvent, m_draggedItem, false);
 }
 
 
@@ -913,7 +913,7 @@ void CEditorScene::startDrag(QGraphicsItem* dragItem)
 }
 
 
-void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem)
+void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool performDrag)
 {
 	m_leftClickPos = QPointF();
 	m_doubleClick = false;
@@ -922,6 +922,11 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 	{
 		if (dragItem->flags() & dragItem->ItemIsMovable)
 		{
+			if (performDrag)
+			{
+				dragItem->setPos(mouseEvent->scenePos());
+			}
+
 			QSet<CItem*> oldHovers = m_acceptedHovers + m_rejectedHovers;
 
 			QList<QGraphicsItem*> hoveredItems = dragItem->collidingItems();
