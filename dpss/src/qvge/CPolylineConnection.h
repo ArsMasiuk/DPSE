@@ -12,6 +12,9 @@ It can be used freely, maintaining the information above.
 #include "CConnection.h"
 
 
+class CControlPoint;
+
+
 class CPolylineConnection : public CConnection
 {
 public:
@@ -19,7 +22,8 @@ public:
 
 	CPolylineConnection(QGraphicsItem *parent = Q_NULLPTR);
 
-	void setBendFactor(int bf);
+	void setPoints(const QList<QPointF> &points);
+	bool insertPointAt(const QPointF &pos);
 
 	// reimp
 	static QByteArray factoryId() { return "CPolylineConnection"; }
@@ -30,6 +34,14 @@ public:
 	virtual CItem* create() const { return new CPolylineConnection(parentItem()); }
 	CConnection* clone();
 
+	// serialization 
+	virtual bool storeTo(QDataStream& out, quint64 version64) const;
+	virtual bool restoreFrom(QDataStream& out, quint64 version64);
+
+	// mousing
+	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos);
+	virtual void onControlPointMoved(CControlPoint* controlPoint, const QPointF& pos);
+
 protected:
 	// reimp
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
@@ -38,7 +50,15 @@ protected:
 	// callbacks 
 	virtual void onParentGeometryChanged();
 
-protected:
-	int m_bendFactor;
-	QPointF m_controlPoint, m_controlPos;
+private:
+	void dropControlPoints();
+	void createControlPoints();
+	void updateShapeFromPoints();
+
+private:
+	// data model
+	QList<QPointF> m_polyPoints;
+
+	// visual control points
+	QList<CControlPoint*> m_controlPoints;
 };

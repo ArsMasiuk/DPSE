@@ -11,6 +11,7 @@ It can be used freely, maintaining the information above.
 
 #include "qvge/CNode.h"
 #include "qvge/CConnection.h"
+#include "qvge/CPolylineConnection.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
@@ -29,7 +30,12 @@ CBranchEditorScene::CBranchEditorScene(QObject *parent)
 
 	setBranchesMode();
 
-	activateConnectionFactory("CBranchConnection");
+	// TEST
+	//activateConnectionFactory("CBranchConnection");
+
+	registerItemFactory<CPolylineConnection>();
+	activateConnectionFactory("CPolylineConnection");
+
 }
 
 CBranchEditorScene::~CBranchEditorScene()

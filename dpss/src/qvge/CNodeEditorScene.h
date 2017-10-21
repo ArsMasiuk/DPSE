@@ -48,10 +48,14 @@ public Q_SLOTS:
 	void onActionEdgeUndirected();
 
 protected:
+	// scene events
 	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void keyPressEvent(QKeyEvent *keyEvent);
+
+	// called on drag after double click; returns true if handled
+	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos);
 
 	// reimp
 	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);

@@ -7,24 +7,47 @@ QVGE - Qt Visual Graph Editor
 It can be used freely, maintaining the information above.
 */
 
+#include <QGraphicsSceneMouseEvent>
+
 #include "CPolylineConnection.h"
 #include "CNode.h"
+#include "CControlPoint.h"
 
 
 CPolylineConnection::CPolylineConnection(QGraphicsItem *parent): Super(parent)
 {
-	m_bendFactor = 0;
 }
 
 
-void CPolylineConnection::setBendFactor(int bf)
+void CPolylineConnection::setPoints(const QList<QPointF> &points)
 {
-	if (bf != m_bendFactor)
-	{
-		m_bendFactor = bf;
+	m_polyPoints = points;
 
-		onParentGeometryChanged();
+	onParentGeometryChanged();
+}
+
+
+bool CPolylineConnection::insertPointAt(const QPointF &pos)
+{
+	// find segment for this point
+	auto points = m_polyPoints;
+	points.prepend(m_firstNode->pos());
+	points.append(m_lastNode->pos());
+
+	for (int i = 0; i < points.size() - 1; ++i)
+	{
+		qreal l1 = QLineF(points.at(i), points.at(i + 1)).length();
+		qreal l2 = QLineF(points.at(i), pos).length();
+		qreal l3 = QLineF(pos, points.at(i + 1)).length();
+		if (qAbs(l1 - (l2 + l3)) < 1)
+		{
+			m_polyPoints.insert(i, pos);
+			update();
+			return true;
+		}
 	}
+
+	return false;
 }
 
 
@@ -35,9 +58,75 @@ CConnection* CPolylineConnection::clone()
 	CPolylineConnection* c = new CPolylineConnection();
 	c->setFirstNode(m_firstNode);
 	c->setLastNode(m_lastNode);
+	c->setPoints(m_polyPoints);
 	return c;
 }
 
+
+// serialization 
+
+bool CPolylineConnection::storeTo(QDataStream& out, quint64 version64) const
+{
+	Super::storeTo(out, version64);
+
+	out << m_polyPoints;
+
+	return true;
+}
+
+
+bool CPolylineConnection::restoreFrom(QDataStream& out, quint64 version64)
+{
+	if (Super::restoreFrom(out, version64))
+	{
+		dropControlPoints();
+
+		m_polyPoints.clear();
+		out >> m_polyPoints;
+
+		return true;
+	}
+
+	return false;
+}
+
+
+// mousing
+
+bool CPolylineConnection::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
+{
+	// drag closest point
+	for (QPointF& point : m_polyPoints)
+	{
+		if (QLineF(point, clickPos).length() < 3)
+		{
+			point = mouseEvent->scenePos();
+
+			createControlPoints();
+
+			return true;
+		}
+	}
+
+	// else create point at click pos
+	if (insertPointAt(clickPos))
+	{
+		createControlPoints();
+		 
+		return true;
+	}
+
+	return false;
+}
+
+
+void CPolylineConnection::onControlPointMoved(CControlPoint* controlPoint, const QPointF& pos)
+{
+	updateShapeFromPoints();
+}
+
+
+// drawing
 
 void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
@@ -47,47 +136,57 @@ void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsIte
 	setupPainter(painter, option, widget);
 
 	// circled connection
-	if (isCircled())
-	{
-		int nodeDiameter = m_firstNode->boundingRect().height();
-		double nr = nodeDiameter / 2;
-		double r = nr + qAbs(m_bendFactor) * nr / 2;
+	//if (isCircled())
+	//{
+	//	int nodeDiameter = m_firstNode->boundingRect().height();
+	//	double nr = nodeDiameter / 2;
+	//	double r = nr * 2;
 
-		painter->drawEllipse(m_controlPos, r, r);
-	}
-	else
-		if (m_bendFactor == 0)	// straight line
+	//	//painter->drawEllipse(m_controlPos, r, r);
+	//}
+	//else
+	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();
+
+		if (m_polyPoints.isEmpty())	// straight line
 		{
 			painter->drawLine(line());
 
 			// arrows
 			if (m_itemFlags & CF_Start_Arrow)
-				drawArrow(painter, option, true, QLineF(line().p2(), line().p1()));
+				drawArrow(painter, option, true, QLineF(p2, p1));
 
 			if (m_itemFlags & CF_End_Arrow)
 				drawArrow(painter, option, false, line());
 		}
 		else // curve
 		{
-			QPainterPath pp;
-			pp.moveTo(line().p1());
-			pp.cubicTo(m_controlPoint, m_controlPoint, line().p2());
+			QPainterPath path;
+			path.moveTo(p1);
+
+			for (const QPointF &p : m_polyPoints)
+				path.lineTo(p);
+
+			path.lineTo(p2);
+
+			//QPainterPath pp;
+			//pp.moveTo(line().p1());
+			//pp.cubicTo(m_controlPoint, m_controlPoint, line().p2());
 
 			painter->setBrush(Qt::NoBrush);
-			painter->drawPath(pp);
+			painter->drawPath(path);
 
-			// arrows
-			if (m_itemFlags & CF_Start_Arrow)
-			{
-				QLineF arrowLine = calculateArrowLine(pp, true, QLineF(m_controlPos, line().p1()));
-				drawArrow(painter, option, true, arrowLine);
-			}
+			//// arrows
+			//if (m_itemFlags & CF_Start_Arrow)
+			//{
+			//	QLineF arrowLine = calculateArrowLine(pp, true, QLineF(m_controlPos, line().p1()));
+			//	drawArrow(painter, option, true, arrowLine);
+			//}
 
-			if (m_itemFlags & CF_End_Arrow)
-			{
-				QLineF arrowLine = calculateArrowLine(pp, false, QLineF(m_controlPos, line().p2()));
-				drawArrow(painter, option, false, arrowLine);
-			}
+			//if (m_itemFlags & CF_End_Arrow)
+			//{
+			//	QLineF arrowLine = calculateArrowLine(pp, false, QLineF(m_controlPos, line().p2()));
+			//	drawArrow(painter, option, false, arrowLine);
+			//}
 		}
 }
 
@@ -99,23 +198,23 @@ void CPolylineConnection::updateLabelPosition()
 	int h = r.height();
 	m_labelItem->setTransformOriginPoint(w / 2, h / 2);
 
-	if (isCircled())
-	{
-		m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - boundingRect().height() / 2 - h);
+	//if (isCircled())
+	//{
+	//	m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - boundingRect().height() / 2 - h);
 
-		m_labelItem->setRotation(0);
-	}
-	else
-	{
-		m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - h / 2);
+	//	m_labelItem->setRotation(0);
+	//}
+	//else
+	//{
+	//	m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - h / 2);
 
-		// update label rotation
-		qreal angle = 180 - line().angle();
-		if (angle > 90) angle -= 180;
-		else if (angle < -90) angle += 180;
-		//qDebug() << angle;
-		//m_labelItem->setRotation(angle);
-	}
+	//	// update label rotation
+	//	qreal angle = 180 - line().angle();
+	//	if (angle > 90) angle -= 180;
+	//	else if (angle < -90) angle += 180;
+	//	//qDebug() << angle;
+	//	//m_labelItem->setRotation(angle);
+	//}
 }
 
 
@@ -139,46 +238,52 @@ void CPolylineConnection::onParentGeometryChanged()
 
 	// update shape path
 	QPainterPath path;
+	path.moveTo(p1);
+	
+	for (const QPointF &p : m_polyPoints)
+		path.lineTo(p);
+
+	path.lineTo(p2);
 
 	// circled connection 
 	if (isCircled())
 	{
-		int nodeDiameter = m_firstNode->boundingRect().height();
-		double nr = nodeDiameter / 2;
-		double r = nr + qAbs(m_bendFactor) * nr / 2;
+		//int nodeDiameter = m_firstNode->boundingRect().height();
+		//double nr = nodeDiameter / 2;
+		//double r = nr * 2;
 
-		m_controlPos = p1 + QPointF(0, -r);
-		path.addEllipse(m_controlPos, r, r);
+		//m_controlPos = p1 + QPointF(0, -r);
+		//path.addEllipse(m_controlPos, r, r);
 	}
 	else // not circled
 	{
-		path.moveTo(p1);
+		//path.moveTo(p1);
 
 		// center
-		m_controlPos = (p1 + p2) / 2;
+		//m_controlPos = (p1 + p2) / 2;
 
-		if (m_bendFactor == 0)
-		{
-			path.lineTo(p2);
-		}
-		else
-		{
-			QPointF t1 = m_controlPos;
-			float posFactor = qAbs(m_bendFactor);
+		//if (m_bendFactor == 0)
+		//{
+		//	path.lineTo(p2);
+		//}
+		//else
+		//{
+		//	QPointF t1 = m_controlPos;
+		//	float posFactor = qAbs(m_bendFactor);
 
-			bool bendDirection = (quint64(m_firstNode) > quint64(m_lastNode));
-			if (m_bendFactor < 0)
-				bendDirection = !bendDirection;
+		//	bool bendDirection = (quint64(m_firstNode) > quint64(m_lastNode));
+		//	if (m_bendFactor < 0)
+		//		bendDirection = !bendDirection;
 
-			QLineF f1(t1, p2);
-			f1.setAngle(bendDirection ? f1.angle() + 90 : f1.angle() - 90);
-			f1.setLength(f1.length() * 0.2 * posFactor);
+		//	QLineF f1(t1, p2);
+		//	f1.setAngle(bendDirection ? f1.angle() + 90 : f1.angle() - 90);
+		//	f1.setLength(f1.length() * 0.2 * posFactor);
 
-			m_controlPos = f1.p2();
-			m_controlPoint = m_controlPos - (t1 - m_controlPos) * 0.33;
+		//	m_controlPos = f1.p2();
+		//	m_controlPoint = m_controlPos - (t1 - m_controlPos) * 0.33;
 
-			path.cubicTo(m_controlPoint, m_controlPoint, p2);
-		}
+		//	path.cubicTo(m_controlPoint, m_controlPoint, p2);
+		//}
 	}
 
 	QPainterPathStroker stroker;
@@ -195,3 +300,45 @@ void CPolylineConnection::onParentGeometryChanged()
 	}
 }
 
+
+// private
+
+void CPolylineConnection::dropControlPoints()
+{
+	for (auto cp : m_controlPoints)
+	{
+		delete cp;
+	}
+
+	m_controlPoints.clear();
+}
+
+
+void CPolylineConnection::createControlPoints()
+{
+	dropControlPoints();
+
+	for (const QPointF &point: m_polyPoints)
+	{
+		auto cp = new CControlPoint(this);
+		
+		// first set position, then flags (to avoid recursion)
+		cp->setPos(point);
+		cp->setFlags(ItemIsMovable | ItemSendsGeometryChanges);
+
+		m_controlPoints.append(cp);
+	}
+}
+
+
+void CPolylineConnection::updateShapeFromPoints()
+{
+	m_polyPoints.clear();
+
+	for (auto cp : m_controlPoints)
+	{
+		m_polyPoints.append(cp->scenePos());
+	}
+
+	onParentGeometryChanged();
+}

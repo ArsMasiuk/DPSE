@@ -232,6 +232,7 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 	}
 
 	m_endNode = dynamic_cast<CNode*>(m_startNode->clone());
+	Super::startDrag(m_endNode);
 
 	m_connection = createNewConnection();
 	addItem(m_connection);
@@ -246,14 +247,17 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 
 void CNodeEditorScene::cancel(const QPointF& /*pos*/)
 {
-	m_state = IS_None;
-
-	if (!m_endNode)
-		return;
-
 	// cancel current drag operation
-	Super::finishDrag(NULL, m_endNode, true);
+	Super::finishDrag(NULL, m_startDragItem, true);
 
+	// if no creating state: return
+	if (m_state != IS_Creating)
+	{
+		m_state = IS_None;
+		return;
+	}
+
+	m_state = IS_None;
 
 	// kill connector
 	m_connection->setFirstNode(NULL);
@@ -348,15 +352,16 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			return;
 		}
 
-		// start connection at click point
-		if (!startNewConnection(m_leftClickPos))
+		// moved after double click
+		if (!onDoubleClickDrag(mouseEvent, m_leftClickPos))
 			return;
 	}
 
 	// custom dragging
-	m_endNode->setPos(mouseEvent->scenePos());
+	if (m_startDragItem)
+		m_startDragItem->setPos(mouseEvent->scenePos());
 
-	moveDrag(mouseEvent, dynamic_cast<QGraphicsItem*>(m_endNode));
+	moveDrag(mouseEvent, m_startDragItem);
 }
 
 
@@ -412,6 +417,33 @@ void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 	}
 
 	Super::keyPressEvent(keyEvent);
+}
+
+
+// handlers
+
+bool CNodeEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
+{
+	// try to start new connection at click point
+	if (startNewConnection(clickPos))
+		return true;
+
+	// else handle by object under mouse
+	QGraphicsItem* item = itemAt(clickPos, QTransform());
+	if (item)
+	{
+		if (!item->isEnabled())
+			return false;
+
+		CItem *citem = dynamic_cast<CItem*>(item);
+		if (!citem)
+			return false;
+
+		return citem->onDoubleClickDrag(mouseEvent, clickPos);
+	}
+
+	// nothing to do
+	return false;
 }
 
 

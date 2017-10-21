@@ -34,6 +34,7 @@ const char* versionId = "VersionId";
 CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent), 
 	m_menuTriggerItem(NULL),
 	m_draggedItem(NULL),
+	m_startDragItem(NULL),
 	m_activeItemFactory(NULL),
 	m_undoManager(new CSimpleUndoManager(*this)),
 	m_doubleClick(false),
@@ -895,6 +896,7 @@ void CEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	}
 }
 
+
 void CEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 	Super::mouseMoveEvent(mouseEvent);
@@ -903,6 +905,13 @@ void CEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 	moveDrag(mouseEvent, m_draggedItem);
 }
+
+
+void CEditorScene::startDrag(QGraphicsItem* dragItem)
+{
+	m_startDragItem = dragItem;
+}
+
 
 void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem)
 {
@@ -983,6 +992,7 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 	updateSceneCursor();
 }
 
+
 void CEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 	Super::mouseDoubleClickEvent(mouseEvent);
@@ -994,6 +1004,7 @@ void CEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 	updateSceneCursor();
 }
+
 
 void CEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
@@ -1020,6 +1031,7 @@ void CEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 		m_doubleClick = false;
 	}
 }
+
 
 void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* dragItem, bool dragCancelled)
 {
@@ -1060,10 +1072,13 @@ void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphic
 		}
 	}
 
+	m_startDragItem = NULL;
+
 	setSceneCursor(Qt::ArrowCursor);
 
 	updateSceneCursor();
 }
+
 
 void CEditorScene::onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
 {
@@ -1082,6 +1097,7 @@ void CEditorScene::onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 	setSceneCursor(Qt::ArrowCursor);
 }
 
+
 void CEditorScene::onDragging(QGraphicsItem* /*dragItem*/, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems)
 {
 	if (acceptedItems.size())
@@ -1098,6 +1114,7 @@ void CEditorScene::onDragging(QGraphicsItem* /*dragItem*/, const QSet<CItem*>& a
 
 	setSceneCursor(Qt::SizeAllCursor);
 }
+
 
 void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* clickedItem)
 {

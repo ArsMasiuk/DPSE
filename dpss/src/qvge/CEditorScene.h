@@ -196,6 +196,7 @@ protected:
 	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);
 
 	// call from reimp
+	void startDrag(QGraphicsItem* dragItem);
 	void moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem);
 	void finishDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool dragCancelled);
 
@@ -214,6 +215,7 @@ private:
 protected:
 	QPointF m_leftClickPos;
 	bool m_doubleClick;
+	QGraphicsItem *m_startDragItem;
 
 	QMap<QByteArray, CItem*> m_itemFactories;
 	CItem *m_activeItemFactory;

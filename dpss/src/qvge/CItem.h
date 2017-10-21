@@ -47,50 +47,53 @@ enum ItemDragTestResult
 };
 
 
+class CControlPoint;
+
+
 class CItem
 {
 public:
 	CItem();
 	virtual ~CItem();
 
-	int itemFlags() const		{ return m_itemFlags;	}
-	void setItemFlags(int f)	{ m_itemFlags = f;		}
-	void setItemFlag(int f)		{ m_itemFlags |= f;		}
-	void resetItemFlag(int f)	{ m_itemFlags &= ~f;	}
+	int itemFlags() const { return m_itemFlags; }
+	void setItemFlags(int f) { m_itemFlags = f; }
+	void setItemFlag(int f) { m_itemFlags |= f; }
+	void resetItemFlag(int f) { m_itemFlags &= ~f; }
 
-	int itemStateFlags() const		{ return m_internalStateFlags; }
-	void setItemStateFlag(int f)	{ m_internalStateFlags |= f; }
-	void resetItemStateFlag(int f)	{ m_internalStateFlags &= ~f; }
+	int itemStateFlags() const { return m_internalStateFlags; }
+	void setItemStateFlag(int f) { m_internalStateFlags |= f; }
+	void resetItemStateFlag(int f) { m_internalStateFlags &= ~f; }
 
 	// to be reimplemented
-	static QByteArray factoryId()		{ return "CItem"; }
-	virtual QByteArray typeId() const	{ return this->factoryId(); }
-    virtual QString createNewId() const { return QString::number((quint64)this); }
+	static QByteArray factoryId() { return "CItem"; }
+	virtual QByteArray typeId() const { return this->factoryId(); }
+	virtual QString createNewId() const { return QString::number((quint64)this); }
 	virtual bool setDefaultId();
-	
+
 	// attributes
 	virtual bool hasLocalAttribute(const QByteArray& attrId) const;
 	const QMap<QByteArray, QVariant>& getLocalAttributes() const { return m_attributes; }
 
 	virtual bool setAttribute(const QByteArray& attrId, const QVariant& v);
-	virtual bool removeAttribute(const QByteArray& attrId); 
+	virtual bool removeAttribute(const QByteArray& attrId);
 	virtual QVariant getAttribute(const QByteArray& attrId) const;
 
 	virtual QVariant getClassAttribute(const QByteArray& attrId) const;
-    virtual QByteArray classId() const			{ return "item"; }
-    virtual QByteArray superClassId() const		{ return QByteArray(); }
+	virtual QByteArray classId() const { return "item"; }
+	virtual QByteArray superClassId() const { return QByteArray(); }
 
-	QString getId() const			{ return m_id; }
-	void setId(const QString& id)	{ setAttribute("id", id);	}
+	QString getId() const { return m_id; }
+	void setId(const QString& id) { setAttribute("id", id); }
 
 	enum VisibleFlags { VF_ANY = 0, VF_LABEL = 1, VF_TOOLTIP = 2 };
-    virtual QSet<QByteArray> getVisibleAttributeIds(int flags) const;
+	virtual QSet<QByteArray> getVisibleAttributeIds(int flags) const;
 
 	QGraphicsItem* getSceneItem() const {
 		return dynamic_cast<QGraphicsItem*>((CItem*)this);
 	}
 
-	CEditorScene* getScene() const { 
+	CEditorScene* getScene() const {
 		QGraphicsItem* sceneItem = getSceneItem();
 		if (sceneItem)
 			return dynamic_cast<CEditorScene*>(sceneItem->scene());
@@ -104,15 +107,15 @@ public:
 	virtual void updateLabelPosition() {}
 	void setLabelText(const QString& text);
 	void showLabel(bool on);
-	QRectF getSceneLabelRect() const; 
+	QRectF getSceneLabelRect() const;
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);
 
-    typedef QMap<quint64, CItem*> CItemLinkMap;
-	virtual bool linkAfterRestore(const CItemLinkMap& /*idToItem*/)		{ return true; }
-	virtual bool linkAfterPaste(const CItemLinkMap& idToItem)			{ return linkAfterRestore(idToItem); }	// default the same
+	typedef QMap<quint64, CItem*> CItemLinkMap;
+	virtual bool linkAfterRestore(const CItemLinkMap& /*idToItem*/) { return true; }
+	virtual bool linkAfterPaste(const CItemLinkMap& idToItem) { return linkAfterRestore(idToItem); }	// default the same
 	static void beginRestore() { s_duringRestore = true; }
 	static void endRestore() { s_duringRestore = false; }
 
@@ -128,6 +131,10 @@ public:
 	virtual void onHoverLeave(QGraphicsItem* /*sceneItem*/, QGraphicsSceneHoverEvent* /*event*/) {}
 	virtual void onDraggedOver(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
 	virtual void onDroppedOn(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
+	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF& /*clickPos*/) { return false; }
+
+	// call from control points
+	virtual void onControlPointMoved(CControlPoint* /*controlPoint*/, const QPointF& /*pos*/) {}
 
 	// call from drag event
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Accepted; }
