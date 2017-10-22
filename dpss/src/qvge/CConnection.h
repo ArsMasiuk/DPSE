@@ -49,14 +49,7 @@ public:
 	bool isCircled() const	{ return isValid() && m_firstNode == m_lastNode; }
 
 	// reimp
-	//static QByteArray factoryId()			{ return "CConnection"; }
-	//virtual QByteArray typeId() const		{ return this->factoryId(); }
- //   virtual QByteArray classId() const		{ return "edge"; }
- //   virtual QByteArray superClassId() const { return Super::classId(); }
-
 	virtual QString createNewId() const;
-	//virtual CItem* create() const			{ return new CConnection(parentItem());	}
-	//CConnection* clone();
 
 	// reimp
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Ignored; }
@@ -76,11 +69,12 @@ public:
 	virtual bool linkAfterRestore(const CItemLinkMap& idToItem);
 	virtual bool linkAfterPaste(const CItemLinkMap& idToItem);
 
-    // callbacks 
+    // callbacks
 	virtual void onNodeMoved(CNode *node);
 	virtual void onNodeDetached(CNode *node);
 	virtual void onNodeDeleted(CNode *node);
 	virtual void onParentGeometryChanged() = 0;
+	virtual void onItemRestored();
 
 protected:
 	virtual void setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);

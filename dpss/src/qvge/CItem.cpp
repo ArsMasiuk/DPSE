@@ -23,7 +23,7 @@ CItem::CItem()
 
 	// default item flags
 	m_itemFlags = IF_DeleteAllowed | IF_FramelessSelection;
-	m_internalStateFlags = IS_Attribute_Changed;
+	m_internalStateFlags = IS_Attribute_Changed | IS_Need_Update;
 }
 
 CItem::~CItem()
@@ -291,6 +291,12 @@ QRectF CItem::getSceneLabelRect() const
 
 
 // callbacks
+
+void CItem::onItemRestored()
+{
+	invalidate();
+}
+
 
 void CItem::onItemSelected(bool state)
 {

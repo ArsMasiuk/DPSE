@@ -390,9 +390,6 @@ void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 		return;
 	}
 
-	// necessary to handle scene events properly
-	QGraphicsScene::mouseReleaseEvent(mouseEvent);
-
 	// release local grabber if any
 	if (m_state == IS_Creating)
 	{
@@ -421,6 +418,9 @@ void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	}
 
 	m_state = IS_None;
+
+	// necessary to handle scene events properly
+	QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
 

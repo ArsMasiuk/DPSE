@@ -1121,6 +1121,15 @@ void CEditorScene::onDragging(QGraphicsItem* /*dragItem*/, const QSet<CItem*>& a
 }
 
 
+void CEditorScene::onLeftClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem)
+{
+	if (CItem *item = dynamic_cast<CItem*>(clickedItem))
+	{
+		item->onClick(mouseEvent);
+	}
+}
+
+
 void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* clickedItem)
 {
 	if (CItem *item = dynamic_cast<CItem*>(clickedItem))

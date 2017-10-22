@@ -124,7 +124,7 @@ void CPolylineConnection::onControlPointMoved(CControlPoint* /*controlPoint*/, c
 }
 
 
-void CPolylineConnection::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void CPolylineConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	createControlPoints();
 }
@@ -173,7 +173,7 @@ void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsIte
 			if (m_itemFlags & CF_End_Arrow)
 				drawArrow(painter, option, false, line());
 		}
-		else // curve
+		else // polyline
 		{
 			QPainterPath path;
 			path.moveTo(p1);
@@ -183,25 +183,31 @@ void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsIte
 
 			path.lineTo(p2);
 
-			//QPainterPath pp;
-			//pp.moveTo(line().p1());
-			//pp.cubicTo(m_controlPoint, m_controlPoint, line().p2());
+			painter->save();
 
 			painter->setBrush(Qt::NoBrush);
 			painter->drawPath(path);
 
-			//// arrows
-			//if (m_itemFlags & CF_Start_Arrow)
-			//{
-			//	QLineF arrowLine = calculateArrowLine(pp, true, QLineF(m_controlPos, line().p1()));
-			//	drawArrow(painter, option, true, arrowLine);
-			//}
+			painter->restore();
 
-			//if (m_itemFlags & CF_End_Arrow)
-			//{
-			//	QLineF arrowLine = calculateArrowLine(pp, false, QLineF(m_controlPos, line().p2()));
-			//	drawArrow(painter, option, false, arrowLine);
-			//}
+			qreal r = qMax(2.0, painter->pen().widthF());
+			painter->setBrush(painter->pen().brush());
+
+			for (const QPointF &p : m_polyPoints)
+				painter->drawEllipse(p, r, r);
+
+			// arrows
+			if (m_itemFlags & CF_Start_Arrow)
+			{
+				QLineF arrowLine(m_polyPoints.first(), p1);
+				drawArrow(painter, option, true, arrowLine);
+			}
+
+			if (m_itemFlags & CF_End_Arrow)
+			{
+				QLineF arrowLine(m_polyPoints.last(), p2);
+				drawArrow(painter, option, false, arrowLine);
+			}
 		}
 }
 

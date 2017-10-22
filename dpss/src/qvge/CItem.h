@@ -35,7 +35,8 @@ enum ItemStateFlags
 	IS_Hover = 2,
 	IS_Drag_Accepted = 4,
 	IS_Drag_Rejected = 8,
-	IS_Attribute_Changed = 16
+	IS_Attribute_Changed = 16,
+	IS_Need_Update = 32
 };
 
 
@@ -125,12 +126,13 @@ public:
 
 	// callbacks
 	virtual void onItemMoved() {}
-	virtual void onItemRestored() {}
+	virtual void onItemRestored();
 	virtual void onItemSelected(bool state);
 	virtual void onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent* event);
 	virtual void onHoverLeave(QGraphicsItem* /*sceneItem*/, QGraphicsSceneHoverEvent* /*event*/) {}
 	virtual void onDraggedOver(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
 	virtual void onDroppedOn(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
+	virtual void onClick(QGraphicsSceneMouseEvent* /*mouseEvent*/) {}
 	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF& /*clickPos*/) { return false; }
 
 	// call from control points

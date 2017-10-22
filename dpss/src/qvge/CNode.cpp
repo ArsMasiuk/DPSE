@@ -483,6 +483,8 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 {
 	if (change == QGraphicsItem::ItemSceneHasChanged)
 	{
+		invalidate();
+
 		// set default ID
 		setDefaultId();
 

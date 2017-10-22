@@ -175,8 +175,6 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 }
 
 
-
-
 QLineF CConnection::calculateArrowLine(const QPainterPath &path, bool first, const QLineF &direction) const
 {
 	qreal len = path.length();
@@ -336,15 +334,6 @@ void CConnection::reverse()
 
 // reimp
 
-//CConnection* CConnection::clone()
-//{
-//	CConnection* c = new CConnection();
-//	c->setFirstNode(m_firstNode);
-//	c->setLastNode(m_lastNode);
-//	return c;
-//}
-
-
 QString CConnection::createNewId() const
 {
 	static int count = 0;
@@ -388,12 +377,22 @@ void CConnection::onNodeDeleted(CNode *node)
 
 // reimp
 
+void CConnection::onItemRestored()
+{
+	onParentGeometryChanged();
+
+	updateCachedItems();
+}
+
+
 QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
 	if (change == ItemSceneHasChanged)
 	{
 		// set default ID
 		setDefaultId();
+
+		onItemRestored();
 
 		return value;
 	}

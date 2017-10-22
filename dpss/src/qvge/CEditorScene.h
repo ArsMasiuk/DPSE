@@ -204,7 +204,7 @@ protected:
 
 	virtual void onDragging(QGraphicsItem* dragItem, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
 	virtual void onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* hoverItem);
-	virtual void onLeftClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* /*clickedItem*/) {}
+	virtual void onLeftClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 	virtual void onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 
 	virtual void onSceneChanged();
