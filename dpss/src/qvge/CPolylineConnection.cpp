@@ -227,7 +227,8 @@ void CPolylineConnection::updateLabelPosition()
 	//}
 	//else
 	//{
-	//	m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - h / 2);
+	
+	m_labelItem->setPos(m_centerPos);
 
 	//	// update label rotation
 	//	qreal angle = 180 - line().angle();
@@ -306,6 +307,8 @@ void CPolylineConnection::onParentGeometryChanged()
 		//	path.cubicTo(m_controlPoint, m_controlPoint, p2);
 		//}
 	}
+
+	m_centerPos = path.pointAtPercent(0.5);
 
 	QPainterPathStroker stroker;
 	stroker.setWidth(6);

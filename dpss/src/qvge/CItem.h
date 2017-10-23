@@ -143,9 +143,8 @@ public:
 	virtual void leaveDragFromItem(QGraphicsItem* /*draggedItem*/) {}
 
 	// call from scene paint
-	void invalidate();
+	//void invalidate();
 
-protected:
 	virtual void copyDataFrom(CItem* from);
 
 	// called after restoring data (reimplement to update cached attribute values)

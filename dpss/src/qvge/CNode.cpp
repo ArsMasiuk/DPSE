@@ -483,7 +483,8 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 {
 	if (change == QGraphicsItem::ItemSceneHasChanged)
 	{
-		invalidate();
+		// update attributes cache after attach to scene
+		updateCachedItems();
 
 		// set default ID
 		setDefaultId();

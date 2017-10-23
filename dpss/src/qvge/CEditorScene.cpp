@@ -481,7 +481,8 @@ void CEditorScene::setClassAttribute(const QByteArray& classId, const CAttribute
 	setClassAttributeVisible(classId, attr.id, vis);
 
 	m_needUpdateItems = true;
-	update();
+	//update();
+	//invalidate();
 }
 
 
@@ -492,7 +493,8 @@ void CEditorScene::setClassAttribute(const QByteArray& classId, const QByteArray
 		m_classAttributes[classId][attrId].defaultValue = defaultValue;
 
 		m_needUpdateItems = true;
-		update();
+		//update();
+		//invalidate();
 	}
 }
 
@@ -504,7 +506,8 @@ bool CEditorScene::removeClassAttribute(const QByteArray& classId, const QByteAr
 		return false;
 
 	m_needUpdateItems = true;
-	update();
+	//update();
+	//invalidate();
 
 	return (*it).remove(attrId);
 }
@@ -763,7 +766,11 @@ void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 		m_needUpdateItems = false;
 		auto citems = getItems<CItem>();
 		for (auto citem : citems)
-			citem->invalidate();
+		{
+			//citem->invalidate();
+			citem->updateCachedItems();
+			citem->getSceneItem()->update();
+		}
 	}
 
 	// update layout if needed

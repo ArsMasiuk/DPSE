@@ -10,7 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CFileSerializerGraphML.h"
 #include "CAttribute.h"
 #include "CNode.h"
-#include "CConnection.h"
+#include "CDirectConnection.h"
 
 #include <QFile>
 #include <QDebug>
@@ -64,6 +64,7 @@ bool CFileSerializerGraphML::load(const QString& fileName, CEditorScene& scene) 
 	return true;
 }
 
+
 bool CFileSerializerGraphML::readAttrKey(int /*index*/, const QDomNode & domNode, CEditorScene & scene, KeyAttrMap& cka) const
 {
 	QDomElement elem = domNode.toElement();
@@ -96,6 +97,7 @@ bool CFileSerializerGraphML::readAttrKey(int /*index*/, const QDomNode & domNode
 
 	return true;
 }
+
 
 bool CFileSerializerGraphML::readNode(int /*index*/, const QDomNode &domNode, CEditorScene& scene, const KeyAttrMap& cka) const
 {
@@ -141,6 +143,7 @@ bool CFileSerializerGraphML::readNode(int /*index*/, const QDomNode &domNode, CE
 	return true;
 }
 
+
 bool CFileSerializerGraphML::readEdge(int /*index*/, const QDomNode &domNode, CEditorScene& scene, const KeyAttrMap& cka) const
 {
 	QDomElement elem = domNode.toElement();
@@ -153,7 +156,7 @@ bool CFileSerializerGraphML::readEdge(int /*index*/, const QDomNode &domNode, CE
 	if (!start || !last)
 		return false;
 
-	CConnection* link = scene.createItemOfType<CConnection>();
+	CConnection* link = scene.createItemOfType<CDirectConnection>();
 	if (!link)
 		return false;
 

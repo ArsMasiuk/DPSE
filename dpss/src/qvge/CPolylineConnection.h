@@ -65,4 +65,7 @@ private:
 
 	// visual control points
 	QList<CControlPoint*> m_controlPoints;
+
+	// label
+	QPointF m_centerPos;
 };

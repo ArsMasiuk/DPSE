@@ -9,7 +9,7 @@ It can be used freely, maintaining the information above.
 
 #include "CFileSerializerGEXF.h"
 #include "CNode.h"
-#include "CConnection.h"
+#include "CDirectConnection.h"
 
 #include <QtCore/QFile>
 
@@ -108,7 +108,7 @@ bool CFileSerializerGEXF::readEdge(int /*index*/, const QDomNode &domNode, CEdit
 {
 	QDomElement elem = domNode.toElement();
 
-	CConnection* link = scene.createItemOfType<CConnection>();
+	auto* link = scene.createItemOfType<CDirectConnection>();
 	if (!link)
 		return false;
 

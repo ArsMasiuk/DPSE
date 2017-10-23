@@ -188,12 +188,12 @@ void CItem::copyDataFrom(CItem* from)
 
 // painting
 
-void CItem::invalidate()
-{
-	updateCachedItems();
-
-	getSceneItem()->update();
-}
+//void CItem::invalidate()
+//{
+//	updateCachedItems();
+//
+//	getSceneItem()->update();
+//}
 
 
 void CItem::updateLabelContent()
@@ -294,7 +294,7 @@ QRectF CItem::getSceneLabelRect() const
 
 void CItem::onItemRestored()
 {
-	invalidate();
+	updateCachedItems();
 }
 
 

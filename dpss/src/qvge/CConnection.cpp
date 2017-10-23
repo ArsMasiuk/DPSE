@@ -379,9 +379,9 @@ void CConnection::onNodeDeleted(CNode *node)
 
 void CConnection::onItemRestored()
 {
-	onParentGeometryChanged();
-
 	updateCachedItems();
+
+	onParentGeometryChanged();
 }
 
 
