@@ -41,7 +41,6 @@ public:
 	// mousing
 	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos);
 	virtual void onControlPointMoved(CControlPoint* controlPoint, const QPointF& pos);
-	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent);
 
 	// selection
 	virtual void onItemSelected(bool state);

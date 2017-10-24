@@ -93,7 +93,7 @@ bool CPolylineConnection::restoreFrom(QDataStream& out, quint64 version64)
 
 // mousing
 
-bool CPolylineConnection::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
+bool CPolylineConnection::onDoubleClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF &clickPos)
 {
 	// create control point at click pos
 	if (insertPointAt(clickPos))
@@ -124,12 +124,6 @@ void CPolylineConnection::onControlPointMoved(CControlPoint* /*controlPoint*/, c
 }
 
 
-void CPolylineConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-	createControlPoints();
-}
-
-
 // selection
 
 void CPolylineConnection::onItemSelected(bool state)
@@ -138,6 +132,8 @@ void CPolylineConnection::onItemSelected(bool state)
 
 	if (!state)
 		dropControlPoints();
+	else
+		createControlPoints();
 }
 
 

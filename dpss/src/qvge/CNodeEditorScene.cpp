@@ -343,33 +343,29 @@ void CNodeEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEven
 
 void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	/*
-	if (m_state == IS_None)
-	{
-		if (!m_doubleClick)
-		{
-			// call super
-			Super::mouseMoveEvent(mouseEvent);
-			return;
-		}
-
-		// moved after double click
-		if (!onDoubleClickDrag(mouseEvent, m_leftClickPos))
-			return;
-	}
-	*/
+	bool isDragging = (mouseEvent->buttons() & Qt::LeftButton);
 
 	if (m_doubleClick)
 	{
 		m_doubleClick = false;
 
-		// moved after double click
-		if (!onDoubleClickDrag(mouseEvent, m_leftClickPos))
+		// moved after double click?
+		if (isDragging && !onDoubleClickDrag(mouseEvent, m_leftClickPos))
+		{
 			return;
+		}
 	}
 
+	// no double click and no drag
 	if (m_startDragItem == NULL)
 	{
+		// moved after single click?
+		if (isDragging && onClickDrag(mouseEvent, m_leftClickPos))
+		{
+			moveDrag(mouseEvent, m_startDragItem, true);
+			return;
+		}
+
 		// call super
 		Super::mouseMoveEvent(mouseEvent);
 		return;
@@ -409,7 +405,7 @@ void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	}
 
 	// call super
-	finishDrag(mouseEvent, m_startDragItem /*dynamic_cast<QGraphicsItem*>(m_endNode)*/, m_state == IS_Cancelling);
+	finishDrag(mouseEvent, m_startDragItem, m_state == IS_Cancelling);
 
 	// finish
 	if (m_state == IS_Cancelling)
@@ -438,6 +434,31 @@ void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 
 // handlers
 
+bool CNodeEditorScene::onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
+{
+	QGraphicsItem* item = itemAt(clickPos, QTransform());
+	if (item)
+	{
+		if (!item->isEnabled())
+			return false;
+
+		if (!item->flags() & item->ItemIsMovable)
+			return false;
+
+		CItem *citem = dynamic_cast<CItem*>(item);
+		if (citem)
+			return citem->onClickDrag(mouseEvent, clickPos);
+
+		// else start drag of item
+		startDrag(item);
+		return true;
+	}
+
+	// nothing to do
+	return false;
+}
+
+
 bool CNodeEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
 {
 	// try to start new connection at click point
@@ -451,11 +472,12 @@ bool CNodeEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, c
 		if (!item->isEnabled())
 			return false;
 
-		CItem *citem = dynamic_cast<CItem*>(item);
-		if (!citem)
+		if (!item->flags() & item->ItemIsMovable)
 			return false;
 
-		return citem->onDoubleClickDrag(mouseEvent, clickPos);
+		CItem *citem = dynamic_cast<CItem*>(item);
+		if (citem)
+			return citem->onDoubleClickDrag(mouseEvent, clickPos);
 	}
 
 	// nothing to do
