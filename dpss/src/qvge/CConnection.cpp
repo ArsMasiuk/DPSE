@@ -29,7 +29,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
     setZValue(-1);
 
 	// non-movable but selectable
-	auto flags = ItemIsSelectable | ItemSendsGeometryChanges;
+	auto flags = ItemIsSelectable | ItemSendsGeometryChanges | ItemIsMovable;
 	setFlags(flags);
 	
 	// no selection frame
@@ -398,6 +398,12 @@ QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const
 	}
 
 	if (change == ItemPositionChange)
+	{
+		// discard any movement
+		return QVariant();
+	}
+
+	if (change == QGraphicsItem::ItemPositionHasChanged)
 	{
 		// discard any movement
 		return QVariant();

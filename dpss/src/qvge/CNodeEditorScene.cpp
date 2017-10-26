@@ -366,6 +366,23 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			return;
 		}
 
+		// edges drag
+		if (isDragging && mouseGrabberItem())
+		{
+			QList<CConnection*> edges = getSelectedItems<CConnection>();
+			if (edges.size())
+			{
+				QPointF d = mouseEvent->scenePos() - mouseEvent->lastScenePos();
+				for (auto edge : edges)
+				{
+					edge->firstNode()->moveBy(d.x(), d.y());
+					edge->lastNode()->moveBy(d.x(), d.y());
+
+					edge->onItemMoved(d);
+				}
+			}
+		}
+
 		// call super
 		Super::mouseMoveEvent(mouseEvent);
 		return;

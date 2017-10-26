@@ -137,6 +137,20 @@ void CPolylineConnection::onItemSelected(bool state)
 }
 
 
+void CPolylineConnection::onItemMoved(const QPointF& delta)
+{
+	for (auto &p : m_polyPoints)
+	{
+		p += delta;
+	}
+
+	for (auto cp : m_controlPoints)
+	{
+		cp->moveBy(delta.x(), delta.y());
+	}
+}
+
+
 // drawing
 
 void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)

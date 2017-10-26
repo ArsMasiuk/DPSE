@@ -449,7 +449,7 @@ void CNode::onConnectionDeleted(CConnection *conn)
 }
 
 
-void CNode::onItemMoved()
+void CNode::onItemMoved(const QPointF& /*delta*/)
 {
 	for (CConnection *conn : m_connections)
 	{
@@ -496,7 +496,8 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 	{
 		setItemStateFlag(IS_Attribute_Changed);
 
-		onItemMoved();
+		QPointF d = value.toPointF() - scenePos();
+		onItemMoved(d);
 
 		return value;
 	}

@@ -92,7 +92,7 @@ public:
 	virtual void onConnectionDetach(CConnection *conn);
 	virtual void onConnectionDeleted(CConnection *conn);
 
-	virtual void onItemMoved();
+	virtual void onItemMoved(const QPointF& delta);
 	virtual void onItemRestored();
 	virtual void onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
 

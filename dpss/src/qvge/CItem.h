@@ -125,7 +125,7 @@ public:
 	virtual CItem* create() const = 0;
 
 	// callbacks
-	virtual void onItemMoved() {}
+	virtual void onItemMoved(const QPointF& /*delta*/) {}
 	virtual void onItemRestored();
 	virtual void onItemSelected(bool state);
 	virtual void onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent* event);

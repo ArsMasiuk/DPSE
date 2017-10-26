@@ -43,6 +43,7 @@ public:
 	virtual void onControlPointMoved(CControlPoint* controlPoint, const QPointF& pos);
 
 	// selection
+	virtual void onItemMoved(const QPointF& delta);
 	virtual void onItemSelected(bool state);
 
 protected:
