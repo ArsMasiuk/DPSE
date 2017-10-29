@@ -129,8 +129,7 @@ QSet<QByteArray> CItem::getVisibleAttributeIds(int flags) const
 	if (flags == VF_ANY || flags == VF_TOOLTIP)
         result = getLocalAttributes().keys().toSet();
 
-	auto scene = getScene();
-	if (scene)
+	if (auto scene = getScene())
 	{
 		if (flags == VF_ANY || flags == VF_TOOLTIP)
 			result += scene->getClassAttributes(classId(), true).keys().toSet();
@@ -173,6 +172,23 @@ bool CItem::setDefaultId()
 }
 
 
+// scene stuff
+
+CEditorScene* CItem::getScene() const
+{
+	if (auto sceneItem = getSceneItem())
+		return dynamic_cast<CEditorScene*>(sceneItem->scene());
+
+	return NULL;
+}
+
+void CItem::addUndoState()
+{
+	if (auto scene = getScene())
+		scene->addUndoState();
+}
+
+
 // cloning
 
 void CItem::copyDataFrom(CItem* from)
@@ -187,14 +203,6 @@ void CItem::copyDataFrom(CItem* from)
 
 
 // painting
-
-//void CItem::invalidate()
-//{
-//	updateCachedItems();
-//
-//	getSceneItem()->update();
-//}
-
 
 void CItem::updateLabelContent()
 {

@@ -10,6 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CEditorScene.h"
 #include "CItem.h"
 #include "CSimpleUndoManager.h"
+#include "IContextMenuProvider.h"
 
 #include <QPainter>
 #include <QPaintEngine>
@@ -1202,7 +1203,19 @@ void CEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuE
 	QMenu sceneMenu;
 
 	m_menuTriggerItem = itemAt(contextMenuEvent->scenePos(), QTransform()); //Get the item at the position
-	
+
+	// check if item provides own menu
+	auto menuItem = dynamic_cast<IContextMenuProvider*>(m_menuTriggerItem);
+	if (menuItem)
+	{
+		if (menuItem->populateMenu(sceneMenu, selectedItems()))
+		{
+			sceneMenu.exec(contextMenuEvent->screenPos());
+			return;
+		}
+	}
+
+	// else custom menu
 	if (populateMenu(sceneMenu, m_menuTriggerItem, selectedItems()))
 	{
 		sceneMenu.exec(contextMenuEvent->screenPos());

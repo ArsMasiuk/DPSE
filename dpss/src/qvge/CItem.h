@@ -90,17 +90,14 @@ public:
 	enum VisibleFlags { VF_ANY = 0, VF_LABEL = 1, VF_TOOLTIP = 2 };
 	virtual QSet<QByteArray> getVisibleAttributeIds(int flags) const;
 
+	// scene access
 	QGraphicsItem* getSceneItem() const {
 		return dynamic_cast<QGraphicsItem*>((CItem*)this);
 	}
 
-	CEditorScene* getScene() const {
-		QGraphicsItem* sceneItem = getSceneItem();
-		if (sceneItem)
-			return dynamic_cast<CEditorScene*>(sceneItem->scene());
+	CEditorScene* getScene() const;
 
-		return NULL;
-	}
+	void addUndoState();
 
 	// labels
 	virtual void updateLabelContent();
@@ -124,6 +121,9 @@ public:
 	virtual CItem* clone() = 0;
 	virtual CItem* create() const = 0;
 
+	// copy data from item
+	virtual void copyDataFrom(CItem* from);
+
 	// callbacks
 	virtual void onItemMoved(const QPointF& /*delta*/) {}
 	virtual void onItemRestored();
@@ -138,15 +138,11 @@ public:
 
 	// call from control points
 	virtual void onControlPointMoved(CControlPoint* /*controlPoint*/, const QPointF& /*pos*/) {}
+	virtual void onControlPointDelete(CControlPoint* /*controlPoint*/) {}
 
 	// call from drag event
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Accepted; }
 	virtual void leaveDragFromItem(QGraphicsItem* /*draggedItem*/) {}
-
-	// call from scene paint
-	//void invalidate();
-
-	virtual void copyDataFrom(CItem* from);
 
 	// called after restoring data (reimplement to update cached attribute values)
 	virtual void updateCachedItems() {}

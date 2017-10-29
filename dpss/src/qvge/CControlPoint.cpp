@@ -37,3 +37,20 @@ QVariant CControlPoint::itemChange(QGraphicsItem::GraphicsItemChange change, con
 	return Shape::itemChange(change, value);
 }
 
+
+// menu
+
+bool CControlPoint::populateMenu(QMenu& menu, const QList<QGraphicsItem*>& /*selectedItems*/)
+{
+	/*QAction *deleteAction =*/ menu.addAction(tr("Delete point"), this, SLOT(onActionDelete()));
+
+	return true;
+}
+
+
+void CControlPoint::onActionDelete()
+{
+	m_parentItem->onControlPointDelete(this);
+
+	m_parentItem->addUndoState();
+}

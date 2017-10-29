@@ -124,6 +124,18 @@ void CPolylineConnection::onControlPointMoved(CControlPoint* /*controlPoint*/, c
 }
 
 
+void CPolylineConnection::onControlPointDelete(CControlPoint* controlPoint)
+{
+	int index = m_controlPoints.indexOf(controlPoint);
+	Q_ASSERT(index >= 0);
+
+	m_controlPoints.removeAt(index);
+	delete controlPoint;
+	
+	updateShapeFromPoints();
+}
+
+
 // selection
 
 void CPolylineConnection::onItemSelected(bool state)
