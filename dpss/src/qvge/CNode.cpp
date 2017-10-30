@@ -502,29 +502,14 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 		return value;
 	}
 
-	if (change == QGraphicsItem::ItemPositionChange && getScene())
+	if (change == QGraphicsItem::ItemPositionChange)
 	{
-		if (getScene()->gridSnapEnabled())
+		if (auto editScene = getScene())
 		{
-			int snapStep = getScene()->getGridSize();
-
-			QPointF newPos = value.toPointF();
-
-			if (newPos.x() < 0)
-				newPos.setX(newPos.x() - snapStep / 2);
-			else
-				newPos.setX(newPos.x() + snapStep / 2);
-
-			if (newPos.y() < 0)
-				newPos.setY(newPos.y() - snapStep / 2);
-			else
-				newPos.setY(newPos.y() + snapStep / 2);
-
-			newPos.setX((int)newPos.x() - (int)newPos.x() % snapStep);
-			newPos.setY((int)newPos.y() - (int)newPos.y() % snapStep);
-
-			return newPos;
+			return editScene->getSnapped(value.toPointF());
 		}
+
+		return value;
 	}
 
 	if (change == ItemSelectedHasChanged)

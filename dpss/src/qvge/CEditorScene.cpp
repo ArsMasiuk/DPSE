@@ -757,7 +757,7 @@ void CEditorScene::onSceneChanged()
 }
 
 
-// protected
+// drawing
 
 void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 {
@@ -1156,6 +1156,32 @@ void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, Q
 			addUndoState();
 		}
 	}
+}
+
+
+QPointF CEditorScene::getSnapped(const QPointF& pos) const
+{
+	if (m_gridSnap)
+	{
+		QPointF newPos(pos);
+
+		if (newPos.x() < 0)
+			newPos.setX(newPos.x() - m_gridSize / 2);
+		else
+			newPos.setX(newPos.x() + m_gridSize / 2);
+
+		if (newPos.y() < 0)
+			newPos.setY(newPos.y() - m_gridSize / 2);
+		else
+			newPos.setY(newPos.y() + m_gridSize / 2);
+
+		newPos.setX((int)newPos.x() - (int)newPos.x() % m_gridSize);
+		newPos.setY((int)newPos.y() - (int)newPos.y() % m_gridSize);
+
+		return newPos;
+	}
+	else
+		return pos;
 }
 
 

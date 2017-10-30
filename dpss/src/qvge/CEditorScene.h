@@ -160,6 +160,8 @@ public:
 
 	void needUpdate();
 
+	virtual QPointF getSnapped(const QPointF& pos) const;
+
 public Q_SLOTS:
     void enableGrid(bool on = true);
     void enableGridSnap(bool on = true);

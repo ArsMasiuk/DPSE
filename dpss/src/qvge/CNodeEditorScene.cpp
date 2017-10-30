@@ -2,6 +2,7 @@
 #include "CNode.h"
 #include "CConnection.h"
 #include "CDirectConnection.h"
+#include "CControlPoint.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QColorDialog> 
@@ -372,13 +373,28 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			QList<CConnection*> edges = getSelectedItems<CConnection>();
 			if (edges.size())
 			{
-				QPointF d = mouseEvent->scenePos() - mouseEvent->lastScenePos();
+				QSet<CNode*> unselNodes;	// not selected nodes
+				QPointF d = mouseEvent->scenePos() - mouseEvent->lastScenePos();	// delta pos
+
+				// move selected edges
 				for (auto edge : edges)
 				{
-					edge->firstNode()->moveBy(d.x(), d.y());
-					edge->lastNode()->moveBy(d.x(), d.y());
+					if (!edge->firstNode()->isSelected())
+						unselNodes << edge->firstNode();
+
+					if (!edge->lastNode()->isSelected())
+						unselNodes << edge->lastNode();
+
+					//edge->firstNode()->moveBy(d.x(), d.y());
+					//edge->lastNode()->moveBy(d.x(), d.y());
 
 					edge->onItemMoved(d);
+				}
+
+				// force move non selected nodes of the selected edges
+				for (auto node : unselNodes)
+				{
+					node->moveBy(d.x(), d.y());
 				}
 			}
 		}
@@ -499,6 +515,21 @@ bool CNodeEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, c
 
 	// nothing to do
 	return false;
+}
+
+
+void CNodeEditorScene::onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* hoverItem)
+{
+	if (mouseEvent->buttons() == Qt::NoButton)
+	{
+		if (dynamic_cast<CControlPoint*>(hoverItem))
+		{
+			setSceneCursor(Qt::CrossCursor);
+			return;
+		}
+	}
+
+	return Super::onMoving(mouseEvent, hoverItem);
 }
 
 
