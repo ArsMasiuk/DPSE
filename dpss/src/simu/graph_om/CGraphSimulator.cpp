@@ -39,7 +39,7 @@ void CGraphSimulator::setLogger(ILogger *logger)
 
 void CGraphSimulator::setSimulationTime(int sec)
 {
-	m_simuTime = sec > 0 ? sec : INT_MAX;
+	m_simuTime = sec > 0 ? sec : INT_MAX / 1000;
 }
 
 

@@ -59,11 +59,20 @@
             </item>
             <item>
              <widget class="QSpinBox" name="SimuTime">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="specialValueText">
+               <string>Unlimited</string>
+              </property>
               <property name="suffix">
                <string> s</string>
               </property>
               <property name="minimum">
-               <number>1</number>
+               <number>0</number>
               </property>
               <property name="maximum">
                <number>3600</number>
@@ -72,7 +81,7 @@
                <number>10</number>
               </property>
               <property name="value">
-               <number>30</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -98,26 +107,6 @@
             </item>
            </layout>
           </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tabTools">
-        <attribute name="title">
-         <string>Toolchain</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>158</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </widget>
@@ -235,7 +224,7 @@
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QTextBrowser" name="Console"/>

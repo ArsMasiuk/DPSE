@@ -142,8 +142,7 @@ void CGraphSimulatorDialog::on_Start_clicked()
 
 	// temp
 	ui->Tabs->setTabEnabled(0, false);
-	ui->Tabs->setTabEnabled(1, false); 
-	ui->Tabs->setCurrentIndex(2);
+	ui->Tabs->setCurrentIndex(1);
 
 	ui->SimuTimeLabel->setText("0");
 	ui->SimuStepLabel->setText("0");
@@ -230,8 +229,7 @@ void CGraphSimulatorDialog::onStepFinished(double time, int step, std::vector<do
 void CGraphSimulatorDialog::onSimulationFinished()
 {
 	ui->Tabs->setTabEnabled(0, true);
-	ui->Tabs->setTabEnabled(1, true);
-	ui->Tabs->setCurrentIndex(2);
+	ui->Tabs->setCurrentIndex(1);
 
 	write(tr("Simulation finished"), LOG_OK);
 }
