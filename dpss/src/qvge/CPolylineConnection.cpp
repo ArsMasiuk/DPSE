@@ -29,6 +29,14 @@ void CPolylineConnection::setPoints(const QList<QPointF> &points)
 
 bool CPolylineConnection::insertPointAt(const QPointF &pos)
 {
+	// no points yet
+	if (m_polyPoints.isEmpty())
+	{
+		m_polyPoints.append(pos);
+		update();
+		return true;
+	}
+
 	// find segment for this point
 	auto points = m_polyPoints;
 	points.prepend(m_firstNode->pos());
@@ -133,6 +141,8 @@ void CPolylineConnection::onControlPointDelete(CControlPoint* controlPoint)
 	delete controlPoint;
 	
 	updateShapeFromPoints();
+
+	addUndoState();
 }
 
 
@@ -167,89 +177,69 @@ void CPolylineConnection::onItemMoved(const QPointF& delta)
 
 void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
-	//painter->setClipRect(option->exposedRect);
+	// straight line
+	if (m_polyPoints.isEmpty())
+	{
+		Super::paint(painter, option, widget);
+		return;
+	}
 
-	// called before draw 
+	// polyline
 	setupPainter(painter, option, widget);
 
-	// circled connection
-	//if (isCircled())
-	//{
-	//	int nodeDiameter = m_firstNode->boundingRect().height();
-	//	double nr = nodeDiameter / 2;
-	//	double r = nr * 2;
-
-	//	//painter->drawEllipse(m_controlPos, r, r);
-	//}
-	//else
 	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();
 
-		if (m_polyPoints.isEmpty())	// straight line
-		{
-			painter->drawLine(line());
+	QPainterPath path;
+	path.moveTo(p1);
 
-			// arrows
-			if (m_itemFlags & CF_Start_Arrow)
-				drawArrow(painter, option, true, QLineF(p2, p1));
+	for (const QPointF &p : m_polyPoints)
+		path.lineTo(p);
 
-			if (m_itemFlags & CF_End_Arrow)
-				drawArrow(painter, option, false, line());
-		}
-		else // polyline
-		{
-			QPainterPath path;
-			path.moveTo(p1);
+	path.lineTo(p2);
 
-			for (const QPointF &p : m_polyPoints)
-				path.lineTo(p);
+	painter->save();
 
-			path.lineTo(p2);
+	painter->setBrush(Qt::NoBrush);
+	painter->drawPath(path);
 
-			painter->save();
+	painter->restore();
 
-			painter->setBrush(Qt::NoBrush);
-			painter->drawPath(path);
+	qreal r = qMax(2.0, painter->pen().widthF());
+	painter->setBrush(painter->pen().brush());
 
-			painter->restore();
+	for (const QPointF &p : m_polyPoints)
+		painter->drawEllipse(p, r, r);
 
-			qreal r = qMax(2.0, painter->pen().widthF());
-			painter->setBrush(painter->pen().brush());
+	// arrows
+	if (m_itemFlags & CF_Start_Arrow)
+	{
+		QLineF arrowLine(m_polyPoints.first(), p1);
+		drawArrow(painter, option, true, arrowLine);
+	}
 
-			for (const QPointF &p : m_polyPoints)
-				painter->drawEllipse(p, r, r);
-
-			// arrows
-			if (m_itemFlags & CF_Start_Arrow)
-			{
-				QLineF arrowLine(m_polyPoints.first(), p1);
-				drawArrow(painter, option, true, arrowLine);
-			}
-
-			if (m_itemFlags & CF_End_Arrow)
-			{
-				QLineF arrowLine(m_polyPoints.last(), p2);
-				drawArrow(painter, option, false, arrowLine);
-			}
-		}
+	if (m_itemFlags & CF_End_Arrow)
+	{
+		QLineF arrowLine(m_polyPoints.last(), p2);
+		drawArrow(painter, option, false, arrowLine);
+	}
 }
 
 
 void CPolylineConnection::updateLabelPosition()
 {
+	// straight line
+	if (m_polyPoints.isEmpty())
+	{
+		Super::updateLabelPosition();
+		return;
+	}
+
+	// polyline
 	auto r = m_labelItem->boundingRect();
 	int w = r.width();
 	int h = r.height();
 	m_labelItem->setTransformOriginPoint(w / 2, h / 2);
 
-	//if (isCircled())
-	//{
-	//	m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - boundingRect().height() / 2 - h);
-
-	//	m_labelItem->setRotation(0);
-	//}
-	//else
-	//{
-	
 	m_labelItem->setPos(m_centerPos);
 
 	//	// update label rotation
@@ -266,6 +256,14 @@ void CPolylineConnection::updateLabelPosition()
 
 void CPolylineConnection::onParentGeometryChanged()
 {
+	// straight line
+	if (m_polyPoints.isEmpty())
+	{
+		Super::onParentGeometryChanged();
+		return;
+	}
+
+	// polyline
 	if (!m_firstNode || !m_lastNode)
 		return;
 
@@ -288,47 +286,6 @@ void CPolylineConnection::onParentGeometryChanged()
 		path.lineTo(p);
 
 	path.lineTo(p2);
-
-	// circled connection 
-	if (isCircled())
-	{
-		//int nodeDiameter = m_firstNode->boundingRect().height();
-		//double nr = nodeDiameter / 2;
-		//double r = nr * 2;
-
-		//m_controlPos = p1 + QPointF(0, -r);
-		//path.addEllipse(m_controlPos, r, r);
-	}
-	else // not circled
-	{
-		//path.moveTo(p1);
-
-		// center
-		//m_controlPos = (p1 + p2) / 2;
-
-		//if (m_bendFactor == 0)
-		//{
-		//	path.lineTo(p2);
-		//}
-		//else
-		//{
-		//	QPointF t1 = m_controlPos;
-		//	float posFactor = qAbs(m_bendFactor);
-
-		//	bool bendDirection = (quint64(m_firstNode) > quint64(m_lastNode));
-		//	if (m_bendFactor < 0)
-		//		bendDirection = !bendDirection;
-
-		//	QLineF f1(t1, p2);
-		//	f1.setAngle(bendDirection ? f1.angle() + 90 : f1.angle() - 90);
-		//	f1.setLength(f1.length() * 0.2 * posFactor);
-
-		//	m_controlPos = f1.p2();
-		//	m_controlPoint = m_controlPos - (t1 - m_controlPos) * 0.33;
-
-		//	path.cubicTo(m_controlPoint, m_controlPoint, p2);
-		//}
-	}
 
 	m_centerPos = path.pointAtPercent(0.5);
 

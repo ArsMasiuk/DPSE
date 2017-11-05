@@ -61,6 +61,4 @@ bool CControlPoint::populateMenu(QMenu& menu, const QList<QGraphicsItem*>& /*sel
 void CControlPoint::onActionDelete()
 {
 	m_parentItem->onControlPointDelete(this);
-
-	m_parentItem->addUndoState();
 }

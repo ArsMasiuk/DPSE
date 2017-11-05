@@ -9,16 +9,16 @@ It can be used freely, maintaining the information above.
 
 #pragma once
 
-#include "CConnection.h"
+#include "CDirectConnection.h"
 
 
 class CControlPoint;
 
 
-class CPolylineConnection : public CConnection
+class CPolylineConnection : public CDirectConnection
 {
 public:
-	typedef CConnection Super;
+	typedef CDirectConnection Super;
 
 	CPolylineConnection(QGraphicsItem *parent = Q_NULLPTR);
 
@@ -28,7 +28,7 @@ public:
 	// reimp
 	static QByteArray factoryId() { return "CPolylineConnection"; }
 	virtual QByteArray typeId() const { return this->factoryId(); }
-	virtual QByteArray classId() const { return "edge"; }
+	virtual QByteArray classId() const { return "polyedge"; }
 	virtual QByteArray superClassId() const { return Super::classId(); }
 
 	virtual CItem* create() const { return new CPolylineConnection(parentItem()); }
