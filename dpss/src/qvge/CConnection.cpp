@@ -403,7 +403,7 @@ QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const
 		return QVariant();
 	}
 
-	if (change == QGraphicsItem::ItemPositionHasChanged)
+	if (change == ItemPositionHasChanged)
 	{
 		// discard any movement
 		return QVariant();

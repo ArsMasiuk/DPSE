@@ -27,7 +27,7 @@ CControlPoint::CControlPoint(CItem *parent) :
 
 QVariant CControlPoint::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
-	if (change == QGraphicsItem::ItemPositionChange)
+	if (change == ItemPositionChange)
 	{
 		if (auto editScene = dynamic_cast<CEditorScene*>(scene()))
 		{
@@ -37,7 +37,7 @@ QVariant CControlPoint::itemChange(QGraphicsItem::GraphicsItemChange change, con
 		return value;
 	}
 
-	if (change == QGraphicsItem::ItemPositionHasChanged)
+	if (change == ItemPositionHasChanged)
 	{
 		m_parentItem->onControlPointMoved(this, value.toPointF());
 

@@ -477,11 +477,20 @@ void CNode::onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& /
 }
 
 
+ItemDragTestResult CNode::acceptDragFromItem(QGraphicsItem* draggedItem)
+{
+	if (dynamic_cast<CNode*>(draggedItem))
+		return Accepted;
+
+	return Ignored;
+}
+
+
 // reimp
 
 QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
-	if (change == QGraphicsItem::ItemSceneHasChanged)
+	if (change == ItemSceneHasChanged)
 	{
 		// update attributes cache after attach to scene
 		updateCachedItems();
@@ -492,7 +501,7 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 		return value;
 	}
 
-	if (change == QGraphicsItem::ItemPositionHasChanged)
+	if (change == ItemPositionHasChanged)
 	{
 		setItemStateFlag(IS_Attribute_Changed);
 
@@ -502,7 +511,7 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 		return value;
 	}
 
-	if (change == QGraphicsItem::ItemPositionChange)
+	if (change == ItemPositionChange)
 	{
 		if (auto editScene = getScene())
 		{

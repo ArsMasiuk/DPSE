@@ -1033,20 +1033,25 @@ void CEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 		if (m_leftClickPos == mouseEvent->scenePos())
 		{
-			QGraphicsItem* itemUnderMouse = itemAt(m_leftClickPos, QTransform());
+			QGraphicsItem *hoverItem = itemAt(mouseEvent->scenePos(), QTransform());
 
 			if (m_doubleClick)
-				onLeftDoubleClick(mouseEvent, itemUnderMouse);
+				onLeftDoubleClick(mouseEvent, hoverItem);
 			else
-				onLeftClick(mouseEvent, itemUnderMouse);
+				onLeftClick(mouseEvent, hoverItem);
 		}
 
 		m_doubleClick = false;
 	}
+
+	// update curson on release
+	QGraphicsItem *hoverItem = itemAt(mouseEvent->scenePos(), QTransform());
+	updateMovedCursor(mouseEvent, hoverItem);
+	updateSceneCursor();
 }
 
 
-void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* dragItem, bool dragCancelled)
+void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* dragItem, bool dragCancelled)
 {
 	if (dragItem)
 	{
@@ -1087,13 +1092,13 @@ void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphic
 
 	m_startDragItem = NULL;
 
-	setSceneCursor(Qt::ArrowCursor);
-
+	QGraphicsItem *hoverItem = itemAt(mouseEvent->scenePos(), QTransform());
+	updateMovedCursor(mouseEvent, hoverItem);
 	updateSceneCursor();
 }
 
 
-void CEditorScene::onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
+void CEditorScene::updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
 {
 	if (hoverItem)
 	{
@@ -1108,6 +1113,12 @@ void CEditorScene::onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 	}
 
 	setSceneCursor(Qt::ArrowCursor);
+}
+
+
+void CEditorScene::onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
+{
+	updateMovedCursor(mouseEvent, hoverItem);
 }
 
 

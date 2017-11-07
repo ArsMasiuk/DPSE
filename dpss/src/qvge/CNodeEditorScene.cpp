@@ -518,7 +518,7 @@ bool CNodeEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, c
 }
 
 
-void CNodeEditorScene::onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* hoverItem)
+void CNodeEditorScene::updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
 {
 	if (mouseEvent->buttons() == Qt::NoButton)
 	{
@@ -529,7 +529,7 @@ void CNodeEditorScene::onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsI
 		}
 	}
 
-	return Super::onMoving(mouseEvent, hoverItem);
+	return Super::updateMovedCursor(mouseEvent, hoverItem);
 }
 
 

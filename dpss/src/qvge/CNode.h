@@ -95,6 +95,8 @@ public:
 	virtual void onItemMoved(const QPointF& delta);
 	virtual void onItemRestored();
 	virtual void onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
+	
+	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem);
 
 	// reimp 
 	virtual QRectF boundingRect() const;

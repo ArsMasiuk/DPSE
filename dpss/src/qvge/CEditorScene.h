@@ -203,6 +203,7 @@ protected:
 	// call from reimp
 	void moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool performDrag);
 	void finishDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool dragCancelled);
+	virtual void updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem);
 
 	virtual void onDragging(QGraphicsItem* dragItem, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
 	virtual void onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* hoverItem);
