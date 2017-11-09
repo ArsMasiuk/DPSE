@@ -63,6 +63,7 @@ protected:
 	// reimp
 	virtual void updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem);
 	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);
+	virtual QList<QGraphicsItem*> copyPasteItems() const;
 
 	void moveSelectedEdgesBy(const QPointF& d);
 

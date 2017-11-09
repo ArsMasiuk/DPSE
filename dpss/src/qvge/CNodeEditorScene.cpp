@@ -585,6 +585,38 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 
 // reimp
 
+QList<QGraphicsItem*> CNodeEditorScene::copyPasteItems() const
+{
+	// only selected edges & their nodes
+	QList<QGraphicsItem*> result;
+
+	QSet<QGraphicsItem*> nodes;
+
+	for (auto item: selectedItems())
+	{
+		if (auto edge = dynamic_cast<CConnection*>(item))
+		{
+			result << edge;
+			nodes << edge->firstNode();
+			nodes << edge->lastNode();
+		}
+		else
+		if (auto node = dynamic_cast<CNode*>(item))
+		{
+			// orphaned nodes only
+			if (node->nodeFlags() & NF_OrphanAllowed)
+				nodes << node;
+		}
+		else
+			result << item;
+	}
+
+	result << nodes.toList();
+
+	return result;
+}
+
+
 void CNodeEditorScene::updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
 {
 	if (mouseEvent->buttons() == Qt::NoButton)

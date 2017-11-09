@@ -597,12 +597,18 @@ void CEditorScene::setClassAttributeConstrains(const QByteArray& classId, const 
 
 // copy-paste
 
+QList<QGraphicsItem*> CEditorScene::copyPasteItems() const
+{
+	return selectedItems();
+}
+
+
 void CEditorScene::copy()
 {
 	// store selected items only
 	QMap<CItem*, uint> sortedMap;
 
-	QList<QGraphicsItem*> allItems = selectedItems();
+	QList<QGraphicsItem*> allItems = copyPasteItems();
 
 	for (QGraphicsItem* item : allItems)
 	{
