@@ -511,15 +511,15 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 		return value;
 	}
 
-	if (change == ItemPositionChange)
-	{
-		if (auto editScene = getScene())
-		{
-			return editScene->getSnapped(value.toPointF());
-		}
+	//if (change == ItemPositionChange)
+	//{
+	//	if (auto editScene = getScene())
+	//	{
+	//		return editScene->getSnapped(value.toPointF());
+	//	}
 
-		return value;
-	}
+	//	return value;
+	//}
 
 	if (change == ItemSelectedHasChanged)
 	{

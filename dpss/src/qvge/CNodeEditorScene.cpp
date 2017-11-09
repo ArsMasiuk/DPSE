@@ -224,7 +224,7 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 		m_startNode = createNewNode();
 		item = m_startNode;
 		addItem(item);
-		item->setPos(pos);
+		item->setPos(getSnapped(pos));
 
 		// set default size (because it is mapped attribute)
 		QSizeF sz = getClassAttribute(m_startNode->classId(), "size").toSizeF();
@@ -370,33 +370,8 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 		// edges drag
 		if (isDragging && mouseGrabberItem())
 		{
-			QList<CConnection*> edges = getSelectedItems<CConnection>();
-			if (edges.size())
-			{
-				QSet<CNode*> unselNodes;	// not selected nodes
-				QPointF d = mouseEvent->scenePos() - mouseEvent->lastScenePos();	// delta pos
-
-				// move selected edges
-				for (auto edge : edges)
-				{
-					if (!edge->firstNode()->isSelected())
-						unselNodes << edge->firstNode();
-
-					if (!edge->lastNode()->isSelected())
-						unselNodes << edge->lastNode();
-
-					//edge->firstNode()->moveBy(d.x(), d.y());
-					//edge->lastNode()->moveBy(d.x(), d.y());
-
-					edge->onItemMoved(d);
-				}
-
-				// force move non selected nodes of the selected edges
-				for (auto node : unselNodes)
-				{
-					node->moveBy(d.x(), d.y());
-				}
-			}
+			QPointF d = mouseEvent->scenePos() - mouseEvent->lastScenePos();	// delta pos
+			moveSelectedEdgesBy(d);
 		}
 
 		// call super
@@ -406,6 +381,34 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 	// custom dragging
 	moveDrag(mouseEvent, m_startDragItem, true);
+}
+
+
+void CNodeEditorScene::moveSelectedEdgesBy(const QPointF& d)
+{
+	QList<CConnection*> edges = getSelectedItems<CConnection>();
+	if (edges.size())
+	{
+		QSet<CNode*> unselNodes;	// not selected nodes
+
+		// move selected edges
+		for (auto edge : edges)
+		{
+			if (!edge->firstNode()->isSelected())
+				unselNodes << edge->firstNode();
+
+			if (!edge->lastNode()->isSelected())
+				unselNodes << edge->lastNode();
+
+			edge->onItemMoved(d);
+		}
+
+		// force move non selected nodes of the selected edges
+		for (auto node : unselNodes)
+		{
+			node->moveBy(d.x(), d.y());
+		}
+	}
 }
 
 
@@ -518,6 +521,67 @@ bool CNodeEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, c
 }
 
 
+void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* dragItem)
+{
+	if (gridSnapEnabled())
+	{
+		// control point:
+		if (auto cp = dynamic_cast<CControlPoint*>(dragItem))
+		{
+			auto newPos = getSnapped(cp->scenePos());
+			cp->setPos(newPos);
+			return;
+		}
+
+		// node:
+		if (auto node = dynamic_cast<CNode*>(dragItem))
+		{
+			auto newPos = getSnapped(node->scenePos());
+			auto d = newPos - node->scenePos();
+			node->setPos(newPos);
+
+			for (auto item : selectedItems())
+			{
+				if (item != node)
+				{
+					auto edge = dynamic_cast<CConnection*>(item);
+					if (edge)
+						edge->onItemMoved(d);
+					else
+						item->moveBy(d.x(), d.y());
+				}
+			}
+
+			return;
+		}
+
+		// edge:
+		if (auto edge = dynamic_cast<CConnection*>(dragItem))
+		{
+			auto newPos = getSnapped(edge->firstNode()->scenePos());
+			auto d = newPos - edge->firstNode()->scenePos();
+
+			moveSelectedEdgesBy(d);
+
+			// force move selected nodes as well
+			auto nodes = getSelectedItems<CNode>();
+			for (auto node : nodes)
+			{
+				node->moveBy(d.x(), d.y());
+			}
+
+			return;
+		}
+
+		// whatever
+	}
+
+	Super::onDropped(mouseEvent, dragItem);
+}
+
+
+// reimp
+
 void CNodeEditorScene::updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
 {
 	if (mouseEvent->buttons() == Qt::NoButton)
@@ -532,8 +596,6 @@ void CNodeEditorScene::updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, Q
 	return Super::updateMovedCursor(mouseEvent, hoverItem);
 }
 
-
-// reimp
 
 bool CNodeEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems)
 {

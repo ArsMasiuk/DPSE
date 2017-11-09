@@ -60,7 +60,7 @@ public:
     void setGridPen(const QPen& gridPen);
     const QPen& getGridPen() const      { return m_gridPen; }
 
-	void setSceneCursor(const QCursor& c) { m_sceneCursor = c; }
+	void setSceneCursor(const QCursor& c);
 
 	bool itemLabelsEnabled() const		{ return m_labelsEnabled; }
 	bool itemLabelsNeedUpdate() const	{ return m_labelsUpdate; }
@@ -207,13 +207,13 @@ protected:
 
 	virtual void onDragging(QGraphicsItem* dragItem, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
 	virtual void onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* hoverItem);
+	virtual void onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* dragItem);
 	virtual void onLeftClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 	virtual void onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 
 	virtual void onSceneChanged();
 
 private:
-	void updateSceneCursor();
 	void removeItems();
 	void checkUndoState();
 
@@ -243,8 +243,6 @@ private:
 
 	QGraphicsItem *m_menuTriggerItem;
 	QGraphicsItem *m_draggedItem;
-
-	QCursor m_sceneCursor;
 
 	bool m_needUpdateItems;
 

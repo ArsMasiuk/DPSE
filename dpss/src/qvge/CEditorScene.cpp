@@ -1001,8 +1001,6 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 		// inform the scene
 		onMoving(mouseEvent, hoverItem);
 	}
-
-	updateSceneCursor();
 }
 
 
@@ -1014,8 +1012,6 @@ void CEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	{
 		m_doubleClick = true;
 	}
-
-	updateSceneCursor();
 }
 
 
@@ -1047,7 +1043,6 @@ void CEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	// update curson on release
 	QGraphicsItem *hoverItem = itemAt(mouseEvent->scenePos(), QTransform());
 	updateMovedCursor(mouseEvent, hoverItem);
-	updateSceneCursor();
 }
 
 
@@ -1081,11 +1076,15 @@ void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsIte
 
 		// drag finish
 		m_acceptedHovers.clear();
-		m_rejectedHovers.clear();
+ 		m_rejectedHovers.clear();
 
-		// update undo manager
 		if (!dragCancelled)
 		{
+			// snap after drop if dragItem still alive (can die after onDroppedOn??)
+			if (items().contains(dragItem))
+				onDropped(mouseEvent, dragItem);
+
+			// update undo manager
 			addUndoState();
 		}
 	}
@@ -1094,7 +1093,6 @@ void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsIte
 
 	QGraphicsItem *hoverItem = itemAt(mouseEvent->scenePos(), QTransform());
 	updateMovedCursor(mouseEvent, hoverItem);
-	updateSceneCursor();
 }
 
 
@@ -1137,6 +1135,23 @@ void CEditorScene::onDragging(QGraphicsItem* /*dragItem*/, const QSet<CItem*>& a
 	}
 
 	setSceneCursor(Qt::SizeAllCursor);
+}
+
+
+void CEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* dragItem)
+{
+	if (m_gridSnap)
+	{
+		auto pos = getSnapped(dragItem->pos());
+		auto d = pos - dragItem->pos();
+		dragItem->setPos(pos);
+
+		for (auto item : selectedItems())
+		{
+			if (item != dragItem)
+				item->moveBy(d.x(), d.y());
+		}
+	}
 }
 
 
@@ -1198,11 +1213,11 @@ QPointF CEditorScene::getSnapped(const QPointF& pos) const
 
 // private
 
-void CEditorScene::updateSceneCursor()
+void CEditorScene::setSceneCursor(const QCursor& c)
 {
 	for (QGraphicsView* v : views())
 	{
-		v->setCursor(m_sceneCursor);
+		v->setCursor(c);
 	}
 }
 
