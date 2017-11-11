@@ -159,6 +159,8 @@ void CPolylineConnection::onItemSelected(bool state)
 }
 
 
+// moving
+
 void CPolylineConnection::onItemMoved(const QPointF& delta)
 {
 	for (auto &p : m_polyPoints)

@@ -229,7 +229,6 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 		// set default size (because it is mapped attribute)
 		QSizeF sz = getClassAttribute(m_startNode->classId(), "size").toSizeF();
 		m_startNode->resize(sz);
-		//m_startNode->invalidate();
 	}
 
 	m_endNode = dynamic_cast<CNode*>(m_startNode->clone());
@@ -384,34 +383,6 @@ void CNodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 }
 
 
-void CNodeEditorScene::moveSelectedEdgesBy(const QPointF& d)
-{
-	QList<CConnection*> edges = getSelectedItems<CConnection>();
-	if (edges.size())
-	{
-		QSet<CNode*> unselNodes;	// not selected nodes
-
-		// move selected edges
-		for (auto edge : edges)
-		{
-			if (!edge->firstNode()->isSelected())
-				unselNodes << edge->firstNode();
-
-			if (!edge->lastNode()->isSelected())
-				unselNodes << edge->lastNode();
-
-			edge->onItemMoved(d);
-		}
-
-		// force move non selected nodes of the selected edges
-		for (auto node : unselNodes)
-		{
-			node->moveBy(d.x(), d.y());
-		}
-	}
-}
-
-
 void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 	//if (m_state == IS_None)
@@ -534,7 +505,7 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 		}
 
 		// nodes & edges:
-		QSet<QGraphicsItem*> nodes;
+		QSet<QGraphicsItem*> items;
 		QSet<CConnection*> edges;
 
 		CNode *dragNode = dynamic_cast<CNode*>(dragItem);
@@ -550,7 +521,7 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 
 		if (dragNode)
 		{
-			nodes << dragNode;
+			items << dragNode;
 
 			auto newPos = getSnapped(dragNode->scenePos());
 			auto d = newPos - dragNode->scenePos();
@@ -560,14 +531,14 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 				if (auto edge = dynamic_cast<CConnection*>(item))
 				{
 					edges << edge;
-					nodes << edge->firstNode();
-					nodes << edge->lastNode();
+					items << edge->firstNode();
+					items << edge->lastNode();
 				}
 				else
-					nodes << item;
+					items << item;
 			}
 
-			for (auto item : nodes)
+			for (auto item : items)
 				item->moveBy(d.x(), d.y());
 
 			for (auto edge : edges)
@@ -583,7 +554,62 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 }
 
 
+// movement
+
+void CNodeEditorScene::moveSelectedEdgesBy(const QPointF& d)
+{
+	QList<CConnection*> edges = getSelectedItems<CConnection>();
+	if (edges.size())
+	{
+		QSet<CNode*> unselNodes;	// not selected nodes
+
+									// move selected edges
+		for (auto edge : edges)
+		{
+			if (!edge->firstNode()->isSelected())
+				unselNodes << edge->firstNode();
+
+			if (!edge->lastNode()->isSelected())
+				unselNodes << edge->lastNode();
+
+			edge->onItemMoved(d);
+		}
+
+		// force move non selected nodes of the selected edges
+		for (auto node : unselNodes)
+		{
+			node->moveBy(d.x(), d.y());
+		}
+	}
+}
+
+
 // reimp
+
+void CNodeEditorScene::moveSelectedItemsBy(const QPointF& d)
+{
+	QSet<QGraphicsItem*> items;
+	QSet<CConnection*> edges;
+
+	for (auto item : selectedItems())
+	{
+		if (auto edge = dynamic_cast<CConnection*>(item))
+		{
+			edges << edge;
+			items << edge->firstNode();
+			items << edge->lastNode();
+		}
+		else
+			items << item; 
+	}
+
+	for (auto item : items)
+		item->moveBy(d.x(), d.y());
+
+	for (auto edge : edges)
+		edge->onItemMoved(d);
+}
+
 
 QList<QGraphicsItem*> CNodeEditorScene::copyPasteItems() const
 {

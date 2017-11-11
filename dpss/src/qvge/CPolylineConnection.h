@@ -49,7 +49,7 @@ public:
 	virtual void onItemSelected(bool state);
 
 protected:
-	// painting
+	// reimp
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
 	virtual void updateLabelPosition();
 

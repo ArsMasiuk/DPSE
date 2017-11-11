@@ -147,6 +147,12 @@ public:
 
 	virtual void beginSelection();
 	virtual void endSelection();
+
+	void moveSelectedItemsBy(double x, double y) {
+		moveSelectedItemsBy(QPointF(x, y));
+	}
+
+	virtual void moveSelectedItemsBy(const QPointF& d);
  
 	// callbacks
 	virtual void onItemDestroyed(CItem *citem);

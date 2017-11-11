@@ -28,6 +28,8 @@ public:
 	virtual void initialize();
 	virtual void initializeOnce();
 
+	virtual void moveSelectedItemsBy(const QPointF& d);
+
 	// operations
 	bool startNewConnection(const QPointF& pos);
 	void cancel(const QPointF& pos = QPointF());
@@ -48,6 +50,8 @@ public Q_SLOTS:
 	void onActionEdgeUndirected();
 
 protected:
+	void moveSelectedEdgesBy(const QPointF& d);
+
 	// scene events
 	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -64,8 +68,6 @@ protected:
 	virtual void updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem);
 	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);
 	virtual QList<QGraphicsItem*> copyPasteItems() const;
-
-	void moveSelectedEdgesBy(const QPointF& d);
 
 protected:
 	CNode *m_startNode, *m_endNode;

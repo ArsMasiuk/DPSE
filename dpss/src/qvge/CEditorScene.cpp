@@ -712,10 +712,13 @@ void CEditorScene::paste()
 	for (auto item : allItems)
 		ids[item->getId()]++;
 
+	// shift
+	moveSelectedItemsBy(100, 0);
+
 	auto selItems = selectedItems();
 	for (auto sceneItem : selItems)
 	{
-		sceneItem->moveBy(100, 0);
+		//sceneItem->moveBy(100, 0);
 
 		CItem* item = dynamic_cast<CItem*>(sceneItem);
 		if (item)
@@ -1251,6 +1254,42 @@ void CEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 		keyEvent->accept();
 		return;
 	}
+
+	if (keyEvent->key() == Qt::Key_Right && keyEvent->modifiers() == Qt::ControlModifier)
+	{
+		moveSelectedItemsBy(1, 0);
+		addUndoState();
+
+		keyEvent->accept();
+		return;
+	}
+
+	if (keyEvent->key() == Qt::Key_Left && keyEvent->modifiers() == Qt::ControlModifier)
+	{
+		moveSelectedItemsBy(-1, 0);
+		addUndoState();
+
+		keyEvent->accept();
+		return;
+	}
+
+	if (keyEvent->key() == Qt::Key_Up && keyEvent->modifiers() == Qt::ControlModifier)
+	{
+		moveSelectedItemsBy(0, -1);
+		addUndoState();
+
+		keyEvent->accept();
+		return;
+	}
+
+	if (keyEvent->key() == Qt::Key_Down && keyEvent->modifiers() == Qt::ControlModifier)
+	{
+		moveSelectedItemsBy(0, 1);
+		addUndoState();
+
+		keyEvent->accept();
+		return;
+	}
 }
 
 
@@ -1347,6 +1386,15 @@ void CEditorScene::endSelection()
 	blockSignals(false);
 
 	Q_EMIT selectionChanged();
+}
+
+
+void CEditorScene::moveSelectedItemsBy(const QPointF& d)
+{
+	for (auto sceneItem : selectedItems())
+	{
+		sceneItem->moveBy(d.x(), d.y());
+	}
 }
 
 
