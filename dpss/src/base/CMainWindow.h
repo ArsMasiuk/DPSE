@@ -40,6 +40,8 @@ public:
 
     void addDocument(const CDocument& doc);
 
+	QAction* getWindowMenuAction() { return m_windowsMenuAction; }
+
 public Q_SLOTS:
 	virtual void onDocumentChanged();
 
@@ -112,6 +114,7 @@ protected:
     QAction *m_saveAsDocument;
 
 	QMenu *m_windowsMenu;
+	QAction *m_windowsMenuAction;
 
     QString m_currentFileName;
     QByteArray m_currentDocType;

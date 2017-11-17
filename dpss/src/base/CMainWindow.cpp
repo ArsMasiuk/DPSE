@@ -632,7 +632,8 @@ QVariantMap CMainWindow::getActiveInstances()
 
 void CMainWindow::createWindowsMenu()
 {
-	m_windowsMenu = menuBar()->addMenu(tr("&Window"));
+	m_windowsMenu = new QMenu(tr("&Window"));
+	m_windowsMenuAction = menuBar()->addMenu(m_windowsMenu);
 	
 	connect(m_windowsMenu, SIGNAL(aboutToShow()), this, SLOT(fillWindowsMenu()));
 	connect(m_windowsMenu, SIGNAL(triggered(QAction*)), this, SLOT(onWindowsMenuAction(QAction*)));

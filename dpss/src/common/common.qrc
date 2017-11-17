@@ -14,5 +14,7 @@
         <file alias="Node-Square">Icons/Node-Square.png</file>
         <file alias="Node-Triangle">Icons/Node-Triangle.png</file>
         <file alias="Node-Triangle-Down">Icons/Node-Triangle-Down.png</file>
+        <file alias="Redo">Icons/Edit-Redo.png</file>
+        <file alias="Undo">Icons/Edit-Undo.png</file>
     </qresource>
 </RCC>

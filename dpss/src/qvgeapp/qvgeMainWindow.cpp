@@ -1,4 +1,5 @@
 #include "qvgeMainWindow.h"
+#include "qvgeNodeEditorUIController.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -42,7 +43,7 @@ bool qvgeMainWindow::onCreateNewDocument(const QByteArray &docType)
         m_editorView = new CEditorView(m_editorScene, this);
         setCentralWidget(m_editorView);
 
-        connect(m_editorScene, &CEditorScene::sceneChanged, this, &CMainWindow::onDocumentChanged);
+		auto uiController = new qvgeNodeEditorUIController(this, m_editorScene, m_editorView);
         return true;
     }
 
