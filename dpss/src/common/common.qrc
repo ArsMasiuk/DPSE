@@ -16,5 +16,9 @@
         <file alias="Node-Triangle-Down">Icons/Node-Triangle-Down.png</file>
         <file alias="Redo">Icons/Edit-Redo.png</file>
         <file alias="Undo">Icons/Edit-Undo.png</file>
+        <file alias="Copy">Icons/Edit-Copy.png</file>
+        <file alias="Cut">Icons/Edit-Cut.png</file>
+        <file alias="Delete">Icons/Edit-Delete.png</file>
+        <file alias="Paste">Icons/Edit-Paste.png</file>
     </qresource>
 </RCC>

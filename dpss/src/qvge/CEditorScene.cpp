@@ -88,7 +88,7 @@ void CEditorScene::initialize()
     setClassAttribute("item", labelAttr, true);
 
     CAttribute idAttr("id", "ID", "");
-    setClassAttribute("item", idAttr, true);
+    setClassAttribute("item", idAttr);
 
 	// static init
 	static bool s_init = false;
@@ -603,6 +603,29 @@ QList<QGraphicsItem*> CEditorScene::copyPasteItems() const
 }
 
 
+void CEditorScene::cut()
+{
+	copy();
+	del();
+}
+
+
+void CEditorScene::del()
+{
+	QList<QGraphicsItem*> itemList = createSelectedList(CDeletableItems());
+	if (itemList.isEmpty())
+		return;
+
+	for (QGraphicsItem* item : itemList)
+	{
+		if (items().contains(item))
+			delete item;
+	}
+
+	addUndoState();
+}
+
+
 void CEditorScene::copy()
 {
 	// store selected items only
@@ -620,7 +643,10 @@ void CEditorScene::copy()
 	}
 
 	if (sortedMap.isEmpty())
+	{
+		QApplication::clipboard()->clear();
 		return;
+	}
 
 	// write version and items
 	QByteArray buffer;
@@ -638,9 +664,7 @@ void CEditorScene::copy()
 	// create mime object
 	QMimeData* mimeData = new QMimeData;
 	mimeData->setData("qvge/selection", buffer);
-
-	QClipboard* clipboard = QApplication::clipboard();
-	clipboard->setMimeData(mimeData);
+	QApplication::clipboard()->setMimeData(mimeData);
 }
 
 
@@ -1342,13 +1366,7 @@ void CEditorScene::onActionDelete()
 	if (QMessageBox::question(NULL, tr("Delete Items"), tr("You are about to delete %1 item(s). Sure?").arg(itemList.size())) == QMessageBox::No)
 		return;
 
-	for (QGraphicsItem* item : itemList)
-	{
-		if (items().contains(item))
-			delete item;
-	}
-
-	addUndoState();
+	del();
 }
 
 

@@ -183,8 +183,10 @@ public Q_SLOTS:
 	void deselectAll();
 
 	// copy-paste
+	void cut();
 	void copy();
 	void paste();
+	void del();
 
 Q_SIGNALS:
 	void undoAvailable(bool);
