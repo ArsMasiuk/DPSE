@@ -53,3 +53,23 @@ CPlatformServices::PIDs CPlatformServices::GetRunningPIDs()
 
 #endif // windows
 
+
+#ifdef Q_OS_LINUX
+
+#include <QX11Info>
+
+
+bool CPlatformServices::SetActiveWindow(uint id)
+{
+    return true;
+}
+
+
+CPlatformServices::PIDs CPlatformServices::GetRunningPIDs()
+{
+    PIDs result;
+
+    return result;
+}
+
+#endif // linux
