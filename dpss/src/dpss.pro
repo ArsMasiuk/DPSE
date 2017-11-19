@@ -11,11 +11,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts
 TARGET = dpss
 TEMPLATE = app
 
+CONFIG += c++11
+
 COMPILER_NAME = unknown
 
 g++*{
     COMPILER_NAME = gcc
-	QMAKE_CXXFLAGS += -fpermissive
+    QMAKE_CXXFLAGS += -fpermissive --std=C11
+    DEFINES += __STDC_WANT_LIB_EXT1__
 }
 
 mingw*{
@@ -24,7 +27,7 @@ mingw*{
 
 msvc*{
     COMPILER_NAME = msvc
-	QMAKE_CXXFLAGS -= -Zc:strictStrings
+    QMAKE_CXXFLAGS -= -Zc:strictStrings
 }
 
 DESTDIR = $$PWD/../bin.$$COMPILER_NAME
