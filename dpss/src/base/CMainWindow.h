@@ -41,6 +41,7 @@ public:
     void addDocument(const CDocument& doc);
 
 	QAction* getFileExportAction() { return m_exportDocument; }
+	QMenu* getFileMenu() { return m_fileMenu; }
 	QAction* getWindowMenuAction() { return m_windowsMenuAction; }
 	QString getCurrentFileName() const { return m_currentFileName; }
 

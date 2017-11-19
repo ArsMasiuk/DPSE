@@ -5,6 +5,7 @@
 
 #include <qvge/CNode.h>
 #include <qvge/CImageExport.h>
+#include <qvge/CPDFExport.h>
 
 
 qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNodeEditorScene *scene, CEditorView *view) : 
@@ -15,11 +16,21 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 	connect(scene, &CEditorScene::sceneChanged, parent, &CMainWindow::onDocumentChanged);
 	connect(scene, &CEditorScene::selectionChanged, this, &qvgeNodeEditorUIController::onSelectionChanged);
 
+	// connect view
+	connect(m_editorView, SIGNAL(scaleChanged(double)), this, SLOT(onZoomChanged(double)));
+
 
 	// file actions
 	QAction *exportAction = parent->getFileExportAction();
 	exportAction->setVisible(true);
+	exportAction->setText(tr("Export to &Image..."));
 	connect(exportAction, &QAction::triggered, this, &qvgeNodeEditorUIController::exportFile);
+
+	QAction *exportActionPDF = new QAction(tr("Export to &PDF..."));
+	parent->getFileMenu()->insertAction(exportAction, exportActionPDF);
+	connect(exportActionPDF, &QAction::triggered, this, &qvgeNodeEditorUIController::exportPDF);
+
+	parent->getFileMenu()->insertSeparator(exportActionPDF);
 
 
 	// add edit menu
@@ -87,25 +98,43 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 	QMenu *viewMenu = new QMenu(tr("&View"));
 	parent->menuBar()->insertMenu(parent->getWindowMenuAction(), viewMenu);
 
-	zoomAction = viewMenu->addAction(QIcon(":/Icons/Zoom"), tr("&Zoom"));
+	QAction *gridAction = viewMenu->addAction(QIcon(":/Icons/Grid-Show"), tr("Show &Grid"));
+	gridAction->setCheckable(true);
+	gridAction->setStatusTip(tr("Show/hide background grid"));
+	gridAction->setChecked(m_scene->gridEnabled());
+	connect(gridAction, SIGNAL(toggled(bool)), m_scene, SLOT(enableGrid(bool)));
+
+	QAction *gridSnapAction = viewMenu->addAction(QIcon(":/Icons/Grid-Snap"), tr("&Snap to Grid"));
+	gridSnapAction->setCheckable(true);
+	gridSnapAction->setStatusTip(tr("Snap to grid when dragging"));
+	gridSnapAction->setChecked(m_scene->gridSnapEnabled());
+	connect(gridSnapAction, SIGNAL(toggled(bool)), m_scene, SLOT(enableGridSnap(bool)));
+
+	QAction *actionShowLabels = viewMenu->addAction(QIcon(":/Icons/Label"), tr("Show &Labels"));
+	actionShowLabels->setCheckable(true);
+	actionShowLabels->setStatusTip(tr("Show/hide item labels"));
+	actionShowLabels->setChecked(m_scene->itemLabelsEnabled());
+	connect(actionShowLabels, SIGNAL(toggled(bool)), m_scene, SLOT(enableItemLabels(bool)));
+
+	viewMenu->addSeparator();
+
+	zoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomIn"), tr("&Zoom"));
 	zoomAction->setStatusTip(tr("Zoom view in"));
 	zoomAction->setShortcut(QKeySequence::ZoomIn);
 	connect(zoomAction, &QAction::triggered, this, &qvgeNodeEditorUIController::zoom);
 
-	unzoomAction = viewMenu->addAction(QIcon(":/Icons/Unzoom"), tr("&Unzoom"));
+	unzoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomOut"), tr("&Unzoom"));
 	unzoomAction->setStatusTip(tr("Zoom view out"));
 	unzoomAction->setShortcut(QKeySequence::ZoomOut);
 	connect(unzoomAction, &QAction::triggered, this, &qvgeNodeEditorUIController::unzoom);
 
-	resetZoomAction = viewMenu->addAction(QIcon(":/Icons/Zoom-Reset"), tr("&Reset Zoom"));
+	resetZoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomReset"), tr("&Reset Zoom"));
 	resetZoomAction->setStatusTip(tr("Zoom view to 100%"));
 	connect(resetZoomAction, &QAction::triggered, this, &qvgeNodeEditorUIController::resetZoom);
 
-	fitZoomAction = viewMenu->addAction(QIcon(":/Icons/Zoom-Fit"), tr("&Fit to View"));
+	fitZoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomFit"), tr("&Fit to View"));
 	fitZoomAction->setStatusTip(tr("Zoom to fit all the items to view"));
 	connect(fitZoomAction, &QAction::triggered, m_editorView, &CEditorView::fitToView);
-
-	connect(m_editorView, SIGNAL(scaleChanged(double)), this, SLOT(onZoomChanged(double)));
 
 
 	// add view toolbar
@@ -114,7 +143,7 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 
 	zoomToolbar->addAction(zoomAction);
 
-	resetZoomAction2 = zoomToolbar->addAction(QIcon(":/Icons/Zoom-Reset"), "");
+	resetZoomAction2 = zoomToolbar->addAction(QIcon(":/Icons/Zoom"), "");
 	resetZoomAction2->setStatusTip(resetZoomAction->statusTip());
 	resetZoomAction2->setToolTip(resetZoomAction->statusTip());
 	connect(resetZoomAction2, &QAction::triggered, this, &qvgeNodeEditorUIController::resetZoom);
@@ -174,6 +203,19 @@ void qvgeNodeEditorUIController::resetZoom()
 void qvgeNodeEditorUIController::exportFile()
 {
 	if (CImageExport::write(*m_scene, m_parent->getCurrentFileName()))
+	{
+		m_parent->statusBar()->showMessage(tr("Export successful"));
+	}
+	else
+	{
+		m_parent->statusBar()->showMessage(tr("Export failed"));
+	}
+}
+
+
+void qvgeNodeEditorUIController::exportPDF()
+{
+	if (CPDFExport::write(*m_scene, m_parent->getCurrentFileName()))
 	{
 		m_parent->statusBar()->showMessage(tr("Export successful"));
 	}

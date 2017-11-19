@@ -1,24 +1,14 @@
 <RCC>
     <qresource prefix="/Icons">
-        <file alias="Zoom-Fit">Icons/Zoom-Fit-Items.png</file>
         <file alias="Edge-Mutual">Icons/Direction-Both.png</file>
         <file alias="Edge-Directed">Icons/Direction-One.png</file>
         <file alias="Edge-Undirected">Icons/Direction-None.png</file>
         <file alias="Grid-Show">Icons/Grid.png</file>
         <file alias="Grid-Snap">Icons/Grid-Snap.png</file>
-        <file alias="Zoom">Icons/Zoom-In.png</file>
-        <file alias="Unzoom">Icons/Zoom-Out.png</file>
-        <file alias="Zoom-Reset">Icons/Zoom-Reset.png</file>
         <file alias="Node-Diamond">Icons/Node-Romb.png</file>
         <file alias="Node-Disc">Icons/Node-Round.png</file>
         <file alias="Node-Square">Icons/Node-Square.png</file>
         <file alias="Node-Triangle">Icons/Node-Triangle.png</file>
         <file alias="Node-Triangle-Down">Icons/Node-Triangle-Down.png</file>
-        <file alias="Redo">Icons/Edit-Redo.png</file>
-        <file alias="Undo">Icons/Edit-Undo.png</file>
-        <file alias="Copy">Icons/Edit-Copy.png</file>
-        <file alias="Cut">Icons/Edit-Cut.png</file>
-        <file alias="Delete">Icons/Edit-Delete.png</file>
-        <file alias="Paste">Icons/Edit-Paste.png</file>
     </qresource>
 </RCC>

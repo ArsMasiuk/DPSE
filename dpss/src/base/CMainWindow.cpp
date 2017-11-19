@@ -17,6 +17,7 @@
 #include <QCloseEvent>
 #include <QDropEvent>
 #include <QMimeData>
+#include <QToolButton>
 
 
 CMainWindow::CMainWindow(QWidget *parent) :
@@ -154,11 +155,11 @@ void CMainWindow::createMainMenu()
     m_saveDocument->setStatusTip(tr("Save current document"));
     m_saveDocument->setShortcut(QKeySequence::Save);
 
-    m_saveAsDocument = m_fileMenu->addAction(tr("Save As..."), this, SLOT(on_actionSaveAs_triggered()));
+    m_saveAsDocument = m_fileMenu->addAction(tr("Save &As..."), this, SLOT(on_actionSaveAs_triggered()));
     m_saveAsDocument->setStatusTip(tr("Save current document under another name"));
     m_saveAsDocument->setShortcut(QKeySequence::SaveAs);
 
-	m_exportDocument = m_fileMenu->addAction(tr("Export..."));
+	m_exportDocument = m_fileMenu->addAction(QIcon(":/Icons/Export"), tr("&Export..."));
 	m_exportDocument->setStatusTip(tr("Export current document into another format"));
 	m_exportDocument->setVisible(false); 
 
@@ -203,6 +204,9 @@ void CMainWindow::fillNewFileMenu()
             newAction->setStatusTip(doc.description);
         }
 
+		newActionsMenu->setDefaultAction(newActionsMenu->actions().first());
+		connect(m_newDocument, SIGNAL(triggered()), newActionsMenu->defaultAction(), SIGNAL(triggered()));
+
         connect(newActionsMenu, SIGNAL(triggered(QAction*)), this, SLOT(createNewDocument(QAction*)));
         m_newDocument->setEnabled(true);
     }
@@ -217,7 +221,6 @@ void CMainWindow::createFileToolbar()
     fileToolbar->addAction(m_newDocument);
     fileToolbar->addAction(m_openDocument);
     fileToolbar->addAction(m_saveDocument);
-    //fileToolbar->addAction(m_saveAsDocument);
 }
 
 

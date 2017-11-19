@@ -18,6 +18,7 @@ public:
 
 public Q_SLOTS:
 	void exportFile();
+	void exportPDF();
 
 	void onSelectionChanged();
 	
