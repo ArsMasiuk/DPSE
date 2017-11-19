@@ -85,8 +85,8 @@ void CItemAttributeEditor::onSelectionChanged()
 	//QElapsedTimer tm;
 	//tm.start();
 
-	QList<CItem*> nodes = m_scene->getSelectedItems<CNode, CItem>();
-	QList<CItem*> edges = m_scene->getSelectedItems<CConnection, CItem>();
+	QList<CItem*> nodes = m_scene->getSelectedItems<CItem, CNode>();
+	QList<CItem*> edges = m_scene->getSelectedItems<CItem, CConnection>();
 
 	auto *inodes = new QTreeWidgetItem();
 	inodes->setText(0, tr("Nodes: %1").arg(nodes.count()));
@@ -277,8 +277,8 @@ void CItemAttributeEditor::on_Editor_itemDoubleClicked(QTreeWidgetItem *item, in
 	bool isEdge = (classId == "edge");
 
 	QList<CItem*> selectedItems = 
-		isNode ? m_scene->getSelectedItems<CNode, CItem>() : 
-		isEdge ? m_scene->getSelectedItems<CConnection, CItem>() :
+		isNode ? m_scene->getSelectedItems<CItem, CNode>() :
+		isEdge ? m_scene->getSelectedItems<CItem, CConnection>() :
 				 m_scene->getSelectedItems<CItem>();
 
 	if (attrId == "id")
@@ -400,11 +400,11 @@ void CItemAttributeEditor::on_RemoveButton_clicked()
 	auto classId = item->data(0, ClassRole).toByteArray();
 	if (classId == "node")
 	{
-		sceneItems = m_scene->getSelectedItems<CNode, CItem>();
+		sceneItems = m_scene->getSelectedItems<CItem, CNode>();
 	}
 	else if (classId == "edge")
 	{
-		sceneItems = m_scene->getSelectedItems<CConnection, CItem>();
+		sceneItems = m_scene->getSelectedItems<CItem, CConnection>();
 	}
 
 	bool used = false;

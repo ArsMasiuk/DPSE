@@ -27,8 +27,16 @@ bool CImageExport::write(/*const*/ CEditorScene &scene, const QString &startPath
 
 	filter.chop(2);
 
+	QFileInfo fi(startPath);
+	QString fileName(startPath);
+	if (int ss = fi.completeSuffix().size()) {
+		fileName.chop(ss + 1); // .suffix
+	}
+
+	QString selectedFilter;
+
 	QString path = QFileDialog::getSaveFileName(NULL,
-		QObject::tr("Export as Image"), startPath, filter);
+		QObject::tr("Export as Image"), fileName, filter, &selectedFilter);
 
 	if (path.isEmpty())
 		return false;

@@ -40,7 +40,9 @@ public:
 
     void addDocument(const CDocument& doc);
 
+	QAction* getFileExportAction() { return m_exportDocument; }
 	QAction* getWindowMenuAction() { return m_windowsMenuAction; }
+	QString getCurrentFileName() const { return m_currentFileName; }
 
 public Q_SLOTS:
 	virtual void onDocumentChanged();
@@ -112,6 +114,7 @@ protected:
     QAction *m_openDocument;
     QAction *m_saveDocument;
     QAction *m_saveAsDocument;
+	QAction *m_exportDocument;
 
 	QMenu *m_windowsMenu;
 	QAction *m_windowsMenuAction;

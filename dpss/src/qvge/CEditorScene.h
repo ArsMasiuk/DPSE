@@ -137,10 +137,10 @@ public:
 	QList<QGraphicsItem*> createSelectedList(const CItemsEvaluator&) const;
 
 	template<class T = CItem, class L = T>
-	QList<L*> getSelectedItems(bool triggeredIfEmpty = false) const;
+	QList<T*> getSelectedItems(bool triggeredIfEmpty = false) const;
 
 	template<class T = CItem, class L = T>
-	QList<L*> getItems() const;
+	QList<T*> getItems() const;
 
 	template<class T = CItem>
 	QList<T*> getItemsById(const QString& id) const;
@@ -292,9 +292,9 @@ T* CEditorScene::createItemOfType(QPointF* at) const
 // selections
 
 template<class T, class L>
-QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
+QList<T*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
 {
-	QList<L*> result;
+	QList<T*> result;
 
 	auto selItems = selectedItems();
 	if (selItems.isEmpty() && triggeredIfEmpty && m_menuTriggerItem)
@@ -302,7 +302,7 @@ QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
 
 	for (auto* item : selItems)
 	{
-		L* titem = dynamic_cast<T*>(item);
+		T* titem = dynamic_cast<L*>(item);
 		if (titem)
 			result.append(titem);
 	}
@@ -312,14 +312,14 @@ QList<L*> CEditorScene::getSelectedItems(bool triggeredIfEmpty) const
 
  
 template<class T, class L>
-QList<L*> CEditorScene::getItems() const
+QList<T*> CEditorScene::getItems() const
 {
-	QList<L*> result;
+	QList<T*> result;
 
 	auto allItems = items();
 	for (auto item : allItems)
 	{
-		L* titem = dynamic_cast<T*>(item);
+		T* titem = dynamic_cast<L*>(item);
 		if (titem)
 			result.append(titem);
 	}

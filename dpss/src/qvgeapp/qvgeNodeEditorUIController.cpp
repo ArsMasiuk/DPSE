@@ -1,14 +1,26 @@
 ﻿#include "qvgeNodeEditorUIController.h"
 
 #include <QMenuBar>
+#include <QStatusBar>
+
+#include <qvge/CNode.h>
+#include <qvge/CImageExport.h>
 
 
-qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNodeEditorScene *scene, CEditorView *view) : QObject(parent),
-	m_scene(scene), m_editorView(view)
+qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNodeEditorScene *scene, CEditorView *view) : 
+	QObject(parent),
+	m_parent(parent), m_scene(scene), m_editorView(view)
 {
 	// connect scene
 	connect(scene, &CEditorScene::sceneChanged, parent, &CMainWindow::onDocumentChanged);
 	connect(scene, &CEditorScene::selectionChanged, this, &qvgeNodeEditorUIController::onSelectionChanged);
+
+
+	// file actions
+	QAction *exportAction = parent->getFileExportAction();
+	exportAction->setVisible(true);
+	connect(exportAction, &QAction::triggered, this, &qvgeNodeEditorUIController::exportFile);
+
 
 	// add edit menu
 	QMenu *editMenu = new QMenu(tr("&Edit"));
@@ -50,6 +62,12 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 	delAction->setShortcut(QKeySequence::Delete);
 	connect(delAction, &QAction::triggered, scene, &CEditorScene::del);
 
+	editMenu->addSeparator();
+
+	unlinkAction = editMenu->addAction(QIcon(":/Icons/Unlink"), tr("&Unlink"));
+	unlinkAction->setStatusTip(tr("Unlink selected nodes"));
+	connect(unlinkAction, &QAction::triggered, scene, &CNodeEditorScene::onActionUnlink);
+
 	// add edit toolbar
 	QToolBar *editToolbar = parent->addToolBar(tr("Edit"));
 	editToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -79,8 +97,8 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 	unzoomAction->setShortcut(QKeySequence::ZoomOut);
 	connect(unzoomAction, &QAction::triggered, this, &qvgeNodeEditorUIController::unzoom);
 
-	resetZoomAction = viewMenu->addAction(QIcon(":/Icons/Zoom-Reset"), tr("&Zoom 1:1"));
-	resetZoomAction->setStatusTip(tr("Reset view zoom to 1:1"));
+	resetZoomAction = viewMenu->addAction(QIcon(":/Icons/Zoom-Reset"), tr("&Reset Zoom"));
+	resetZoomAction->setStatusTip(tr("Zoom view to 100%"));
 	connect(resetZoomAction, &QAction::triggered, this, &qvgeNodeEditorUIController::resetZoom);
 
 	fitZoomAction = viewMenu->addAction(QIcon(":/Icons/Zoom-Fit"), tr("&Fit to View"));
@@ -98,6 +116,7 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 
 	resetZoomAction2 = zoomToolbar->addAction(QIcon(":/Icons/Zoom-Reset"), "");
 	resetZoomAction2->setStatusTip(resetZoomAction->statusTip());
+	resetZoomAction2->setToolTip(resetZoomAction->statusTip());
 	connect(resetZoomAction2, &QAction::triggered, this, &qvgeNodeEditorUIController::resetZoom);
 
 	zoomToolbar->addAction(unzoomAction);
@@ -118,9 +137,13 @@ qvgeNodeEditorUIController::~qvgeNodeEditorUIController()
 void qvgeNodeEditorUIController::onSelectionChanged()
 {
 	int selectionCount = m_scene->selectedItems().size();
+
 	cutAction->setEnabled(selectionCount > 0);
 	copyAction->setEnabled(selectionCount > 0);
 	delAction->setEnabled(selectionCount > 0);
+
+	auto nodes = m_scene->getSelectedItems<CNode>();
+	unlinkAction->setEnabled(nodes.size() > 0);
 }
 
 
@@ -145,4 +168,17 @@ void qvgeNodeEditorUIController::unzoom()
 void qvgeNodeEditorUIController::resetZoom()
 {
 	m_editorView->zoomTo(1.0);
+}
+
+
+void qvgeNodeEditorUIController::exportFile()
+{
+	if (CImageExport::write(*m_scene, m_parent->getCurrentFileName()))
+	{
+		m_parent->statusBar()->showMessage(tr("Export successful"));
+	}
+	else
+	{
+		m_parent->statusBar()->showMessage(tr("Export failed"));
+	}
 }

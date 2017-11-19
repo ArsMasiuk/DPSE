@@ -17,6 +17,8 @@ public:
 	~qvgeNodeEditorUIController();
 
 public Q_SLOTS:
+	void exportFile();
+
 	void onSelectionChanged();
 	
 	void onZoomChanged(double currentZoom);
@@ -25,6 +27,7 @@ public Q_SLOTS:
 	void resetZoom();
 
 protected:
+	CMainWindow *m_parent;
 	CNodeEditorScene *m_scene;
 	CEditorView *m_editorView;
 
@@ -32,6 +35,7 @@ protected:
 	QAction *copyAction;
 	QAction *pasteAction;
 	QAction *delAction;
+	QAction *unlinkAction;
 
 	QAction *zoomAction;
 	QAction *unzoomAction;

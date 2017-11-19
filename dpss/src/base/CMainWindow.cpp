@@ -158,6 +158,10 @@ void CMainWindow::createMainMenu()
     m_saveAsDocument->setStatusTip(tr("Save current document under another name"));
     m_saveAsDocument->setShortcut(QKeySequence::SaveAs);
 
+	m_exportDocument = m_fileMenu->addAction(tr("Export..."));
+	m_exportDocument->setStatusTip(tr("Export current document into another format"));
+	m_exportDocument->setVisible(false); 
+
     m_fileMenu->addSeparator();
 
 	m_recentFilesMenu = m_fileMenu->addMenu(tr("Recent Files"));
