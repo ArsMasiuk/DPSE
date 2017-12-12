@@ -54,7 +54,7 @@ public:
 		PM_COLORGRID_DIALOG
     };
 
-	enum TooltipMode
+    enum TextMode
 	{
 		TM_NONE,
 		TM_NAMED_COLOR,
@@ -103,7 +103,9 @@ public:
       */
     void setCellSize(int size);
 
-	void setTooltipMode(TooltipMode tm);
+    void setTooltipMode(TextMode tm);
+
+    void setLabelMode(TextMode tm);
 
 public Q_SLOTS:
     /** Sets current color to \a color.
@@ -121,13 +123,14 @@ Q_SIGNALS:
 
 protected:
     virtual void drawColorItem(QPixmap &pm, const QColor& color);
+    virtual QString getColorName(TextMode tm, const QColor& color) const;
 
     virtual void resizeEvent(QResizeEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
 
     QColor m_color;
     PickMode m_modeLeft, m_modeRight;
-	TooltipMode m_tooltipMode;
+    TextMode m_tooltipMode, m_labelMode;
 
     int m_cellSize;
 	const NamedColorsScheme *m_colorScheme;

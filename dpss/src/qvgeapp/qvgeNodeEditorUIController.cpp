@@ -10,7 +10,7 @@
 
 #include <common/CCommutationTable.h>
 #include <common/CSceneOptionsDialog.h>
-#include <common/CNodePropertiesUI.h>
+#include <common/CNodeEdgePropertiesUI.h>
 
 
 qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNodeEditorScene *scene, CEditorView *view) : 
@@ -178,14 +178,15 @@ void qvgeNodeEditorUIController::createPanels()
 	QDockWidget *propertyDock = new QDockWidget(tr("Properties"));
 	m_parent->addDockWidget(Qt::RightDockWidgetArea, propertyDock);
 
-    CNodePropertiesUI *nodesUI = new CNodePropertiesUI(propertyDock);
-
-    propertyDock->setWidget(nodesUI);
+    CNodeEdgePropertiesUI *propertiesPanel = new CNodeEdgePropertiesUI(propertyDock);
+    propertiesPanel->setScene(m_scene);
+    propertyDock->setWidget(propertiesPanel);
 
 	// connections
 	QDockWidget *connectionsDock = new QDockWidget(tr("Connections"));
 	m_parent->addDockWidget(Qt::RightDockWidgetArea, connectionsDock);
-	CCommutationTable *connectionsPanel = new CCommutationTable(connectionsDock);
+
+    CCommutationTable *connectionsPanel = new CCommutationTable(connectionsDock);
 	connectionsDock->setWidget(connectionsPanel);
 	connectionsPanel->setScene(m_scene);
 }

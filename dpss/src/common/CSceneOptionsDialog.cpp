@@ -7,10 +7,8 @@ CSceneOptionsDialog::CSceneOptionsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	//ui->BackgroundColor->setScheme(QSint::openOfficeColors());
-
-	ui->BackgroundColor->setPickModeLeft(QSint::ColorButton::PM_COLORDIALOG);
-	ui->GridColor->setPickModeLeft(QSint::ColorButton::PM_COLORDIALOG);
+    ui->BackgroundColor->setColorScheme(QSint::namedColorsOpenOffice());
+    ui->GridColor->setColorScheme(QSint::namedColorsOpenOffice());
 }
 
 CSceneOptionsDialog::~CSceneOptionsDialog()

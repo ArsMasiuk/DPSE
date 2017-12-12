@@ -11,7 +11,7 @@ QPenComboBox::QPenComboBox(QWidget *parent) : QComboBox(parent)
 	QPen pen;
 	pen.setWidth(2);
 
-	for (int i = 0; i <= Qt::CustomDashLine; i++)
+    for (int i = Qt::SolidLine; i < Qt::CustomDashLine; i++)
 	{
 		QPixmap pixmap(24, 24);
 		pixmap.fill(QColor(Qt::transparent));

@@ -11,8 +11,8 @@ namespace QSint
 
 QString NamedColorsScheme::colorName(const QColor& color) const
 {
-	if (colorNames.contains(color.rgb()))
-		return colorNames[color.rgb()];
+    if (colorNames.contains(color.rgb()))
+        return colorNames[color.rgb()];
 	else
 		return color.name();
 }
@@ -21,7 +21,7 @@ QString NamedColorsScheme::colorName(const QColor& color) const
 void NamedColorsScheme::addNamedColor(const QColor& color, const QString& name)
 {
 	colors.append(color);
-	colorNames[color.rgb()] = name;
+    colorNames[color.rgb()] = name;
 }
 
 
@@ -69,6 +69,9 @@ const NamedColorsScheme& namedColorsSvg()
 		{
 			s_colors.addNamedColor(QColor(names.at(i)), names.at(i));
 		}
+
+        // avoid bug with "transparent" color name
+        s_colors.colorNames[QColor(Qt::black).rgb()] = QCoreApplication::translate("Colors", "black");
 	}
 
 	return s_colors;
@@ -88,9 +91,13 @@ const NamedColorsScheme& namedColorsOpenOffice()
 		s_colors.colors << "#ffff00" << "#ff9900" << "#ff6666" << "#ff3399" << "#ff66ff" << "#9933ff" << "#3333ff" << "#3399ff" << "#00ffff" << "#00ff66" << "#66ff66" << "#99ff33";
 		s_colors.colors << "#cc9900" << "#ff3300" << "#ff0000" << "#ff0066" << "#ff00ff" << "#6600ff" << "#0000ff" << "#0066ff" << "#00cccc" << "#00cc33" << "#00cc00" << "#66ff00";
 
+        const NamedColorsScheme& svgNames = namedColorsSvg();
+
 		for (int i = 0; i < s_colors.colors.size(); i++)
 		{
-			s_colors.colorNames[s_colors.colors.at(i).rgb()] = s_colors.colors.at(i).name();
+            QString colorName = svgNames.colorName(s_colors.colors.at(i));
+
+            s_colors.colorNames[s_colors.colors.at(i).rgb()] = colorName;
 		}
 	}
 

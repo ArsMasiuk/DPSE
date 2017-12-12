@@ -40,7 +40,7 @@ ColorList* openOfficeColors();
 struct NamedColorsScheme
 {
 	ColorList colors;
-	QMap<QRgb, QString> colorNames;
+    QMap<QRgb, QString> colorNames;
 	int gridWidth;
 
 	void addNamedColor(const QColor& color, const QString& name);

@@ -18,9 +18,13 @@ ColorButton::ColorButton(QWidget *parent)
 	m_modeLeft(PM_COLORGRID_DIALOG),
 	m_modeRight(PM_COLORDIALOG),
 	m_tooltipMode(TM_NAMED_HEX_COLOR),
+    m_labelMode(TM_NAMED_COLOR),
 	m_cellSize(12)
 {
 	m_colorScheme = &namedColorsBase();
+
+    setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    setPopupMode(QToolButton::MenuButtonPopup);
 
 	setColor(Qt::white);
 }
@@ -37,37 +41,10 @@ void ColorButton::setColor(const QColor& color)
 	drawColorItem(pm, color);
 	setIcon(QIcon(pm));
 
-	if (color.isValid())
-	{
-		QString namedColor = m_colorScheme->colorName(m_color);
+    setText(getColorName(m_labelMode, m_color));
 
-		setText(namedColor);
-
-		switch (m_tooltipMode)
-		{
-		case TM_NAMED_COLOR:
-			setToolTip(namedColor);
-			break;
-		case TM_HEX_COLOR:
-			setToolTip(m_color.name());
-			break;
-		case TM_NAMED_HEX_COLOR:
-			if (namedColor == m_color.name())
-				setToolTip(namedColor);
-			else
-				setToolTip(namedColor + " (" + m_color.name() + ")");
-			break;
-		default:;
-		}
-	}
-	else
-	{
-		QString namedColor = tr("None");
-		setText(namedColor);
-
-		if (m_tooltipMode != TM_NONE)
-			setToolTip("");
-	}
+    if (m_tooltipMode != TM_NONE)
+        setToolTip(getColorName(m_tooltipMode, m_color));
 }
 
 void ColorButton::drawColorItem(QPixmap &pm, const QColor& color)
@@ -87,7 +64,36 @@ void ColorButton::drawColorItem(QPixmap &pm, const QColor& color)
 		p.setBrush(color);
 		p.setPen(palette().color(QPalette::Shadow));
 		p.drawRect(pm.rect().adjusted(0, 0, -1, -1));
-	}
+    }
+}
+
+QString ColorButton::getColorName(ColorButton::TextMode tm, const QColor &color) const
+{
+    if (!color.isValid())
+    {
+        return tr("None");
+    }
+
+    QString namedColor = m_colorScheme->colorName(color);
+
+    switch (tm)
+    {
+    case TM_NAMED_COLOR:
+        return namedColor;
+
+    case TM_HEX_COLOR:
+        return color.name();
+
+    case TM_NAMED_HEX_COLOR:
+        if (namedColor == color.name())
+            return namedColor;
+        else
+            return namedColor + " (" + color.name() + ")";
+
+    default:;
+    }
+
+    return "";
 }
 
 void ColorButton::setPickModeLeft(PickMode mode)
@@ -202,9 +208,14 @@ void ColorButton::setCellSize(int size)
 	m_cellSize = size;
 }
 
-void ColorButton::setTooltipMode(TooltipMode tm)
+void ColorButton::setTooltipMode(TextMode tm)
 {
 	m_tooltipMode = tm;
+}
+
+void ColorButton::setLabelMode(TextMode tm)
+{
+    m_labelMode = tm;
 }
 
 
