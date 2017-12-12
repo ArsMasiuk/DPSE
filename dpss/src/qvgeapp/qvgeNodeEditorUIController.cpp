@@ -2,10 +2,15 @@
 
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QDockWidget>
 
 #include <qvge/CNode.h>
 #include <qvge/CImageExport.h>
 #include <qvge/CPDFExport.h>
+
+#include <common/CCommutationTable.h>
+#include <common/CSceneOptionsDialog.h>
+#include <common/CNodePropertiesUI.h>
 
 
 qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNodeEditorScene *scene, CEditorView *view) : 
@@ -19,73 +24,82 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 	// connect view
 	connect(m_editorView, SIGNAL(scaleChanged(double)), this, SLOT(onZoomChanged(double)));
 
+	// menus & actions
+	createMenus();
 
+	// dock panels
+	createPanels();
+}
+
+
+void qvgeNodeEditorUIController::createMenus()
+{
 	// file actions
-	QAction *exportAction = parent->getFileExportAction();
+	QAction *exportAction = m_parent->getFileExportAction();
 	exportAction->setVisible(true);
 	exportAction->setText(tr("Export to &Image..."));
 	connect(exportAction, &QAction::triggered, this, &qvgeNodeEditorUIController::exportFile);
 
 	QAction *exportActionPDF = new QAction(tr("Export to &PDF..."));
-	parent->getFileMenu()->insertAction(exportAction, exportActionPDF);
+	m_parent->getFileMenu()->insertAction(exportAction, exportActionPDF);
 	connect(exportActionPDF, &QAction::triggered, this, &qvgeNodeEditorUIController::exportPDF);
 
-	parent->getFileMenu()->insertSeparator(exportActionPDF);
+	m_parent->getFileMenu()->insertSeparator(exportActionPDF);
 
 
 	// add edit menu
 	QMenu *editMenu = new QMenu(tr("&Edit"));
-	parent->menuBar()->insertMenu(parent->getWindowMenuAction(), editMenu);
+	m_parent->menuBar()->insertMenu(m_parent->getWindowMenuAction(), editMenu);
 
 	QAction *undoAction = editMenu->addAction(QIcon(":/Icons/Undo"), tr("&Undo"));
 	undoAction->setStatusTip(tr("Undo latest action"));
 	undoAction->setShortcut(QKeySequence::Undo);
-	connect(undoAction, &QAction::triggered, scene, &CEditorScene::undo);
-	connect(scene, &CEditorScene::undoAvailable, undoAction, &QAction::setEnabled);
-	undoAction->setEnabled(scene->availableUndoCount());
+	connect(undoAction, &QAction::triggered, m_scene, &CEditorScene::undo);
+	connect(m_scene, &CEditorScene::undoAvailable, undoAction, &QAction::setEnabled);
+	undoAction->setEnabled(m_scene->availableUndoCount());
 
 	QAction *redoAction = editMenu->addAction(QIcon(":/Icons/Redo"), tr("&Redo"));
 	redoAction->setStatusTip(tr("Redo latest action"));
 	redoAction->setShortcut(QKeySequence::Redo);
-	connect(redoAction, &QAction::triggered, scene, &CEditorScene::redo);
-	connect(scene, &CEditorScene::redoAvailable, redoAction, &QAction::setEnabled);
-	redoAction->setEnabled(scene->availableRedoCount());
+	connect(redoAction, &QAction::triggered, m_scene, &CEditorScene::redo);
+	connect(m_scene, &CEditorScene::redoAvailable, redoAction, &QAction::setEnabled);
+	redoAction->setEnabled(m_scene->availableRedoCount());
 
 	editMenu->addSeparator();
 
 	cutAction = editMenu->addAction(QIcon(":/Icons/Cut"), tr("Cu&t"));
 	cutAction->setStatusTip(tr("Cut selection to clipboard"));
 	cutAction->setShortcut(QKeySequence::Cut);
-	connect(cutAction, &QAction::triggered, scene, &CEditorScene::cut);
+	connect(cutAction, &QAction::triggered, m_scene, &CEditorScene::cut);
 
 	copyAction = editMenu->addAction(QIcon(":/Icons/Copy"), tr("&Copy"));
 	copyAction->setStatusTip(tr("Copy selection to clipboard"));
 	copyAction->setShortcut(QKeySequence::Copy);
-	connect(copyAction, &QAction::triggered, scene, &CEditorScene::copy);
+	connect(copyAction, &QAction::triggered, m_scene, &CEditorScene::copy);
 
 	pasteAction = editMenu->addAction(QIcon(":/Icons/Paste"), tr("&Paste"));
 	pasteAction->setStatusTip(tr("Paste selection from clipboard"));
 	pasteAction->setShortcut(QKeySequence::Paste);
-	connect(pasteAction, &QAction::triggered, scene, &CEditorScene::paste);
+	connect(pasteAction, &QAction::triggered, m_scene, &CEditorScene::paste);
 
 	delAction = editMenu->addAction(QIcon(":/Icons/Delete"), tr("&Delete"));
 	delAction->setStatusTip(tr("Delete selection"));
 	delAction->setShortcut(QKeySequence::Delete);
-	connect(delAction, &QAction::triggered, scene, &CEditorScene::del);
+	connect(delAction, &QAction::triggered, m_scene, &CEditorScene::del);
 
 	editMenu->addSeparator();
 
 	unlinkAction = editMenu->addAction(QIcon(":/Icons/Unlink"), tr("&Unlink"));
 	unlinkAction->setStatusTip(tr("Unlink selected nodes"));
-	connect(unlinkAction, &QAction::triggered, scene, &CNodeEditorScene::onActionUnlink);
+	connect(unlinkAction, &QAction::triggered, m_scene, &CNodeEditorScene::onActionUnlink);
 
 	// add edit toolbar
-	QToolBar *editToolbar = parent->addToolBar(tr("Edit"));
+	QToolBar *editToolbar = m_parent->addToolBar(tr("Edit"));
 	editToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-	
+
 	editToolbar->addAction(undoAction);
 	editToolbar->addAction(redoAction);
-	
+
 	editToolbar->addSeparator();
 
 	editToolbar->addAction(cutAction);
@@ -96,7 +110,7 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 
 	// add view menu
 	QMenu *viewMenu = new QMenu(tr("&View"));
-	parent->menuBar()->insertMenu(parent->getWindowMenuAction(), viewMenu);
+	m_parent->menuBar()->insertMenu(m_parent->getWindowMenuAction(), viewMenu);
 
 	QAction *gridAction = viewMenu->addAction(QIcon(":/Icons/Grid-Show"), tr("Show &Grid"));
 	gridAction->setCheckable(true);
@@ -138,7 +152,7 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 
 
 	// add view toolbar
-	QToolBar *zoomToolbar = parent->addToolBar(tr("View"));
+	QToolBar *zoomToolbar = m_parent->addToolBar(tr("View"));
 	zoomToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
 	zoomToolbar->addAction(zoomAction);
@@ -156,6 +170,26 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 	onSelectionChanged();
 	onZoomChanged(1);
 }
+
+
+void qvgeNodeEditorUIController::createPanels()
+{
+	// propertis
+	QDockWidget *propertyDock = new QDockWidget(tr("Properties"));
+	m_parent->addDockWidget(Qt::RightDockWidgetArea, propertyDock);
+
+    CNodePropertiesUI *nodesUI = new CNodePropertiesUI(propertyDock);
+
+    propertyDock->setWidget(nodesUI);
+
+	// connections
+	QDockWidget *connectionsDock = new QDockWidget(tr("Connections"));
+	m_parent->addDockWidget(Qt::RightDockWidgetArea, connectionsDock);
+	CCommutationTable *connectionsPanel = new CCommutationTable(connectionsDock);
+	connectionsDock->setWidget(connectionsPanel);
+	connectionsPanel->setScene(m_scene);
+}
+
 
 qvgeNodeEditorUIController::~qvgeNodeEditorUIController() 
 {

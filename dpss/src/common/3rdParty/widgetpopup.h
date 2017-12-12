@@ -42,6 +42,8 @@ public:
       */
     inline bool isOwned() const { return m_own; }
 
+	void addWidget(QWidget *widget);
+
 public Q_SLOTS:
     /** Pops up the widget at global coordinates \a coord.
       */

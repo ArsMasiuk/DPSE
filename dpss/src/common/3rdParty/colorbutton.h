@@ -42,14 +42,25 @@ class ColorButton : public QToolButton
 
 public:
     /// \brief Defines color dialog type.
-    enum PickMode {
+    enum PickMode 
+	{
         /// no dialog
         PM_NONE,
         /// standard system color dialog
         PM_COLORDIALOG,
         /// color grid based dialog
-        PM_COLORGRID
+        PM_COLORGRID,
+		/// color grid with standard color selector
+		PM_COLORGRID_DIALOG
     };
+
+	enum TooltipMode
+	{
+		TM_NONE,
+		TM_NAMED_COLOR,
+		TM_HEX_COLOR,
+		TM_NAMED_HEX_COLOR
+	};
 
     /** Constructor.
       */
@@ -78,12 +89,12 @@ public:
     void setPickModeRight(PickMode mode);
 
     /** Returns currently active color scheme (by default, defaultColors() is used).
-      \sa setScheme()
+      \sa setColorScheme()
       */
-    inline ColorList* scheme() const { return m_colors; }
+    inline const NamedColorsScheme& colorScheme() const { return *m_colorScheme; }
     /** Sets color scheme to \a scheme.
       */
-    void setScheme(ColorList *scheme);
+    void setColorScheme(const NamedColorsScheme &scheme);
 
     /** Returns size of a color cell in pixels.
       */
@@ -92,10 +103,14 @@ public:
       */
     void setCellSize(int size);
 
+	void setTooltipMode(TooltipMode tm);
+
 public Q_SLOTS:
     /** Sets current color to \a color.
       */
     void setColor(const QColor& color);
+
+	void onDialogButton();
 
 Q_SIGNALS:
     /** Emitted when user selects a color from the dialog.
@@ -112,9 +127,10 @@ protected:
 
     QColor m_color;
     PickMode m_modeLeft, m_modeRight;
+	TooltipMode m_tooltipMode;
 
     int m_cellSize;
-    ColorList *m_colors;
+	const NamedColorsScheme *m_colorScheme;
 };
 
 

@@ -16,7 +16,7 @@ public:
 	qvgeNodeEditorUIController(CMainWindow *parent, CNodeEditorScene *scene, CEditorView *view);
 	~qvgeNodeEditorUIController();
 
-public Q_SLOTS:
+private Q_SLOTS:
 	void exportFile();
 	void exportPDF();
 
@@ -27,7 +27,11 @@ public Q_SLOTS:
 	void unzoom();
 	void resetZoom();
 
-protected:
+private:
+	void createMenus();
+	void createPanels();
+
+private:
 	CMainWindow *m_parent;
 	CNodeEditorScene *m_scene;
 	CEditorView *m_editorView;

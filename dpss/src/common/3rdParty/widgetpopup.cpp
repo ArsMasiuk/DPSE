@@ -52,6 +52,13 @@ void WidgetPopup::setWidget(QWidget *widget, bool own)
     }
 }
 
+
+void WidgetPopup::addWidget(QWidget *widget)
+{
+	layout()->addWidget(widget);
+}
+
+
 void WidgetPopup::show(QPoint coord)
 {
     // important to do this before following adjustments!

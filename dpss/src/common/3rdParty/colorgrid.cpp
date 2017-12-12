@@ -72,7 +72,7 @@ void ColorGrid::setWidthInCells(int width)
     redraw();
 }
 
-void ColorGrid::setScheme(ColorList *list)
+void ColorGrid::setScheme(const ColorList *list)
 {
     if (!list) return;
     m_colors = list;
