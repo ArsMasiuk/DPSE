@@ -472,7 +472,10 @@ void CNode::onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& /
 	{
 		CNode* node = dynamic_cast<CNode*>(*acceptedItems.begin());
 		if (node)
-			node->merge(this);
+        {
+            node->merge(this);
+            //node->setSelected(true);
+        }
 	}
 }
 

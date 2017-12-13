@@ -28,8 +28,6 @@ public:
 	virtual void initialize();
 	virtual void initializeOnce();
 
-	virtual void moveSelectedItemsBy(const QPointF& d);
-
 	// operations
 	bool startNewConnection(const QPointF& pos);
 	void cancel(const QPointF& pos = QPointF());
@@ -40,6 +38,12 @@ public:
 
 	CConnection* activateConnectionFactory(const QByteArray& factoryId);
 
+    // selections
+    virtual void moveSelectedItemsBy(const QPointF& d);
+
+    const QList<CNode*>& getSelectedNodes();
+    const QList<CConnection*>& getSelectedEdges();
+
 public Q_SLOTS:
 	virtual void onActionUnlink();
 	virtual void onActionNodeColor();
@@ -49,8 +53,11 @@ public Q_SLOTS:
 	void onActionEdgeMutual();
 	void onActionEdgeUndirected();
 
+    void onSceneOrSelectionChanged();
+
 protected:
 	void moveSelectedEdgesBy(const QPointF& d);
+    void prefetchSelection();
 
 	// scene events
 	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -80,6 +87,10 @@ protected:
 		IS_None, IS_Creating, IS_Finishing, IS_Cancelling
 	};
 	InternState m_state;
+
+    // cached selections
+    QList<CNode*> m_selNodes;
+    QList<CConnection*> m_selEdges;
 };
 
 

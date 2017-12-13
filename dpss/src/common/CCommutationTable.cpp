@@ -121,7 +121,7 @@ void CCommutationTable::onSelectionChanged()
 
 	QTreeWidgetItem* scrollItem = NULL;
 
-	QList<CConnection*> edges = m_scene->getSelectedItems<CConnection>();
+    QList<CConnection*> edges = m_scene->getSelectedEdges();
 
 	//QElapsedTimer tm;
 	//tm.start();

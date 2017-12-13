@@ -30,6 +30,9 @@ protected Q_SLOTS:
     void onSceneChanged();
     void onSelectionChanged();
 
+    void on_NodeColor_activated(const QColor &color);
+    void on_EdgeColor_activated(const QColor &color);
+
 private:
     Ui::CNodeEdgePropertiesUI *ui;
 

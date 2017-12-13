@@ -14,25 +14,21 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
     ui->setupUi(this);
 
     ui->NodeColor->setColorScheme(QSint::namedColorsOpenOffice());
-    ui->NodeColor->setColor(QColor());
+    ui->NodeColor->setColor(Qt::green);
 
-    ui->NodeShape->addItem(QIcon(":/Icons/Node-Disc"), tr("Disc"));
-    ui->NodeShape->addItem(QIcon(":/Icons/Node-Square"), tr("Square"));
-    ui->NodeShape->addItem(QIcon(":/Icons/Node-Triangle"), tr("Triangle Up"));
-    ui->NodeShape->addItem(QIcon(":/Icons/Node-Diamond"), tr("Diamond"));
-    ui->NodeShape->addItem(QIcon(":/Icons/Node-Triangle-Down"), tr("Triangle Down"));
-    ui->NodeShape->setCurrentIndex(-1);
-
-    ui->NodeSize->setValue(-1);
+    QMenu *shapeMenu = new QMenu();
+    auto *diskShape = shapeMenu->addAction(QIcon(":/Icons/Node-Disc"), tr("Disc"));
+    shapeMenu->addAction(QIcon(":/Icons/Node-Square"), tr("Square"));
+    shapeMenu->addAction(QIcon(":/Icons/Node-Triangle"), tr("Triangle Up"));
+    shapeMenu->addAction(QIcon(":/Icons/Node-Diamond"), tr("Diamond"));
+    shapeMenu->addAction(QIcon(":/Icons/Node-Triangle-Down"), tr("Triangle Down"));
+    ui->NodeShapeTB->setMenu(shapeMenu);
+    shapeMenu->setDefaultAction(diskShape);
+    ui->NodeShapeTB->setDefaultAction(diskShape);
 
 
     ui->EdgeColor->setColorScheme(QSint::namedColorsOpenOffice());
-    ui->EdgeColor->setColor(QColor());
-
-    ui->EdgeWeight->setValue(-1);
-
-    ui->EdgePen->setCurrentIndex(-1);
-
+    ui->EdgeColor->setColor(Qt::gray);
 }
 
 CNodeEdgePropertiesUI::~CNodeEdgePropertiesUI()
@@ -81,12 +77,51 @@ void CNodeEdgePropertiesUI::onSceneChanged()
 
 void CNodeEdgePropertiesUI::onSelectionChanged()
 {
-    QList<CConnection*> edges = m_scene->getSelectedItems<CConnection>();
-    QList<CNode*> nodes = m_scene->getSelectedItems<CNode>();
+    if (m_scene == NULL)
+        return;
+
+    QList<CConnection*> edges = m_scene->getSelectedEdges();
+    QList<CNode*> nodes = m_scene->getSelectedNodes();
 
     ui->NodesBox->setTitle(tr("Nodes (%1)").arg(nodes.count()));
-    ui->NodesBox->setEnabled(nodes.count());
+    //ui->NodesBox->setEnabled(nodes.count());
 
     ui->EdgesBox->setTitle(tr("Edges (%1)").arg(edges.count()));
-    ui->EdgesBox->setEnabled(edges.count());
+    //ui->EdgesBox->setEnabled(edges.count());
+}
+
+
+void CNodeEdgePropertiesUI::on_NodeColor_activated(const QColor &color)
+{
+    if (m_scene == NULL)
+        return;
+
+    QList<CNode*> nodes = m_scene->getSelectedNodes();
+    if (nodes.isEmpty())
+        return;
+
+    for (auto node: nodes)
+    {
+        node->setAttribute("color", color);
+    }
+
+    m_scene->addUndoState();
+}
+
+
+void CNodeEdgePropertiesUI::on_EdgeColor_activated(const QColor &color)
+{
+    if (m_scene == NULL)
+        return;
+
+    QList<CConnection*> edges = m_scene->getSelectedEdges();
+    if (edges.isEmpty())
+        return;
+
+    for (auto edge: edges)
+    {
+        edge->setAttribute("color", color);
+    }
+
+    m_scene->addUndoState();
 }

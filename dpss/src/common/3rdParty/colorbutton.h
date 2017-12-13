@@ -4,6 +4,7 @@
 #include "colordefs.h"
 
 #include <QToolButton>
+#include <QWidgetAction>
 
 
 namespace QSint
@@ -38,7 +39,6 @@ class ColorButton : public QToolButton
     Q_PROPERTY(int cellSize READ cellSize WRITE setCellSize)
     Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(PickMode pickModeLeft READ pickModeLeft WRITE setPickModeLeft)
-    Q_PROPERTY(PickMode pickModeRight READ pickModeRight WRITE setPickModeRight)
 
 public:
     /// \brief Defines color dialog type.
@@ -77,16 +77,9 @@ public:
       \sa setPickModeLeft()
       */
     inline PickMode pickModeLeft() const { return m_modeLeft; }
-    /** Returns type of color dialog shown on right mouse click (PM_NONE by default).
-      \sa pickModeRight()
-      */
-    inline PickMode pickModeRight() const { return m_modeRight; }
     /** Sets type of color dialog shown on left mouse click to \a mode.
       */
     void setPickModeLeft(PickMode mode);
-    /** Sets type of color dialog shown on right mouse click to \a mode.
-      */
-    void setPickModeRight(PickMode mode);
 
     /** Returns currently active color scheme (by default, defaultColors() is used).
       \sa setColorScheme()
@@ -98,7 +91,7 @@ public:
 
     /** Returns size of a color cell in pixels.
       */
-    inline int cellSize() const { return m_cellSize; }
+    int cellSize() const;
     /** Sets size of a color cell in pixels to \a size (must be > 0).
       */
     void setCellSize(int size);
@@ -112,7 +105,9 @@ public Q_SLOTS:
       */
     void setColor(const QColor& color);
 
+protected Q_SLOTS:
 	void onDialogButton();
+    void onClicked();
 
 Q_SIGNALS:
     /** Emitted when user selects a color from the dialog.
@@ -121,18 +116,21 @@ Q_SIGNALS:
       */
     void colorChanged(const QColor &color);
 
+    void activated(const QColor &color);
+
 protected:
     virtual void drawColorItem(QPixmap &pm, const QColor& color);
     virtual QString getColorName(TextMode tm, const QColor& color) const;
 
     virtual void resizeEvent(QResizeEvent *event);
-    virtual void mousePressEvent(QMouseEvent *event);
 
     QColor m_color;
-    PickMode m_modeLeft, m_modeRight;
+    PickMode m_modeLeft;
     TextMode m_tooltipMode, m_labelMode;
 
-    int m_cellSize;
+    ColorGrid *m_grid;
+    QWidgetAction *m_dialogButtonAction;
+
 	const NamedColorsScheme *m_colorScheme;
 };
 

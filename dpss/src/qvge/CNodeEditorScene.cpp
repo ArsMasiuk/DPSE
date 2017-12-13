@@ -24,6 +24,10 @@ CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 
 	// go
 	initialize();
+
+    // connections
+    connect(this, SIGNAL(selectionChanged()), this, SLOT(onSceneOrSelectionChanged()));
+    //connect(this, SIGNAL(sceneChanged()), this, SLOT(onSceneOrSelectionChanged()));
 }
 
 
@@ -80,125 +84,7 @@ void CNodeEditorScene::initializeOnce()
 }
 
 
-// menu slots
-
-void CNodeEditorScene::onActionUnlink()
-{
-	QList<CNode*> nodes = getSelectedItems<CNode>(true);
-	if (nodes.isEmpty())
-		return;
-
-	for (auto node : nodes)
-	{
-		node->unlink();
-	}
-
-	addUndoState();
-}
-
-
-void CNodeEditorScene::onActionNodeColor()
-{
-	QList<CNode*> nodes = getSelectedItems<CNode>(true);
-	if (nodes.isEmpty())
-		return;
-
-	QColor color = QColorDialog::getColor(nodes.first()->getAttribute("color").value<QColor>());
-	if (!color.isValid())
-		return;
-
-	for (auto node: nodes)
-	{
-		node->setAttribute("color", color);
-	}
-
-	addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeColor()
-{
-	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
-	if (edges.isEmpty())
-		return;
-
-	QColor color = QColorDialog::getColor(edges.first()->getAttribute("color").value<QColor>());
-	if (!color.isValid())
-		return;
-
-	for (auto edge : edges)
-	{
-		edge->setAttribute("color", color);
-	}
-
-	addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeReverse()
-{
-	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
-	if (edges.isEmpty())
-		return;
-
-	for (auto edge : edges)
-	{
-		edge->reverse();
-	}
-
-	addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeDirected()
-{
-	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
-	if (edges.isEmpty())
-		return;
-
-	for (auto edge : edges)
-	{
-		edge->setAttribute("direction", "directed");
-		edge->update();
-	}
-
-	addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeMutual()
-{
-	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
-	if (edges.isEmpty())
-		return;
-
-	for (auto edge : edges)
-	{
-		edge->setAttribute("direction", "mutual");
-		edge->update();
-	}
-
-	addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeUndirected()
-{
-	QList<CConnection*> edges = getSelectedItems<CConnection>(true);
-	if (edges.isEmpty())
-		return;
-
-	for (auto edge : edges)
-	{
-		edge->setAttribute("direction", "undirected");
-		edge->update();
-	}
-
-	addUndoState();
-}
-
-
-// actions
+// nodes creation
 
 bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 {
@@ -655,6 +541,176 @@ void CNodeEditorScene::updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, Q
 	}
 
 	return Super::updateMovedCursor(mouseEvent, hoverItem);
+}
+
+
+// selections
+
+const QList<CNode*>& CNodeEditorScene::getSelectedNodes()
+{
+    if (m_selNodes.isEmpty())
+        prefetchSelection();
+
+    return m_selNodes;
+}
+
+
+const QList<CConnection*>& CNodeEditorScene::getSelectedEdges()
+{
+    if (m_selEdges.isEmpty())
+        prefetchSelection();
+
+    return m_selEdges;
+}
+
+
+void CNodeEditorScene::onSceneOrSelectionChanged()
+{
+    // drop cached selections
+    m_selNodes.clear();
+    m_selEdges.clear();
+}
+
+
+void CNodeEditorScene::prefetchSelection()
+{
+    m_selNodes.clear();
+    m_selEdges.clear();
+
+    auto selItems = selectedItems();
+
+    for (auto* item : selItems)
+    {
+        if (CNode* node = dynamic_cast<CNode*>(item))
+        {
+            m_selNodes << node;
+            continue;
+        }
+
+        if (CConnection* edge = dynamic_cast<CConnection*>(item))
+        {
+            m_selEdges << edge;
+            continue;
+        }
+    }
+}
+
+
+// menu & actions
+
+void CNodeEditorScene::onActionUnlink()
+{
+    QList<CNode*> nodes = getSelectedItems<CNode>(true);
+    if (nodes.isEmpty())
+        return;
+
+    for (auto node : nodes)
+    {
+        node->unlink();
+    }
+
+    addUndoState();
+}
+
+
+void CNodeEditorScene::onActionNodeColor()
+{
+    QList<CNode*> nodes = getSelectedItems<CNode>(true);
+    if (nodes.isEmpty())
+        return;
+
+    QColor color = QColorDialog::getColor(nodes.first()->getAttribute("color").value<QColor>());
+    if (!color.isValid())
+        return;
+
+    for (auto node: nodes)
+    {
+        node->setAttribute("color", color);
+    }
+
+    addUndoState();
+}
+
+
+void CNodeEditorScene::onActionEdgeColor()
+{
+    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    if (edges.isEmpty())
+        return;
+
+    QColor color = QColorDialog::getColor(edges.first()->getAttribute("color").value<QColor>());
+    if (!color.isValid())
+        return;
+
+    for (auto edge : edges)
+    {
+        edge->setAttribute("color", color);
+    }
+
+    addUndoState();
+}
+
+
+void CNodeEditorScene::onActionEdgeReverse()
+{
+    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    if (edges.isEmpty())
+        return;
+
+    for (auto edge : edges)
+    {
+        edge->reverse();
+    }
+
+    addUndoState();
+}
+
+
+void CNodeEditorScene::onActionEdgeDirected()
+{
+    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    if (edges.isEmpty())
+        return;
+
+    for (auto edge : edges)
+    {
+        edge->setAttribute("direction", "directed");
+        edge->update();
+    }
+
+    addUndoState();
+}
+
+
+void CNodeEditorScene::onActionEdgeMutual()
+{
+    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    if (edges.isEmpty())
+        return;
+
+    for (auto edge : edges)
+    {
+        edge->setAttribute("direction", "mutual");
+        edge->update();
+    }
+
+    addUndoState();
+}
+
+
+void CNodeEditorScene::onActionEdgeUndirected()
+{
+    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    if (edges.isEmpty())
+        return;
+
+    for (auto edge : edges)
+    {
+        edge->setAttribute("direction", "undirected");
+        edge->update();
+    }
+
+    addUndoState();
 }
 
 

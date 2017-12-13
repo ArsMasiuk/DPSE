@@ -7,6 +7,7 @@
 #include <QColorDialog>
 #include <QPushButton>
 #include <QLayout>
+#include <QMenu>
 
 
 namespace QSint
@@ -16,17 +17,41 @@ namespace QSint
 ColorButton::ColorButton(QWidget *parent)
 	: QToolButton(parent),
 	m_modeLeft(PM_COLORGRID_DIALOG),
-	m_modeRight(PM_COLORDIALOG),
 	m_tooltipMode(TM_NAMED_HEX_COLOR),
-    m_labelMode(TM_NAMED_COLOR),
-	m_cellSize(12)
+    m_labelMode(TM_NAMED_COLOR)
 {
 	m_colorScheme = &namedColorsBase();
 
-    setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    //setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setPopupMode(QToolButton::MenuButtonPopup);
 
 	setColor(Qt::white);
+
+    // build up menu
+    QMenu *menu = new QMenu(this);
+    setMenu(menu);
+
+    m_grid = new ColorGrid(this);
+    m_grid->setPickByDrag(false);
+    m_grid->setClickMode(ColorGrid::CM_RELEASE);
+    connect(m_grid, SIGNAL(picked(const QColor&)), this, SLOT(setColor(const QColor&)));
+    connect(m_grid, SIGNAL(accepted()), menu, SLOT(hide()));
+
+    auto gridAction = new QWidgetAction(this);
+    gridAction->setDefaultWidget(m_grid);
+    menu->addAction(gridAction);
+
+
+    QPushButton* dialogButton = new QPushButton(tr("Choose Color..."));
+    connect(dialogButton, SIGNAL(clicked()), this, SLOT(onDialogButton()));
+
+    m_dialogButtonAction = new QWidgetAction(this);
+    m_dialogButtonAction->setDefaultWidget(dialogButton);
+    menu->addAction(m_dialogButtonAction);
+
+    //
+    connect(this, SIGNAL(colorChanged(QColor)), this, SIGNAL(activated(QColor)));
+    connect(this, SIGNAL(clicked()), this, SLOT(onClicked()));
 }
 
 ColorButton::~ColorButton()
@@ -35,16 +60,21 @@ ColorButton::~ColorButton()
 
 void ColorButton::setColor(const QColor& color)
 {
-	m_color = color;
+    if (m_color != color)
+    {
+        m_color = color;
 
-	QPixmap pm(iconSize());
-	drawColorItem(pm, color);
-	setIcon(QIcon(pm));
+        QPixmap pm(iconSize());
+        drawColorItem(pm, color);
+        setIcon(QIcon(pm));
 
-    setText(getColorName(m_labelMode, m_color));
+        setText(getColorName(m_labelMode, m_color));
 
-    if (m_tooltipMode != TM_NONE)
-        setToolTip(getColorName(m_tooltipMode, m_color));
+        if (m_tooltipMode != TM_NONE)
+            setToolTip(getColorName(m_tooltipMode, m_color));
+
+        Q_EMIT colorChanged(color);
+    }
 }
 
 void ColorButton::drawColorItem(QPixmap &pm, const QColor& color)
@@ -101,91 +131,9 @@ void ColorButton::setPickModeLeft(PickMode mode)
 	m_modeLeft = mode;
 }
 
-void ColorButton::setPickModeRight(PickMode mode)
-{
-	m_modeRight = mode;
-}
-
 void ColorButton::resizeEvent(QResizeEvent * /*event*/)
 {
 	setColor(m_color);
-}
-
-void ColorButton::mousePressEvent(QMouseEvent * event)
-{
-	QToolButton::mousePressEvent(event);
-
-	event->accept();
-	setDown(false);
-
-	int mod;
-
-	switch (event->button())
-	{
-	case Qt::LeftButton:
-		mod = m_modeLeft;
-		break;
-	case Qt::RightButton:
-		mod = m_modeRight;
-		break;
-	default:
-		return;
-	}
-
-	switch (mod)
-	{
-	case PM_COLORDIALOG:
-	{
-		QColor c = QColorDialog::getColor(m_color, this);
-		if (c.isValid())
-		{
-			setColor(c);
-			emit colorChanged(c);
-		}
-	}
-	break;
-
-	case PM_COLORGRID:
-	case PM_COLORGRID_DIALOG:
-	{
-		ColorGrid *grid = new ColorGrid();
-		grid->setPickByDrag(false);
-		grid->setClickMode(ColorGrid::CM_RELEASE);
-
-		if (m_colorScheme->gridWidth > 0)
-		{
-			grid->setAutoSize(false);
-			grid->setWidthInCells(m_colorScheme->gridWidth);
-		}
-		else
-			grid->setAutoSize(true);
-
-		//            grid->setColorScheme(*m_colorScheme);
-		grid->setScheme(&m_colorScheme->colors);
-
-		grid->setCellSize(m_cellSize);
-		connect(grid, SIGNAL(picked(const QColor &)), this, SLOT(setColor(const QColor&)));
-		connect(grid, SIGNAL(picked(const QColor &)), this, SIGNAL(colorChanged(const QColor&)));
-
-		WidgetPopup *popup = new WidgetPopup();
-		popup->setWidget(grid);
-
-		if (mod == PM_COLORGRID_DIALOG)
-		{
-			QPushButton* dialogButton = new QPushButton(tr("Custom..."));
-			popup->addWidget(dialogButton);
-
-			connect(dialogButton, SIGNAL(clicked()), this, SLOT(onDialogButton()));
-			connect(dialogButton, SIGNAL(clicked()), popup, SLOT(close()));
-		}
-
-		connect(grid, SIGNAL(accepted()), popup, SLOT(close()));
-		popup->show(mapToGlobal(rect().bottomLeft()));
-	}
-	break;
-
-	default:;
-	}
 }
 
 void ColorButton::onDialogButton()
@@ -194,18 +142,40 @@ void ColorButton::onDialogButton()
 	if (c.isValid())
 	{
 		setColor(c);
-		emit colorChanged(c);
+        Q_EMIT colorChanged(c);
 	}
+}
+
+void ColorButton::onClicked()
+{
+    Q_EMIT activated(m_color);
 }
 
 void ColorButton::setColorScheme(const NamedColorsScheme &scheme)
 {
 	m_colorScheme = &scheme;
+
+    if (m_colorScheme->gridWidth > 0)
+    {
+        m_grid->setAutoSize(false);
+        m_grid->setWidthInCells(m_colorScheme->gridWidth);
+    }
+    else
+        m_grid->setAutoSize(true);
+
+    m_grid->setScheme(&m_colorScheme->colors);
+
+    //m_grid->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 }
 
 void ColorButton::setCellSize(int size)
 {
-	m_cellSize = size;
+    m_grid->setCellSize(size);
+}
+
+int ColorButton::cellSize() const
+{
+    return m_grid->cellSize();
 }
 
 void ColorButton::setTooltipMode(TextMode tm)

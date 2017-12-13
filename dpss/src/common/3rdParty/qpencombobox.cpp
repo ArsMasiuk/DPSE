@@ -40,18 +40,9 @@ QPenComboBox::QPenComboBox(QWidget *parent) : QComboBox(parent)
 }
 
 
-void QPenComboBox::setCurrentStyle(Qt::PenStyle NewStyle)
+void QPenComboBox::setCurrentStyle(Qt::PenStyle newStyle)
 {
-	for (int i = 0; i < Qt::CustomDashLine; i++)
-	{
-		if (i == NewStyle)
-		{
-			if (i != currentIndex())
-				setCurrentIndex(i);
-
-			return;
-		}
-	}
+    setCurrentIndex((int)newStyle);
 }
 
 
