@@ -2,6 +2,7 @@
 #define CNODEPROPERTIESUI_H
 
 #include <QWidget>
+#include <QVariant>
 
 class CEditorScene;
 class CNodeEditorScene;
@@ -31,6 +32,8 @@ protected Q_SLOTS:
     void onSelectionChanged();
 
     void on_NodeColor_activated(const QColor &color);
+    void on_NodeShapeTB_activated(QVariant data);
+
     void on_EdgeColor_activated(const QColor &color);
 
 private:

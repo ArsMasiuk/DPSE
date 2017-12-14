@@ -16,15 +16,11 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
     ui->NodeColor->setColorScheme(QSint::namedColorsOpenOffice());
     ui->NodeColor->setColor(Qt::green);
 
-    QMenu *shapeMenu = new QMenu();
-    auto *diskShape = shapeMenu->addAction(QIcon(":/Icons/Node-Disc"), tr("Disc"));
-    shapeMenu->addAction(QIcon(":/Icons/Node-Square"), tr("Square"));
-    shapeMenu->addAction(QIcon(":/Icons/Node-Triangle"), tr("Triangle Up"));
-    shapeMenu->addAction(QIcon(":/Icons/Node-Diamond"), tr("Diamond"));
-    shapeMenu->addAction(QIcon(":/Icons/Node-Triangle-Down"), tr("Triangle Down"));
-    ui->NodeShapeTB->setMenu(shapeMenu);
-    shapeMenu->setDefaultAction(diskShape);
-    ui->NodeShapeTB->setDefaultAction(diskShape);
+    ui->NodeShapeTB->addAction(QIcon(":/Icons/Node-Disc"), tr("Disc"), "disc");
+    ui->NodeShapeTB->addAction(QIcon(":/Icons/Node-Square"), tr("Square"), "square");
+    ui->NodeShapeTB->addAction(QIcon(":/Icons/Node-Triangle"), tr("Triangle Up"), "triangle");
+    ui->NodeShapeTB->addAction(QIcon(":/Icons/Node-Diamond"), tr("Diamond"), "diamond");
+    ui->NodeShapeTB->addAction(QIcon(":/Icons/Node-Triangle-Down"), tr("Triangle Down"), "triangle2");
 
 
     ui->EdgeColor->setColorScheme(QSint::namedColorsOpenOffice());
@@ -103,6 +99,24 @@ void CNodeEdgePropertiesUI::on_NodeColor_activated(const QColor &color)
     for (auto node: nodes)
     {
         node->setAttribute("color", color);
+    }
+
+    m_scene->addUndoState();
+}
+
+
+void CNodeEdgePropertiesUI::on_NodeShapeTB_activated(QVariant data)
+{
+    if (m_scene == NULL)
+        return;
+
+    QList<CNode*> nodes = m_scene->getSelectedNodes();
+    if (nodes.isEmpty())
+        return;
+
+    for (auto node: nodes)
+    {
+        node->setAttribute("shape", data);
     }
 
     m_scene->addUndoState();
