@@ -17,6 +17,10 @@ public:
     QAction* addAction(const QString &text, const QVariant &data = QVariant());
     QAction* addAction(const QIcon &icon, const QString &text, const QVariant &data = QVariant());
 
+public Q_SLOTS:
+    QAction* selectAction(const QVariant &data);
+    QAction* selectActionByIndex(int index);
+
 Q_SIGNALS:
     void activated(QVariant data);
 

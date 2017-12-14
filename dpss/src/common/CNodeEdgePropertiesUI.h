@@ -32,14 +32,18 @@ protected Q_SLOTS:
     void onSelectionChanged();
 
     void on_NodeColor_activated(const QColor &color);
-    void on_NodeShapeTB_activated(QVariant data);
+    void on_NodeShape_activated(QVariant data);
+    void on_NodeSize_valueChanged(int value);
 
     void on_EdgeColor_activated(const QColor &color);
+    void on_EdgeWeight_valueChanged(double value);
+    void on_EdgeStyle_activated(QVariant data);
 
 private:
-    Ui::CNodeEdgePropertiesUI *ui;
-
     CNodeEditorScene *m_scene;
+    bool m_updateLock;
+
+    Ui::CNodeEdgePropertiesUI *ui;
 };
 
 #endif // CNODEPROPERTIESUI_H

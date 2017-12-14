@@ -42,12 +42,15 @@ ColorButton::ColorButton(QWidget *parent)
     menu->addAction(gridAction);
 
 
-    QPushButton* dialogButton = new QPushButton(tr("Choose Color..."));
-    connect(dialogButton, SIGNAL(clicked()), this, SLOT(onDialogButton()));
+//    QPushButton* dialogButton = new QPushButton(tr("Choose Color..."));
+//    connect(dialogButton, SIGNAL(clicked()), this, SLOT(onDialogButton()));
 
-    m_dialogButtonAction = new QWidgetAction(this);
-    m_dialogButtonAction->setDefaultWidget(dialogButton);
-    menu->addAction(m_dialogButtonAction);
+//    m_dialogButtonAction = new QWidgetAction(this);
+//    m_dialogButtonAction->setDefaultWidget(dialogButton);
+//    menu->addAction(m_dialogButtonAction);
+
+    m_dialogButtonAction = menu->addAction(tr("Choose Color..."));
+    connect(m_dialogButtonAction, SIGNAL(triggered()), this, SLOT(onDialogButton()));
 
     //
     connect(this, SIGNAL(colorChanged(QColor)), this, SIGNAL(activated(QColor)));

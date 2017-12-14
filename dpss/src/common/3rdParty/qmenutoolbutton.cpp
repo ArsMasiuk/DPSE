@@ -27,14 +27,66 @@ QAction* QMenuToolButton::addAction(const QIcon &icon, const QString &text, cons
 }
 
 
+QAction* QMenuToolButton::selectAction(const QVariant &data)
+{
+    for (auto act: actions())
+    {
+        if (act->data() == data && act->isEnabled() && act->isVisible())
+        {
+            setDefaultAction(act);
+
+            if (menu())
+                menu()->setDefaultAction(act);
+
+            return act;
+        }
+    }
+
+    // not found
+    return NULL;
+}
+
+
+QAction *QMenuToolButton::selectActionByIndex(int index)
+{
+    if (index >= 0 && index < actions().count())
+    {
+        auto act = actions()[index];
+
+        if (act->isEnabled() && act->isVisible())
+        {
+            setDefaultAction(act);
+
+            if (menu())
+                menu()->setDefaultAction(act);
+
+            return act;
+        }
+    }
+
+    // not found
+    return NULL;
+}
+
+
 void QMenuToolButton::actionEvent(QActionEvent *event)
 {
     QToolButton::actionEvent(event);
 
     if (defaultAction() == NULL)
     {
-        if (actions().count())
-            setDefaultAction(actions().first());
+        for (auto act: actions())
+        {
+            if (act->isEnabled() && act->isVisible())
+            {
+                setDefaultAction(act);
+
+                if (menu())
+                    menu()->setDefaultAction(act);
+
+                return;
+            }
+        }
     }
 }
 
@@ -48,5 +100,4 @@ void QMenuToolButton::onAction(QAction* act)
 
     Q_EMIT activated(act->data());
 }
-
 

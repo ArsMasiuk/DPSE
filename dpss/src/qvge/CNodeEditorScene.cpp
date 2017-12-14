@@ -63,6 +63,9 @@ void CNodeEditorScene::initialize()
 	CAttribute weightAttr("weight", "Weight", 1.0);
 	setClassAttribute("edge", weightAttr);
 
+    CAttribute styleAttr("style", "Style", "solid");
+    setClassAttribute("edge", styleAttr);
+
 
 	CAttributeConstrainsList *edgeDirections = new CAttributeConstrainsList();
 	edgeDirections->names << "Directed (one end)" << "Mutual (both ends)" << "None (no ends)";
@@ -126,6 +129,11 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 	m_connection->setLastNode(m_endNode);
 
 	m_state = IS_Creating;
+
+    // auto select created items
+    m_startNode->setSelected(true);
+    m_connection->setSelected(true);
+    m_endNode->setSelected(true);
 
 	return true;
 }

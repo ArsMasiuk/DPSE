@@ -129,7 +129,7 @@ protected:
     TextMode m_tooltipMode, m_labelMode;
 
     ColorGrid *m_grid;
-    QWidgetAction *m_dialogButtonAction;
+    QAction *m_dialogButtonAction;
 
 	const NamedColorsScheme *m_colorScheme;
 };

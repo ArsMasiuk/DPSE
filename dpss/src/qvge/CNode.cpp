@@ -474,7 +474,7 @@ void CNode::onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& /
 		if (node)
         {
             node->merge(this);
-            //node->setSelected(true);
+            node->setSelected(true);
         }
 	}
 }
