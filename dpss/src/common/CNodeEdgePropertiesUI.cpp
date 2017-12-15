@@ -28,6 +28,9 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
     ui->EdgeColor->setColor(Qt::red);
 
     ui->EdgeStyle->setUsedRange(Qt::SolidLine, Qt::DotLine);
+
+    // update status & tooltips etc.
+    ui->retranslateUi(this);
 }
 
 CNodeEdgePropertiesUI::~CNodeEdgePropertiesUI()

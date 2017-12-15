@@ -93,6 +93,14 @@ void qvgeNodeEditorUIController::createMenus()
 	unlinkAction->setStatusTip(tr("Unlink selected nodes"));
 	connect(unlinkAction, &QAction::triggered, m_scene, &CNodeEditorScene::onActionUnlink);
 
+    editMenu->addSeparator();
+
+    // scene options
+    QAction *sceneAction = editMenu->addAction(tr("&Options..."));
+    sceneAction->setStatusTip(tr("Set up the scene"));
+    connect(sceneAction, &QAction::triggered, this, &qvgeNodeEditorUIController::sceneOptions);
+
+
 	// add edit toolbar
 	QToolBar *editToolbar = m_parent->addToolBar(tr("Edit"));
 	editToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -112,19 +120,19 @@ void qvgeNodeEditorUIController::createMenus()
 	QMenu *viewMenu = new QMenu(tr("&View"));
 	m_parent->menuBar()->insertMenu(m_parent->getWindowMenuAction(), viewMenu);
 
-	QAction *gridAction = viewMenu->addAction(QIcon(":/Icons/Grid-Show"), tr("Show &Grid"));
+    gridAction = viewMenu->addAction(QIcon(":/Icons/Grid-Show"), tr("Show &Grid"));
 	gridAction->setCheckable(true);
 	gridAction->setStatusTip(tr("Show/hide background grid"));
 	gridAction->setChecked(m_scene->gridEnabled());
 	connect(gridAction, SIGNAL(toggled(bool)), m_scene, SLOT(enableGrid(bool)));
 
-	QAction *gridSnapAction = viewMenu->addAction(QIcon(":/Icons/Grid-Snap"), tr("&Snap to Grid"));
+    gridSnapAction = viewMenu->addAction(QIcon(":/Icons/Grid-Snap"), tr("&Snap to Grid"));
 	gridSnapAction->setCheckable(true);
 	gridSnapAction->setStatusTip(tr("Snap to grid when dragging"));
 	gridSnapAction->setChecked(m_scene->gridSnapEnabled());
 	connect(gridSnapAction, SIGNAL(toggled(bool)), m_scene, SLOT(enableGridSnap(bool)));
 
-	QAction *actionShowLabels = viewMenu->addAction(QIcon(":/Icons/Label"), tr("Show &Labels"));
+    actionShowLabels = viewMenu->addAction(QIcon(":/Icons/Label"), tr("Show &Labels"));
 	actionShowLabels->setCheckable(true);
 	actionShowLabels->setStatusTip(tr("Show/hide item labels"));
 	actionShowLabels->setChecked(m_scene->itemLabelsEnabled());
@@ -194,7 +202,6 @@ void qvgeNodeEditorUIController::createPanels()
 
 qvgeNodeEditorUIController::~qvgeNodeEditorUIController() 
 {
-	
 }
 
 
@@ -232,6 +239,18 @@ void qvgeNodeEditorUIController::unzoom()
 void qvgeNodeEditorUIController::resetZoom()
 {
 	m_editorView->zoomTo(1.0);
+}
+
+
+void qvgeNodeEditorUIController::sceneOptions()
+{
+    CSceneOptionsDialog dialog;
+    if (dialog.exec(*m_scene))
+    {
+        gridAction->setChecked(m_scene->gridEnabled());
+        gridSnapAction->setChecked(m_scene->gridSnapEnabled());
+        actionShowLabels->setChecked(m_scene->itemLabelsEnabled());
+    }
 }
 
 

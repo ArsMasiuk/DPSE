@@ -2,9 +2,16 @@
 
 #include <QPixmap>
 #include <QPainter>
+#include <QTimer>
 
 
 QPenMenuToolButton::QPenMenuToolButton(QWidget *parent) : QMenuToolButton(parent)
+{
+    init();
+}
+
+
+void QPenMenuToolButton::init()
 {
     QPen pen;
     pen.setWidth(2);
@@ -22,11 +29,11 @@ QPenMenuToolButton::QPenMenuToolButton(QWidget *parent) : QMenuToolButton(parent
 
         switch (i)
         {
-            case Qt::NoPen:		addAction(pixmap, tr("None"), "none");			break;
-            case Qt::SolidLine:		addAction(pixmap, tr("Solid"), "solid");		break;
-            case Qt::DashLine:		addAction(pixmap, tr("Dashed"), "dashed");		break;
-            case Qt::DotLine:		addAction(pixmap, tr("Dotted"), "dotted");		break;
-            case Qt::DashDotLine:	addAction(pixmap, tr("Dash-Dot"), "dashdot");		break;
+            case Qt::NoPen:             addAction(pixmap, tr("None"), "none");			break;
+            case Qt::SolidLine:         addAction(pixmap, tr("Solid"), "solid");		break;
+            case Qt::DashLine:          addAction(pixmap, tr("Dashed"), "dashed");		break;
+            case Qt::DotLine:           addAction(pixmap, tr("Dotted"), "dotted");		break;
+            case Qt::DashDotLine:       addAction(pixmap, tr("Dash-Dot"), "dashdot");		break;
             case Qt::DashDotDotLine:    addAction(pixmap, tr("Dash-Dot-Dot"), "dashdotdot");	break;
             default:                    break;
         }

@@ -27,6 +27,8 @@ private Q_SLOTS:
 	void unzoom();
 	void resetZoom();
 
+    void sceneOptions();
+
 private:
 	void createMenus();
 	void createPanels();
@@ -46,4 +48,8 @@ private:
 	QAction *unzoomAction;
 	QAction *resetZoomAction, *resetZoomAction2;
 	QAction *fitZoomAction;
+
+    QAction *gridAction;
+    QAction *gridSnapAction;
+    QAction *actionShowLabels;
 };

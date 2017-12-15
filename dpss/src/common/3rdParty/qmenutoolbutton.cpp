@@ -1,6 +1,7 @@
 #include "qmenutoolbutton.h"
 
 #include <QMenu>
+#include <QActionEvent>
 
 
 QMenuToolButton::QMenuToolButton(QWidget *parent) : QToolButton(parent)
@@ -11,7 +12,7 @@ QMenuToolButton::QMenuToolButton(QWidget *parent) : QToolButton(parent)
 
 QAction* QMenuToolButton::addAction(const QString &text, const QVariant &v)
 {
-    QAction* act = new QAction(text);
+    QAction* act = new QAction(text, parent());
     act->setData(v);
     QToolButton::addAction(act);
     return act;
@@ -20,7 +21,7 @@ QAction* QMenuToolButton::addAction(const QString &text, const QVariant &v)
 
 QAction* QMenuToolButton::addAction(const QIcon &icon, const QString &text, const QVariant &v)
 {
-    QAction* act = new QAction(icon, text);
+    QAction* act = new QAction(icon, text, parent());
     act->setData(v);
     QToolButton::addAction(act);
     return act;
@@ -73,6 +74,7 @@ void QMenuToolButton::actionEvent(QActionEvent *event)
 {
     QToolButton::actionEvent(event);
 
+    // set default action
     if (defaultAction() == NULL)
     {
         for (auto act: actions())
