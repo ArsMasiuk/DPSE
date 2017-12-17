@@ -2,6 +2,7 @@ TEMPLATE = app
 TARGET = qvgeapp
 
 QT += core gui widgets xml opengl network printsupport
+CONFIG += c++11
 
 SOURCES += $$files($$PWD/*.cpp)
 HEADERS  += $$files($$PWD/*.h)

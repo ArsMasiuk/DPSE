@@ -5,6 +5,7 @@
 #include <QDockWidget>
 
 #include <qvge/CNode.h>
+#include <qvge/CConnection.h>
 #include <qvge/CImageExport.h>
 #include <qvge/CPDFExport.h>
 
@@ -19,6 +20,7 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 {
 	// connect scene
 	connect(scene, &CEditorScene::sceneChanged, parent, &CMainWindow::onDocumentChanged);
+    connect(scene, &CEditorScene::sceneChanged, this, &qvgeNodeEditorUIController::onSceneChanged);
 	connect(scene, &CEditorScene::selectionChanged, this, &qvgeNodeEditorUIController::onSelectionChanged);
 
 	// connect view
@@ -29,6 +31,15 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 
 	// dock panels
 	createPanels();
+
+    // status bar
+    m_statusLabel = new QLabel();
+    parent->statusBar()->addPermanentWidget(m_statusLabel);
+
+    // update actions
+    onSceneChanged();
+    onSelectionChanged();
+    onZoomChanged(1);
 }
 
 
@@ -172,11 +183,6 @@ void qvgeNodeEditorUIController::createMenus()
 
 	zoomToolbar->addAction(unzoomAction);
 	zoomToolbar->addAction(fitZoomAction);
-
-
-	// update actions
-	onSelectionChanged();
-	onZoomChanged(1);
 }
 
 
@@ -215,6 +221,15 @@ void qvgeNodeEditorUIController::onSelectionChanged()
 
 	auto nodes = m_scene->getSelectedItems<CNode>();
 	unlinkAction->setEnabled(nodes.size() > 0);
+}
+
+
+void qvgeNodeEditorUIController::onSceneChanged()
+{
+    auto nodes = m_scene->getItems<CNode>();
+    auto edges = m_scene->getItems<CConnection>();
+
+    m_statusLabel->setText(tr("Nodes: %1 | Edges: %2").arg(nodes.size()).arg(edges.size()));
 }
 
 

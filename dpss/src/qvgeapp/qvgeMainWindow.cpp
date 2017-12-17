@@ -7,6 +7,7 @@
 
 #include <qvge/CFileSerializerGEXF.h>
 #include <qvge/CFileSerializerGraphML.h>
+#include <qvge/CFileSerializerXGR.h>
 
 
 qvgeMainWindow::qvgeMainWindow()
@@ -16,8 +17,8 @@ qvgeMainWindow::qvgeMainWindow()
     CDocumentFormat gexf = { "GEXF", "*.gexf", false, true };
     CDocumentFormat graphml = { "GraphML", "*.graphml", true, true };
 //    CDocumentFormat gr = { "Old plain GR", "*.gr", false, true };
-//    CDocumentFormat xgr = { "XML Graph", "*.xgr", true, true };
-    CDocument graph = { tr("Graph Document"), tr("Directed or undirected graph"), "graph", true, {gexf, graphml} };
+    CDocumentFormat xgr = { "XML Graph", "*.xgr", true, true };
+    CDocument graph = { tr("Graph Document"), tr("Directed or undirected graph"), "graph", true, {gexf, graphml, xgr} };
     addDocument(graph);
 
     CDocumentFormat txt = { tr("Plain Text"), "*.txt", true, true };
@@ -98,6 +99,22 @@ bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType
 		return false;
     }
 
+
+    if (fileName.toLower().endsWith(".xgr"))
+    {
+        docType = "graph";
+
+        if (onCreateNewDocument(docType))
+        {
+            if (CFileSerializerXGR().load(fileName, *m_editorScene))
+            {
+                m_editorScene->addUndoState();
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 	// fallback: load as text
 	//if (fileName.toLower().endsWith(".txt"))

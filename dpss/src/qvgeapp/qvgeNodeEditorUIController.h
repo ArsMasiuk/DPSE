@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <QAction>
+#include <QLabel>
 
 #include <base/CMainWindow.h>
 
@@ -21,7 +22,8 @@ private Q_SLOTS:
 	void exportPDF();
 
 	void onSelectionChanged();
-	
+    void onSceneChanged();
+
 	void onZoomChanged(double currentZoom);
 	void zoom();
 	void unzoom();
@@ -37,6 +39,8 @@ private:
 	CMainWindow *m_parent;
 	CNodeEditorScene *m_scene;
 	CEditorView *m_editorView;
+
+    QLabel *m_statusLabel;
 
 	QAction *cutAction;
 	QAction *copyAction;
