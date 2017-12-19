@@ -108,6 +108,8 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
         ui->EdgeColor->setColor(edge->getAttribute("color").value<QColor>());
         ui->EdgeWeight->setValue(edge->getAttribute("weight").toDouble());
         ui->EdgeStyle->selectAction(edge->getAttribute("style"));
+
+        ui->EdgeLabelFont->setFont(edge->getAttribute("label.font").value<QFont>());
     }
     //ui->EdgesBox->setEnabled(edges.count());
 
@@ -218,6 +220,24 @@ void CNodeEdgePropertiesUI::on_EdgeStyle_activated(QVariant data)
     for (auto edge: edges)
     {
         edge->setAttribute("style", data);
+    }
+
+    m_scene->addUndoState();
+}
+
+
+void CNodeEdgePropertiesUI::on_EdgeLabelFont_activated(const QFont &font)
+{
+    if (m_updateLock || m_scene == NULL)
+        return;
+
+    QList<CConnection*> edges = m_scene->getSelectedEdges();
+    if (edges.isEmpty())
+        return;
+
+    for (auto edge: edges)
+    {
+        edge->setAttribute("label.font", font);
     }
 
     m_scene->addUndoState();

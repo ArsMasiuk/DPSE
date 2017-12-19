@@ -38,6 +38,7 @@ protected Q_SLOTS:
     void on_EdgeColor_activated(const QColor &color);
     void on_EdgeWeight_valueChanged(double value);
     void on_EdgeStyle_activated(QVariant data);
+    void on_EdgeLabelFont_activated(const QFont &font);
 
 private:
     CNodeEditorScene *m_scene;

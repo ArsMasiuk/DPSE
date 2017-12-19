@@ -20,12 +20,8 @@ ColorButton::ColorButton(QWidget *parent)
 	m_tooltipMode(TM_NAMED_HEX_COLOR),
     m_labelMode(TM_NAMED_COLOR)
 {
-	m_colorScheme = &namedColorsBase();
-
     //setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setPopupMode(QToolButton::MenuButtonPopup);
-
-	setColor(Qt::white);
 
     // build up menu
     QMenu *menu = new QMenu(this);
@@ -55,6 +51,9 @@ ColorButton::ColorButton(QWidget *parent)
     //
     connect(this, SIGNAL(colorChanged(QColor)), this, SIGNAL(activated(QColor)));
     connect(this, SIGNAL(clicked()), this, SLOT(onClicked()));
+
+    setColorScheme(namedColorsOpenOffice());
+    setColor(Qt::white);
 }
 
 ColorButton::~ColorButton()
@@ -68,7 +67,7 @@ void ColorButton::setColor(const QColor& color)
         m_color = color;
 
         QPixmap pm(iconSize());
-        drawColorItem(pm, color);
+        drawColorItem(pm, m_color);
         setIcon(QIcon(pm));
 
         setText(getColorName(m_labelMode, m_color));
@@ -136,7 +135,9 @@ void ColorButton::setPickModeLeft(PickMode mode)
 
 void ColorButton::resizeEvent(QResizeEvent * /*event*/)
 {
-	setColor(m_color);
+    QPixmap pm(iconSize());
+    drawColorItem(pm, m_color);
+    setIcon(QIcon(pm));
 }
 
 void ColorButton::onDialogButton()

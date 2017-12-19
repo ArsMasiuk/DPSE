@@ -31,4 +31,5 @@ private Q_SLOTS:
     void onAction(QAction* act);
 };
 
+
 #endif // QMENUTOOLBUTTON_H

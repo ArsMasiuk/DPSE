@@ -232,25 +232,32 @@ void CItem::updateLabelContent()
 	{
 		labelToShow = visibleLabels.values().first();
 	}
-	else if (visibleLabels.size() > 1)
-		for (auto it = visibleLabels.constBegin(); it != visibleLabels.constEnd(); ++it)
-		{
-			if (labelToShow.size()) 
-				labelToShow += "\n";
-		
-			labelToShow += QString("%1: %2").arg(QString(it.key())).arg(it.value());
-		}
+    else
+        if (visibleLabels.size() > 1)
+            for (auto it = visibleLabels.constBegin(); it != visibleLabels.constEnd(); ++it)
+            {
+                if (labelToShow.size())
+                    labelToShow += "\n";
+
+                labelToShow += QString("%1: %2").arg(QString(it.key())).arg(it.value());
+            }
 	
 	setLabelText(labelToShow);
 
-	bool ok = false;
-	int s = getAttribute("label.size").toInt(&ok);
+    // label attrs
+    QFont f = getAttribute("label.font").value<QFont>();
+
+    bool ok = false;
+    int s = getAttribute("label.size").toInt(&ok);
 	if (ok && s > 0)
 	{
-		QFont f(m_labelItem->font());
 		f.setPointSize(s);
-		m_labelItem->setFont(f);
 	}
+
+    m_labelItem->setFont(f);
+
+    QColor c = getAttribute("label.color").value<QColor>();
+    m_labelItem->setBrush(c);
 }
 
 
