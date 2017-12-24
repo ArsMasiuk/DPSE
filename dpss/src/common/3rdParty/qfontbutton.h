@@ -14,6 +14,11 @@ class QFontButton : public QToolButton
 public:
     QFontButton(QWidget *parent = Q_NULLPTR);
 
+	const QFont& currentFont() const { return m_font; }
+
+public Q_SLOTS:
+	void setCurrentFont(const QFont &font);
+
 Q_SIGNALS:
     void activated(const QFont &font);
 
@@ -24,6 +29,7 @@ private Q_SLOTS:
 
 private:
     QFontDialog *m_fontDialog;
+	QFont m_font;
 };
 
 

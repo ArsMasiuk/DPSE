@@ -28,15 +28,32 @@ QFontButton::QFontButton(QWidget *parent) : QToolButton(parent)
 }
 
 
+void QFontButton::setCurrentFont(const QFont &font)
+{
+	m_font = font;
+
+	setToolTip(m_font.key());
+
+	if (m_font.pixelSize() > 20 || m_font.pointSize() > 20)
+	{
+		QFont f(font);
+		f.setPointSize(20);
+		setFont(f);
+	}
+	else
+		setFont(m_font);
+}
+
+
 void QFontButton::onClicked()
 {
-    Q_EMIT activated(font());
+    Q_EMIT activated(m_font);
 }
 
 
 void QFontButton::onDialogShown()
 {
-    m_fontDialog->setCurrentFont(font());
+    m_fontDialog->setCurrentFont(m_font);
 
     m_fontDialog->setVisible(true);
 }
@@ -44,7 +61,7 @@ void QFontButton::onDialogShown()
 
 void QFontButton::onDialogFontSelected(const QFont &font)
 {
-    setFont(font);
+    setCurrentFont(font);
 
     onClicked();
 }

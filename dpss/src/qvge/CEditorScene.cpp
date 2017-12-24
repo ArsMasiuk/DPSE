@@ -83,12 +83,23 @@ void CEditorScene::initialize()
 	qDeleteAll(m_classAttributesConstrains);
 	m_classAttributesConstrains.clear();
 
-	// default item attr
+	// default item attrs
     CAttribute labelAttr("label", "Label", "");
     setClassAttribute("item", labelAttr, true);
 
+	CAttribute labelColorAttr("label.color", "Label Color", QColor(Qt::black));
+	setClassAttribute("item", labelColorAttr);
+
+	QFont labelFont;
+	CAttribute labelFontAttr("label.font", "Label Font", labelFont);
+	setClassAttribute("item", labelFontAttr);
+
+	CAttribute labelSizeAttr("label.size", "Label Size", labelFont.pointSize());
+	setClassAttribute("item", labelSizeAttr);
+
     CAttribute idAttr("id", "ID", "");
     setClassAttribute("item", idAttr);
+
 
 	// static init
 	static bool s_init = false;

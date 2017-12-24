@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QApplication>
+#include <QFileInfo>
 
 #include <qvge/CFileSerializerGEXF.h>
 #include <qvge/CFileSerializerGraphML.h>
@@ -155,7 +156,21 @@ bool qvgeMainWindow::onSaveDocument(const QString &fileName, const QString &sele
     }
 
     // graph
-    // to do...
+	if (docType == "graph")
+	{
+		QString extType = QFileInfo(fileName).suffix().toLower();
+
+		if (extType == "xgr")
+		{
+			if (CFileSerializerXGR().save(fileName, *m_editorScene))
+			{
+				return true;
+			}
+
+			return false;
+		}
+	}
+
 
     // unknown type
     return false;

@@ -9,7 +9,7 @@
 CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
     QWidget(parent),
     m_scene(NULL),
-    m_updateLock(true),
+    m_updateLock(false),
     ui(new Ui::CNodeEdgePropertiesUI)
 {
     ui->setupUi(this);
@@ -55,8 +55,8 @@ void CNodeEdgePropertiesUI::setScene(CNodeEditorScene* scene)
 
 void CNodeEdgePropertiesUI::connectSignals(CEditorScene* scene)
 {
-    connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()), Qt::QueuedConnection);
-    connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()), Qt::QueuedConnection);
+    connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()));
+    connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
 }
 
 void CNodeEdgePropertiesUI::onSceneAttached(CEditorScene* scene)
@@ -79,7 +79,7 @@ void CNodeEdgePropertiesUI::onSceneChanged()
 
 void CNodeEdgePropertiesUI::onSelectionChanged()
 {
-    if (m_scene == NULL)
+    if (m_updateLock || m_scene == NULL)
         return;
 
     m_updateLock = true;
@@ -97,7 +97,7 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
         ui->NodeShape->selectAction(node->getAttribute("shape"));
         ui->NodeSize->setValue(node->getAttribute("size").toSize().width());
     }
-    //ui->NodesBox->setEnabled(nodes.count());
+
 
     ui->EdgesBox->setTitle(tr("Edges (%1)").arg(edges.count()));
 
@@ -108,10 +108,28 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
         ui->EdgeColor->setColor(edge->getAttribute("color").value<QColor>());
         ui->EdgeWeight->setValue(edge->getAttribute("weight").toDouble());
         ui->EdgeStyle->selectAction(edge->getAttribute("style"));
+     }
 
-        ui->EdgeLabelFont->setFont(edge->getAttribute("label.font").value<QFont>());
+
+    // labels
+    QList<CItem*> itemList;
+    for (auto edgeItem: edges) itemList << edgeItem;
+    for (auto nodeItem: nodes) itemList << nodeItem;
+    for (auto item: itemList)
+    {
+        // skip empty labels
+        if (item->getAttribute("label").toString().isEmpty())
+            continue;
+
+		QFont f(item->getAttribute("label.font").value<QFont>());
+		int s(item->getAttribute("label.size").toInt());
+		f.setPointSize(s);
+        ui->LabelFont->setCurrentFont(f);
+        ui->LabelSize->setValue(s);
+
+        ui->LabelColor->setColor(item->getAttribute("label.color").value<QColor>());
+        break;
     }
-    //ui->EdgesBox->setEnabled(edges.count());
 
     // allow updates
     m_updateLock = false;
@@ -226,19 +244,76 @@ void CNodeEdgePropertiesUI::on_EdgeStyle_activated(QVariant data)
 }
 
 
-void CNodeEdgePropertiesUI::on_EdgeLabelFont_activated(const QFont &font)
+void CNodeEdgePropertiesUI::on_LabelFont_activated(const QFont &font)
 {
     if (m_updateLock || m_scene == NULL)
         return;
 
     QList<CConnection*> edges = m_scene->getSelectedEdges();
-    if (edges.isEmpty())
-        return;
+	QList<CNode*> nodes = m_scene->getSelectedNodes();
+	if (nodes.isEmpty() && edges.isEmpty())
+		return;
 
-    for (auto edge: edges)
+	for (auto edge: edges)
     {
         edge->setAttribute("label.font", font);
+		edge->setAttribute("label.size", font.pointSize());
     }
+
+	for (auto node : nodes)
+	{
+		node->setAttribute("label.font", font);
+		node->setAttribute("label.size", font.pointSize());
+	}
 
     m_scene->addUndoState();
 }
+
+
+void CNodeEdgePropertiesUI::on_LabelColor_activated(const QColor &color)
+{
+	if (m_updateLock || m_scene == NULL)
+		return;
+
+	QList<CConnection*> edges = m_scene->getSelectedEdges();
+	QList<CNode*> nodes = m_scene->getSelectedNodes();
+	if (nodes.isEmpty() && edges.isEmpty())
+		return;
+
+	for (auto edge : edges)
+	{
+		edge->setAttribute("label.color", color);
+	}
+
+	for (auto node : nodes)
+	{
+		node->setAttribute("label.color", color);
+	}
+
+	m_scene->addUndoState();
+}
+
+
+void CNodeEdgePropertiesUI::on_LabelSize_valueChanged(int size)
+{
+	if (m_updateLock || m_scene == NULL)
+		return;
+
+	QList<CConnection*> edges = m_scene->getSelectedEdges();
+	QList<CNode*> nodes = m_scene->getSelectedNodes();
+	if (nodes.isEmpty() && edges.isEmpty())
+		return;
+
+	for (auto edge : edges)
+	{
+		edge->setAttribute("label.size", size);
+	}
+
+	for (auto node : nodes)
+	{
+		node->setAttribute("label.size", size);
+	}
+
+	m_scene->addUndoState();
+}
+

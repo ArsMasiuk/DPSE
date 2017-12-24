@@ -1,6 +1,5 @@
 #include "colorbutton.h"
 #include "colorgrid.h"
-#include "widgetpopup.h"
 
 #include <QPainter>
 #include <QMouseEvent>
