@@ -39,7 +39,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="1">
-       <widget class="QMenuToolButton" name="NodeShape">
+       <widget class="QSplitButton" name="NodeShape">
         <property name="minimumSize">
          <size>
           <width>44</width>
@@ -178,7 +178,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPenMenuToolButton" name="EdgeStyle">
+         <widget class="QPenButton" name="EdgeStyle">
           <property name="minimumSize">
            <size>
             <width>44</width>
@@ -260,28 +260,6 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QFontButton" name="LabelFont">
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>32</height>
-           </size>
-          </property>
-          <property name="statusTip">
-           <string>Set font of the selected labels</string>
-          </property>
-          <property name="text">
-           <string>Aa1</string>
-          </property>
-          <property name="popupMode">
-           <enum>QToolButton::MenuButtonPopup</enum>
-          </property>
-          <property name="toolButtonStyle">
-           <enum>Qt::ToolButtonTextOnly</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QSint::ColorButton" name="LabelColor">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -309,6 +287,28 @@
           </property>
           <property name="popupMode">
            <enum>QToolButton::MenuButtonPopup</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFontButton" name="LabelFont">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="statusTip">
+           <string>Set font of the selected labels</string>
+          </property>
+          <property name="text">
+           <string>Aa1</string>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::MenuButtonPopup</enum>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextOnly</enum>
           </property>
          </widget>
         </item>
@@ -370,14 +370,14 @@
    <header>3rdParty/colorbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QMenuToolButton</class>
+   <class>QSplitButton</class>
    <extends>QToolButton</extends>
-   <header>qmenutoolbutton.h</header>
+   <header>qsplitbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QPenMenuToolButton</class>
+   <class>QPenButton</class>
    <extends>QToolButton</extends>
-   <header>qpenmenutoolbutton.h</header>
+   <header>qpenbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QFontButton</class>
@@ -385,6 +385,17 @@
    <header>qfontbutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>NodeColor</tabstop>
+  <tabstop>NodeShape</tabstop>
+  <tabstop>NodeSize</tabstop>
+  <tabstop>EdgeColor</tabstop>
+  <tabstop>EdgeStyle</tabstop>
+  <tabstop>EdgeWeight</tabstop>
+  <tabstop>LabelColor</tabstop>
+  <tabstop>LabelFont</tabstop>
+  <tabstop>LabelSize</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

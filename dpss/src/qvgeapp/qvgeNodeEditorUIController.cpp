@@ -104,14 +104,6 @@ void qvgeNodeEditorUIController::createMenus()
 	unlinkAction->setStatusTip(tr("Unlink selected nodes"));
 	connect(unlinkAction, &QAction::triggered, m_scene, &CNodeEditorScene::onActionUnlink);
 
-    editMenu->addSeparator();
-
-    // scene options
-    QAction *sceneAction = editMenu->addAction(tr("&Options..."));
-    sceneAction->setStatusTip(tr("Set up the scene"));
-    connect(sceneAction, &QAction::triggered, this, &qvgeNodeEditorUIController::sceneOptions);
-
-
 	// add edit toolbar
 	QToolBar *editToolbar = m_parent->addToolBar(tr("Edit"));
 	editToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -168,6 +160,13 @@ void qvgeNodeEditorUIController::createMenus()
 	fitZoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomFit"), tr("&Fit to View"));
 	fitZoomAction->setStatusTip(tr("Zoom to fit all the items to view"));
 	connect(fitZoomAction, &QAction::triggered, m_editorView, &CEditorView::fitToView);
+
+	viewMenu->addSeparator();
+
+	// scene options
+	QAction *sceneAction = viewMenu->addAction(tr("&Options..."));
+	sceneAction->setStatusTip(tr("Set up the scene"));
+	connect(sceneAction, &QAction::triggered, this, &qvgeNodeEditorUIController::sceneOptions);
 
 
 	// add view toolbar

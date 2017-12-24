@@ -14,7 +14,7 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->NodeColor->setColorScheme(QSint::namedColorsOpenOffice());
+    ui->NodeColor->setColorScheme(QSint::OpenOfficeColors());
     ui->NodeColor->setColor(Qt::green);
 
     ui->NodeShape->addAction(QIcon(":/Icons/Node-Disc"), tr("Disc"), "disc");
@@ -24,7 +24,7 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
     ui->NodeShape->addAction(QIcon(":/Icons/Node-Triangle-Down"), tr("Triangle Down"), "triangle2");
 
 
-    ui->EdgeColor->setColorScheme(QSint::namedColorsOpenOffice());
+    ui->EdgeColor->setColorScheme(QSint::OpenOfficeColors());
     ui->EdgeColor->setColor(Qt::red);
 
     ui->EdgeStyle->setUsedRange(Qt::SolidLine, Qt::DotLine);

@@ -1,17 +1,17 @@
-#include "qpenmenutoolbutton.h"
+#include "qpenbutton.h"
 
 #include <QPixmap>
 #include <QPainter>
 #include <QTimer>
 
 
-QPenMenuToolButton::QPenMenuToolButton(QWidget *parent) : QMenuToolButton(parent)
+QPenButton::QPenButton(QWidget *parent) : QSplitButton(parent)
 {
     init();
 }
 
 
-void QPenMenuToolButton::init()
+void QPenButton::init()
 {
     QPen pen;
     pen.setWidth(2);
@@ -41,7 +41,7 @@ void QPenMenuToolButton::init()
 }
 
 
-void QPenMenuToolButton::setUsedRange(Qt::PenStyle start, Qt::PenStyle end)
+void QPenButton::setUsedRange(Qt::PenStyle start, Qt::PenStyle end)
 {
     auto list = actions();
 

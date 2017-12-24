@@ -51,7 +51,7 @@ ColorButton::ColorButton(QWidget *parent)
     connect(this, SIGNAL(colorChanged(QColor)), this, SIGNAL(activated(QColor)));
     connect(this, SIGNAL(clicked()), this, SLOT(onClicked()));
 
-    setColorScheme(namedColorsOpenOffice());
+    setColorScheme(QSint::OpenOfficeColors());
     setColor(Qt::white);
 }
 

@@ -1,5 +1,4 @@
-#ifndef QMENUTOOLBUTTON_H
-#define QMENUTOOLBUTTON_H
+#pragma once
 
 #include <QToolButton>
 #include <QIcon>
@@ -7,12 +6,12 @@
 #include <QAction>
 
 
-class QMenuToolButton : public QToolButton
+class QSplitButton : public QToolButton
 {
     Q_OBJECT
 
 public:
-    QMenuToolButton(QWidget *parent = Q_NULLPTR);
+    QSplitButton(QWidget *parent = Q_NULLPTR);
 
     QAction* addAction(const QString &text, const QVariant &data = QVariant());
     QAction* addAction(const QIcon &icon, const QString &text, const QVariant &data = QVariant());
@@ -31,5 +30,3 @@ private Q_SLOTS:
     void onAction(QAction* act);
 };
 
-
-#endif // QMENUTOOLBUTTON_H

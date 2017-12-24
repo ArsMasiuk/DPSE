@@ -1,12 +1,30 @@
 #include "qfontbutton.h"
 
 
+QString QFontButton::fontToText(const QFont& font)
+{
+	QString result(font.family());
+
+	if (font.pointSizeF() > 0)
+		result += QString(",%1pt").arg(font.pointSizeF());
+	else
+		result += QString(",%1px").arg(font.pixelSize());
+
+	if (font.bold())		result += ",Bold";
+	if (font.italic())		result += ",Italic";
+	if (font.underline())	result += ",Underline";
+
+	return result;
+}
+
+
 QFontButton::QFontButton(QWidget *parent) : QToolButton(parent)
 {
     setToolButtonStyle(Qt::ToolButtonTextOnly);
     setPopupMode(QToolButton::MenuButtonPopup);
 
     setText("Aa");
+	setCurrentFont(QFont());
 
     connect(this, SIGNAL(clicked()), this, SLOT(onClicked()));
 
@@ -32,7 +50,7 @@ void QFontButton::setCurrentFont(const QFont &font)
 {
 	m_font = font;
 
-	setToolTip(m_font.key());
+	setToolTip(fontToText(font));
 
 	if (m_font.pixelSize() > 20 || m_font.pointSize() > 20)
 	{

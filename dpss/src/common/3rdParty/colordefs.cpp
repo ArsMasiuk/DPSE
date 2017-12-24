@@ -25,7 +25,7 @@ void NamedColorsScheme::addNamedColor(const QColor& color, const QString& name)
 }
 
 
-const NamedColorsScheme& namedColorsBase()
+const NamedColorsScheme& BaseColors()
 {
 	static NamedColorsScheme s_colors;
 	
@@ -56,7 +56,7 @@ const NamedColorsScheme& namedColorsBase()
 }
 
 
-const NamedColorsScheme& namedColorsSvg()
+const NamedColorsScheme& SvgColors()
 {
 	static NamedColorsScheme s_colors;
 
@@ -78,7 +78,7 @@ const NamedColorsScheme& namedColorsSvg()
 }
 
 
-const NamedColorsScheme& namedColorsOpenOffice()
+const NamedColorsScheme& OpenOfficeColors()
 {
 	static NamedColorsScheme s_colors;
 
@@ -91,7 +91,7 @@ const NamedColorsScheme& namedColorsOpenOffice()
 		s_colors.colors << "#ffff00" << "#ff9900" << "#ff6666" << "#ff3399" << "#ff66ff" << "#9933ff" << "#3333ff" << "#3399ff" << "#00ffff" << "#00ff66" << "#66ff66" << "#99ff33";
 		s_colors.colors << "#cc9900" << "#ff3300" << "#ff0000" << "#ff0066" << "#ff00ff" << "#6600ff" << "#0000ff" << "#0066ff" << "#00cccc" << "#00cc33" << "#00cc00" << "#66ff00";
 
-        const NamedColorsScheme& svgNames = namedColorsSvg();
+        const NamedColorsScheme& svgNames = SvgColors();
 
 		for (int i = 0; i < s_colors.colors.size(); i++)
 		{

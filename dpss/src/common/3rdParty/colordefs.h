@@ -47,11 +47,11 @@ struct NamedColorsScheme
 	QString colorName(const QColor& color) const;
 };
 
-const NamedColorsScheme& namedColorsBase();
+const NamedColorsScheme& BaseColors();
 
-const NamedColorsScheme& namedColorsSvg();
+const NamedColorsScheme& SvgColors();
 
-const NamedColorsScheme& namedColorsOpenOffice();
+const NamedColorsScheme& OpenOfficeColors();
 
 }
 

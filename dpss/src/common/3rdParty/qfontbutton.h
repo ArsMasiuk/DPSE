@@ -16,6 +16,8 @@ public:
 
 	const QFont& currentFont() const { return m_font; }
 
+	static QString fontToText(const QFont& font);
+
 public Q_SLOTS:
 	void setCurrentFont(const QFont &font);
 

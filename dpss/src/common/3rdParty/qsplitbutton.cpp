@@ -1,16 +1,16 @@
-#include "qmenutoolbutton.h"
+#include "qsplitbutton.h"
 
 #include <QMenu>
 #include <QActionEvent>
 
 
-QMenuToolButton::QMenuToolButton(QWidget *parent) : QToolButton(parent)
+QSplitButton::QSplitButton(QWidget *parent) : QToolButton(parent)
 {
     connect(this, SIGNAL(triggered(QAction*)), this, SLOT(onAction(QAction*)));
 }
 
 
-QAction* QMenuToolButton::addAction(const QString &text, const QVariant &v)
+QAction* QSplitButton::addAction(const QString &text, const QVariant &v)
 {
     QAction* act = new QAction(text, parent());
     act->setData(v);
@@ -19,7 +19,7 @@ QAction* QMenuToolButton::addAction(const QString &text, const QVariant &v)
 }
 
 
-QAction* QMenuToolButton::addAction(const QIcon &icon, const QString &text, const QVariant &v)
+QAction* QSplitButton::addAction(const QIcon &icon, const QString &text, const QVariant &v)
 {
     QAction* act = new QAction(icon, text, parent());
     act->setData(v);
@@ -28,7 +28,7 @@ QAction* QMenuToolButton::addAction(const QIcon &icon, const QString &text, cons
 }
 
 
-QAction* QMenuToolButton::selectAction(const QVariant &data)
+QAction* QSplitButton::selectAction(const QVariant &data)
 {
     for (auto act: actions())
     {
@@ -48,7 +48,7 @@ QAction* QMenuToolButton::selectAction(const QVariant &data)
 }
 
 
-QAction *QMenuToolButton::selectActionByIndex(int index)
+QAction *QSplitButton::selectActionByIndex(int index)
 {
     if (index >= 0 && index < actions().count())
     {
@@ -70,7 +70,7 @@ QAction *QMenuToolButton::selectActionByIndex(int index)
 }
 
 
-void QMenuToolButton::actionEvent(QActionEvent *event)
+void QSplitButton::actionEvent(QActionEvent *event)
 {
     QToolButton::actionEvent(event);
 
@@ -93,7 +93,7 @@ void QMenuToolButton::actionEvent(QActionEvent *event)
 }
 
 
-void QMenuToolButton::onAction(QAction* act)
+void QSplitButton::onAction(QAction* act)
 {
     setDefaultAction(act);
 
