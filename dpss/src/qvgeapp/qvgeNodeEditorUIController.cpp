@@ -106,6 +106,7 @@ void qvgeNodeEditorUIController::createMenus()
 
 	// add edit toolbar
 	QToolBar *editToolbar = m_parent->addToolBar(tr("Edit"));
+    editToolbar->setObjectName("editToolbar");
 	editToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
 	editToolbar->addAction(undoAction);
@@ -171,6 +172,7 @@ void qvgeNodeEditorUIController::createMenus()
 
 	// add view toolbar
 	QToolBar *zoomToolbar = m_parent->addToolBar(tr("View"));
+    zoomToolbar->setObjectName("viewToolbar");
 	zoomToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
 	zoomToolbar->addAction(zoomAction);
@@ -189,6 +191,7 @@ void qvgeNodeEditorUIController::createPanels()
 {
 	// propertis
 	QDockWidget *propertyDock = new QDockWidget(tr("Properties"));
+    propertyDock->setObjectName("propertyDock");
 	m_parent->addDockWidget(Qt::RightDockWidgetArea, propertyDock);
 
     CNodeEdgePropertiesUI *propertiesPanel = new CNodeEdgePropertiesUI(propertyDock);
@@ -197,11 +200,16 @@ void qvgeNodeEditorUIController::createPanels()
 
 	// connections
 	QDockWidget *connectionsDock = new QDockWidget(tr("Connections"));
+    connectionsDock->setObjectName("connectionsDock");
 	m_parent->addDockWidget(Qt::RightDockWidgetArea, connectionsDock);
 
     CCommutationTable *connectionsPanel = new CCommutationTable(connectionsDock);
 	connectionsDock->setWidget(connectionsPanel);
 	connectionsPanel->setScene(m_scene);
+
+
+    //m_parent->restoreDockWidget(propertyDock);
+    //m_parent->restoreDockWidget(connectionsDock);
 }
 
 

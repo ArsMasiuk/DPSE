@@ -45,7 +45,11 @@ bool qvgeMainWindow::onCreateNewDocument(const QByteArray &docType)
         m_editorView = new CEditorView(m_editorScene, this);
         setCentralWidget(m_editorView);
 
-		auto uiController = new qvgeNodeEditorUIController(this, m_editorScene, m_editorView);
+        /*auto uiController = */new qvgeNodeEditorUIController(this, m_editorScene, m_editorView);
+
+        // restore settings for this instance
+        readSettings();
+
         return true;
     }
 
@@ -56,6 +60,10 @@ bool qvgeMainWindow::onCreateNewDocument(const QByteArray &docType)
         setCentralWidget(m_textEditor);
 
         connect(m_textEditor, &QPlainTextEdit::textChanged, this, &CMainWindow::onDocumentChanged);
+
+        // restore settings for this instance
+        readSettings();
+
         return true;
     }
 
@@ -139,7 +147,7 @@ bool qvgeMainWindow::onOpenDocument(const QString &fileName, QByteArray &docType
 }
 
 
-bool qvgeMainWindow::onSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType)
+bool qvgeMainWindow::onSaveDocument(const QString &fileName, const QString &/*selectedFilter*/, const QByteArray &docType)
 {
     // text
     if (docType == "text")

@@ -12,7 +12,6 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include <QMessageBox>
-#include <QSettings>
 #include <QDesktopWidget>
 #include <QCloseEvent>
 #include <QDropEvent>
@@ -216,6 +215,7 @@ void CMainWindow::fillNewFileMenu()
 void CMainWindow::createFileToolbar()
 {
     QToolBar *fileToolbar = addToolBar(tr("File"));
+    fileToolbar->setObjectName("fileToolbar");
     fileToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     fileToolbar->addAction(m_newDocument);
@@ -725,9 +725,17 @@ bool CMainWindow::activateInstance(const QString &fileName)
 void CMainWindow::readSettings()
 {
 	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-	
+
+	doReadSettings(settings);
+}
+
+
+void CMainWindow::doReadSettings(QSettings& settings)
+{
+	// window geometry
 	const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
-	if (geometry.isEmpty()) {
+	if (geometry.isEmpty()) 
+	{
 		const QRect availableGeometry = QApplication::desktop()->availableGeometry(this);
 		resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
 		move((availableGeometry.width() - width()) / 2,
@@ -737,16 +745,37 @@ void CMainWindow::readSettings()
 		restoreGeometry(geometry);
 	}
 
+	if (isMaximized())
+	{
+		setGeometry(QApplication::desktop()->availableGeometry(this));
+	}
+
+
+	// window state
 	if (settings.value("maximized", true).toBool())
 		showMaximized();
 	else
 		showNormal();
+
+
+	// toolbars & dock widgets
+	QApplication::processEvents();
+
+	restoreState(settings.value("windowState").toByteArray());
 }
 
 
 void CMainWindow::writeSettings()
 {
 	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	
+	doWriteSettings(settings);
+}
+
+
+void CMainWindow::doWriteSettings(QSettings& settings)
+{
+	settings.setValue("windowState", saveState());
 	settings.setValue("geometry", saveGeometry());
 	settings.setValue("maximized", isMaximized());
 }

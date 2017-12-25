@@ -14,5 +14,5 @@ include($$PWD/../qvge/qvge.pri)
 INCLUDEPATH += $$PWD/..
 
 win32{
-        LIBS += -lopengl32 -lglu32 -lshell32 -luser32
+        LIBS += -lopengl32 -lglu32 -lshell32 -luser32 -lpsapi
 }

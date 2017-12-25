@@ -8,6 +8,7 @@
 #include <QSet>
 #include <QByteArray>
 #include <QString>
+#include <QSettings>
 
 
 struct CDocumentFormat
@@ -91,7 +92,9 @@ protected:
 	virtual void updateRecentFiles();
 
 	virtual void readSettings();
+	virtual void doReadSettings(QSettings& settings);
 	virtual void writeSettings();
+	virtual void doWriteSettings(QSettings& settings);
 
 protected Q_SLOTS:
     void createNewDocument();
