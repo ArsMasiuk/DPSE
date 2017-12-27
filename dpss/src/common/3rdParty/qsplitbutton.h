@@ -6,6 +6,10 @@
 #include <QAction>
 
 
+namespace QSint
+{
+
+
 class QSplitButton : public QToolButton
 {
     Q_OBJECT
@@ -30,3 +34,5 @@ private Q_SLOTS:
     void onAction(QAction* act);
 };
 
+
+}

@@ -4,6 +4,7 @@
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CConnection.h>
 #include <qvge/CNode.h>
+#include <qvge/CAttribute.h>
 
 
 CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
@@ -22,6 +23,10 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
     ui->NodeShape->addAction(QIcon(":/Icons/Node-Triangle"), tr("Triangle Up"), "triangle");
     ui->NodeShape->addAction(QIcon(":/Icons/Node-Diamond"), tr("Diamond"), "diamond");
     ui->NodeShape->addAction(QIcon(":/Icons/Node-Triangle-Down"), tr("Triangle Down"), "triangle2");
+
+	ui->EdgeDirection->addAction(QIcon(":/Icons/Edge-Directed"), tr("Directed (one end)"), "directed");
+	ui->EdgeDirection->addAction(QIcon(":/Icons/Edge-Mutual"), tr("Mutual (both ends)"), "mutual");
+	ui->EdgeDirection->addAction(QIcon(":/Icons/Edge-Undirected"), tr("None (no ends)"), "undirected");
 
 
     ui->EdgeColor->setColorScheme(QSint::OpenOfficeColors());
@@ -108,6 +113,7 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
         ui->EdgeColor->setColor(edge->getAttribute("color").value<QColor>());
         ui->EdgeWeight->setValue(edge->getAttribute("weight").toDouble());
         ui->EdgeStyle->selectAction(edge->getAttribute("style"));
+		ui->EdgeDirection->selectAction(edge->getAttribute("direction"));
      }
 
 
@@ -241,6 +247,24 @@ void CNodeEdgePropertiesUI::on_EdgeStyle_activated(QVariant data)
     }
 
     m_scene->addUndoState();
+}
+
+
+void CNodeEdgePropertiesUI::on_EdgeDirection_activated(QVariant data)
+{
+	if (m_updateLock || m_scene == NULL)
+		return;
+
+	QList<CConnection*> edges = m_scene->getSelectedEdges();
+	if (edges.isEmpty())
+		return;
+
+	for (auto edge : edges)
+	{
+		edge->setAttribute("direction", data);
+	}
+
+	m_scene->addUndoState();
 }
 
 

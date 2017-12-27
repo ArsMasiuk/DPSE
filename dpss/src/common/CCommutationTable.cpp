@@ -68,8 +68,8 @@ void CCommutationTable::setScene(CNodeEditorScene* scene)
 
 void CCommutationTable::connectSignals(CEditorScene* scene)
 {
-	connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()), Qt::QueuedConnection);
-	connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()), Qt::QueuedConnection);
+    connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()), Qt::QueuedConnection);
+    connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()), Qt::QueuedConnection);
 }
 
 void CCommutationTable::onSceneAttached(CEditorScene* scene)

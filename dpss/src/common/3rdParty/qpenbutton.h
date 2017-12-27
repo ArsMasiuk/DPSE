@@ -5,6 +5,10 @@
 #include <QPen>
 
 
+namespace QSint
+{
+
+
 class QPenButton : public QSplitButton
 {
     Q_OBJECT
@@ -17,3 +21,7 @@ public:
 private:
     virtual void init();
 };
+
+
+}
+

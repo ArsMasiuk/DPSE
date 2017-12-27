@@ -22,7 +22,7 @@ CEditorView::CEditorView(QWidget *parent)
 	m_menuModeTmp(Qt::PreventContextMenu),
 	m_currentZoom(1.0)
 {
-	setAttribute(Qt::WA_TranslucentBackground, false);
+    setAttribute(Qt::WA_TranslucentBackground, false);
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -32,18 +32,19 @@ CEditorView::CEditorView(QWidget *parent)
 	setRenderHint(QPainter::Antialiasing);
 	setRenderHint(QPainter::HighQualityAntialiasing);
 	setOptimizationFlags(DontSavePainterState);
-	setOptimizationFlags(DontClipPainter);
-	setOptimizationFlags(DontAdjustForAntialiasing);
+    setOptimizationFlags(DontAdjustForAntialiasing);
+
+    //setOptimizationFlags(IndirectPainting);
 }
 
 CEditorView::CEditorView(CEditorScene *scene, QWidget *parent): CEditorView(parent)
 {
-	//auto glw = new QOpenGLWidget();
+    //auto glw = new QOpenGLWidget();
 	//glw->setUpdateBehavior(QOpenGLWidget::PartialUpdate);
 	//QSurfaceFormat sf;
 	//sf.setRenderableType(QSurfaceFormat::OpenGLES);
 	//glw->setFormat(sf);
-	//setViewport(glw);
+    //setViewport(glw);
 
 	//auto glw = new QGLWidget();
 	//setViewport(glw);
@@ -51,7 +52,7 @@ CEditorView::CEditorView(CEditorScene *scene, QWidget *parent): CEditorView(pare
 	setScene(scene);
 
 
-	//setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    //setViewportUpdateMode(FullViewportUpdate);
 }
 
 CEditorView::~CEditorView()

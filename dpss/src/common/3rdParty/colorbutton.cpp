@@ -15,7 +15,7 @@ namespace QSint
 
 ColorButton::ColorButton(QWidget *parent)
 	: QToolButton(parent),
-	m_modeLeft(PM_COLORGRID_DIALOG),
+    m_mode(PM_COLORGRID_DIALOG),
 	m_tooltipMode(TM_NAMED_HEX_COLOR),
     m_labelMode(TM_NAMED_COLOR)
 {
@@ -32,27 +32,20 @@ ColorButton::ColorButton(QWidget *parent)
     connect(m_grid, SIGNAL(picked(const QColor&)), this, SLOT(setColor(const QColor&)));
     connect(m_grid, SIGNAL(accepted()), menu, SLOT(hide()));
 
-    auto gridAction = new QWidgetAction(this);
-    gridAction->setDefaultWidget(m_grid);
-    menu->addAction(gridAction);
+    m_colorGridAction = new QWidgetAction(this);
+    m_colorGridAction->setDefaultWidget(m_grid);
+    menu->addAction(m_colorGridAction);
 
+    m_colorDialogAction = menu->addAction(tr("Choose Color..."));
+    connect(m_colorDialogAction, SIGNAL(triggered()), this, SLOT(onDialogButton()));
 
-//    QPushButton* dialogButton = new QPushButton(tr("Choose Color..."));
-//    connect(dialogButton, SIGNAL(clicked()), this, SLOT(onDialogButton()));
-
-//    m_dialogButtonAction = new QWidgetAction(this);
-//    m_dialogButtonAction->setDefaultWidget(dialogButton);
-//    menu->addAction(m_dialogButtonAction);
-
-    m_dialogButtonAction = menu->addAction(tr("Choose Color..."));
-    connect(m_dialogButtonAction, SIGNAL(triggered()), this, SLOT(onDialogButton()));
-
-    //
     connect(this, SIGNAL(colorChanged(QColor)), this, SIGNAL(activated(QColor)));
     connect(this, SIGNAL(clicked()), this, SLOT(onClicked()));
 
     setColorScheme(QSint::OpenOfficeColors());
     setColor(Qt::white);
+
+    setPickMode(PM_COLORGRID_DIALOG);
 }
 
 ColorButton::~ColorButton()
@@ -127,9 +120,12 @@ QString ColorButton::getColorName(ColorButton::TextMode tm, const QColor &color)
     return "";
 }
 
-void ColorButton::setPickModeLeft(PickMode mode)
+void ColorButton::setPickMode(PickMode mode)
 {
-	m_modeLeft = mode;
+    m_mode = mode;
+
+    m_colorGridAction->setVisible(mode == PM_COLORGRID || mode == PM_COLORGRID_DIALOG);
+    m_colorDialogAction->setVisible(mode == PM_COLORDIALOG || mode == PM_COLORGRID_DIALOG);
 }
 
 void ColorButton::resizeEvent(QResizeEvent * /*event*/)
@@ -167,8 +163,6 @@ void ColorButton::setColorScheme(const NamedColorsScheme &scheme)
         m_grid->setAutoSize(true);
 
     m_grid->setScheme(&m_colorScheme->colors);
-
-    //m_grid->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 }
 
 void ColorButton::setCellSize(int size)

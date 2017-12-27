@@ -1,6 +1,10 @@
 #include "qfontbutton.h"
 
 
+namespace QSint
+{
+
+
 QString QFontButton::fontToText(const QFont& font)
 {
 	QString result(font.family());
@@ -84,3 +88,5 @@ void QFontButton::onDialogFontSelected(const QFont &font)
     onClicked();
 }
 
+
+}

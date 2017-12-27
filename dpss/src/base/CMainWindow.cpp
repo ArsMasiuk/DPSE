@@ -745,10 +745,13 @@ void CMainWindow::doReadSettings(QSettings& settings)
 		restoreGeometry(geometry);
 	}
 
-	if (isMaximized())
-	{
-		setGeometry(QApplication::desktop()->availableGeometry(this));
-	}
+
+
+	// toolbars & dock widgets
+	QApplication::processEvents();
+
+	restoreState(settings.value("windowState").toByteArray());
+
 
 
 	// window state
@@ -757,11 +760,10 @@ void CMainWindow::doReadSettings(QSettings& settings)
 	else
 		showNormal();
 
-
-	// toolbars & dock widgets
-	QApplication::processEvents();
-
-	restoreState(settings.value("windowState").toByteArray());
+	//if (isMaximized())
+	//{
+	//	setGeometry(QApplication::desktop()->availableGeometry(this));
+	//}
 }
 
 

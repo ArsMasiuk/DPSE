@@ -3,6 +3,10 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QDockWidget>
+#include <QMenu>
+#include <QToolButton>
+#include <QWidgetAction>
+#include <QDebug>
 
 #include <qvge/CNode.h>
 #include <qvge/CConnection.h>
@@ -25,6 +29,9 @@ qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNod
 
 	// connect view
 	connect(m_editorView, SIGNAL(scaleChanged(double)), this, SLOT(onZoomChanged(double)));
+
+    // slider2d
+    createNavigator();
 
 	// menus & actions
 	createMenus();
@@ -206,10 +213,51 @@ void qvgeNodeEditorUIController::createPanels()
     CCommutationTable *connectionsPanel = new CCommutationTable(connectionsDock);
 	connectionsDock->setWidget(connectionsPanel);
 	connectionsPanel->setScene(m_scene);
+}
 
 
-    //m_parent->restoreDockWidget(propertyDock);
-    //m_parent->restoreDockWidget(connectionsDock);
+void qvgeNodeEditorUIController::createNavigator()
+{
+    m_sliderView = new QSint::Slider2d(m_parent);
+    m_sliderView->connectSource(m_editorView);
+
+    QToolButton *sliderButton = new QToolButton(m_parent);
+    sliderButton->setPopupMode(QToolButton::InstantPopup);
+    m_editorView->setCornerWidget(sliderButton);
+    QWidgetAction *sliderAction = new QWidgetAction(sliderButton);
+    sliderAction->setDefaultWidget(m_sliderView);
+
+    QMenu *sliderMenu = new QMenu(m_parent);
+    sliderButton->setMenu(sliderMenu);
+    sliderMenu->addAction(sliderAction);
+    sliderMenu->setDefaultAction(sliderAction);
+
+    sliderButton->setToolTip(tr("Show scene navigator"));
+    connect(sliderMenu, SIGNAL(aboutToShow()), this, SLOT(onNavigatorShown()));
+    m_sliderView->setFixedSize(200,200);
+    m_sliderView->setSliderOpacity(0.3);
+    m_sliderView->setSliderBrush(Qt::gray);
+}
+
+
+void qvgeNodeEditorUIController::onNavigatorShown()
+{
+    //m_sliderView->setSliderBrush(m_scene->backgroundBrush());
+    double w = m_scene->sceneRect().width();
+    double h = m_scene->sceneRect().height();
+    double cw = w > h ? 200.0 : 200.0 * (w/h);
+    double ch = h > w ? 200.0 : 200.0 * (h/w) ;
+    m_sliderView->setFixedSize(cw, ch);
+    //m_sliderView->parentWidget()->setFixedSize(cw, ch); // update menu as well (qt bug)
+    //qDebug() << m_scene->sceneRect() << cw << ch << m_sliderView->parentWidget();
+
+    QResizeEvent re(m_sliderView->size(), m_sliderView->parentWidget()->size());
+    qApp->sendEvent(m_sliderView->parentWidget(), &re);
+
+    QPixmap pm(m_sliderView->size());
+    QPainter p(&pm);
+    m_scene->render(&p);
+    m_sliderView->setBackgroundBrush(pm);
 }
 
 

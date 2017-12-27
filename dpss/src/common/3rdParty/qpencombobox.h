@@ -5,6 +5,10 @@
 #include <QPen>
 
 
+namespace QSint
+{
+
+
 class QPenComboBox: public QComboBox
 {
 public:
@@ -14,5 +18,7 @@ public:
     Qt::PenStyle currentStyle() const;
 };
 
+
+}
 
 #endif // QPENCOMBOBOX_H

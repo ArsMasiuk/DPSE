@@ -861,7 +861,7 @@ void CEditorScene::drawBackground(QPainter *painter, const QRectF &)
 
 void CEditorScene::drawForeground(QPainter *painter, const QRectF &r)
 {
-	Super::drawForeground(painter, r);
+    Super::drawForeground(painter, r);
 
 	// drop label update flag
 	m_labelsUpdate = false;

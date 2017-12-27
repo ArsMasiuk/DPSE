@@ -5,6 +5,10 @@
 #include <QTimer>
 
 
+namespace QSint
+{
+
+
 QPenButton::QPenButton(QWidget *parent) : QSplitButton(parent)
 {
     init();
@@ -52,3 +56,7 @@ void QPenButton::setUsedRange(Qt::PenStyle start, Qt::PenStyle end)
 
     selectActionByIndex(start);
 }
+
+
+}
+

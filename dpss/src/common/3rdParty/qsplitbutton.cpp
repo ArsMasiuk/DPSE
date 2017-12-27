@@ -4,6 +4,10 @@
 #include <QActionEvent>
 
 
+namespace QSint
+{
+
+
 QSplitButton::QSplitButton(QWidget *parent) : QToolButton(parent)
 {
     connect(this, SIGNAL(triggered(QAction*)), this, SLOT(onAction(QAction*)));
@@ -103,3 +107,5 @@ void QSplitButton::onAction(QAction* act)
     Q_EMIT activated(act->data());
 }
 
+
+}

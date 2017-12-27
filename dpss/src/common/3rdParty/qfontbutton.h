@@ -7,6 +7,10 @@
 #include <QMenu>
 
 
+namespace QSint
+{
+
+
 class QFontButton : public QToolButton
 {
     Q_OBJECT
@@ -34,5 +38,7 @@ private:
 	QFont m_font;
 };
 
+
+}
 
 #endif // QFONTBUTTON_H

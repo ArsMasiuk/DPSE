@@ -4,6 +4,10 @@
 #include <QPixmap>
 
 
+namespace QSint
+{
+
+
 QPenComboBox::QPenComboBox(QWidget *parent) : QComboBox(parent)
 {
 	setEditable(false);
@@ -49,4 +53,7 @@ void QPenComboBox::setCurrentStyle(Qt::PenStyle newStyle)
 Qt::PenStyle QPenComboBox::currentStyle() const
 {
 	return Qt::PenStyle(currentIndex());
+}
+
+
 }

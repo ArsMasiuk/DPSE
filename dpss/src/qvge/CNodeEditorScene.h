@@ -76,6 +76,12 @@ protected:
 	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);
 	virtual QList<QGraphicsItem*> copyPasteItems() const;
 
+    // draw
+    virtual void drawBackground(QPainter *painter, const QRectF &);
+    virtual void drawItems(QPainter *painter, int numItems,
+                           QGraphicsItem *items[],
+                           const QStyleOptionGraphicsItem options[],
+                           QWidget *widget = Q_NULLPTR);
 protected:
 	CNode *m_startNode, *m_endNode;
 	CConnection *m_connection;
@@ -91,6 +97,9 @@ protected:
     // cached selections
     QList<CNode*> m_selNodes;
     QList<CConnection*> m_selEdges;
+
+    // drawing
+    int m_nextIndex = 0;
 };
 
 

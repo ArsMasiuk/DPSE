@@ -38,7 +38,7 @@ class ColorButton : public QToolButton
 
     Q_PROPERTY(int cellSize READ cellSize WRITE setCellSize)
     Q_PROPERTY(QColor color READ color WRITE setColor)
-    Q_PROPERTY(PickMode pickModeLeft READ pickModeLeft WRITE setPickModeLeft)
+    Q_PROPERTY(PickMode pickMode READ pickMode WRITE setPickMode)
 
 public:
     /// \brief Defines color dialog type.
@@ -74,12 +74,12 @@ public:
     inline QColor color() const { return m_color; }
 
     /** Returns type of color dialog shown on left mouse click (PM_COLORGRID by default).
-      \sa setPickModeLeft()
+      \sa setPickMode()
       */
-    inline PickMode pickModeLeft() const { return m_modeLeft; }
+    inline PickMode pickMode() const { return m_mode; }
     /** Sets type of color dialog shown on left mouse click to \a mode.
       */
-    void setPickModeLeft(PickMode mode);
+    void setPickMode(PickMode mode);
 
     /** Returns currently active color scheme (by default, defaultColors() is used).
       \sa setColorScheme()
@@ -125,11 +125,12 @@ protected:
     virtual void resizeEvent(QResizeEvent *event);
 
     QColor m_color;
-    PickMode m_modeLeft;
+    PickMode m_mode;
     TextMode m_tooltipMode, m_labelMode;
 
     ColorGrid *m_grid;
-    QAction *m_dialogButtonAction;
+    QWidgetAction *m_colorGridAction;
+    QAction *m_colorDialogAction;
 
 	const NamedColorsScheme *m_colorScheme;
 };

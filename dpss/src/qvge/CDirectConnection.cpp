@@ -41,10 +41,10 @@ CConnection* CDirectConnection::clone()
 
 void CDirectConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
-	//painter->setClipRect(option->exposedRect);
+	painter->setClipRect(option->exposedRect);
 
 	// called before draw 
-	setupPainter(painter, option, widget);
+    setupPainter(painter, option, widget);
 
 	// circled connection
 	if (isCircled())
@@ -60,12 +60,12 @@ void CDirectConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 		{
 			painter->drawLine(line());
 
-			// arrows
-			if (m_itemFlags & CF_Start_Arrow)
-				drawArrow(painter, option, true, QLineF(line().p2(), line().p1()));
+            // arrows
+            if (m_itemFlags & CF_Start_Arrow)
+                drawArrow(painter, option, true, QLineF(line().p2(), line().p1()));
 
-			if (m_itemFlags & CF_End_Arrow)
-				drawArrow(painter, option, false, line());
+            if (m_itemFlags & CF_End_Arrow)
+                drawArrow(painter, option, false, line());
 		}
 		else // curve
 		{
@@ -77,18 +77,18 @@ void CDirectConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 			painter->drawPath(pp);
 
 			// arrows
-			if (m_itemFlags & CF_Start_Arrow)
-			{
-				QLineF arrowLine = calculateArrowLine(pp, true, QLineF(m_controlPos, line().p1()));
-				drawArrow(painter, option, true, arrowLine);
-			}
+            if (m_itemFlags & CF_Start_Arrow)
+            {
+                QLineF arrowLine = calculateArrowLine(pp, true, QLineF(m_controlPos, line().p1()));
+                drawArrow(painter, option, true, arrowLine);
+            }
 
-			if (m_itemFlags & CF_End_Arrow)
-			{
-				QLineF arrowLine = calculateArrowLine(pp, false, QLineF(m_controlPos, line().p2()));
-				drawArrow(painter, option, false, arrowLine);
-			}
-		}
+            if (m_itemFlags & CF_End_Arrow)
+            {
+                QLineF arrowLine = calculateArrowLine(pp, false, QLineF(m_controlPos, line().p2()));
+                drawArrow(painter, option, false, arrowLine);
+            }
+        }
 }
 
 

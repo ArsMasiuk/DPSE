@@ -136,9 +136,6 @@ QPainterPath CConnection::shape() const
 
 QRectF CConnection::boundingRect() const
 {
-	//QRectF r(line().p1(), line().p2());
-	//r = r.united(QRectF(m_controlPos, m_controlPos + QPointF(1,1)));
-	//return r.adjusted(-2,-2,2,2);
 	return Shape::boundingRect();
 }
 
@@ -161,11 +158,11 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 
 	// color & selection
 	bool isSelected = (option->state & QStyle::State_Selected);
-	if (isSelected)
-	{
-		painter->setPen(QPen(QColor("orange"), weight + 1.0, penStyle, Qt::FlatCap, Qt::MiterJoin));
-	}
-	else
+    if (isSelected)
+    {
+        painter->setPen(QPen(QColor("orange"), weight + 1.0, penStyle, Qt::FlatCap, Qt::MiterJoin));
+    }
+    else
 	{
 		// get color (to optimize!)
 		QColor color = getAttribute("color").value<QColor>();

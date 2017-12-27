@@ -8,6 +8,8 @@
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CEditorView.h>
 
+#include <slider2d.h>
+
 
 class qvgeNodeEditorUIController : public QObject 
 {
@@ -31,14 +33,19 @@ private Q_SLOTS:
 
     void sceneOptions();
 
+    void onNavigatorShown();
+
 private:
 	void createMenus();
 	void createPanels();
+    void createNavigator();
 
 private:
 	CMainWindow *m_parent;
 	CNodeEditorScene *m_scene;
 	CEditorView *m_editorView;
+
+    class QSint::Slider2d *m_sliderView;
 
     QLabel *m_statusLabel;
 
