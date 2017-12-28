@@ -3,6 +3,7 @@
 #include <QPen>
 #include <QScrollBar>
 #include <QScrollArea>
+#include <QToolButton>
 
 
 namespace QSint
@@ -82,16 +83,21 @@ public:
     void connectSource(QAbstractSlider *horizontal, QAbstractSlider *vertical);
     void disconnectSource();
 
+    QToolButton* makeAsButton();
+
+    // reimp
     virtual QSize minimumSizeHint() const
     {
         return QSize(64,64);
     }
 
-signals:
+Q_SIGNALS:
     void scrollHorizontal(int value);
     void scrollVertical(int value);
 
-public slots:
+    void aboutToShow();
+
+public Q_SLOTS:
     void setHorizontalRange(int min, int max);
     void setHorizontalValue(int value);
     void setHorizontalViewSize(int size);

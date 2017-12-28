@@ -2,6 +2,8 @@
 
 #include <QMouseEvent>
 #include <QPainter>
+#include <QWidgetAction>
+#include <QMenu>
 
 
 namespace QSint
@@ -162,6 +164,23 @@ void Slider2d::disconnectSource()
     }
 }
 
+QToolButton *Slider2d::makeAsButton()
+{
+    QToolButton *sliderButton = new QToolButton(parentWidget());
+    sliderButton->setPopupMode(QToolButton::InstantPopup);
+    QWidgetAction *sliderAction = new QWidgetAction(sliderButton);
+    sliderAction->setDefaultWidget(this);
+
+    QMenu *sliderMenu = new QMenu(parentWidget());
+    sliderButton->setMenu(sliderMenu);
+    sliderMenu->addAction(sliderAction);
+    sliderMenu->setDefaultAction(sliderAction);
+
+    connect(sliderMenu, SIGNAL(aboutToShow()), this, SIGNAL(aboutToShow()));
+
+    return sliderButton;
+}
+
 void Slider2d::setHorizontalRange(int min, int max)
 {
     m_minX = min;
@@ -241,6 +260,17 @@ void QSint::Slider2d::mousePressEvent(QMouseEvent *event)
     {
         m_oldX = m_valueXpan - event->pos().x();
         m_oldY = m_valueYpan - event->pos().y();
+
+        // if clicked outside of the rect
+        if (!QRect(m_valueXpan, m_valueYpan, m_sizeXpan, m_sizeYpan).contains(event->pos()))
+        {
+            m_oldX = -m_sizeXpan/2;
+            m_oldY = -m_sizeYpan/2;
+            m_valueXpan = event->pos().x() + m_oldX;
+            m_valueYpan = event->pos().y() + m_oldY;
+
+            mouseMoveEvent(event);
+        }
     }
 }
 

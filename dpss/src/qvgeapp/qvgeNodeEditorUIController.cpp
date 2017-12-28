@@ -221,36 +221,27 @@ void qvgeNodeEditorUIController::createNavigator()
     m_sliderView = new QSint::Slider2d(m_parent);
     m_sliderView->connectSource(m_editorView);
 
-    QToolButton *sliderButton = new QToolButton(m_parent);
-    sliderButton->setPopupMode(QToolButton::InstantPopup);
+    QToolButton *sliderButton = m_sliderView->makeAsButton();
     m_editorView->setCornerWidget(sliderButton);
-    QWidgetAction *sliderAction = new QWidgetAction(sliderButton);
-    sliderAction->setDefaultWidget(m_sliderView);
-
-    QMenu *sliderMenu = new QMenu(m_parent);
-    sliderButton->setMenu(sliderMenu);
-    sliderMenu->addAction(sliderAction);
-    sliderMenu->setDefaultAction(sliderAction);
 
     sliderButton->setToolTip(tr("Show scene navigator"));
-    connect(sliderMenu, SIGNAL(aboutToShow()), this, SLOT(onNavigatorShown()));
+    connect(m_sliderView, SIGNAL(aboutToShow()), this, SLOT(onNavigatorShown()));
+
     m_sliderView->setFixedSize(200,200);
     m_sliderView->setSliderOpacity(0.3);
-    m_sliderView->setSliderBrush(Qt::gray);
+    m_sliderView->setSliderBrush(Qt::green);
 }
 
 
 void qvgeNodeEditorUIController::onNavigatorShown()
 {
-    //m_sliderView->setSliderBrush(m_scene->backgroundBrush());
     double w = m_scene->sceneRect().width();
     double h = m_scene->sceneRect().height();
     double cw = w > h ? 200.0 : 200.0 * (w/h);
     double ch = h > w ? 200.0 : 200.0 * (h/w) ;
     m_sliderView->setFixedSize(cw, ch);
-    //m_sliderView->parentWidget()->setFixedSize(cw, ch); // update menu as well (qt bug)
-    //qDebug() << m_scene->sceneRect() << cw << ch << m_sliderView->parentWidget();
 
+    // Qt bug: update menu size
     QResizeEvent re(m_sliderView->size(), m_sliderView->parentWidget()->size());
     qApp->sendEvent(m_sliderView->parentWidget(), &re);
 
