@@ -3,6 +3,7 @@ HEADERS  += $$files($$PWD/*.h)
 #FORMS    += $$files($$PWD/*.ui)
 RESOURCES += $$files($$PWD/*.qrc)
 
-linux{
+unix{
     QT += x11extras
+    LIBS += -lX11
 }
