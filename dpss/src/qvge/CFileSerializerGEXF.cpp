@@ -68,8 +68,11 @@ bool CFileSerializerGEXF::readNode(int index, const QDomNode &domNode, CEditorSc
 	QString label = elem.attribute("label", "");
 	node->setAttribute("label", label);
 
-	// viz: attrs
-	QDomNodeList viz_pos = elem.elementsByTagName("viz:position");
+    // viz: attrs (v1.2), ns0: attrs (v1.1)
+    QDomNodeList viz_pos = elem.elementsByTagName("viz:position");  // v1.2
+    if (viz_pos.isEmpty())
+        viz_pos = elem.elementsByTagName("ns0:position");   // v1.1
+
 	if (viz_pos.size()) {
 		QDomElement viz_elem = viz_pos.at(0).toElement();
 		float x = viz_elem.attribute("x", "0").toFloat();
@@ -79,7 +82,10 @@ bool CFileSerializerGEXF::readNode(int index, const QDomNode &domNode, CEditorSc
 		node->setZValue(z);
 	}
 
-	QDomNodeList viz_color = elem.elementsByTagName("viz:color");
+    QDomNodeList viz_color = elem.elementsByTagName("viz:color");   // v1.2
+    if (viz_color.isEmpty())
+        viz_color = elem.elementsByTagName("ns0:color");    // v1.1
+
 	if (viz_color.size()) {
 		QDomElement viz_elem = viz_color.at(0).toElement();
 		int r = viz_elem.attribute("r", "0").toInt();
@@ -89,7 +95,10 @@ bool CFileSerializerGEXF::readNode(int index, const QDomNode &domNode, CEditorSc
 		node->setAttribute("color", color);
 	}
 
-	QDomNodeList viz_size = elem.elementsByTagName("viz:size");
+    QDomNodeList viz_size = elem.elementsByTagName("viz:size");     // v1.2
+    if (viz_size.isEmpty())
+        viz_size = elem.elementsByTagName("ns0:size");      // v1.1
+
 	if (viz_size.size()) {
 		QDomElement viz_elem = viz_size.at(0).toElement();
 		float v = viz_elem.attribute("value", "5").toFloat();
