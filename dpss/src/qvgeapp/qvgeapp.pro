@@ -9,6 +9,7 @@ HEADERS  += $$files($$PWD/*.h)
 
 include($$PWD/../base/base.pri)
 include($$PWD/../common/common.pri)
+include($$PWD/../ui/ui.pri)
 include($$PWD/../qvge/qvge.pri)
 
 INCLUDEPATH += $$PWD/..
