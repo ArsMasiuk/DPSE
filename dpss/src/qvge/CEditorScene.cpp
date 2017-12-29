@@ -51,10 +51,10 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 
 	setBackgroundBrush(QColor("#f3ffe1"));
 
-    //setSceneRect(-1000, -1000, 2000, 2000);
+    setSceneRect(-500, -500, 1000, 1000);
 
-	setItemIndexMethod(QGraphicsScene::NoIndex);
-	setMinimumRenderSize(1);
+    setItemIndexMethod(QGraphicsScene::NoIndex);
+    setMinimumRenderSize(2);
 
 	// init scene
 	addUndoState();
@@ -191,9 +191,9 @@ void CEditorScene::redo()
 void CEditorScene::addUndoState()
 {
 	// canvas size
-	QRectF minRect(-500, -500, 1000, 1000);
-	minRect |= itemsBoundingRect().adjusted(-20, -20, 20, 20);
-	setSceneRect(minRect);
+    QRectF minRect(sceneRect());
+    minRect |= itemsBoundingRect().adjusted(-20, -20, 20, 20);
+    setSceneRect(minRect);
 
 	// undo-redo
 	if (m_undoManager)

@@ -60,6 +60,9 @@ bool CFileSerializerGraphML::load(const QString& fileName, CEditorScene& scene) 
 		readEdge(i, edges.at(i), scene, cka);
 	}
 
+    // update scene rect
+    scene.setSceneRect(scene.itemsBoundingRect());
+
 	// done
 	return true;
 }

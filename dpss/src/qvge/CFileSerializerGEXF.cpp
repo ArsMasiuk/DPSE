@@ -49,6 +49,9 @@ bool CFileSerializerGEXF::load(const QString& fileName, CEditorScene& scene) con
 		readEdge(i, edges.at(i), scene);
 	}
 
+    // update scene rect
+    scene.setSceneRect(scene.itemsBoundingRect());
+
 	return true;
 }
 
