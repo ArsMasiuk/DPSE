@@ -12,6 +12,7 @@ CPropertyEditor::CPropertyEditor(QWidget *parent) :
     QTreeWidget(parent),
     m_addingItem(false)
 {
+	init();
 }
 
 
@@ -54,13 +55,21 @@ void CPropertyEditor::init()
             SIGNAL(focusChanged(QWidget*,QWidget*)),
             this,
             SLOT(onFocusChanged(QWidget*,QWidget*))
-            );
+    );
 }
 
 
 void CPropertyEditor::adjustToContents()
 {
     header()->resizeSections(QHeaderView::ResizeToContents);
+}
+
+
+void CPropertyEditor::clear()
+{
+	m_propertyMap.clear();
+
+	QTreeWidget::clear();
 }
 
 
@@ -139,7 +148,6 @@ void CPropertyEditor::onCurrentItemChanged(QTreeWidgetItem *current, QTreeWidget
     CBaseProperty* newProp = dynamic_cast<CBaseProperty*>(current);
     if (newProp != NULL)
         newProp->onEnter();
-
 }
 
 
@@ -164,11 +172,12 @@ void CPropertyEditor::onItemChanged(QTreeWidgetItem *item, int column)
     CBaseProperty* prop = dynamic_cast<CBaseProperty*>(item);
     if (prop != NULL)
     {
-        if (column)
+        if (column == 1)
         {
             qDebug() << "Value state of property [" << prop->getId() << "] changed to: " << prop->getVariantValue();
         }
-        else
+        else 
+		if (column == 0)
         {
             if (prop->isMarkable())
                 qDebug() << "Marked state of property [" << prop->getId() << "] changed to: " << prop->isMarked();

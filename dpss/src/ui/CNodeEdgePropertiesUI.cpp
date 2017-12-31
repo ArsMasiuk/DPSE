@@ -103,6 +103,10 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
         ui->NodeSize->setValue(node->getAttribute("size").toSize().width());
     }
 
+    QList<CItem*> nodeItems;
+    for (auto item: nodes) nodeItems << item;
+    ui->NodeAttrEditor->setupFromItems(*m_scene, nodeItems);
+
 
     ui->EdgesBox->setTitle(tr("Edges (%1)").arg(edges.count()));
 
@@ -115,6 +119,10 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
         ui->EdgeStyle->selectAction(edge->getAttribute("style"));
 		ui->EdgeDirection->selectAction(edge->getAttribute("direction"));
      }
+
+    QList<CItem*> edgeItems;
+    for (auto item: edges) edgeItems << item;
+    ui->EdgeAttrEditor->setupFromItems(*m_scene, edgeItems);
 
 
     // labels

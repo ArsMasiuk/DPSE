@@ -114,6 +114,8 @@ void CEditorScene::removeItems()
 {
 	CItem::beginRestore();
 
+	deselectAll();
+
 	while (!items().isEmpty())
 		delete items().first();
 

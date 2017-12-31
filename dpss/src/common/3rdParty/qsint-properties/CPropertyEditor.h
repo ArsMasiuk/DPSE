@@ -16,6 +16,7 @@ public:
     explicit CPropertyEditor(QWidget *parent = 0);
 
     void init();
+	void clear();
     void adjustToContents();
 
     bool add(CBaseProperty* prop);

@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QWidgetAction>
+#include <QResizeEvent>
 #include <QDebug>
 
 #include <qvge/CNode.h>

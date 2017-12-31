@@ -15,7 +15,6 @@ public:
     void setMarked(bool on = true);
     bool isMarked() const;
     bool isMarkable() const;
-    bool checkMarked();
 
     void setBackground(const QBrush& bg);
     void setTextColor(const QColor& color);
