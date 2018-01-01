@@ -66,6 +66,8 @@ void CMainWindow::init(int argc, char *argv[])
 
 	createWindowsMenu();
 
+    createHelpMenu();
+
 	readSettings();
 
     processParams(argc, argv);
@@ -234,7 +236,10 @@ void CMainWindow::createFileToolbar()
 
 void CMainWindow::updateTitle()
 {
-    setWindowTitle(QString("%1 - %2").arg(m_mainTitleText, QApplication::applicationName()));
+    setWindowTitle(QString("%1 - %2 %3")
+                   .arg(m_mainTitleText, QApplication::applicationDisplayName())
+                   .arg(QApplication::applicationVersion())
+    );
 }
 
 
@@ -652,6 +657,15 @@ void CMainWindow::createWindowsMenu()
 	
 	connect(m_windowsMenu, SIGNAL(aboutToShow()), this, SLOT(fillWindowsMenu()));
 	connect(m_windowsMenu, SIGNAL(triggered(QAction*)), this, SLOT(onWindowsMenuAction(QAction*)));
+}
+
+
+void CMainWindow::createHelpMenu()
+{
+    auto helpMenu = new QMenu(tr("&Help"));
+    menuBar()->addMenu(helpMenu);
+
+    helpMenu->addAction(tr("About &Qt..."), qApp, SLOT(aboutQt()));
 }
 
 

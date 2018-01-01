@@ -65,6 +65,8 @@ protected:
 
 	virtual void createWindowsMenu();
 
+    virtual void createHelpMenu();
+
 	virtual void onCurrentFileChanged();
     virtual void updateTitle();
     virtual void updateActions();
