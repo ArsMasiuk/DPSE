@@ -52,6 +52,9 @@ bool CBoolProperty::onKeyPressed(QKeyEvent *event, QWidget *)
     if (event->key() == Qt::Key_Return)
     {
         setValue(!m_value);
+
+		emitValueChanged();
+
         return true;
     }
 

@@ -1,5 +1,5 @@
-SOURCES += $$files($$PWD/*.cpp) $$files($$PWD/3rdParty/*.cpp)
-HEADERS += $$files($$PWD/*.h) $$files($$PWD/3rdParty/*.h)
+SOURCES += $$files($$PWD/*.cpp)
+HEADERS += $$files($$PWD/*.h)
 FORMS += $$files($$PWD/*.ui)
 RESOURCES += $$files($$PWD/*.qrc)
 

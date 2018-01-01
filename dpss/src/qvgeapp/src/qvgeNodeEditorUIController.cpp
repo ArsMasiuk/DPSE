@@ -14,9 +14,9 @@
 #include <qvge/CImageExport.h>
 #include <qvge/CPDFExport.h>
 
-#include <ui/CCommutationTable.h>
-#include <ui/CSceneOptionsDialog.h>
-#include <ui/CNodeEdgePropertiesUI.h>
+#include <CCommutationTable.h>
+#include <CSceneOptionsDialog.h>
+#include <CNodeEdgePropertiesUI.h>
 
 
 qvgeNodeEditorUIController::qvgeNodeEditorUIController(CMainWindow *parent, CNodeEditorScene *scene, CEditorView *view) : 

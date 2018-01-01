@@ -73,6 +73,8 @@ void CStringProperty::finishEdit(bool cancel)
         if (editor != NULL)
         {
             setValue(editor->text());
+
+			emitValueChanged();
         }
     }
 

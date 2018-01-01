@@ -56,7 +56,7 @@ QVariant CDoubleProperty::getVariantValue() const
 
 void CDoubleProperty::displayValue()
 {
-    setText(1, QString::number(m_value));
+    setText(1, QString::number(m_value, 'f'));
 }
 
 
@@ -98,7 +98,7 @@ void CDoubleProperty::valueFromEditor()
         {
             setValue(newValue);
 
-            // emit valueChanged...
+			emitValueChanged();
         }
     }
 }

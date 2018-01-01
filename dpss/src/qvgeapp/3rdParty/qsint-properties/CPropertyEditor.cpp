@@ -51,11 +51,21 @@ void CPropertyEditor::init()
             SLOT(onItemChanged(QTreeWidgetItem*,int))
     );
 
-    connect(qApp,
-            SIGNAL(focusChanged(QWidget*,QWidget*)),
-            this,
-            SLOT(onFocusChanged(QWidget*,QWidget*))
-    );
+
+	// these connections must delay signal emitting to the very end of the update chain
+	connect(this,
+			SIGNAL(emitValueChanged(CBaseProperty*, const QVariant &)),
+			this,
+			SIGNAL(valueChanged(CBaseProperty*, const QVariant &)),
+			Qt::QueuedConnection
+	);
+
+	connect(this,
+			SIGNAL(emitStateChanged(CBaseProperty*, bool state)),
+			this,
+			SIGNAL(stateChanged(CBaseProperty*, bool state)),
+			Qt::QueuedConnection
+	);
 }
 
 
@@ -175,12 +185,18 @@ void CPropertyEditor::onItemChanged(QTreeWidgetItem *item, int column)
         if (column == 1)
         {
             qDebug() << "Value state of property [" << prop->getId() << "] changed to: " << prop->getVariantValue();
+
+			Q_EMIT emitValueChanged(prop, prop->getVariantValue());
         }
         else 
 		if (column == 0)
         {
-            if (prop->isMarkable())
-                qDebug() << "Marked state of property [" << prop->getId() << "] changed to: " << prop->isMarked();
+			if (prop->isMarkable())
+			{
+				qDebug() << "Marked state of property [" << prop->getId() << "] changed to: " << prop->isMarked();
+
+				Q_EMIT emitStateChanged(prop, prop->isMarked());
+			}
         }
     }
 }

@@ -106,7 +106,7 @@ void CIntegerProperty::valueFromEditor()
         {
             setValue(newValue);
 
-            // emit valueChanged...
+			emitValueChanged();
         }
     }
 }

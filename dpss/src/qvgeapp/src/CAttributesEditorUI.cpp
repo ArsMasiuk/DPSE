@@ -1,7 +1,6 @@
 #include "CAttributesEditorUI.h"
 #include "ui_CAttributesEditorUI.h"
-
-#include <ui/CNewAttributeDialog.h>
+#include "CNewAttributeDialog.h"
 
 #include <qvge/CEditorScene.h>
 #include <qvge/CItem.h>
@@ -145,18 +144,24 @@ void CAttributesEditorUI::on_AddButton_clicked()
 	if (!m_scene || m_items.isEmpty())
 		return;
 
-	auto r = CNewAttributeDialog::getAttribute();
-	if (r.id.isEmpty())
-		return;
+    CNewAttributeDialog dialog;
+    if (dialog.exec() == QDialog::Rejected)
+        return;
+
+    auto id = dialog.getId().toLocal8Bit();
+    if (id.isEmpty())
+        return;
+
+    auto v = dialog.getValue();
 
 	bool used = false;
 
 	for (auto sceneItem : m_items)
 	{
-		if (sceneItem->hasLocalAttribute(r.id))
+        if (sceneItem->hasLocalAttribute(id))
 			continue;
 
-		sceneItem->setAttribute(r.id, r.v);
+        sceneItem->setAttribute(id, v);
 		used = true;
 	}
 
@@ -207,5 +212,20 @@ void CAttributesEditorUI::on_RemoveButton_clicked()
 
 	// rebuild tree
 	setupFromItems(*m_scene, m_items);
+}
+
+
+void CAttributesEditorUI::on_Editor_valueChanged(CBaseProperty *prop, const QVariant &v)
+{
+	if (!m_scene || m_items.isEmpty())
+		return;
+
+	for (auto sceneItem : m_items)
+	{
+		sceneItem->setAttribute(prop->getId(), v);
+	}
+
+	// store state
+	m_scene->addUndoState();
 }
 

@@ -59,6 +59,8 @@ void CBaseProperty::setTextColor(const QColor &color)
 
 void CBaseProperty::setValue()
 {
+	QSignalBlocker blocker(treeWidget());
+
     validateValue();
 
     displayValue();

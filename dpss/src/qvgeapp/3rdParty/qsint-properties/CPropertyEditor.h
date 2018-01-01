@@ -22,6 +22,14 @@ public:
     bool add(CBaseProperty* prop);
     bool remove(CBaseProperty* prop);
 
+Q_SIGNALS:
+	void valueChanged(CBaseProperty* prop, const QVariant &v);
+	void stateChanged(CBaseProperty* prop, bool state);
+
+	// private signals
+	void emitValueChanged(CBaseProperty* prop, const QVariant &v);
+	void emitStateChanged(CBaseProperty* prop, bool state);
+
 public Q_SLOTS:
     void onWidgetEditorFinished();
     

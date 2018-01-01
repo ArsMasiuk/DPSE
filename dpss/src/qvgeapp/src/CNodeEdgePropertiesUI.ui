@@ -458,7 +458,7 @@
   <customwidget>
    <class>QSint::ColorButton</class>
    <extends>QToolButton</extends>
-   <header>3rdParty/colorbutton.h</header>
+   <header>colorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QSint::QSplitButton</class>

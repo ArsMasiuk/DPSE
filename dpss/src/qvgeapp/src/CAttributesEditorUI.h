@@ -7,6 +7,8 @@
 class CEditorScene;
 class CItem;
 
+class CBaseProperty;
+
 namespace Ui {
 class CAttributesEditorUI;
 }
@@ -24,6 +26,7 @@ public:
 private Q_SLOTS:
 	void on_AddButton_clicked();
 	void on_RemoveButton_clicked();
+	void on_Editor_valueChanged(CBaseProperty* prop, const QVariant &v);
 
 private:
     Ui::CAttributesEditorUI *ui;
