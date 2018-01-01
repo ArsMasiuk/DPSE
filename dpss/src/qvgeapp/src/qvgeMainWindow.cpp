@@ -2,13 +2,14 @@
 This file is a part of
 QVGE - Qt Visual Graph Editor
 
-(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+(c) 2016-2018 Ars L. Masiuk (ars.masiuk@gmail.com)
 
 It can be used freely, maintaining the information above.
 */
 
 #include "qvgeMainWindow.h"
 #include "qvgeNodeEditorUIController.h"
+#include "qvgeVersion.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -23,6 +24,7 @@ It can be used freely, maintaining the information above.
 qvgeMainWindow::qvgeMainWindow()
 {
     QApplication::setApplicationName("Qt Visual Graph Editor");
+    QApplication::setApplicationVersion(qvgeVersion.toString());
 
     CDocumentFormat gexf = { "GEXF", "*.gexf", false, true };
     CDocumentFormat graphml = { "GraphML", "*.graphml", true, true };
