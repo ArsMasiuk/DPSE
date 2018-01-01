@@ -1,11 +1,25 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #include "CNewAttributeDialog.h"
 #include "ui_CNewAttributeDialog.h"
+
+#include <QPushButton>
+
 
 CNewAttributeDialog::CNewAttributeDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CNewAttributeDialog)
 {
     ui->setupUi(this);
+
+	ui->ButtonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
 
 CNewAttributeDialog::~CNewAttributeDialog()
@@ -38,4 +52,9 @@ QVariant CNewAttributeDialog::getValue() const
     case 2:     return bool(true);
     default:    return QString();
     }
+}
+
+void CNewAttributeDialog::on_Id_textChanged(const QString &text)
+{
+	ui->ButtonBox->button(QDialogButtonBox::Ok)->setEnabled(text.size());
 }

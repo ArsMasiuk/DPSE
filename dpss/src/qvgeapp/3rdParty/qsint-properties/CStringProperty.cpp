@@ -43,6 +43,7 @@ QVariant CStringProperty::getVariantValue() const
     return getValue();
 }
 
+
 void CStringProperty::displayValue()
 {
     setText(1, m_value);

@@ -110,6 +110,9 @@ protected Q_SLOTS:
 	void fillWindowsMenu();
 	void onWindowsMenuAction(QAction*);
 
+private Q_SLOTS:
+	void onQuit();
+
 protected:
     QMenu *m_fileMenu;
     QMenu *m_newMenu;

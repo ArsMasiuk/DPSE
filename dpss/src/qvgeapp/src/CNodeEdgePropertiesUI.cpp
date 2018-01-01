@@ -1,3 +1,12 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #include "CNodeEdgePropertiesUI.h"
 #include "ui_CNodeEdgePropertiesUI.h"
 
@@ -24,19 +33,25 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
     ui->NodeShape->addAction(QIcon(":/Icons/Node-Diamond"), tr("Diamond"), "diamond");
     ui->NodeShape->addAction(QIcon(":/Icons/Node-Triangle-Down"), tr("Triangle Down"), "triangle2");
 
+    ui->NodeAttrBox->setChecked(false);
+
+
 	ui->EdgeDirection->addAction(QIcon(":/Icons/Edge-Directed"), tr("Directed (one end)"), "directed");
 	ui->EdgeDirection->addAction(QIcon(":/Icons/Edge-Mutual"), tr("Mutual (both ends)"), "mutual");
 	ui->EdgeDirection->addAction(QIcon(":/Icons/Edge-Undirected"), tr("None (no ends)"), "undirected");
-
 
     ui->EdgeColor->setColorScheme(QSint::OpenOfficeColors());
     ui->EdgeColor->setColor(Qt::red);
 
     ui->EdgeStyle->setUsedRange(Qt::SolidLine, Qt::DotLine);
 
+    ui->EdgeAttrBox->setChecked(false);
+
+
     // update status & tooltips etc.
     ui->retranslateUi(this);
 }
+
 
 CNodeEdgePropertiesUI::~CNodeEdgePropertiesUI()
 {
@@ -64,6 +79,7 @@ void CNodeEdgePropertiesUI::connectSignals(CEditorScene* scene)
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
 }
 
+
 void CNodeEdgePropertiesUI::onSceneAttached(CEditorScene* scene)
 {
     connectSignals(scene);
@@ -71,16 +87,19 @@ void CNodeEdgePropertiesUI::onSceneAttached(CEditorScene* scene)
     onSceneChanged();
 }
 
+
 void CNodeEdgePropertiesUI::onSceneDetached(CEditorScene* scene)
 {
     scene->disconnect(this);
 }
+
 
 void CNodeEdgePropertiesUI::onSceneChanged()
 {
     // update active selections if any
     onSelectionChanged();
 }
+
 
 void CNodeEdgePropertiesUI::onSelectionChanged()
 {
@@ -105,7 +124,9 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
 
     QList<CItem*> nodeItems;
     for (auto item: nodes) nodeItems << item;
-    ui->NodeAttrEditor->setupFromItems(*m_scene, nodeItems);
+    int attrCount = ui->NodeAttrEditor->setupFromItems(*m_scene, nodeItems);
+	ui->NodeAttrBox->setTitle(tr("Custom Attributes (%1)").arg(attrCount));
+	//ui->NodeAttrBox->setChecked(attrCount > 0);
 
 
     ui->EdgesBox->setTitle(tr("Edges (%1)").arg(edges.count()));
@@ -122,7 +143,8 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
 
     QList<CItem*> edgeItems;
     for (auto item: edges) edgeItems << item;
-    ui->EdgeAttrEditor->setupFromItems(*m_scene, edgeItems);
+	attrCount = ui->EdgeAttrEditor->setupFromItems(*m_scene, edgeItems);
+	ui->EdgeAttrBox->setTitle(tr("Custom Attributes (%1)").arg(attrCount));
 
 
     // labels

@@ -61,9 +61,9 @@ void CPropertyEditor::init()
 	);
 
 	connect(this,
-			SIGNAL(emitStateChanged(CBaseProperty*, bool state)),
+            SIGNAL(emitStateChanged(CBaseProperty*, bool)),
 			this,
-			SIGNAL(stateChanged(CBaseProperty*, bool state)),
+            SIGNAL(stateChanged(CBaseProperty*, bool)),
 			Qt::QueuedConnection
 	);
 }

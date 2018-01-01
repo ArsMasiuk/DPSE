@@ -1,3 +1,12 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #include "CAttributesEditorUI.h"
 #include "ui_CAttributesEditorUI.h"
 #include "CNewAttributeDialog.h"
@@ -26,7 +35,7 @@ CAttributesEditorUI::~CAttributesEditorUI()
 }
 
 
-void CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &items)
+int CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &items)
 {
 	m_scene = &scene;
 	m_items = items;
@@ -38,8 +47,8 @@ void CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &ite
 	struct AttrData
 	{
 		QVariant data;
-		int dataType;
-		bool used;
+        int dataType = -1;
+		bool isSet = false;
 	};
 
 	QSet<QByteArray> ids;
@@ -62,23 +71,21 @@ void CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &ite
 				auto itemValue = item->getAttribute(id);
 				attrs[id].dataType = itemValue.type();
 
-				if (attrs[id].used)
-				{
-					if (attrs[id].data != itemValue)
-					{
-						attrs[id].data = QVariant();
-						attrs[id].used = true;
-					}
-				}
+                if (attrs[id].isSet && attrs[id].data != itemValue)
+                {
+                    attrs[id].data = QVariant();
+                    break;
+                }
 				else
 				{
 					attrs[id].data = itemValue;
+					attrs[id].isSet = true;
 				}
 			}
 			else
 			{
-				attrs[id].data = QVariant();
-				attrs[id].used = true;
+                attrs[id].data = QVariant();
+				attrs[id].isSet = true;
 			}
 		}
 	}
@@ -132,10 +139,17 @@ void CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &ite
 		}
 
 		if (prop)
+		{
 			ui->Editor->add(prop);
+
+			if (!it.value().data.isValid())
+				prop->setText(0, prop->text(0).prepend("*"));
+		}
 	}
 
 	ui->Editor->setUpdatesEnabled(true);
+
+	return ui->Editor->topLevelItemCount();
 }
 
 

@@ -136,7 +136,7 @@
        </widget>
       </item>
       <item row="2" column="0" colspan="4">
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="NodeAttrBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -307,7 +307,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="EdgeAttrBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -497,7 +497,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>groupBox</sender>
+   <sender>NodeAttrBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>NodeAttrEditor</receiver>
    <slot>setVisible(bool)</slot>
@@ -513,7 +513,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>groupBox_2</sender>
+   <sender>EdgeAttrBox</sender>
    <signal>toggled(bool)</signal>
    <receiver>EdgeAttrEditor</receiver>
    <slot>setVisible(bool)</slot>

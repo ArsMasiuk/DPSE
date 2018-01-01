@@ -1,3 +1,12 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #ifndef CNewAttributeDialog_H
 #define CNewAttributeDialog_H
 
@@ -18,6 +27,9 @@ public:
     QString getId() const;
     int getType() const;
     QVariant getValue() const;
+
+private Q_SLOTS:
+    void on_Id_textChanged(const QString& text);
 
 private:
     Ui::CNewAttributeDialog *ui;

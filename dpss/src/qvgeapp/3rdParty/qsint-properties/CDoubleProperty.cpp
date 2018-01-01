@@ -3,6 +3,9 @@
 #include <QDoubleSpinBox>
 
 
+const int PRECISION = 8;
+
+
 CDoubleProperty::CDoubleProperty(const QByteArray &id, const QString &name, double value, double defaultValue, double min, double max):
     CBaseProperty(id, name),
     m_value(value),
@@ -56,7 +59,7 @@ QVariant CDoubleProperty::getVariantValue() const
 
 void CDoubleProperty::displayValue()
 {
-    setText(1, QString::number(m_value, 'f'));
+    setText(1, QString::number(m_value, 'f', PRECISION));
 }
 
 
@@ -81,7 +84,7 @@ void CDoubleProperty::valueToEditor()
     QDoubleSpinBox* spinEditor = dynamic_cast<QDoubleSpinBox*>(getActiveEditor());
     if (spinEditor != NULL)
     {
-        spinEditor->setDecimals(3);
+        spinEditor->setDecimals(PRECISION);
         spinEditor->setRange(m_min, m_max);
         spinEditor->setValue(m_value);
     }

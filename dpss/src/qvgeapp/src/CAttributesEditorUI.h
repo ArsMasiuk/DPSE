@@ -1,3 +1,12 @@
+/*
+This file is a part of
+QVGE - Qt Visual Graph Editor
+
+(c) 2016 Ars L. Masiuk (ars.masiuk@gmail.com)
+
+It can be used freely, maintaining the information above.
+*/
+
 #ifndef CATTRIBUTESEDITORUI_H
 #define CATTRIBUTESEDITORUI_H
 
@@ -21,7 +30,7 @@ public:
     explicit CAttributesEditorUI(QWidget *parent = 0);
     ~CAttributesEditorUI();
 
-    void setupFromItems(CEditorScene& scene, QList<CItem*>& items);
+    int setupFromItems(CEditorScene& scene, QList<CItem*>& items);
 
 private Q_SLOTS:
 	void on_AddButton_clicked();

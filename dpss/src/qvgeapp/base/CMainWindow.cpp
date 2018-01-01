@@ -22,7 +22,7 @@
 CMainWindow::CMainWindow(QWidget *parent) :
     QMainWindow(parent),
     m_isChanged(false)
-{
+{ 
 	qint64 pid = qApp->applicationPid();
 	m_stringPID = QString::number(pid);
 
@@ -30,9 +30,17 @@ CMainWindow::CMainWindow(QWidget *parent) :
 	QApplication::setApplicationName("application");
 
 	setAcceptDrops(true);
+
+	connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(onQuit()));
 }
 
+
 CMainWindow::~CMainWindow()
+{
+}
+
+
+void CMainWindow::onQuit()
 {
 	removeInstance();
 }
