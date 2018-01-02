@@ -4,6 +4,28 @@
 #include <QPointF>
 
 
+QVariant Utils::textToVariant(const QString& text, int type)
+{
+    switch (type)
+    {
+    case QVariant::Int:
+        return text.toInt();
+
+    case QVariant::Double:
+        return text.toDouble();
+
+    case QVariant::Bool:
+        if (text.toLower() == "true")
+            return true;
+        else
+            return false;
+
+    default:
+        return text;    // string
+    }
+}
+
+
 QString Utils::variantToText(const QVariant& v)
 {
 	switch (v.type())
@@ -43,9 +65,8 @@ QString Utils::variantToText(const QVariant& v)
 	//	return QString::number(v.toLongLong());
 
 	default:;
-	}
-
-	return v.toString();
+        return v.toString();
+    }
 }
 
 

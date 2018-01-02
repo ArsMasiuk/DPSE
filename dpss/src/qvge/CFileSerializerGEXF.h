@@ -48,8 +48,16 @@ public:
 	}
 
 private:
-	bool readNode(int index, const QDomNode &domNode, CEditorScene& scene) const;
-	bool readEdge(int index, const QDomNode &domNode, CEditorScene& scene) const;
+    struct AttrInfo {
+        QByteArray id;
+        int variantType;
+    };
+    typedef QMap<QByteArray, AttrInfo> IdToAttrMap;
+    mutable QMap<QByteArray, IdToAttrMap> m_classIdMap;
+
+    bool readAttrs(int index, const QDomNode &domNode, CEditorScene& scene) const;
+    bool readNode(int index, const QDomNode &domNode, const IdToAttrMap &idMap, CEditorScene& scene) const;
+    bool readEdge(int index, const QDomNode &domNode, const IdToAttrMap &idMap, CEditorScene& scene) const;
 
 	mutable QMap<QString, CNode*> m_nodeMap;
 
@@ -60,6 +68,4 @@ private:
 	};
 	mutable QString m_edgeType;
 };
-
-
 

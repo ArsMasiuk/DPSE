@@ -20,6 +20,7 @@ class Utils
 {
 public:
 	static QString variantToText(const QVariant& v);
+    static QVariant textToVariant(const QString& text, int type = QVariant::String);
 
 	template<class X>
 	static void insertUnique(X& dest, const X& from);
