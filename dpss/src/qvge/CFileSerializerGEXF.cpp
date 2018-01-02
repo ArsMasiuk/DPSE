@@ -47,16 +47,18 @@ bool CFileSerializerGEXF::load(const QString& fileName, CEditorScene& scene) con
         readAttrs(i, attrs.at(i), scene);
     }
 
+    auto nodeIds = m_classIdMap["node"];
 	QDomNodeList nodes = doc.elementsByTagName("node");
 	for (int i = 0; i < nodes.count(); ++i)
 	{
-        readNode(i, nodes.at(i), m_classIdMap["node"], scene);
+        readNode(i, nodes.at(i), nodeIds, scene);
 	}
 
+    auto edgeIds = m_classIdMap["edge"];
 	QDomNodeList edges = doc.elementsByTagName("edge");
 	for (int i = 0; i < edges.count(); ++i)
 	{
-        readEdge(i, edges.at(i), m_classIdMap["edge"], scene);
+        readEdge(i, edges.at(i), edgeIds, scene);
 	}
 
     // update scene rect
@@ -85,25 +87,29 @@ bool CFileSerializerGEXF::readAttrs(int /*index*/, const QDomNode &domNode, CEdi
 
         AttrInfo attrInfo = {attrId, 0};
 
-        if (type == "integer"){
+        if (type == "integer" || type == "long")
+        {
             attrInfo.variantType = QVariant::Int;
             QString def = attrElem.attribute("default", "0");
             QVariant v = Utils::textToVariant(def, attrInfo.variantType);
             scene.setClassAttribute(classId, attrId, v);
         }
-        else if (type == "double"){
+        else if (type == "double" || type == "float")
+        {
             attrInfo.variantType = QVariant::Double;
             QString def = attrElem.attribute("default", "0.0");
             QVariant v = Utils::textToVariant(def, attrInfo.variantType);
             scene.setClassAttribute(classId, attrId, v);
         }
-        else if (type == "bool"){
+        else if (type == "boolean")
+        {
             attrInfo.variantType = QVariant::Bool;
             QString def = attrElem.attribute("default", "true");
             QVariant v = Utils::textToVariant(def, attrInfo.variantType);
             scene.setClassAttribute(classId, attrId, v);
         }
-        else{
+        else    // string
+        {
             attrInfo.variantType = QVariant::String;
             QString def = attrElem.attribute("default", "");
             QVariant v = Utils::textToVariant(def, attrInfo.variantType);
@@ -174,7 +180,9 @@ bool CFileSerializerGEXF::readNode(int index, const QDomNode &domNode, const IdT
     for (int i = 0; i < attrs.count(); ++i)
     {
         auto attrElem = attrs.at(i).toElement();
-        QByteArray attrId = attrElem.attribute("id", "").toLocal8Bit();
+        QByteArray attrId = attrElem.attribute("id", "").toLocal8Bit();     // v1.2
+        if (attrId.isEmpty())
+            attrId = attrElem.attribute("for", "").toLocal8Bit();           // v1.1
         if (attrId.isEmpty())
             continue;   // error: no id
         if (!idMap.contains(attrId))
@@ -233,7 +241,9 @@ bool CFileSerializerGEXF::readEdge(int /*index*/, const QDomNode &domNode, const
     for (int i = 0; i < attrs.count(); ++i)
     {
         auto attrElem = attrs.at(i).toElement();
-        QByteArray attrId = attrElem.attribute("id", "").toLocal8Bit();
+        QByteArray attrId = attrElem.attribute("id", "").toLocal8Bit();     // v1.2
+        if (attrId.isEmpty())
+            attrId = attrElem.attribute("for", "").toLocal8Bit();           // v1.1
         if (attrId.isEmpty())
             continue;   // error: no id
         if (!idMap.contains(attrId))
