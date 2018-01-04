@@ -660,15 +660,6 @@ void CMainWindow::createWindowsMenu()
 }
 
 
-void CMainWindow::createHelpMenu()
-{
-    auto helpMenu = new QMenu(tr("&Help"));
-    menuBar()->addMenu(helpMenu);
-
-    helpMenu->addAction(tr("About &Qt..."), qApp, SLOT(aboutQt()));
-}
-
-
 void CMainWindow::fillWindowsMenu()
 {
 	QVariantMap pidFileMap = getActiveInstances();
@@ -739,6 +730,34 @@ bool CMainWindow::activateInstance(const QString &fileName)
 	}
 
     return false;
+}
+
+
+// help
+
+void CMainWindow::createHelpMenu()
+{
+	auto helpMenu = new QMenu(tr("&Help"));
+	menuBar()->addMenu(helpMenu);
+
+	helpMenu->addAction(tr("About &Qt..."), qApp, SLOT(aboutQt()));
+	helpMenu->addAction(tr("&About..."), this, SLOT(onAboutApplication()));
+}
+
+
+void CMainWindow::onAboutApplication()
+{
+	QMessageBox::about(this,
+		tr("About %1").arg(qApp->applicationDisplayName()),
+		getAboutText());
+}
+
+
+QString CMainWindow::getAboutText() const
+{
+	return QString("<b>%1</b><br>Version %2")
+		.arg(qApp->applicationDisplayName())
+		.arg(qApp->applicationVersion());
 }
 
 

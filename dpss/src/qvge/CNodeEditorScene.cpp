@@ -133,8 +133,8 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 	m_state = IS_Creating;
 
     // auto select created items
-    m_startNode->setSelected(true);
-    m_connection->setSelected(true);
+    m_startNode->setSelected(false);
+    //m_connection->setSelected(true);
     m_endNode->setSelected(true);
 
 	return true;
@@ -314,6 +314,11 @@ void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	if (m_state == IS_Cancelling)
 	{
 		cancel(mouseEvent->scenePos());
+	}
+	else
+	if (m_state = IS_Finishing)
+	{
+		m_connection->setSelected(true);
 	}
 
 	m_state = IS_None;

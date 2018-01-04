@@ -48,6 +48,7 @@ public:
 
 public Q_SLOTS:
 	virtual void onDocumentChanged();
+	virtual void onAboutApplication();
 
 protected:
 	void closeEvent(QCloseEvent *event);
@@ -60,16 +61,17 @@ protected:
     virtual void processParams(int argc, char *argv[]);
 
     virtual void createMainMenu();
-    virtual void fillNewFileMenu();
-    virtual void createFileToolbar();
-
 	virtual void createWindowsMenu();
-
-    virtual void createHelpMenu();
-
-	virtual void onCurrentFileChanged();
-    virtual void updateTitle();
+	virtual void createHelpMenu();
+	
+	virtual void fillNewFileMenu();
+    virtual void createFileToolbar();
     virtual void updateActions();
+	virtual void updateRecentFiles();
+	virtual void onCurrentFileChanged();
+
+	virtual void updateTitle();
+	virtual QString getAboutText() const;
 
     virtual void doCreateNewDocument(const QByteArray &docType);
     virtual bool onCreateNewDocument(const QByteArray &docType);
@@ -90,8 +92,6 @@ protected:
 	virtual void updateInstance();
 	virtual void removeInstance();
 	virtual QVariantMap getActiveInstances();
-
-	virtual void updateRecentFiles();
 
 	virtual void readSettings();
 	virtual void doReadSettings(QSettings& settings);

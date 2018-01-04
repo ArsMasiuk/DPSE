@@ -24,7 +24,7 @@ It can be used freely, maintaining the information above.
 qvgeMainWindow::qvgeMainWindow()
 {
     QApplication::setApplicationName("Qt Visual Graph Editor");
-    QApplication::setApplicationVersion(qvgeVersion.toString());
+    QApplication::setApplicationVersion(qvgeVersion.toString() + tr(" (preview edition)"));
 
     CDocumentFormat gexf = { "GEXF", "*.gexf", false, true };
     CDocumentFormat graphml = { "GraphML", "*.graphml", true, true };
@@ -196,3 +196,11 @@ bool qvgeMainWindow::onSaveDocument(const QString &fileName, const QString &/*se
 }
 
 
+QString qvgeMainWindow::getAboutText() const
+{
+	return Super::getAboutText()
+		+ QString(
+			"<p>This is a free software."
+			"<br>It comes without warranty of any kind. Use it on your own risk."
+			"<p>&copy; 2016-2018 Ars L. Masiuk");
+}
