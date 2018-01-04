@@ -187,6 +187,8 @@ void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsIte
 	}
 
 	// polyline
+	painter->setClipRect(option->exposedRect);
+
 	setupPainter(painter, option, widget);
 
 	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();

@@ -24,7 +24,7 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	m_nodeFlags = 0;
 
 	// default flags: movable & selectable
-	auto flags = ItemIsMovable | ItemIsSelectable | ItemSendsGeometryChanges;
+	auto flags = ItemIsMovable | ItemIsSelectable | ItemSendsGeometryChanges | ItemUsesExtendedStyleOption;
 	setFlags(flags);
 
 	// accept hovers
@@ -528,6 +528,7 @@ QVariant CNode::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 {
 	painter->setClipRect(option->exposedRect);
+	//painter->setClipRect(boundingRect());
 
 	// get color (to optimize!)
 	QVariant color = getAttribute("color");

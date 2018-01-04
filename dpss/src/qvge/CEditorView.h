@@ -11,6 +11,7 @@ It can be used freely, maintaining the information above.
 #define CEDITORVIEW_H
 
 #include <QGraphicsView>
+#include <QPaintEvent>
 
 class CEditorScene;
 
@@ -38,6 +39,13 @@ public:
 	virtual void mouseMoveEvent(QMouseEvent *e);
 	virtual void mouseReleaseEvent(QMouseEvent *e);
 	virtual void wheelEvent(QWheelEvent *e);
+
+	void paintEvent(QPaintEvent * event)
+	{
+		QPaintEvent *newEvent = new QPaintEvent(event->region().boundingRect());
+		QGraphicsView::paintEvent(newEvent);
+		delete newEvent;
+	}
 
 Q_SIGNALS:
 	void scaleChanged(double);

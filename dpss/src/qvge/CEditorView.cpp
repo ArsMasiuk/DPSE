@@ -23,6 +23,7 @@ CEditorView::CEditorView(QWidget *parent)
 	m_currentZoom(1.0)
 {
     setAttribute(Qt::WA_TranslucentBackground, false);
+	setViewportUpdateMode(BoundingRectViewportUpdate);
 
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -30,29 +31,19 @@ CEditorView::CEditorView(QWidget *parent)
 	setDragMode(RubberBandDrag);
 
 	setRenderHint(QPainter::Antialiasing);
-	setRenderHint(QPainter::HighQualityAntialiasing);
 	setOptimizationFlags(DontSavePainterState);
     setOptimizationFlags(DontAdjustForAntialiasing);
-
-    //setOptimizationFlags(IndirectPainting);
 }
 
 CEditorView::CEditorView(CEditorScene *scene, QWidget *parent): CEditorView(parent)
 {
     //auto glw = new QOpenGLWidget();
-	//glw->setUpdateBehavior(QOpenGLWidget::PartialUpdate);
-	//QSurfaceFormat sf;
-	//sf.setRenderableType(QSurfaceFormat::OpenGLES);
-	//glw->setFormat(sf);
     //setViewport(glw);
 
 	//auto glw = new QGLWidget();
 	//setViewport(glw);
 
 	setScene(scene);
-
-
-    //setViewportUpdateMode(FullViewportUpdate);
 }
 
 CEditorView::~CEditorView()

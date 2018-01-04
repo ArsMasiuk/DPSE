@@ -24,6 +24,7 @@ It can be used freely, maintaining the information above.
 #include <QClipboard>
 #include <QDebug>
 #include <QElapsedTimer>
+#include <QPixmapCache> 
 
 #include <qopengl.h>
 
@@ -53,8 +54,12 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 
     setSceneRect(-500, -500, 1000, 1000);
 
+	// optimizations
     setItemIndexMethod(QGraphicsScene::NoIndex);
-    setMinimumRenderSize(2);
+    
+	setMinimumRenderSize(5);
+
+	QPixmapCache::setCacheLimit(200000);
 
 	// init scene
 	addUndoState();
@@ -62,7 +67,8 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 
 CEditorScene::~CEditorScene()
 {
-	reset();
+	disconnect();
+	clear();
 }
 
 void CEditorScene::reset()
@@ -917,7 +923,7 @@ void CEditorScene::layoutItemLabels()
 		citem->showLabel(checkLabelRegion(reducedRect));
 	}
 
-	qDebug() << "layout labels: " << tm.elapsed();
+	//qDebug() << "layout labels: " << tm.elapsed();
 }
 
 
