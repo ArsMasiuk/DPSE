@@ -28,8 +28,10 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 
     setZValue(-1);
 
+	//setBoundingRegionGranularity(1);
+
 	// non-movable but selectable
-	auto flags = ItemIsSelectable | ItemSendsGeometryChanges | ItemIsMovable;
+	auto flags = ItemIsSelectable | ItemSendsGeometryChanges | ItemIsMovable | ItemUsesExtendedStyleOption;
 	setFlags(flags);
 	
 	// no selection frame
@@ -39,7 +41,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 	setAcceptHoverEvents(true);
 
 	// cache
-	setCacheMode(DeviceCoordinateCache);
+	//setCacheMode(DeviceCoordinateCache);
 
 	// label
 	m_labelItem = new QGraphicsSimpleTextItem(this);

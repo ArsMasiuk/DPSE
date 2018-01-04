@@ -77,6 +77,7 @@ void CNodeEdgePropertiesUI::connectSignals(CEditorScene* scene)
 {
     connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()));
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
+	//connect(scene, SIGNAL(destroyed(QObject*)), this, SLOT(onSceneDied(QObject*)));
 }
 
 

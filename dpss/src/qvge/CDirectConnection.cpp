@@ -7,6 +7,8 @@ QVGE - Qt Visual Graph Editor
 It can be used freely, maintaining the information above.
 */
 
+#include <QDebug>
+
 #include "CDirectConnection.h"
 #include "CNode.h"
 
@@ -41,7 +43,10 @@ CConnection* CDirectConnection::clone()
 
 void CDirectConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
+	//qDebug() << boundingRect() << option->exposedRect << option->rect;
+
 	painter->setClipRect(option->exposedRect);
+	//painter->setClipRect(boundingRect());
 
 	// called before draw 
     setupPainter(painter, option, widget);

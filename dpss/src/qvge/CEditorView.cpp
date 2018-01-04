@@ -40,17 +40,12 @@ CEditorView::CEditorView(QWidget *parent)
 CEditorView::CEditorView(CEditorScene *scene, QWidget *parent): CEditorView(parent)
 {
     //auto glw = new QOpenGLWidget();
-	//glw->setUpdateBehavior(QOpenGLWidget::PartialUpdate);
-	//QSurfaceFormat sf;
-	//sf.setRenderableType(QSurfaceFormat::OpenGLES);
-	//glw->setFormat(sf);
     //setViewport(glw);
 
 	//auto glw = new QGLWidget();
 	//setViewport(glw);
 
 	setScene(scene);
-
 
     //setViewportUpdateMode(FullViewportUpdate);
 }
