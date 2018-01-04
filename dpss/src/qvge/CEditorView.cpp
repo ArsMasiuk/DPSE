@@ -33,11 +33,13 @@ CEditorView::CEditorView(QWidget *parent)
 	setRenderHint(QPainter::Antialiasing);
 	setOptimizationFlags(DontSavePainterState);
     setOptimizationFlags(DontAdjustForAntialiasing);
+
 }
 
 CEditorView::CEditorView(CEditorScene *scene, QWidget *parent): CEditorView(parent)
 {
     //auto glw = new QOpenGLWidget();
+
     //setViewport(glw);
 
 	//auto glw = new QGLWidget();
