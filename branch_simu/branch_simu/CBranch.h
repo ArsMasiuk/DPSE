@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <QList>
+#include <QFile>
 
 
 class CBranch
@@ -20,8 +21,12 @@ public:
 	void exchange();
 	void stepQ(double m_h);
 	void stepP(double m_h);
+	void stepRK4(double m_h);
 	void fQ(std::vector<double>& dQdt, const std::vector<double>& P, const std::vector<double>& Q);
 	void fP(std::vector<double>& dPdt, const std::vector<double>& P, const std::vector<double>& Q);
+
+	void createOutputs(const QString& path, int id);
+	void dump(int step);
 
 	double getQ() const;
 	double getQbeg() const;
@@ -40,5 +45,7 @@ protected:
 	double m_alpha, m_beta, m_gamma;
 
 	std::vector<double> m_P, m_Q;
+
+	QFile m_fileP, m_fileQ;
 };
 

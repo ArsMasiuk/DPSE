@@ -1,5 +1,7 @@
 #include "CBranch.h"
 
+#include <QTextStream>
+
 
 CBranch::CBranch()
 {
@@ -65,12 +67,22 @@ void CBranch::exchange()
 	else 
 	{
 		// one with min L?
-		double L = m_L;
-		m_Pbeg = getP();
+		//double L = DBL_MAX;
+		//m_Pbeg = 0;
+
+		//for (int i = 0; i < m_inBeg.size(); ++i)
+		//	if (m_inBeg[i]->m_L < L){
+		//		m_Pbeg = m_inBeg[i]->getP();
+		//		L = m_inBeg[i]->m_L;
+		//	}
+
+		double S = 0;
+		m_Pbeg = 0;
+
 		for (int i = 0; i < m_inBeg.size(); ++i)
-			if (m_inBeg[i]->m_L < L){
+			if (m_inBeg[i]->m_S > S) {
 				m_Pbeg = m_inBeg[i]->getP();
-				L = m_inBeg[i]->m_L;
+				S = m_inBeg[i]->m_S;
 			}
 	}
 
@@ -80,14 +92,106 @@ void CBranch::exchange()
 	}
 	else
 	{
-		// one with min L?
-		double L = m_L;
-		m_Pend = getP();
-		for (int i = 0; i < m_inEnd.size(); ++i)
-			if (m_inEnd[i]->m_L < L) {
-				m_Pend = m_inEnd[i]->getP();
-				L = m_inEnd[i]->m_L;
-			}
+		if (m_inEnd.isEmpty())
+		{
+			m_Pend = getP();
+		}
+		else
+		{
+			// one with min L?
+			//double L = m_L;
+			//m_Pend = getP();
+
+			//for (int i = 0; i < m_inEnd.size(); ++i)
+			//	if (m_inEnd[i]->m_L < L) 
+			//	{
+			//		m_Pend = m_inEnd[i]->getP();
+			//		L = m_inEnd[i]->m_L;
+			//	}
+
+			double S = m_S;
+			m_Pend = getP();
+
+			for (int i = 0; i < m_inEnd.size(); ++i)
+				if (m_inEnd[i]->m_S > S)
+				{
+					m_Pend = m_inEnd[i]->getP();
+					S = m_inEnd[i]->m_S;
+				}
+		}
+	}
+}
+
+
+void CBranch::stepRK4(double m_h)
+{
+	std::vector<double> k1(m_M), k2(m_M), k3(m_M), k4(m_M);
+	std::vector<double> m1(m_M), m2(m_M), m3(m_M), m4(m_M);
+
+	// step 1
+	fQ(k1, m_P, m_Q);
+	fP(m1, m_P, m_Q);
+
+	for (int i = 0; i < m_M; i++)
+	{
+		k1[i] *= m_h;
+		m1[i] *= m_h;
+	}
+
+	// step 2
+	std::vector<double> P(m_M), Q(m_M);
+	for (int i = 0; i < m_M; i++)
+	{
+		Q[i] = m_Q[i] + k1[i] / 2.0;
+		P[i] = m_P[i] + m1[i] / 2.0;
+	}
+
+	fQ(k2, P, Q);
+	fP(m2, P, Q);
+
+	for (int i = 0; i < m_M; i++)
+	{
+		k2[i] *= m_h;
+		m2[i] *= m_h;
+	}
+
+	// step 3
+	for (int i = 0; i < m_M; i++)
+	{
+		Q[i] = m_Q[i] + k2[i] / 2.0;
+		P[i] = m_P[i] + m2[i] / 2.0;
+	}
+
+	fQ(k3, P, Q);
+	fP(m3, P, Q);
+
+	for (int i = 0; i < m_M; i++)
+	{
+		k3[i] *= m_h;
+		m3[i] *= m_h;
+	}
+
+	// step 4
+	for (int i = 0; i < m_M; i++)
+	{
+		Q[i] = m_Q[i] + k3[i];
+		P[i] = m_P[i] + m3[i];
+	}
+
+	fQ(k4, P, Q);
+	fP(m4, P, Q);
+
+	for (int i = 0; i < m_M; i++)
+	{
+		k4[i] *= m_h;
+		m4[i] *= m_h;
+	}
+
+	// final step
+	for (int i = 0; i < m_M; i++)
+	{
+		m_Q[i] += (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]) / 6.0;
+		m_P[i] += (m1[i] + 2.0 * m2[i] + 2.0 * m3[i] + m4[i]) / 6.0;
 	}
 }
 
@@ -104,7 +208,7 @@ void CBranch::stepQ(double m_h)
 	std::vector<double> P(m_M), Q(m_M);
 	for (int i = 0; i < m_M; i++)
 	{
-		P[i] = m_P[i] + m_h / 2.0;
+		P[i] = m_P[i] /*+ m_h / 2.0*/;
 		Q[i] = m_Q[i] + m_h / 2.0 * k1[i];
 	}
 
@@ -112,7 +216,7 @@ void CBranch::stepQ(double m_h)
 
 	for (int i = 0; i < m_M; i++)
 	{
-		P[i] = m_P[i] + m_h / 2.0;
+		P[i] = m_P[i] /*+ m_h / 2.0*/;
 		Q[i] = m_Q[i] + m_h / 2.0 * k2[i];
 	}
 
@@ -120,7 +224,7 @@ void CBranch::stepQ(double m_h)
 
 	for (int i = 0; i < m_M; i++)
 	{
-		P[i] = m_P[i] + m_h;
+		P[i] = m_P[i] /*+ m_h*/;
 		Q[i] = m_Q[i] + m_h * k3[i];
 	}
 
@@ -145,7 +249,7 @@ void CBranch::stepP(double m_h)
 	std::vector<double> P(m_M), Q(m_M);
 	for (int i = 0; i < m_M; i++)
 	{
-		Q[i] = m_Q[i] + m_h / 2.0;
+		Q[i] = m_Q[i] /*+ m_h / 2.0*/;
 		P[i] = m_P[i] + m_h / 2.0 * k1[i];
 	}
 
@@ -153,7 +257,7 @@ void CBranch::stepP(double m_h)
 
 	for (int i = 0; i < m_M; i++)
 	{
-		Q[i] = m_Q[i] + m_h / 2.0;
+		Q[i] = m_Q[i]/* + m_h / 2.0*/;
 		P[i] = m_P[i] + m_h / 2.0 * k2[i];
 	}
 
@@ -161,7 +265,7 @@ void CBranch::stepP(double m_h)
 
 	for (int i = 0; i < m_M; i++)
 	{
-		Q[i] = m_Q[i] + m_h;
+		Q[i] = m_Q[i] /*+ m_h*/;
 		P[i] = m_P[i] + m_h * k3[i];
 	}
 
@@ -208,24 +312,25 @@ void CBranch::fP(std::vector<double>& dPdt, const std::vector<double>& P, const 
 	}
 	else
 	{
-		dPdt[m_M - 1] = getQ();
+		double q = getQ();
 
 		for (int i = 0; i < m_inEnd.size(); ++i)
-			dPdt[m_M - 1] += m_inEnd[i]->getQ();
+			q += m_inEnd[i]->getQ();
 
 		for (int i = 0; i < m_outEnd.size(); ++i)
-			dPdt[m_M - 1] -= m_outEnd[i]->getQbeg();
+			q -= m_outEnd[i]->getQbeg();
 
 		// max.gamma = gamma of branch with max.S
 		double max_gamma = m_gamma;
 		double S = m_S;
+
 		for (int i = 0; i < m_inEnd.size(); ++i)
 			if (m_inEnd[i]->m_S > S) {
 				max_gamma = m_inEnd[i]->m_gamma;
 				S = m_inEnd[i]->m_S;
 			}
 
-		dPdt[m_M - 1] *= max_gamma;
+		dPdt[m_M - 1] = max_gamma * q;
 	}
 }
 
@@ -244,4 +349,51 @@ double CBranch::getPl() const {
 double CBranch::getPbeg() const {
 	return m_Pbeg;
 }
+
+
+// IO
+
+void CBranch::createOutputs(const QString& path, int id)
+{
+	QString nameQ = path + "\\Q" + QString::number(id) + ".txt";
+	QString nameP = path + "\\P" + QString::number(id) + ".txt";
+
+	m_fileQ.setFileName(nameQ);
+	m_fileQ.open(QFile::WriteOnly | QFile::Truncate | QFile::Append);
+
+	m_fileP.setFileName(nameP);
+	m_fileP.open(QFile::WriteOnly | QFile::Truncate | QFile::Append);
+
+	//QTextStream tsQ(&m_fileQ);
+	//tsQ << "Step\t\t";
+}
+
+
+void CBranch::dump(int step)
+{
+	QTextStream tsQ(&m_fileQ);
+
+	tsQ << "Step: " << step << "\t";
+
+	for (int i = 0; i < m_M; ++i)
+		tsQ << QString("Q[%1]=%2  ").arg(i).arg(m_Q[i], 14);
+
+	tsQ << "\n";
+
+
+
+	QTextStream tsP(&m_fileP);
+
+	tsP << "Step: " << step << "\t";
+
+	tsP << QString("Pbeg=%1  ").arg(m_Pbeg, 14);
+
+	for (int i = 0; i < m_M; ++i)
+		tsP << QString("P[%1]=%2  ").arg(i).arg(m_P[i], 14);
+
+	tsP << QString("Pend=%1  ").arg(m_Pend, 14);
+
+	tsP << "\n";
+}
+
 
