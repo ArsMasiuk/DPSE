@@ -13,6 +13,13 @@ CBranch::~CBranch()
 }
 
 
+void CBranch::setNodes(int n1, int n2)
+{
+	m_n1 = n1;
+	m_n2 = n2;
+}
+
+
 void CBranch::init(double L, double S, int M)
 {
 	m_L = L;
@@ -132,148 +139,42 @@ void CBranch::stepRK4(double m_h)
 	fQ(k1, m_P, m_Q);
 	fP(m1, m_P, m_Q);
 
-	for (int i = 0; i < m_M; i++)
-	{
-		k1[i] *= m_h;
-		m1[i] *= m_h;
-	}
-
 	// step 2
 	std::vector<double> P(m_M), Q(m_M);
 	for (int i = 0; i < m_M; i++)
 	{
-		Q[i] = m_Q[i] + k1[i] / 2.0;
-		P[i] = m_P[i] + m1[i] / 2.0;
+		Q[i] = m_Q[i] + k1[i] * m_h / 2.0;
+		P[i] = m_P[i] + m1[i] * m_h / 2.0;
 	}
 
 	fQ(k2, P, Q);
 	fP(m2, P, Q);
 
-	for (int i = 0; i < m_M; i++)
-	{
-		k2[i] *= m_h;
-		m2[i] *= m_h;
-	}
-
 	// step 3
 	for (int i = 0; i < m_M; i++)
 	{
-		Q[i] = m_Q[i] + k2[i] / 2.0;
-		P[i] = m_P[i] + m2[i] / 2.0;
+		Q[i] = m_Q[i] + k2[i] * m_h / 2.0;
+		P[i] = m_P[i] + m2[i] * m_h / 2.0;
 	}
 
 	fQ(k3, P, Q);
 	fP(m3, P, Q);
 
-	for (int i = 0; i < m_M; i++)
-	{
-		k3[i] *= m_h;
-		m3[i] *= m_h;
-	}
-
 	// step 4
 	for (int i = 0; i < m_M; i++)
 	{
-		Q[i] = m_Q[i] + k3[i];
-		P[i] = m_P[i] + m3[i];
+		Q[i] = m_Q[i] + k3[i] * m_h;
+		P[i] = m_P[i] + m3[i] * m_h;
 	}
 
 	fQ(k4, P, Q);
 	fP(m4, P, Q);
 
-	for (int i = 0; i < m_M; i++)
-	{
-		k4[i] *= m_h;
-		m4[i] *= m_h;
-	}
-
 	// final step
 	for (int i = 0; i < m_M; i++)
 	{
-		m_Q[i] += (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]) / 6.0;
-		m_P[i] += (m1[i] + 2.0 * m2[i] + 2.0 * m3[i] + m4[i]) / 6.0;
-	}
-}
-
-
-void CBranch::stepQ(double m_h)
-{
-	std::vector<double> k1(m_M), k2(m_M), k3(m_M), k4(m_M);
-
-	// write last P
-	//m_P[m_M - 1] = m_Pend;
-
-	fQ(k1, m_P, m_Q);
-
-	std::vector<double> P(m_M), Q(m_M);
-	for (int i = 0; i < m_M; i++)
-	{
-		P[i] = m_P[i] /*+ m_h / 2.0*/;
-		Q[i] = m_Q[i] + m_h / 2.0 * k1[i];
-	}
-
-	fQ(k2, P, Q);
-
-	for (int i = 0; i < m_M; i++)
-	{
-		P[i] = m_P[i] /*+ m_h / 2.0*/;
-		Q[i] = m_Q[i] + m_h / 2.0 * k2[i];
-	}
-
-	fQ(k3, P, Q);
-
-	for (int i = 0; i < m_M; i++)
-	{
-		P[i] = m_P[i] /*+ m_h*/;
-		Q[i] = m_Q[i] + m_h * k3[i];
-	}
-
-	fQ(k4, P, Q);
-
-	for (int i = 0; i < m_M; i++)
-	{
-		m_Q[i] += (m_h / 6.0) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
-	}
-}
-
-
-void CBranch::stepP(double m_h)
-{
-	std::vector<double> k1(m_M), k2(m_M), k3(m_M), k4(m_M);
-
-	// write last P
-	//m_P[m_M - 1] = m_Pend;
-
-	fP(k1, m_P, m_Q);
-
-	std::vector<double> P(m_M), Q(m_M);
-	for (int i = 0; i < m_M; i++)
-	{
-		Q[i] = m_Q[i] /*+ m_h / 2.0*/;
-		P[i] = m_P[i] + m_h / 2.0 * k1[i];
-	}
-
-	fP(k2, P, Q);
-
-	for (int i = 0; i < m_M; i++)
-	{
-		Q[i] = m_Q[i]/* + m_h / 2.0*/;
-		P[i] = m_P[i] + m_h / 2.0 * k2[i];
-	}
-
-	fP(k3, P, Q);
-
-	for (int i = 0; i < m_M; i++)
-	{
-		Q[i] = m_Q[i] /*+ m_h*/;
-		P[i] = m_P[i] + m_h * k3[i];
-	}
-
-	fP(k4, P, Q);
-
-	for (int i = 0; i < m_M; i++)
-	{
-		m_P[i] += (m_h / 6.0) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]);
+		m_Q[i] += (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]) * m_h / 6.0;
+		m_P[i] += (m1[i] + 2.0 * m2[i] + 2.0 * m3[i] + m4[i]) * m_h / 6.0;
 	}
 }
 
@@ -340,10 +241,6 @@ double CBranch::getQbeg() const { return m_Q[0]; }
 
 double CBranch::getP() const { 
 	return m_P[m_M - 1]; 
-}
-
-double CBranch::getPl() const {
-	return m_P[m_M - 2];
 }
 
 double CBranch::getPbeg() const {

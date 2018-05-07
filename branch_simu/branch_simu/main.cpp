@@ -1,6 +1,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
+#include <QtCore/QElapsedTimer>
 
 #include <CBranch.h>
 
@@ -8,6 +9,9 @@
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
+
+	QElapsedTimer totalTimer;
+	totalTimer.start();
 
 	// multibranch
 	const int m = 8;
@@ -22,21 +26,15 @@ int main(int argc, char *argv[])
 	b[6].init(150.0, 6.5, 5);
 	b[1].init(150.0, 6.5, 5);
 
+	b[0].setNodes(0, 1);
+	b[1].setNodes(1, 2);
+	b[2].setNodes(2, 3);
+	b[3].setNodes(2, 3);
+	b[4].setNodes(1, 4);
+	b[5].setNodes(1, 4);
+	b[6].setNodes(3, 4);
+	b[7].setNodes(4, 5);
 
-
-	//b[0].m_outEnd << &b[4] << &b[5];
-
-	//b[7].m_inBeg << &b[4] << &b[5];
-
-	//b[4].m_inBeg << &b[0];
-	//b[4].m_outEnd << &b[7];
-	//b[4].m_outBeg << &b[5];
-	//b[4].m_inEnd << &b[5];
-
-	//b[5].m_inBeg << &b[0];
-	//b[5].m_outEnd << &b[7];
-	//b[5].m_outBeg << &b[4];
-	//b[5].m_inEnd << &b[4];
 
 
 	b[0].m_outEnd << &b[1] << &b[4] << &b[5];
@@ -97,17 +95,23 @@ int main(int argc, char *argv[])
 		b[i].createOutputs(QString("c:\\temp"), i);
 
 
-	int steps = 300000;	// 300s
+	QElapsedTimer tm;
+	qint64 ns = 0;
+
+	int steps = 200000;	// 200s
 	for (int s = 0; s < steps; ++s)
 	{
 		QString res; res = QString("step: %1").arg(s);
+
+		tm.restart();
 
 		for (int i = 0; i < m; ++i)
 		{
 			b[i].exchange();
 			b[i].stepRK4(0.001);
-			b[i].exchange();
 		}
+
+		ns += tm.nsecsElapsed();
 
 
 		if (s % 1000 == 0)
@@ -117,9 +121,12 @@ int main(int argc, char *argv[])
 				b[i].dump(s);
 			}
 
-			qDebug() << res;
+			//qDebug() << res;
 		}
 	}
+
+	qDebug() << "s simulation: " << (double)ns / 1000000000.0;
+	qDebug() << "s total: " << (double)totalTimer.nsecsElapsed() / 1000000000.0;
 
 	return 0;
 	//return a.exec();
