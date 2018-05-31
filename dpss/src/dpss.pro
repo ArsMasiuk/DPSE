@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml opengl
+QT       += core gui xml opengl 
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts printsupport
 
 TARGET = dpss
 TEMPLATE = app
@@ -37,8 +37,9 @@ include(common/common.pri)
 include(qvge/qvge.pri)
 include(simu/mpisch/mpisch.pri)
 include(simu/graph_om/graph_om.pri)
+include(ui/ui.pri)
 
-INCLUDEPATH += qvge ds common simu
+INCLUDEPATH += qvge ds common simu ui
 
 SOURCES += $$files($$PWD/ds/*.cpp)
 HEADERS  += $$files($$PWD/ds/*.h)

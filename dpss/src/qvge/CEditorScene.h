@@ -12,6 +12,7 @@ It can be used freely, maintaining the information above.
 
 #include <QGraphicsScene>
 #include <QSet>
+#include <QMap>
 #include <QMenu>
 #include <QByteArrayList>
 

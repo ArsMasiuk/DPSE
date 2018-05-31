@@ -44,6 +44,9 @@ private Q_SLOTS:
 
     void onNavigatorShown();
 
+
+    void testogdf();
+
 private:
 	void createMenus();
 	void createPanels();

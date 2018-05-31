@@ -13,7 +13,7 @@ It can be used freely, maintaining the information above.
 
 int main(int argc, char *argv[])
 {
-	Q_INIT_RESOURCE(common);
+	Q_INIT_RESOURCE(ui);
 	Q_INIT_RESOURCE(mainwindow);
 
 	QApplication a(argc, argv);

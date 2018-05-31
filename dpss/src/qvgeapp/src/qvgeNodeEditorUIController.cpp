@@ -201,6 +201,14 @@ void qvgeNodeEditorUIController::createMenus()
 
 	zoomToolbar->addAction(unzoomAction);
 	zoomToolbar->addAction(fitZoomAction);
+
+
+
+    // add test toolbar
+    QToolBar *testToolbar = m_parent->addToolBar(tr("test"));
+    testToolbar->setObjectName("testToolbar");
+    testToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    testToolbar->addAction("Test", this, SLOT(testogdf()));
 }
 
 
@@ -348,4 +356,47 @@ void qvgeNodeEditorUIController::exportPDF()
 	{
 		m_parent->statusBar()->showMessage(tr("Export failed"));
 	}
+}
+
+
+//////////////
+/// \brief qvgeNodeEditorUIController::testogdf
+///
+
+#include <ogdf/basic/Graph.h>
+#include <ogdf/basic/GraphAttributes.h>
+#include <ogdf/planarity/PlanarizationLayout.h>
+#include <ogdf/fileformats/GraphIO.h>
+
+using namespace ogdf;
+
+void qvgeNodeEditorUIController::testogdf()
+{
+
+    ogdf::Graph* G;
+    ogdf::GraphAttributes* GA_;
+
+    QVector<ogdf::node> nodeList_;
+    QVector<ogdf::edge> edgeList_;
+
+    G = new Graph();
+    GA_ = new GraphAttributes(*G,
+        GraphAttributes::nodeGraphics | GraphAttributes::edgeGraphics);
+
+    if (!GraphIO::readGML(*G, "G:\\sierpinski_04-layout.gml") ) {
+    return;
+    }
+
+    PlanarizationLayout layout;
+    layout.call(*GA_);
+
+    m_scene->reset();
+    for (node n: G->nodes)
+    {
+        auto nodeItem = m_scene->createNewNode();
+        nodeItem->setPos(GA_->x(n), GA_->y(n));
+        m_scene->addItem(nodeItem);
+    }
+
+    m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }

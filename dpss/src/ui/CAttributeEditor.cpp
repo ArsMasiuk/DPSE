@@ -12,7 +12,7 @@ It can be used freely, maintaining the information above.
 #include "CNewAttributeDialog.h"
 
 #include <qvge/CEditorScene.h>
-#include <qvge/Utils.h>
+#include <qvge/Utilities.h>
 
 #include <QMessageBox>
 

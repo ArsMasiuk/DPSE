@@ -16,7 +16,7 @@ It can be used freely, maintaining the information above.
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CNode.h>
 #include <qvge/CConnection.h>
-#include <qvge/Utils.h>
+#include <qvge/Utilities.h>
 
 #include <QInputDialog>
 #include <QColorDialog>

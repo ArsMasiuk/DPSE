@@ -8,6 +8,8 @@ It can be used freely, maintaining the information above.
 */
 
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsItem>
+#include <QList>
 
 #include "CPolylineConnection.h"
 #include "CNode.h"
