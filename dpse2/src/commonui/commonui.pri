@@ -1,5 +1,5 @@
-QT += core gui widgets xml opengl network printsupport
-CONFIG += c++11
+# config
+include($$PWD/../config.pri)
 
 # app sources
 SOURCES += $$files($$PWD/*.cpp)
@@ -15,4 +15,11 @@ include($$PWD/../appbase/appbase.pri)
 INCLUDEPATH += $$PWD $$PWD/.. 
 INCLUDEPATH += $$PWD/../3rdParty/qsint-widgets 
 INCLUDEPATH += $$PWD/../3rdParty/qtpropertybrowser 
-INCLUDEPATH += $$PWD/../3rdParty/ogdf/include
+
+USE_OGDF{
+    INCLUDEPATH += $$PWD/../3rdParty/ogdf/include
+
+    SOURCES += $$files($$PWD/ogdf/*.cpp)
+    HEADERS += $$files($$PWD/ogdf/*.h)
+    FORMS += $$files($$PWD/ogdf/*.ui)
+}

@@ -35,12 +35,15 @@ class CMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit CMainWindow(QWidget *parent = 0);
+    explicit CMainWindow(QWidget *parent = nullptr);
     virtual ~CMainWindow();
 
     virtual void init(int argc, char *argv[]);
 
     void addDocument(const CDocument& doc);
+
+    virtual void readSettings();
+    virtual void writeSettings();
 
 	QAction* getFileExportAction() { return m_exportDocument; }
 	QMenu* getFileMenu() { return m_fileMenu; }
@@ -95,9 +98,7 @@ protected:
 	virtual void removeInstance();
 	virtual QVariantMap getActiveInstances();
 
-	virtual void readSettings();
 	virtual void doReadSettings(QSettings& settings);
-	virtual void writeSettings();
 	virtual void doWriteSettings(QSettings& settings);
 
 protected Q_SLOTS:

@@ -1,5 +1,5 @@
 # This file is a part of
-# QVGE - Qt Visual Graph Editor
+# DPSE - Distributed Parallel Simulation Environment
 #
 # (c) 2016-2018 Ars L. Masiuk (ars.masiuk@gmail.com)
 #
@@ -8,13 +8,6 @@
 
 TEMPLATE = subdirs
 CONFIG += ordered
-
-include(config.pri)
-
-USE_OGDF{
-    SUBDIRS += ogdf
-    ogdf.file = $$PWD/3rdParty/ogdf/ogdf.pro
-}
 
 SUBDIRS += qtpropertybrowser
 qtpropertybrowser.file = $$PWD/3rdParty/qtpropertybrowser/qtpropertybrowser.pro
@@ -25,5 +18,5 @@ qsint.file = $$PWD/3rdParty/qsint-widgets/qsint-widgets.pro
 SUBDIRS += qvge
 qvge.file = $$PWD/qvge/qvge.pro
 
-SUBDIRS += qvgeapp
-qvgeapp.file = $$PWD/qvgeapp/qvgeapp.pro
+SUBDIRS += dpseapp
+dpseapp.file = $$PWD/dpseapp/dpseapp.pro

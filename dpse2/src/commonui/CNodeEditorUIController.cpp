@@ -8,14 +8,18 @@ It can be used freely, maintaining the information above.
 */
 
 #include <CNodeEditorUIController.h>
-#include <qvgeMainWindow.h>
 #include <CCommutationTable.h>
 #include <CSceneOptionsDialog.h>
 #include <CNodeEdgePropertiesUI.h>
 #include <CClassAttributesEditorUI.h>
-#include <COGDFLayoutUIController.h>
-#include <COGDFNewGraphDialog.h>
-#include <COGDFLayout.h>
+
+#ifdef USE_OGDF
+#include <ogdf/COGDFLayoutUIController.h>
+#include <ogdf/COGDFNewGraphDialog.h>
+#include <ogdf/COGDFLayout.h>
+#endif
+
+#include <appbase/CMainWindow.h>
 
 #include <qvge/CNode.h>
 #include <qvge/CConnection.h>
@@ -43,7 +47,7 @@ It can be used freely, maintaining the information above.
 #include <QTimer>
 
 
-CNodeEditorUIController::CNodeEditorUIController(qvgeMainWindow *parent) :
+CNodeEditorUIController::CNodeEditorUIController(CMainWindow *parent) :
 	QObject(parent),
 	m_parent(parent)
 {
@@ -83,7 +87,9 @@ CNodeEditorUIController::CNodeEditorUIController(qvgeMainWindow *parent) :
 	onSceneStatusChanged(m_editorScene->getInfoStatus());
 
     // OGDF
+#ifdef USE_OGDF
     m_ogdfController = new COGDFLayoutUIController(parent, m_editorScene);
+#endif
 
     // workaround for full screen
 #ifndef Q_OS_WIN32
@@ -597,7 +603,7 @@ public:
 			return edge;
 		}
 
-		return NULL;
+        return nullptr;
 	}
 };
 
@@ -622,7 +628,11 @@ bool CNodeEditorUIController::loadFromFile(const QString &fileName, const QStrin
 	}
 
     // else via ogdf
+#ifdef USE_OGDF
     return (COGDFLayout::loadGraph(fileName.toStdString(), *m_editorScene));
+#else
+    return false;
+#endif
 }
 
 
@@ -646,6 +656,7 @@ void CNodeEditorUIController::onNewDocumentCreated()
 	m_editorScene->setClassAttributeVisible("item", "id", true);
 	m_editorScene->setClassAttributeVisible("item", "label", true);
 
+#ifdef USE_OGDF
     if (m_showNewGraphDialog)
 	{
 		COGDFNewGraphDialog dialog;
@@ -662,4 +673,5 @@ void CNodeEditorUIController::onNewDocumentCreated()
 			m_parent->writeSettings();
 		}
 	}
+#endif
 }

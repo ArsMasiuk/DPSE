@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-class qvgeMainWindow;
+class CMainWindow;
 class CNodeEditorScene;
 
 
@@ -11,7 +11,7 @@ class COGDFLayoutUIController : public QObject
 {
     Q_OBJECT
 public:
-    explicit COGDFLayoutUIController(qvgeMainWindow *parent, CNodeEditorScene *scene);
+    explicit COGDFLayoutUIController(CMainWindow *parent, CNodeEditorScene *scene);
 
 private Q_SLOTS:
     void doPlanarLayout();
@@ -22,7 +22,7 @@ private Q_SLOTS:
 	void doPSLLayout();
 
 private:
-    qvgeMainWindow *m_parent;
+    CMainWindow *m_parent;
     CNodeEditorScene *m_scene;
 };
 

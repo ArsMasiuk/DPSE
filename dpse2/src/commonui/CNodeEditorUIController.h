@@ -15,7 +15,7 @@ It can be used freely, maintaining the information above.
 
 #include <slider2d.h>
 
-class qvgeMainWindow;
+class CMainWindow;
 
 class CNodeEditorScene;
 class CEditorView;
@@ -27,7 +27,7 @@ class CNodeEditorUIController : public QObject
 	Q_OBJECT
 
 public:
-	CNodeEditorUIController(qvgeMainWindow *parent);
+    CNodeEditorUIController(CMainWindow *parent);
 	~CNodeEditorUIController();
 
 	void doReadSettings(QSettings& settings);
@@ -69,7 +69,7 @@ private:
     void createNavigator();
 
 private:
-	qvgeMainWindow *m_parent;
+    CMainWindow *m_parent;
 	CNodeEditorScene *m_editorScene;
 	CEditorView *m_editorView;
 
@@ -101,6 +101,9 @@ private:
     QAction *gridSnapAction;
     QAction *actionShowLabels;
 
+    bool m_showNewGraphDialog = true;
+
+#ifdef USE_OGDF
 	class COGDFLayoutUIController *m_ogdfController;
-	bool m_showNewGraphDialog = true;
+#endif
 };

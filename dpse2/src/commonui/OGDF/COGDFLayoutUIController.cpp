@@ -1,6 +1,7 @@
 #include "COGDFLayoutUIController.h"
 #include "COGDFLayout.h"
-#include "qvgeMainWindow.h"
+
+#include <appbase/CMainWindow.h>
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CEditorView.h>
@@ -18,7 +19,7 @@
 #include <QMenu>
 
 
-COGDFLayoutUIController::COGDFLayoutUIController(qvgeMainWindow *parent, CNodeEditorScene *scene) :
+COGDFLayoutUIController::COGDFLayoutUIController(CMainWindow *parent, CNodeEditorScene *scene) :
     QObject(parent),
     m_parent(parent), m_scene(scene)
 {

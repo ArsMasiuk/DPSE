@@ -1,5 +1,5 @@
 # This file is a part of
-# QVGE - Qt Visual Graph Editor
+# DPSE - Distributed Parallel Simulation Environment
 #
 # (c) 2016-2018 Ars L. Masiuk (ars.masiuk@gmail.com)
 #
@@ -7,8 +7,8 @@
 
 
 TEMPLATE = app
-TARGET = qvgeapp
-VERSION = 0.4.3.0
+TARGET = dpseapp
+VERSION = 2.1.0.0
 
 include(../config.pri)
 include(../app.pri)
@@ -35,6 +35,3 @@ cygwin*{
     LIBS += -lopengl32 -lglu32 -lshell32 -luser32 -lpsapi
 }
 
-USE_OGDF{
-    LIBS += -logdf
-}
