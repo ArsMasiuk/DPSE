@@ -42,6 +42,6 @@ public:
 		return true;
 	}
 
-	virtual bool save(const QString& fileName, CEditorScene& scene) const;
+	virtual bool save(const QString& fileName, CEditorScene& scene) const;    
 };
 

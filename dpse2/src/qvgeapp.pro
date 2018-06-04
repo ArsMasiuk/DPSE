@@ -9,7 +9,7 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
-include(config.pri)
+include($$PWD/config.pri)
 
 USE_OGDF{
     SUBDIRS += ogdf

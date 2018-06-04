@@ -12,6 +12,7 @@ It can be used freely, maintaining the information above.
 #include <CSceneOptionsDialog.h>
 #include <CNodeEdgePropertiesUI.h>
 #include <CClassAttributesEditorUI.h>
+#include <CExtListInputDialog.h>
 
 #ifdef USE_OGDF
 #include <ogdf/COGDFLayoutUIController.h>
@@ -32,6 +33,7 @@ It can be used freely, maintaining the information above.
 #include <qvge/CFileSerializerGraphML.h>
 #include <qvge/CFileSerializerXGR.h>
 #include <qvge/CFileSerializerDOT.h>
+#include <qvge/CFileSerializerCSV.h>
 #include <qvge/ISceneItemFactory.h>
 
 #include <QMenuBar>
@@ -509,7 +511,7 @@ bool CNodeEditorUIController::doExport(const IFileSerializer &exporter)
 	else
 		fileName = QFileInfo(m_lastExportPath).absolutePath() + "/" + QFileInfo(fileName).fileName();
 
-	QString path = QFileDialog::getSaveFileName(NULL,
+    QString path = QFileDialog::getSaveFileName(nullptr,
 		QObject::tr("Export as") + " " + exporter.description(),
 		fileName,
 		exporter.filters()
@@ -580,40 +582,10 @@ void CNodeEditorUIController::doWriteSettings(QSettings& settings)
 }
 
 
-class CDPSEReader : public ISceneItemFactory
-{
-public:
-	virtual CItem* createItemOfType(const QByteArray& typeId, const CEditorScene& scene) const
-	{
-		if (typeId == "CBranchNode")
-		{
-			auto node = scene.createItemOfType("CNode");
-			return node;
-		}
-
-		if (typeId == "CFanNode")
-		{
-			auto node = scene.createItemOfType("CNode");
-			return node;
-		}
-
-		if (typeId == "CBranchConnection")
-		{
-			auto edge = scene.createItemOfType("CDirectConnection");
-			return edge;
-		}
-
-        return nullptr;
-	}
-};
-
-
 bool CNodeEditorUIController::loadFromFile(const QString &fileName, const QString &format)
 {
     if (format == "xgr")
     {
-		static CDPSEReader tmp;
-		m_editorScene->setItemFactoryFilter(&tmp);
         return (CFileSerializerXGR().load(fileName, *m_editorScene));
     }
 
@@ -626,6 +598,29 @@ bool CNodeEditorUIController::loadFromFile(const QString &fileName, const QStrin
 	{
         return (CFileSerializerGEXF().load(fileName, *m_editorScene));
 	}
+
+    if (format == "csv")
+    {
+        QStringList csvList;
+        csvList << ";" << "," << "Tab";
+
+        int index = CExtListInputDialog::getItemIndex(
+                    tr("Separator"),
+                    tr("Choose a separator of columns:"),
+                    csvList);
+        if (index < 0)
+            return false;
+
+        CFileSerializerCSV csvLoader;
+        switch (index)
+        {
+            case 0:     csvLoader.setDelimiter(';');    break;
+            case 1:     csvLoader.setDelimiter(',');    break;
+            default:    csvLoader.setDelimiter('\t');   break;
+        }
+
+        return (csvLoader.load(fileName, *m_editorScene));
+    }
 
     // else via ogdf
 #ifdef USE_OGDF

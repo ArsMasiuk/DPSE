@@ -1,6 +1,7 @@
 #include "CExtListInputDialog.h"
 #include "ui_CExtListInputDialog.h"
 
+
 CExtListInputDialog::CExtListInputDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CExtListInputDialog)
@@ -12,15 +13,20 @@ CExtListInputDialog::CExtListInputDialog(QWidget *parent) :
 	ui->comboBox->setIconSize(QSize(24, 24));
 }
 
+
 CExtListInputDialog::~CExtListInputDialog()
 {
     delete ui;
 }
 
-int CExtListInputDialog::getItemIndex(const QString& title, const QString& label,
-                                      const QStringList &texts, const QList<QIcon> &icons, int selectedIndex)
+
+int CExtListInputDialog::getItemIndex(const QString& title,
+                                      const QString& label,
+                                      const QStringList &texts,
+                                      const QList<QIcon>& icons,
+                                      int selectedIndex)
 {
-    static CExtListInputDialog* dialog = new CExtListInputDialog(NULL);
+    static CExtListInputDialog* dialog = new CExtListInputDialog(nullptr);
 
     dialog->setWindowTitle(title);
     dialog->ui->label->setText(label);
@@ -44,3 +50,26 @@ int CExtListInputDialog::getItemIndex(const QString& title, const QString& label
 
     return dialog->ui->comboBox->currentIndex();
 }
+
+
+int CExtListInputDialog::getItemIndex(const QString& title,
+                                      const QString& label,
+                                      const QStringList &texts,
+                                      int selectedIndex)
+{
+    static CExtListInputDialog* dialog = new CExtListInputDialog(nullptr);
+
+    dialog->setWindowTitle(title);
+    dialog->ui->label->setText(label);
+
+    dialog->ui->comboBox->clear();
+    dialog->ui->comboBox->addItems(texts);
+
+    dialog->ui->comboBox->setCurrentIndex(selectedIndex);
+
+    if (dialog->exec() == QDialog::Rejected)
+        return -1;
+
+    return dialog->ui->comboBox->currentIndex();
+}
+

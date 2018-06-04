@@ -9,9 +9,40 @@ It can be used freely, maintaining the information above.
 
 #include "CFileSerializerXGR.h"
 #include "CEditorScene.h"
+#include "ISceneItemFactory.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QDataStream>
+
+
+// static reader with DPSE format support
+
+class CDPSERecoder : public ISceneItemFactory
+{
+public:
+    virtual CItem* createItemOfType(const QByteArray& typeId, const CEditorScene& scene) const
+    {
+        if (typeId == "CBranchNode")
+        {
+            return scene.createItemOfType("CNode");
+        }
+
+        if (typeId == "CFanNode")
+        {
+            return scene.createItemOfType("CNode");
+        }
+
+        if (typeId == "CBranchConnection")
+        {
+            return scene.createItemOfType("CDirectConnection");
+        }
+
+        return nullptr;
+    }
+};
+
+static CDPSERecoder s_dpseRecoder;
+
 
 // reimp
 
@@ -24,8 +55,12 @@ bool CFileSerializerXGR::load(const QString& fileName, CEditorScene& scene) cons
 
 	scene.reset();
 
+    scene.setItemFactoryFilter(&s_dpseRecoder);
+
 	QDataStream ds(&openFile);
 	scene.restoreFrom(ds, true);
+
+    scene.setItemFactoryFilter(nullptr);
 
     scene.addUndoState();
 
