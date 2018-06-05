@@ -40,6 +40,12 @@ public Q_SLOTS:
     // callback
     void onNewDocumentCreated();
 
+// protected API
+protected:
+    CNodeEditorScene* scene() {
+        return m_editorScene;
+    }
+
 private Q_SLOTS:
 	bool doExport(const IFileSerializer &exporter);
 	void exportFile();

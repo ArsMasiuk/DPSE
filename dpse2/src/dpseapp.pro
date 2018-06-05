@@ -9,6 +9,13 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
+include($$PWD/config.pri)
+
+USE_OGDF{
+    SUBDIRS += ogdf
+    ogdf.file = $$PWD/3rdParty/ogdf/ogdf.pro
+}
+
 SUBDIRS += qtpropertybrowser
 qtpropertybrowser.file = $$PWD/3rdParty/qtpropertybrowser/qtpropertybrowser.pro
 

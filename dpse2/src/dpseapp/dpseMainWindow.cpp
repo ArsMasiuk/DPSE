@@ -9,8 +9,7 @@ It can be used freely, maintaining the information above.
 
 #include "dpseMainWindow.h"
 #include "dpseVersion.h"
-
-#include <CNodeEditorUIController.h>
+#include "dpseUIController.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -55,7 +54,7 @@ bool dpseMainWindow::createDocument(const QByteArray &docType)
     // scene
     if (docType == "graph")
     {
-        m_graphEditController = new CNodeEditorUIController(this);
+        m_graphEditController = new dpseUIController(this);
 
         return true;
     }
@@ -80,7 +79,7 @@ bool dpseMainWindow::openDocument(const QString &fileName, QByteArray &docType)
 	QString format = QFileInfo(fileName).suffix().toLower();
 
 	// graph formats
-    if (format == "graphml" || format == "gexf" || format == "xgr" || format == "gml" || format == "dot")
+    if (format == "graphml" || format == "gexf" || format == "xgr" || format == "gml")
 	{
 		docType = "graph";
 

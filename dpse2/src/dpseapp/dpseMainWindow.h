@@ -15,7 +15,7 @@ It can be used freely, maintaining the information above.
 #include <appbase/CMainWindow.h>
 
 
-class CNodeEditorUIController;
+class dpseUIController;
 
 
 class dpseMainWindow : public CMainWindow
@@ -25,7 +25,7 @@ class dpseMainWindow : public CMainWindow
 public:
     typedef CMainWindow Super;
 
-    friend class CNodeEditorUIController;
+    friend class dpseUIController;
 
     dpseMainWindow();
 
@@ -43,8 +43,6 @@ protected:
 	virtual void doWriteSettings(QSettings& settings);
 	
 private:
-    CNodeEditorUIController *m_graphEditController = NULL;
-
-    QPlainTextEdit *m_textEditor = NULL;
+    dpseUIController *m_graphEditController = nullptr;
 };
 

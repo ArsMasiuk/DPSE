@@ -13,11 +13,15 @@ VERSION = 2.1.0.0
 include(../config.pri)
 include(../app.pri)
 
+QT += charts
+
 # app sources
-SOURCES += $$files($$PWD/*.cpp)
-HEADERS += $$files($$PWD/*.h)
-FORMS += $$files($$PWD/*.ui)
+SOURCES += $$files($$PWD/*.cpp) $$files($$PWD/simu/branch/*.cpp)
+HEADERS += $$files($$PWD/*.h) $$files($$PWD/simu/branch/*.h)
+FORMS += $$files($$PWD/*.ui) $$files($$PWD/simu/branch/*.ui)
 RESOURCES += $$files($$PWD/*.qrc)
+
+INCLUDEPATH += $$PWD/simu $$PWD/simu/branch
 
 # common sources
 include($$PWD/../commonui/commonui.pri)
