@@ -1,5 +1,9 @@
 #include "dpseUIController.h"
+
 #include "simu/branch/CGraphSimulatorDialog.h"
+#include "simu/branch/CGraphSimulator.h"
+
+#include <ISimulator.h>
 
 #include <QMenu>
 #include <QMenuBar>
@@ -27,6 +31,11 @@ void dpseUIController::doNetSimulation()
     if (!scene())
         return;
 
+    // that might be moved away
+    CGraphSimulator simu;
+
     CGraphSimulatorDialog simuDialog;
+    simuDialog.setSimulator(simu);
+
     simuDialog.run(*scene());
 }

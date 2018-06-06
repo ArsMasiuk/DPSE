@@ -3,7 +3,7 @@
 
 #include <QString>
 
-class CEditorScene;
+class CNodeEditorScene;
 class CConnection;
 class CNode;
 
@@ -11,7 +11,7 @@ class CNode;
 class CGraphInterface
 {
 public:
-    explicit CGraphInterface(CEditorScene& scene);
+    explicit CGraphInterface(CNodeEditorScene& scene);
 
     // interface
     CConnection* addEdge(const QString& edgeId, const QString& startNodeId, const QString& endNodeId);
@@ -19,7 +19,7 @@ public:
     CNode* getNode(const QString& nodeId, bool autoCreate = false);
 
 private:
-    CEditorScene* m_scene;
+    CNodeEditorScene *m_scene = nullptr;
 };
 
 #endif // CGRAPHINTERFACE_H

@@ -12,6 +12,7 @@ It can be used freely, maintaining the information above.
 #include "CNode.h"
 #include "CDirectConnection.h"
 #include "CGraphInterface.h"
+#include "CNodeEditorScene.h"
 
 #include <QFile>
 #include <QDebug>
@@ -22,6 +23,10 @@ It can be used freely, maintaining the information above.
 
 bool CFileSerializerCSV::load(const QString& fileName, CEditorScene& scene) const
 {
+    CNodeEditorScene* nodeScene = dynamic_cast<CNodeEditorScene*>(&scene);
+    if (nodeScene == nullptr)
+        return false;
+
 	QFile file(fileName);
 	if (!file.open(QIODevice::ReadOnly))
 		return false;
@@ -29,7 +34,7 @@ bool CFileSerializerCSV::load(const QString& fileName, CEditorScene& scene) cons
 	// try to parse
 	scene.reset();
 
-    CGraphInterface graph(scene);
+    CGraphInterface graph(*nodeScene);
 
     QTextStream ts(&file);
     while (!ts.atEnd())
@@ -40,7 +45,7 @@ bool CFileSerializerCSV::load(const QString& fileName, CEditorScene& scene) cons
             continue;
 
         // edge - start node - end node
-        auto edge = graph.addEdge(items[0], items[1], items[2]);
+        /*auto edge =*/ graph.addEdge(items[0], items[1], items[2]);
     }
 
     file.close();

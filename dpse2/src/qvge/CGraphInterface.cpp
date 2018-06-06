@@ -1,10 +1,10 @@
 #include "CGraphInterface.h"
-#include "CEditorScene.h"
+#include "CNodeEditorScene.h"
 #include "CNode.h"
 #include "CDirectConnection.h"
 
 
-CGraphInterface::CGraphInterface(CEditorScene &scene)
+CGraphInterface::CGraphInterface(CNodeEditorScene &scene)
 {
     m_scene = &scene;
 }

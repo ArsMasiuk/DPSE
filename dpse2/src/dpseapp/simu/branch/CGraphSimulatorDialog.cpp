@@ -47,9 +47,16 @@ CGraphSimulatorDialog::~CGraphSimulatorDialog()
 
 // reimp
 
+void CGraphSimulatorDialog::setSimulator(ISimulator &simu)
+{
+    m_simu = &simu;
+}
+
+
 bool CGraphSimulatorDialog::run(const CNodeEditorScene& scene)
 {
-    //m_simu.setScene(scene);
+    if (!m_simu || !m_simuScene)
+        return false;
 
 	m_simuScene->reset();
 
@@ -62,6 +69,8 @@ bool CGraphSimulatorDialog::run(const CNodeEditorScene& scene)
 
 	m_simuScene->setClassAttributeVisible("edge", "Q");
 
+    // set to Simu
+    m_simu->setScene(*m_simuScene);
 
 	// sort by ids
 //    m_branchMap.clear();

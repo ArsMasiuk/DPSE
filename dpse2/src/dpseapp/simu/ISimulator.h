@@ -9,21 +9,22 @@ It can be used freely, maintaining the information above.
 
 #pragma once
 
-#include "CBranchEditorScene.h"
+#include <qvge/CNodeEditorScene.h>
 
 
 class ISimulator
 {
 public:
-    virtual void setScene(const CBranchEditorScene& scene) = 0;
+    virtual void setScene(const CNodeEditorScene& scene) = 0;
     virtual bool run() = 0;
-	virtual bool stop() = 0;
+    virtual bool stop() = 0;
 };
 
 
 class ISimulatorUI
 {
 public:
-    virtual bool run(const CBranchEditorScene& scene) = 0;
+    virtual void setSimulator(ISimulator& simu) = 0;
+    virtual bool run(const CNodeEditorScene& scene) = 0;
 };
 

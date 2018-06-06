@@ -16,8 +16,7 @@ It can be used freely, maintaining the information above.
 #include <qvge/CEditorView.h>
 
 #include <ILogger.h>
-
-//#include "CGraphSimulator.h"
+#include <ISimulator.h>
 
 
 namespace Ui {
@@ -26,18 +25,19 @@ class CGraphSimulatorDialog;
 
 using namespace QtCharts;
 
-class CGraphSimulatorDialog : public QDialog, public ILogger
+class CGraphSimulatorDialog : public QDialog, public ILogger, public ISimulatorUI
 {
     Q_OBJECT
 
 public:
-    explicit CGraphSimulatorDialog(QWidget *parent = 0);
+    explicit CGraphSimulatorDialog(QWidget *parent = nullptr);
     ~CGraphSimulatorDialog();
 
-    // reimp
+    // ISimulatorUI
+    virtual void setSimulator(ISimulator& simu);
     virtual bool run(const CNodeEditorScene& scene);
 
-    // logger
+    // ILogger
     virtual void write(const QString& text, int state = LOG_INFO, const QDateTime& timestamp = QDateTime::currentDateTime());
 
 private Q_SLOTS:
@@ -60,8 +60,8 @@ private:
 	QChart m_Chart;
 	QMap<int, QList<QPointF>> m_testPoints;
 
-    //CGraphSimulator m_simu;
+    ISimulator *m_simu = nullptr;
 
     //QMap<QString, CBranchConnection*> m_branchMap;
-    CNodeEditorScene *m_simuScene;
+    CNodeEditorScene *m_simuScene = nullptr;
 };
