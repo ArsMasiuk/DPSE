@@ -43,6 +43,9 @@ CConnection* CGraphInterface::addEdge(const QString &edgeId, const QString &star
 
 CNode* CGraphInterface::addNode(const QString &nodeId)
 {
+    if (m_scene == nullptr)
+        return nullptr;
+
     // look for existing node
     if (m_scene->getItemsById<CNode>(nodeId).count())
         return nullptr;
@@ -61,6 +64,9 @@ CNode* CGraphInterface::addNode(const QString &nodeId)
 
 CNode* CGraphInterface::getNode(const QString &nodeId, bool autoCreate)
 {
+    if (m_scene == nullptr)
+        return nullptr;
+
     // look for existing node
     auto nodes = (m_scene->getItemsById<CNode>(nodeId));
     if (nodes.count())
@@ -82,3 +88,36 @@ CNode* CGraphInterface::getNode(const QString &nodeId, bool autoCreate)
     return nullptr;
 }
 
+
+//
+
+QStringList CGraphInterface::getEdgeIds() const
+{
+    QStringList ids;
+
+    if (m_scene)
+    {
+        auto items = m_scene->items();
+        for (auto item: items)
+            if (auto edge = dynamic_cast<CConnection*>(item))
+                ids << edge->getId();
+    }
+
+    return ids;
+}
+
+
+QStringList CGraphInterface::getNodeIds() const
+{
+    QStringList ids;
+
+    if (m_scene)
+    {
+        auto items = m_scene->items();
+        for (auto item: items)
+            if (auto edge = dynamic_cast<CNode*>(item))
+                ids << edge->getId();
+    }
+
+    return ids;
+}

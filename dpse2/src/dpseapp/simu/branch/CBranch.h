@@ -10,7 +10,8 @@ class CBranch
 {
 public:
 	CBranch();
-	~CBranch();
+    CBranch(const CBranch&)=default;
+    ~CBranch();
 
 	void setNodes(int n1, int n2);
 

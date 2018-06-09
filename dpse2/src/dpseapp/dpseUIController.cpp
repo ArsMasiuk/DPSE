@@ -1,9 +1,9 @@
 #include "dpseUIController.h"
 
-#include "simu/branch/CGraphSimulatorDialog.h"
-#include "simu/branch/CGraphSimulator.h"
+#include <simu/branch/CGraphSimulatorDialog.h>
+#include <simu/branch/CGraphSimulator.h>
 
-#include <ISimulator.h>
+#include <simu/ISimulator.h>
 
 #include <QMenu>
 #include <QMenuBar>

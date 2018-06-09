@@ -3,28 +3,38 @@
 
 #include <QObject>
 
-#include <ISimulator.h>
+#include <simu/CSimulatorBase.h>
 
-class CNodeEditorScene;
+#include "CBranch.h"
 
 
-class CGraphSimulator : public QObject, public ISimulator
+class CGraphSimulator : public CSimulatorBase
 {
     Q_OBJECT
+
 public:
     explicit CGraphSimulator(QObject *parent = nullptr);
+    virtual ~CGraphSimulator();
 
     // ISimulator
-    virtual void setScene(const CNodeEditorScene& scene);
+    //virtual void setGraph(const IGraphInterface& scene);
+    virtual bool analyse();
     virtual bool run();
     virtual bool stop();
 
-signals:
-
 public slots:
 
+
 private:
-    const CNodeEditorScene *m_scene = nullptr;
+    void cleanup();
+
+    struct BranchInfo
+    {
+        CBranch *branch = nullptr;
+        bool isOk = false;
+    };
+
+    QMap<QString, BranchInfo> m_branchList;
 };
 
 

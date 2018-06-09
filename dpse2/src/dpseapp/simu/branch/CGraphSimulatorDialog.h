@@ -14,9 +14,11 @@ It can be used freely, maintaining the information above.
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CEditorView.h>
+#include <qvge/CGraphInterface.h>
 
-#include <ILogger.h>
-#include <ISimulator.h>
+#include <simu/ILogger.h>
+#include <simu/ISimulator.h>
+#include <simu/CSimulatorBase.h>
 
 
 namespace Ui {
@@ -25,7 +27,8 @@ class CGraphSimulatorDialog;
 
 using namespace QtCharts;
 
-class CGraphSimulatorDialog : public QDialog, public ILogger, public ISimulatorUI
+
+class CGraphSimulatorDialog : public QDialog, public ILogger
 {
     Q_OBJECT
 
@@ -33,9 +36,8 @@ public:
     explicit CGraphSimulatorDialog(QWidget *parent = nullptr);
     ~CGraphSimulatorDialog();
 
-    // ISimulatorUI
-    virtual void setSimulator(ISimulator& simu);
-    virtual bool run(const CNodeEditorScene& scene);
+    void setSimulator(CSimulatorBase& simu);
+    bool run(const CNodeEditorScene& scene);
 
     // ILogger
     virtual void write(const QString& text, int state = LOG_INFO, const QDateTime& timestamp = QDateTime::currentDateTime());
@@ -60,8 +62,7 @@ private:
 	QChart m_Chart;
 	QMap<int, QList<QPointF>> m_testPoints;
 
-    ISimulator *m_simu = nullptr;
-
-    //QMap<QString, CBranchConnection*> m_branchMap;
+    CSimulatorBase *m_simu = nullptr;
     CNodeEditorScene *m_simuScene = nullptr;
+    CGraphInterface m_graph;
 };

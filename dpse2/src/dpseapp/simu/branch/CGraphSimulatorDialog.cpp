@@ -29,13 +29,6 @@ CGraphSimulatorDialog::CGraphSimulatorDialog(QWidget *parent) :
     m_simuScene = new CNodeEditorScene(this);
 	ui->SceneView->setScene(m_simuScene);
 	ui->SceneView->setInteractive(false);
-
-//    m_simu.setLogger(this);
-
-//	connect(&m_simu, SIGNAL(stepFinished(double, int, std::vector<double>&)),
-//		this, SLOT(onStepFinished(double, int, std::vector<double>&)));
-
-//	connect(&m_simu, SIGNAL(simulationFinished()), this, SLOT(onSimulationFinished()));
 }
 
 
@@ -47,9 +40,16 @@ CGraphSimulatorDialog::~CGraphSimulatorDialog()
 
 // reimp
 
-void CGraphSimulatorDialog::setSimulator(ISimulator &simu)
+void CGraphSimulatorDialog::setSimulator(CSimulatorBase &simu)
 {
     m_simu = &simu;
+
+    m_simu->setLogger(*this);
+
+    //	connect(&m_simu, SIGNAL(stepFinished(double, int, std::vector<double>&)),
+    //		this, SLOT(onStepFinished(double, int, std::vector<double>&)));
+
+    connect(m_simu, SIGNAL(simulationFinished()), this, SLOT(onSimulationFinished()));
 }
 
 
@@ -70,7 +70,8 @@ bool CGraphSimulatorDialog::run(const CNodeEditorScene& scene)
 	m_simuScene->setClassAttributeVisible("edge", "Q");
 
     // set to Simu
-    m_simu->setScene(*m_simuScene);
+    m_graph.setScene(*m_simuScene);
+    m_simu->setGraph(m_graph);
 
 	// sort by ids
 //    m_branchMap.clear();
@@ -138,23 +139,37 @@ void CGraphSimulatorDialog::write(const QString& text, int state, const QDateTim
 
 void CGraphSimulatorDialog::on_Start_clicked()
 {
-	int simTime = ui->SimuTime->value();
+    // temp
+    ui->Tabs->setTabEnabled(0, false);
+    ui->Tabs->setCurrentIndex(1);
+
+    ui->SimuTimeLabel->setText("0");
+    ui->SimuStepLabel->setText("0");
+    ui->ProgressBar->setValue(0);
+    //ui->ProgressBar->setMaximum(m_simu.getMaxSteps());
+
+    m_testPoints.clear();
+
+
+    write(tr("Start topology check..."), LOG_OK);
+    bool isChecked = m_simu->analyse();
+    if (!isChecked)
+    {
+        ui->Tabs->setTabEnabled(0, true);
+        ui->Tabs->setCurrentIndex(1);
+
+        write(tr("Topology check failed. Cannot run the simulation."), LOG_ERROR);
+        return;
+    }
+
+
+    int simTime = ui->SimuTime->value();
 	write(tr("Start simulation (%1 s)").arg(simTime), LOG_OK);
 
     //m_simu.setSimulationTime(simTime);
 
-	// temp
-	ui->Tabs->setTabEnabled(0, false);
-	ui->Tabs->setCurrentIndex(1);
 
-	ui->SimuTimeLabel->setText("0");
-	ui->SimuStepLabel->setText("0");
-	ui->ProgressBar->setValue(0);
-    //ui->ProgressBar->setMaximum(m_simu.getMaxSteps());
-
-	m_testPoints.clear();
-
-    //m_simu.run();
+    m_simu->run();
 }
 
 

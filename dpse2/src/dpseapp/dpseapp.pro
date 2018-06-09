@@ -21,13 +21,21 @@ HEADERS += $$files($$PWD/*.h) $$files($$PWD/simu/branch/*.h)
 FORMS += $$files($$PWD/*.ui) $$files($$PWD/simu/branch/*.ui)
 RESOURCES += $$files($$PWD/*.qrc)
 
-INCLUDEPATH += $$PWD/simu $$PWD/simu/branch
+SOURCES += $$files($$PWD/simu/*.cpp)
+HEADERS += $$files($$PWD/simu/*.h)
+
+INCLUDEPATH += $$PWD
+#INCLUDEPATH += $$PWD/simu $$PWD/simu/branch
 
 # common sources
 include($$PWD/../commonui/commonui.pri)
 
 # includes & libs
 LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge
+
+USE_OGDF{
+    LIBS += -logdf
+}
 
 win32{
     LIBS += -lopengl32 -lglu32 -lshell32 -luser32 -lpsapi
