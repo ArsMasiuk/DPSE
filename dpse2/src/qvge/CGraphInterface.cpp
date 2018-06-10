@@ -89,35 +89,33 @@ CNode* CGraphInterface::getNode(const QString &nodeId, bool autoCreate)
 }
 
 
-//
-
-QStringList CGraphInterface::getEdgeIds() const
+QList<CConnection*> CGraphInterface::getEdges() const
 {
-    QStringList ids;
+    QList<CConnection*> edges;
 
     if (m_scene)
     {
         auto items = m_scene->items();
         for (auto item: items)
             if (auto edge = dynamic_cast<CConnection*>(item))
-                ids << edge->getId();
+                edges << edge;
     }
 
-    return ids;
+    return edges;
 }
 
 
-QStringList CGraphInterface::getNodeIds() const
+QList<CNode*> CGraphInterface::getNodes() const
 {
-    QStringList ids;
+    QList<CNode*> nodes;
 
     if (m_scene)
     {
         auto items = m_scene->items();
         for (auto item: items)
-            if (auto edge = dynamic_cast<CNode*>(item))
-                ids << edge->getId();
+            if (auto node = dynamic_cast<CNode*>(item))
+                nodes << node;
     }
 
-    return ids;
+    return nodes;
 }

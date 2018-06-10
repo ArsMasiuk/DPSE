@@ -14,8 +14,8 @@ public:
     virtual CNode* addNode(const QString& nodeId) = 0;
     virtual CNode* getNode(const QString& nodeId, bool autoCreate = false) = 0;
 
-    virtual QStringList getEdgeIds() const = 0;
-    virtual QStringList getNodeIds() const = 0;
+    virtual QList<CConnection*> getEdges() const = 0;
+    virtual QList<CNode*> getNodes() const = 0;
 };
 
 

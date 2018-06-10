@@ -22,8 +22,8 @@ public:
     virtual CNode* addNode(const QString& nodeId);
     virtual CNode* getNode(const QString& nodeId, bool autoCreate = false);
 
-    virtual QStringList getEdgeIds() const;
-    virtual QStringList getNodeIds() const;
+    virtual QList<CConnection*> getEdges() const;
+    virtual QList<CNode*> getNodes() const;
 
 private:
     CNodeEditorScene *m_scene = nullptr;

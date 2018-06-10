@@ -47,6 +47,14 @@ void CBranch::setQt(double Qtgt)
 }
 
 
+void CBranch::setR(double R)
+{
+    double r = R / m_L;
+
+    prepare(r);
+}
+
+
 void CBranch::prepare()
 {
 	double R = qAbs(m_Pend) / (m_Qtgt * m_Qtgt);
@@ -69,64 +77,64 @@ void CBranch::prepare(double r)
 
 void CBranch::exchange()
 {
-	if (m_inBeg.isEmpty())
+    if (m_inBeg.isEmpty())
 		m_Pbeg = 0;
 	else 
-	{
-		// one with min L?
-		//double L = DBL_MAX;
-		//m_Pbeg = 0;
+    {
+        // one with min L?
+        //double L = DBL_MAX;
+        //m_Pbeg = 0;
 
-		//for (int i = 0; i < m_inBeg.size(); ++i)
-		//	if (m_inBeg[i]->m_L < L){
-		//		m_Pbeg = m_inBeg[i]->getP();
-		//		L = m_inBeg[i]->m_L;
-		//	}
+        //for (int i = 0; i < m_inBeg.size(); ++i)
+        //	if (m_inBeg[i]->m_L < L){
+        //		m_Pbeg = m_inBeg[i]->getP();
+        //		L = m_inBeg[i]->m_L;
+        //	}
 
-		double S = 0;
-		m_Pbeg = 0;
+        double S = 0;
+        m_Pbeg = 0;
 
-		for (int i = 0; i < m_inBeg.size(); ++i)
-			if (m_inBeg[i]->m_S > S) {
-				m_Pbeg = m_inBeg[i]->getP();
-				S = m_inBeg[i]->m_S;
-			}
-	}
+        for (int i = 0; i < m_inBeg.size(); ++i)
+            if (m_inBeg[i]->m_S > S) {
+                m_Pbeg = m_inBeg[i]->getP();
+                S = m_inBeg[i]->m_S;
+            }
+    }
 
 
-	if (m_outEnd.isEmpty())
-	{
-	}
-	else
-	{
-		if (m_inEnd.isEmpty())
-		{
-			m_Pend = getP();
-		}
-		else
-		{
-			// one with min L?
-			//double L = m_L;
-			//m_Pend = getP();
+    if (m_outEnd.isEmpty())
+    {
+    }
+    else
+    {
+        if (m_inEnd.isEmpty())
+        {
+            m_Pend = getP();
+        }
+        else
+        {
+            // one with min L?
+            //double L = m_L;
+            //m_Pend = getP();
 
-			//for (int i = 0; i < m_inEnd.size(); ++i)
-			//	if (m_inEnd[i]->m_L < L) 
-			//	{
-			//		m_Pend = m_inEnd[i]->getP();
-			//		L = m_inEnd[i]->m_L;
-			//	}
+            //for (int i = 0; i < m_inEnd.size(); ++i)
+            //	if (m_inEnd[i]->m_L < L)
+            //	{
+            //		m_Pend = m_inEnd[i]->getP();
+            //		L = m_inEnd[i]->m_L;
+            //	}
 
-			double S = m_S;
-			m_Pend = getP();
+            double S = m_S;
+            m_Pend = getP();
 
-			for (int i = 0; i < m_inEnd.size(); ++i)
-				if (m_inEnd[i]->m_S > S)
-				{
-					m_Pend = m_inEnd[i]->getP();
-					S = m_inEnd[i]->m_S;
-				}
-		}
-	}
+            for (int i = 0; i < m_inEnd.size(); ++i)
+                if (m_inEnd[i]->m_S > S)
+                {
+                    m_Pend = m_inEnd[i]->getP();
+                    S = m_inEnd[i]->m_S;
+                }
+        }
+    }
 }
 
 
@@ -239,7 +247,7 @@ void CBranch::fP(std::vector<double>& dPdt, const std::vector<double>& P, const 
 double CBranch::getQ() const { return m_Q[m_M - 1]; }
 double CBranch::getQbeg() const { return m_Q[0]; }
 
-double CBranch::getP() const { 
+double CBranch::getP() const {
 	return m_P[m_M - 1]; 
 }
 

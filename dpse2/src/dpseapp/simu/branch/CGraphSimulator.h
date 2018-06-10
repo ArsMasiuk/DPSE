@@ -7,6 +7,9 @@
 
 #include "CBranch.h"
 
+class CConnection;
+class CNode;
+
 
 class CGraphSimulator : public CSimulatorBase
 {
@@ -27,14 +30,24 @@ public slots:
 
 private:
     void cleanup();
+    bool prepare();
 
     struct BranchInfo
     {
+        CConnection *edge = nullptr;
         CBranch *branch = nullptr;
         bool isOk = false;
     };
 
     QMap<QString, BranchInfo> m_branchList;
+
+    struct NodeInfo
+    {
+        CNode *node = nullptr;
+        bool isOk = false;
+    };
+
+    QMap<QString, NodeInfo> m_nodeList;
 };
 
 

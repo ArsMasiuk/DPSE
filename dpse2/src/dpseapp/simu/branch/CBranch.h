@@ -18,9 +18,10 @@ public:
 	void init(double L, double S, int M);
 	void setP(double beg, double end);
 	void setQt(double Qtgt);
+    void setR(double R);
 
 	void prepare();
-	void prepare(double r);
+    void prepare(double r);
 	void exchange();
 	void stepRK4(double m_h);
 	void fQ(std::vector<double>& dQdt, const std::vector<double>& P, const std::vector<double>& Q);
@@ -35,12 +36,15 @@ public:
 	double getP() const;
 	double getPbeg() const;
 
+    double getS() const { return m_S; }
+    double getL() const { return m_L; }
+
 	// will be deprecated
-	QList<CBranch*> m_inBeg, m_outBeg, m_inEnd, m_outEnd;
+    QList<CBranch*> m_inBeg, m_outBeg, m_inEnd, m_outEnd;
 
 protected:
 	// topology
-	int m_n1 = 0, m_n2 = 0;
+    int m_n1 = 0, m_n2 = 0;
 
 	// params
 	double m_L = 0.0, m_S = 0.0;

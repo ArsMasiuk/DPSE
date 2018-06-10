@@ -2,6 +2,8 @@
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/IGraphInterface.h>
+#include <qvge/CConnection.h>
+#include <qvge/CNode.h>
 
 
 CGraphSimulator::CGraphSimulator(QObject *parent) : CSimulatorBase(parent)
@@ -27,31 +29,181 @@ bool CGraphSimulator::analyse()
     // create edge array
     bool ok = true;
 
-    auto edgeIds = m_scene->getEdgeIds();
-    for (auto edgeId: edgeIds)
+    auto edges = m_scene->getEdges();
+    for (auto edge: edges)
     {
-        if (m_branchList.contains(edgeId))
+        auto& edgeInfo = m_branchList[edge->getId()];
+        edgeInfo.edge = edge;
+
+        if (m_branchList.contains(edge->getId()))
         {
             ok = false;
-            auto& edge = m_branchList[edgeId];
-            edge.isOk = false;
+            edgeInfo.isOk = false;
 
-            logError(tr("edge id: %1 has duplicate(s)").arg(edgeId));
+            logError(tr("edge id: %1 has duplicate(s)").arg(edge->getId()));
         }
         else
         {
-            auto& edge = m_branchList[edgeId];
-            edge.isOk = true;
-            edge.branch = new CBranch();
+            edgeInfo.isOk = true;
+            edgeInfo.branch = new CBranch();
         }
     }
 
-    return true;
+    // check nodes as well
+    auto nodes = m_scene->getNodes();
+    for (auto node: nodes)
+    {
+        auto& nodeInfo = m_nodeList[node->getId()];
+        nodeInfo.node = node;
+
+        if (m_nodeList.contains(node->getId()))
+        {
+            ok = false;
+            nodeInfo.isOk = false;
+
+            logError(tr("node id: %1 has duplicate(s)").arg(node->getId()));
+        }
+        else
+        {
+            nodeInfo.isOk = true;
+        }
+    }
+
+    return ok;
+}
+
+
+bool CGraphSimulator::prepare()
+{
+    bool ok = true;
+
+    // check & init simulation params
+    for (auto& edgeInfo: m_branchList.values())
+    {
+        if (edgeInfo.isOk)
+        {
+            bool isOk_L = false;
+            double L = edgeInfo.edge->getAttribute("L").toDouble(&isOk_L);
+            if (L <= 0 || !isOk_L)
+            {
+                ok = edgeInfo.isOk = false;
+                logError(tr("edge id: %1 has invalid L value: %2").arg(edgeInfo.edge->getId()).arg(L));
+            }
+
+            bool isOk_S = false;
+            double S = edgeInfo.edge->getAttribute("S").toDouble(&isOk_S);
+            if (S <= 0 || !isOk_S)
+            {
+                ok = edgeInfo.isOk = false;
+                logError(tr("edge id: %1 has invalid S value: %2").arg(edgeInfo.edge->getId()).arg(S));
+            }
+
+            bool isOk_R = false;
+            double R = edgeInfo.edge->getAttribute("R").toDouble(&isOk_R);
+
+//            bool isOk_Q = false;
+//            double Q = edgeInfo.edge->getAttribute("Q").toDouble(&isOk_Q);
+
+            if (!isOk_R)
+            {
+                ok = edgeInfo.isOk = false;
+                logError(tr("edge id: %1 has invalid R value: %2").arg(edgeInfo.edge->getId()).arg(R));
+            }
+
+            if (!edgeInfo.isOk)
+                continue;
+
+
+            double Pbeg = 0, Pend = 0;
+
+            auto n1 = edgeInfo.edge->firstNode();
+            auto n2 = edgeInfo.edge->lastNode();
+            Q_ASSERT(n1 != nullptr);
+            Q_ASSERT(n2 != nullptr);
+
+            Pbeg = n1->getAttribute("H").toDouble();
+            Pend = n2->getAttribute("H").toDouble();
+
+            if (!edgeInfo.isOk)
+                continue;
+
+            // ok, prepare branch
+            edgeInfo.branch->init(L, S, 20);    // 20: to dos
+            edgeInfo.branch->setR(R);
+            edgeInfo.branch->setP(Pbeg, Pend);
+        }
+    }
+
+    // init interchnages
+    for (auto& edgeInfo: m_branchList.values())
+    {
+        if (edgeInfo.isOk)
+        {
+            edgeInfo.branch->m_inBeg.clear();
+            edgeInfo.branch->m_outBeg.clear();
+            edgeInfo.branch->m_inEnd.clear();
+            edgeInfo.branch->m_outEnd.clear();
+
+            auto n1 = edgeInfo.edge->firstNode();
+            auto n1_in = n1->getInConnections();
+            auto n1_out = n1->getOutConnections();
+
+            for (auto e1: n1_in)
+            {
+                if (e1 != edgeInfo.edge)
+                {
+                    auto edgeInfo2 = m_branchList[e1->getId()];
+                    if (edgeInfo2.isOk)
+                        edgeInfo.branch->m_inBeg << edgeInfo2.branch;
+                }
+            }
+
+            for (auto e1: n1_out)
+            {
+                if (e1 != edgeInfo.edge)
+                {
+                    auto edgeInfo2 = m_branchList[e1->getId()];
+                    if (edgeInfo2.isOk)
+                        edgeInfo.branch->m_outBeg << edgeInfo2.branch;
+                }
+            }
+
+
+
+            auto n2 = edgeInfo.edge->lastNode();
+            auto n2_in = n2->getInConnections();
+            auto n2_out = n2->getOutConnections();
+
+            for (auto e2: n2_in)
+            {
+                if (e2 != edgeInfo.edge)
+                {
+                    auto edgeInfo2 = m_branchList[e2->getId()];
+                    if (edgeInfo2.isOk)
+                        edgeInfo.branch->m_inEnd << edgeInfo2.branch;
+                }
+            }
+
+            for (auto e2: n2_out)
+            {
+                if (e2 != edgeInfo.edge)
+                {
+                    auto edgeInfo2 = m_branchList[e2->getId()];
+                    if (edgeInfo2.isOk)
+                        edgeInfo.branch->m_outEnd << edgeInfo2.branch;
+                }
+            }
+
+        }
+    }
+
+    return ok;
 }
 
 
 bool CGraphSimulator::run()
 {
+    prepare();
 
     emit simulationFinished();
     return false;
@@ -78,4 +230,6 @@ void CGraphSimulator::cleanup()
     }
 
     m_branchList.clear();
+
+    m_nodeList.clear();
 }

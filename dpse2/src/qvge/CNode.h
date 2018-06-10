@@ -80,6 +80,12 @@ public:
 	// returns all connections of the node.
 	QSet<CConnection*> getConnections() const { return m_connections; }
 
+    // returns all incoming connections of the node.
+    QSet<CConnection*> getInConnections() const;
+
+    // returns all outgoing connections of the node.
+    QSet<CConnection*> getOutConnections() const;
+
 	// returns true if new connection from this node is allowed.
 	virtual bool allowStartConnection() const { return true; }
 

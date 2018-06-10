@@ -346,6 +346,34 @@ QList<CNode*> CNode::getCollidingNodes() const
 }
 
 
+QSet<CConnection*> CNode::getInConnections() const
+{
+    QSet<CConnection*> edges;
+
+    for (auto edge: m_connections)
+    {
+        if (edge->lastNode() == this)
+            edges << edge;
+    }
+
+    return edges;
+}
+
+
+QSet<CConnection*> CNode::getOutConnections() const
+{
+    QSet<CConnection*> edges;
+
+    for (auto edge: m_connections)
+    {
+        if (edge->firstNode() == this)
+            edges << edge;
+    }
+
+    return edges;
+}
+
+
 double CNode::getDistanceToLineEnd(const QLineF& line) const
 {
 	// circle 
