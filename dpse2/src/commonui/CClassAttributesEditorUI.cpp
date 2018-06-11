@@ -48,6 +48,7 @@ CClassAttributesEditorUI::~CClassAttributesEditorUI()
 {
 	// important to avoid crash
 	ui->Editor->disconnect(this);
+	disconnect(this);
 
 	delete ui;
 }

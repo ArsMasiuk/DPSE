@@ -31,6 +31,7 @@ public slots:
 private:
     void cleanup();
     bool prepare();
+	bool simulate(int steps = 0);
 
     struct BranchInfo
     {
@@ -48,6 +49,8 @@ private:
     };
 
     QMap<QString, NodeInfo> m_nodeList;
+
+	bool m_inSimulation = false;
 };
 
 

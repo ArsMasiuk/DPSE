@@ -32,11 +32,11 @@ bool CGraphSimulator::analyse()
     auto edges = m_scene->getEdges();
     for (auto edge: edges)
     {
-        auto& edgeInfo = m_branchList[edge->getId()];
-        edgeInfo.edge = edge;
-
         if (m_branchList.contains(edge->getId()))
         {
+            auto& edgeInfo = m_branchList[edge->getId()];
+            edgeInfo.edge = edge;
+
             ok = false;
             edgeInfo.isOk = false;
 
@@ -44,6 +44,9 @@ bool CGraphSimulator::analyse()
         }
         else
         {
+            auto& edgeInfo = m_branchList[edge->getId()];
+            edgeInfo.edge = edge;
+
             edgeInfo.isOk = true;
             edgeInfo.branch = new CBranch();
         }
@@ -53,11 +56,11 @@ bool CGraphSimulator::analyse()
     auto nodes = m_scene->getNodes();
     for (auto node: nodes)
     {
-        auto& nodeInfo = m_nodeList[node->getId()];
-        nodeInfo.node = node;
-
         if (m_nodeList.contains(node->getId()))
         {
+            auto& nodeInfo = m_nodeList[node->getId()];
+            nodeInfo.node = node;
+
             ok = false;
             nodeInfo.isOk = false;
 
@@ -65,6 +68,9 @@ bool CGraphSimulator::analyse()
         }
         else
         {
+            auto& nodeInfo = m_nodeList[node->getId()];
+            nodeInfo.node = node;
+
             nodeInfo.isOk = true;
         }
     }
@@ -201,19 +207,48 @@ bool CGraphSimulator::prepare()
 }
 
 
+bool CGraphSimulator::simulate(int steps)
+{
+	m_inSimulation = true;
+
+	if (steps <= 0) steps = 10000;	// test
+
+	for (int step = 0; step < steps; ++step)
+	{
+		for (auto& edgeInfo : m_branchList.values())
+		{
+			if (edgeInfo.isOk)
+			{
+				edgeInfo.branch->exchange();
+				edgeInfo.branch->stepRK4(0.001);
+				edgeInfo.branch->exchange();
+			}
+		}
+
+		if (!m_inSimulation)
+			return false;
+	}
+
+	return true;
+}
+
+
 bool CGraphSimulator::run()
 {
     prepare();
 
+	simulate();
+
     emit simulationFinished();
-    return false;
+    return true;
 }
 
 
 bool CGraphSimulator::stop()
 {
-    emit simulationFinished();
-    return false;
+	m_inSimulation = false;
+
+    return true;
 }
 
 

@@ -150,7 +150,8 @@ public:
     void slotRangeChanged(QtProperty *property, int min, int max);
     void slotSingleStepChanged(QtProperty *property, int step);
     void slotReadOnlyChanged(QtProperty *property, bool readOnly);
-    void slotSetValue(int value);
+    //void slotSetValue(int value);
+	void slotEditFinished();
 };
 
 void QtSpinBoxFactoryPrivate::slotPropertyChanged(QtProperty *property, int value)
@@ -218,20 +219,36 @@ void QtSpinBoxFactoryPrivate::slotReadOnlyChanged( QtProperty *property, bool re
     }
 }
 
-void QtSpinBoxFactoryPrivate::slotSetValue(int value)
+//void QtSpinBoxFactoryPrivate::slotSetValue(int value)
+//{
+//    QObject *object = q_ptr->sender();
+//    const QMap<QSpinBox *, QtProperty *>::ConstIterator  ecend = m_editorToProperty.constEnd();
+//    for (QMap<QSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor !=  ecend; ++itEditor) {
+//        if (itEditor.key() == object) {
+//            QtProperty *property = itEditor.value();
+//            QtIntPropertyManager *manager = q_ptr->propertyManager(property);
+//            if (!manager)
+//                return;
+//            manager->setValue(property, value);
+//            return;
+//        }
+//    }
+//}
+
+void QtSpinBoxFactoryPrivate::slotEditFinished()
 {
-    QObject *object = q_ptr->sender();
-    const QMap<QSpinBox *, QtProperty *>::ConstIterator  ecend = m_editorToProperty.constEnd();
-    for (QMap<QSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor !=  ecend; ++itEditor) {
-        if (itEditor.key() == object) {
-            QtProperty *property = itEditor.value();
-            QtIntPropertyManager *manager = q_ptr->propertyManager(property);
-            if (!manager)
-                return;
-            manager->setValue(property, value);
-            return;
-        }
-    }
+	QObject *object = q_ptr->sender();
+	const QMap<QSpinBox *, QtProperty *>::ConstIterator  ecend = m_editorToProperty.constEnd();
+	for (QMap<QSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor) {
+		if (itEditor.key() == object) {
+			QtProperty *property = itEditor.value();
+			QtIntPropertyManager *manager = q_ptr->propertyManager(property);
+			if (!manager)
+				return;
+			manager->setValue(property, itEditor.key()->value());
+			return;
+		}
+	}
 }
 
 /*!
@@ -295,7 +312,8 @@ QWidget *QtSpinBoxFactory::createEditor(QtIntPropertyManager *manager, QtPropert
     editor->setKeyboardTracking(false);
     editor->setReadOnly(manager->isReadOnly(property));
 
-    connect(editor, SIGNAL(valueChanged(int)), this, SLOT(slotSetValue(int)));
+	connect(editor, SIGNAL(editingFinished()), this, SLOT(slotEditFinished()));
+    //connect(editor, SIGNAL(valueChanged(int)), this, SLOT(slotSetValue(int)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
     return editor;
@@ -761,13 +779,13 @@ class QtDoubleSpinBoxFactoryPrivate : public EditorFactoryPrivate<QDoubleSpinBox
     QtDoubleSpinBoxFactory *q_ptr;
     Q_DECLARE_PUBLIC(QtDoubleSpinBoxFactory)
 public:
-
     void slotPropertyChanged(QtProperty *property, double value);
     void slotRangeChanged(QtProperty *property, double min, double max);
     void slotSingleStepChanged(QtProperty *property, double step);
     void slotDecimalsChanged(QtProperty *property, int prec);
     void slotReadOnlyChanged(QtProperty *property, bool readOnly);
-    void slotSetValue(double value);
+    //void slotSetValue(double value);
+	void slotEditFinished();
 };
 
 void QtDoubleSpinBoxFactoryPrivate::slotPropertyChanged(QtProperty *property, double value)
@@ -862,20 +880,36 @@ void QtDoubleSpinBoxFactoryPrivate::slotDecimalsChanged(QtProperty *property, in
     }
 }
 
-void QtDoubleSpinBoxFactoryPrivate::slotSetValue(double value)
+//void QtDoubleSpinBoxFactoryPrivate::slotSetValue(double value)
+//{
+//    QObject *object = q_ptr->sender();
+//    const QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itcend = m_editorToProperty.constEnd();
+//    for (QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
+//        if (itEditor.key() == object) {
+//            QtProperty *property = itEditor.value();
+//            QtDoublePropertyManager *manager = q_ptr->propertyManager(property);
+//            if (!manager)
+//                return;
+//            manager->setValue(property, value);
+//            return;
+//        }
+//    }
+//}
+
+void QtDoubleSpinBoxFactoryPrivate::slotEditFinished()
 {
-    QObject *object = q_ptr->sender();
-    const QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itcend = m_editorToProperty.constEnd();
-    for (QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
-        if (itEditor.key() == object) {
-            QtProperty *property = itEditor.value();
-            QtDoublePropertyManager *manager = q_ptr->propertyManager(property);
-            if (!manager)
-                return;
-            manager->setValue(property, value);
-            return;
-        }
-    }
+	QObject *object = q_ptr->sender();
+	const QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itcend = m_editorToProperty.constEnd();
+	for (QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
+		if (itEditor.key() == object) {
+			QtProperty *property = itEditor.value();
+			QtDoublePropertyManager *manager = q_ptr->propertyManager(property);
+			if (!manager)
+				return;
+			manager->setValue(property, itEditor.key()->value());
+			return;
+		}
+	}
 }
 
 /*! \class QtDoubleSpinBoxFactory
@@ -894,7 +928,6 @@ QtDoubleSpinBoxFactory::QtDoubleSpinBoxFactory(QObject *parent)
 {
     d_ptr = new QtDoubleSpinBoxFactoryPrivate();
     d_ptr->q_ptr = this;
-
 }
 
 /*!
@@ -941,7 +974,11 @@ QWidget *QtDoubleSpinBoxFactory::createEditor(QtDoublePropertyManager *manager,
     editor->setKeyboardTracking(false);
     editor->setReadOnly(manager->isReadOnly(property));
 
-    connect(editor, SIGNAL(valueChanged(double)), this, SLOT(slotSetValue(double)));
+	editor->setGroupSeparatorShown(false);
+	editor->setLocale(QLocale::C);
+
+	connect(editor, SIGNAL(editingFinished()), this, SLOT(slotEditFinished()));
+    //connect(editor, SIGNAL(valueChanged(double)), this, SLOT(slotSetValue(double)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
     return editor;
@@ -972,11 +1009,12 @@ class QtLineEditFactoryPrivate : public EditorFactoryPrivate<QLineEdit>
 {
     QtLineEditFactory *q_ptr;
     Q_DECLARE_PUBLIC(QtLineEditFactory)
-public:
 
+public:
     void slotPropertyChanged(QtProperty *property, const QString &value);
     void slotRegExpChanged(QtProperty *property, const QRegExp &regExp);
-    void slotSetValue(const QString &value);
+    //void slotSetValue(const QString &value);
+	void slotEditFinished();
     void slotEchoModeChanged(QtProperty *, int);
     void slotReadOnlyChanged(QtProperty *, bool);
 };
@@ -1060,19 +1098,34 @@ void QtLineEditFactoryPrivate::slotReadOnlyChanged( QtProperty *property, bool r
     }
 }
 
-void QtLineEditFactoryPrivate::slotSetValue(const QString &value)
+//void QtLineEditFactoryPrivate::slotSetValue(const QString &value)
+//{
+//    QObject *object = q_ptr->sender();
+//    const QMap<QLineEdit *, QtProperty *>::ConstIterator ecend = m_editorToProperty.constEnd();
+//    for (QMap<QLineEdit *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
+//        if (itEditor.key() == object) {
+//            QtProperty *property = itEditor.value();
+//            QtStringPropertyManager *manager = q_ptr->propertyManager(property);
+//            if (!manager)
+//                return;
+//            manager->setValue(property, value);
+//            return;
+//        }
+//}
+
+void QtLineEditFactoryPrivate::slotEditFinished()
 {
-    QObject *object = q_ptr->sender();
-    const QMap<QLineEdit *, QtProperty *>::ConstIterator ecend = m_editorToProperty.constEnd();
-    for (QMap<QLineEdit *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
-        if (itEditor.key() == object) {
-            QtProperty *property = itEditor.value();
-            QtStringPropertyManager *manager = q_ptr->propertyManager(property);
-            if (!manager)
-                return;
-            manager->setValue(property, value);
-            return;
-        }
+	QObject *object = q_ptr->sender();
+	const QMap<QLineEdit *, QtProperty *>::ConstIterator ecend = m_editorToProperty.constEnd();
+	for (QMap<QLineEdit *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
+		if (itEditor.key() == object) {
+			QtProperty *property = itEditor.value();
+			QtStringPropertyManager *manager = q_ptr->propertyManager(property);
+			if (!manager)
+				return;
+			manager->setValue(property, itEditor.key()->text());
+			return;
+		}
 }
 
 
@@ -1142,8 +1195,10 @@ QWidget *QtLineEditFactory::createEditor(QtStringPropertyManager *manager,
     }
     editor->setText(manager->value(property));
 
-    connect(editor, SIGNAL(textChanged(const QString &)),
-                this, SLOT(slotSetValue(const QString &)));
+	connect(editor, SIGNAL(editingFinished()),
+		this, SLOT(slotEditFinished()));
+    //connect(editor, SIGNAL(textChanged(const QString &)),
+    //            this, SLOT(slotSetValue(const QString &)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
     return editor;
