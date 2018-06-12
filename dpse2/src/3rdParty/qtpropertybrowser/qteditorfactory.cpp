@@ -774,7 +774,35 @@ void QtCheckBoxFactory::disconnectPropertyManager(QtBoolPropertyManager *manager
 
 // QtDoubleSpinBoxFactory
 
-class QtDoubleSpinBoxFactoryPrivate : public EditorFactoryPrivate<QDoubleSpinBox>
+/*
+	QDoubleSpinBox supporting . and , and cutting trailing zeros.
+*/
+
+class CDoubleSpinBox : public QDoubleSpinBox
+{
+public:
+	CDoubleSpinBox(QWidget* parent = NULL) : QDoubleSpinBox(parent)
+	{
+		setGroupSeparatorShown(false);
+	}
+
+	virtual double valueFromText(const QString &text) const
+	{
+		QChar c1 = locale().decimalPoint();
+		QChar c2 = (c1 == '.') ? ',' : '.';
+		QString corrText = QString(text).replace(c2, c1);
+		return QDoubleSpinBox::valueFromText(corrText);
+	}
+
+	virtual QString textFromValue(double value) const
+	{
+		QString text = QDoubleSpinBox::textFromValue(value);
+		QChar c1 = locale().decimalPoint();
+		return QtPropertyBrowserUtils::trimDecimalZeros(c1, text);
+	}
+};
+
+class QtDoubleSpinBoxFactoryPrivate : public EditorFactoryPrivate<CDoubleSpinBox>
 {
     QtDoubleSpinBoxFactory *q_ptr;
     Q_DECLARE_PUBLIC(QtDoubleSpinBoxFactory)
@@ -784,16 +812,15 @@ public:
     void slotSingleStepChanged(QtProperty *property, double step);
     void slotDecimalsChanged(QtProperty *property, int prec);
     void slotReadOnlyChanged(QtProperty *property, bool readOnly);
-    //void slotSetValue(double value);
 	void slotEditFinished();
 };
 
 void QtDoubleSpinBoxFactoryPrivate::slotPropertyChanged(QtProperty *property, double value)
 {
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(m_createdEditors[property]);
+    QList<CDoubleSpinBox *> editors = m_createdEditors[property];
+    QListIterator<CDoubleSpinBox *> itEditor(m_createdEditors[property]);
     while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+        CDoubleSpinBox *editor = itEditor.next();
         if (editor->value() != value) {
             editor->blockSignals(true);
             editor->setValue(value);
@@ -812,10 +839,10 @@ void QtDoubleSpinBoxFactoryPrivate::slotRangeChanged(QtProperty *property,
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
+    QList<CDoubleSpinBox *> editors = m_createdEditors[property];
+    QListIterator<CDoubleSpinBox *> itEditor(editors);
     while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+        CDoubleSpinBox *editor = itEditor.next();
         editor->blockSignals(true);
         editor->setRange(min, max);
         editor->setValue(manager->value(property));
@@ -832,10 +859,10 @@ void QtDoubleSpinBoxFactoryPrivate::slotSingleStepChanged(QtProperty *property, 
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
+    QList<CDoubleSpinBox *> editors = m_createdEditors[property];
+    QListIterator<CDoubleSpinBox *> itEditor(editors);
     while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+        CDoubleSpinBox *editor = itEditor.next();
         editor->blockSignals(true);
         editor->setSingleStep(step);
         editor->blockSignals(false);
@@ -851,9 +878,9 @@ void QtDoubleSpinBoxFactoryPrivate::slotReadOnlyChanged( QtProperty *property, b
     if (!manager)
         return;
 
-    QListIterator<QDoubleSpinBox *> itEditor(m_createdEditors[property]);
+    QListIterator<CDoubleSpinBox *> itEditor(m_createdEditors[property]);
     while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+        CDoubleSpinBox *editor = itEditor.next();
         editor->blockSignals(true);
         editor->setReadOnly(readOnly);
         editor->blockSignals(false);
@@ -869,10 +896,10 @@ void QtDoubleSpinBoxFactoryPrivate::slotDecimalsChanged(QtProperty *property, in
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
+    QList<CDoubleSpinBox*> editors = m_createdEditors[property];
+    QListIterator<CDoubleSpinBox *> itEditor(editors);
     while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+        CDoubleSpinBox *editor = itEditor.next();
         editor->blockSignals(true);
         editor->setDecimals(prec);
         editor->setValue(manager->value(property));
@@ -880,27 +907,12 @@ void QtDoubleSpinBoxFactoryPrivate::slotDecimalsChanged(QtProperty *property, in
     }
 }
 
-//void QtDoubleSpinBoxFactoryPrivate::slotSetValue(double value)
-//{
-//    QObject *object = q_ptr->sender();
-//    const QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itcend = m_editorToProperty.constEnd();
-//    for (QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
-//        if (itEditor.key() == object) {
-//            QtProperty *property = itEditor.value();
-//            QtDoublePropertyManager *manager = q_ptr->propertyManager(property);
-//            if (!manager)
-//                return;
-//            manager->setValue(property, value);
-//            return;
-//        }
-//    }
-//}
 
 void QtDoubleSpinBoxFactoryPrivate::slotEditFinished()
 {
 	QObject *object = q_ptr->sender();
-	const QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itcend = m_editorToProperty.constEnd();
-	for (QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
+	const auto itcend = m_editorToProperty.constEnd();
+	for (auto itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
 		if (itEditor.key() == object) {
 			QtProperty *property = itEditor.value();
 			QtDoublePropertyManager *manager = q_ptr->propertyManager(property);
@@ -958,6 +970,7 @@ void QtDoubleSpinBoxFactory::connectPropertyManager(QtDoublePropertyManager *man
                 this, SLOT(slotReadOnlyChanged(QtProperty *, bool)));
 }
 
+
 /*!
     \internal
 
@@ -973,9 +986,6 @@ QWidget *QtDoubleSpinBoxFactory::createEditor(QtDoublePropertyManager *manager,
     editor->setValue(manager->value(property));
     editor->setKeyboardTracking(false);
     editor->setReadOnly(manager->isReadOnly(property));
-
-	editor->setGroupSeparatorShown(false);
-	editor->setLocale(QLocale::C);
 
 	connect(editor, SIGNAL(editingFinished()), this, SLOT(slotEditFinished()));
     //connect(editor, SIGNAL(valueChanged(double)), this, SLOT(slotSetValue(double)));
@@ -1013,7 +1023,6 @@ class QtLineEditFactoryPrivate : public EditorFactoryPrivate<QLineEdit>
 public:
     void slotPropertyChanged(QtProperty *property, const QString &value);
     void slotRegExpChanged(QtProperty *property, const QRegExp &regExp);
-    //void slotSetValue(const QString &value);
 	void slotEditFinished();
     void slotEchoModeChanged(QtProperty *, int);
     void slotReadOnlyChanged(QtProperty *, bool);
@@ -1097,21 +1106,6 @@ void QtLineEditFactoryPrivate::slotReadOnlyChanged( QtProperty *property, bool r
         editor->blockSignals(false);
     }
 }
-
-//void QtLineEditFactoryPrivate::slotSetValue(const QString &value)
-//{
-//    QObject *object = q_ptr->sender();
-//    const QMap<QLineEdit *, QtProperty *>::ConstIterator ecend = m_editorToProperty.constEnd();
-//    for (QMap<QLineEdit *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
-//        if (itEditor.key() == object) {
-//            QtProperty *property = itEditor.value();
-//            QtStringPropertyManager *manager = q_ptr->propertyManager(property);
-//            if (!manager)
-//                return;
-//            manager->setValue(property, value);
-//            return;
-//        }
-//}
 
 void QtLineEditFactoryPrivate::slotEditFinished()
 {

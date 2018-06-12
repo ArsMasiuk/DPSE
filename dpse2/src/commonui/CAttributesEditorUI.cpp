@@ -117,9 +117,9 @@ int CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &item
 		if (!prop)
 			continue;	// ignore
 
-		// add 8 commas if double
+		// add 13 commas if double
 		if (it.value().dataType == QMetaType::Double)
-			prop->setAttribute("decimals", 8);
+			prop->setAttribute("decimals", 13);
 
         prop->setValue(it.value().data);
         auto item = ui->Editor->addProperty(prop);

@@ -156,6 +156,10 @@ void CClassAttributesEditorUI::rebuild()
 			if (!prop)
 				continue;	// ignore
 
+			// add 13 commas if double
+			if (type == QMetaType::Double)
+				prop->setAttribute("decimals", 13);
+
 			prop->setValue(it.value().defaultValue);
 		}
         
