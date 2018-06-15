@@ -149,8 +149,6 @@ void COGDFLayout::graphTopologyToScene(const ogdf::Graph &G, const ogdf::GraphAt
 
     // finalize
     scene.setSceneRect(scene.itemsBoundingRect());
-
-    scene.addUndoState();
 }
 
 
@@ -231,8 +229,6 @@ void COGDFLayout::graphToScene(const ogdf::Graph &G, const ogdf::GraphAttributes
 
     // finalize
     scene.setSceneRect(scene.itemsBoundingRect());
-
-    scene.addUndoState();
 }
 
 
@@ -254,7 +250,8 @@ bool COGDFLayout::loadGraph(const std::string &filename, CNodeEditorScene &scene
     if (ok)
     {
         graphToScene(G, GA, scene);
-    }
+		scene.addUndoState();
+	}
 
     return ok;
 }

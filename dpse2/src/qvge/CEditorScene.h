@@ -275,7 +275,8 @@ private:
 
 	QMap<QByteArray, QByteArray> m_classToSuperIds;
 
-	IUndoManager *m_undoManager;
+	IUndoManager *m_undoManager = NULL;
+	bool m_hasState = false;
 
 	ClassAttributesMap m_classAttributes;
     QMap<QByteArray, QSet<QByteArray>> m_classAttributesVis;

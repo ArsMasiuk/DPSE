@@ -25,8 +25,9 @@ public:
     virtual bool run();
     virtual bool stop();
 
-public slots:
-
+Q_SIGNALS:
+	void prepareOutput(const QStringList& branchIds, const QStringList& paramIds);
+	void stepFinished(double time, int step, std::vector<double>& qvec);
 
 private:
     void cleanup();
@@ -51,6 +52,8 @@ private:
     QMap<QString, NodeInfo> m_nodeList;
 
 	bool m_inSimulation = false;
+
+	std::vector<double> m_qvec;
 };
 
 

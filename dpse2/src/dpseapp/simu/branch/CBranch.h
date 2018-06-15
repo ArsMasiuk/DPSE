@@ -15,7 +15,7 @@ public:
 
 	void setNodes(int n1, int n2);
 
-	void init(double L, double S, int M);
+	void init(double L, double S, double dX);
 	void setP(double beg, double end);
 	void setQt(double Qtgt);
     void setR(double R);

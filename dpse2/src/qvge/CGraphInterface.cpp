@@ -89,6 +89,30 @@ CNode* CGraphInterface::getNode(const QString &nodeId, bool autoCreate)
 }
 
 
+CConnection* CGraphInterface::getEdge(const QString& edgeId)
+{
+	if (m_scene == nullptr)
+		return nullptr;
+
+	// look for existing edge
+	auto edges = (m_scene->getItemsById<CConnection>(edgeId));
+	if (edges.count())
+		return edges.first();
+
+	return nullptr;
+}
+
+
+bool CGraphInterface::setEdgeAttr(const QString& edgeId, const QByteArray& attrId, const QVariant& value)
+{
+	CConnection* edge = getEdge(edgeId);
+	if (edge)
+		return edge->setAttribute(attrId, value);
+	else
+		return false;
+}
+
+
 QList<CConnection*> CGraphInterface::getEdges() const
 {
     QList<CConnection*> edges;

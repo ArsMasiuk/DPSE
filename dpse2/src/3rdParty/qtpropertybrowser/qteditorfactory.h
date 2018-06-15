@@ -69,7 +69,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void slotRangeChanged(QtProperty *, int, int))
     Q_PRIVATE_SLOT(d_func(), void slotSingleStepChanged(QtProperty *, int))
     Q_PRIVATE_SLOT(d_func(), void slotReadOnlyChanged(QtProperty *, bool))
-    //Q_PRIVATE_SLOT(d_func(), void slotSetValue(int))
 	Q_PRIVATE_SLOT(d_func(), void slotEditFinished())
     Q_PRIVATE_SLOT(d_func(), void slotEditorDestroyed(QObject *))
 };
@@ -167,7 +166,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void slotSingleStepChanged(QtProperty *, double))
     Q_PRIVATE_SLOT(d_func(), void slotDecimalsChanged(QtProperty *, int))
     Q_PRIVATE_SLOT(d_func(), void slotReadOnlyChanged(QtProperty *, bool))
-    //Q_PRIVATE_SLOT(d_func(), void slotSetValue(double))
 	Q_PRIVATE_SLOT(d_func(), void slotEditFinished())
     Q_PRIVATE_SLOT(d_func(), void slotEditorDestroyed(QObject *))
 };
@@ -193,7 +191,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void slotRegExpChanged(QtProperty *, const QRegExp &))
     Q_PRIVATE_SLOT(d_func(), void slotEchoModeChanged(QtProperty *, int))
     Q_PRIVATE_SLOT(d_func(), void slotReadOnlyChanged(QtProperty *, bool))
-    //Q_PRIVATE_SLOT(d_func(), void slotSetValue(const QString &))
 	Q_PRIVATE_SLOT(d_func(), void slotEditFinished())
     Q_PRIVATE_SLOT(d_func(), void slotEditorDestroyed(QObject *))
 };

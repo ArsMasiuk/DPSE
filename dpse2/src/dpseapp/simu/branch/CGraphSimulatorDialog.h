@@ -48,6 +48,7 @@ private Q_SLOTS:
 
 	void on_StepTable_itemSelectionChanged();
 
+	void onPrepareOutput(const QStringList& branchIds, const QStringList& paramIds);
 	void onStepFinished(double time, int step, std::vector<double>& qvec);
 	void onSimulationFinished();
 
@@ -57,10 +58,12 @@ protected:
 
 private:
     Ui::CGraphSimulatorDialog *ui;
-	QChartView *m_ChartView;
 
+	QChartView *m_ChartView;
 	QChart m_Chart;
 	QMap<int, QList<QPointF>> m_testPoints;
+
+	QStringList m_branchIds;
 
     CSimulatorBase *m_simu = nullptr;
     CNodeEditorScene *m_simuScene = nullptr;

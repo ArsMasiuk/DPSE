@@ -669,4 +669,7 @@ void CNodeEditorUIController::onNewDocumentCreated()
 		}
 	}
 #endif
+
+	// store newly created state
+	m_editorScene->addUndoState();
 }

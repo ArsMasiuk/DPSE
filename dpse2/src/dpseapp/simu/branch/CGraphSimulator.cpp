@@ -134,8 +134,9 @@ bool CGraphSimulator::prepare()
                 continue;
 
             // ok, prepare branch
-            edgeInfo.branch->init(L, S, 20);    // 20: to dos
-            edgeInfo.branch->setR(R);
+            edgeInfo.branch->init(L, S, 30);    // 30m: to dos
+            //edgeInfo.branch->setR(R);
+			edgeInfo.branch->prepare(R);
             edgeInfo.branch->setP(Pbeg, Pend);
         }
     }
@@ -175,7 +176,6 @@ bool CGraphSimulator::prepare()
             }
 
 
-
             auto n2 = edgeInfo.edge->lastNode();
             auto n2_in = n2->getInConnections();
             auto n2_out = n2->getOutConnections();
@@ -203,6 +203,30 @@ bool CGraphSimulator::prepare()
         }
     }
 
+	// init outputs
+	if (ok)
+	{
+		QStringList branchIds, paramIds;
+		paramIds << "Q";
+
+		for (auto& edgeInfo : m_branchList.values())
+		{
+			if (edgeInfo.isOk)
+			{
+				branchIds << edgeInfo.edge->getId();
+			}
+		}
+
+		Q_EMIT prepareOutput(branchIds, paramIds);
+		
+		m_qvec.resize(branchIds.size() * paramIds.size());
+
+		if (m_qvec.empty())
+		{
+			logWarning(tr("output buffer is not defined"));
+		}
+	}
+
     return ok;
 }
 
@@ -211,22 +235,28 @@ bool CGraphSimulator::simulate(int steps)
 {
 	m_inSimulation = true;
 
-	if (steps <= 0) steps = 10000;	// test
+	if (steps <= 0) steps = 200000;	// test
 
-	for (int step = 0; step < steps; ++step)
+	double time = 0, dt = 0.001;
+
+	for (int step = 0; step < steps; ++step, time += dt)
 	{
+		int q = 0;
 		for (auto& edgeInfo : m_branchList.values())
 		{
 			if (edgeInfo.isOk)
 			{
 				edgeInfo.branch->exchange();
-				edgeInfo.branch->stepRK4(0.001);
-				edgeInfo.branch->exchange();
+				edgeInfo.branch->stepRK4(dt);
+
+				m_qvec[q++] = edgeInfo.branch->getQ();
 			}
 		}
 
 		if (!m_inSimulation)
 			return false;
+
+		Q_EMIT stepFinished(time, step, m_qvec);
 	}
 
 	return true;
@@ -239,7 +269,8 @@ bool CGraphSimulator::run()
 
 	simulate();
 
-    emit simulationFinished();
+    Q_EMIT simulationFinished();
+
     return true;
 }
 

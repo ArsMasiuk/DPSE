@@ -150,7 +150,6 @@ public:
     void slotRangeChanged(QtProperty *property, int min, int max);
     void slotSingleStepChanged(QtProperty *property, int step);
     void slotReadOnlyChanged(QtProperty *property, bool readOnly);
-    //void slotSetValue(int value);
 	void slotEditFinished();
 };
 
@@ -218,22 +217,6 @@ void QtSpinBoxFactoryPrivate::slotReadOnlyChanged( QtProperty *property, bool re
         editor->blockSignals(false);
     }
 }
-
-//void QtSpinBoxFactoryPrivate::slotSetValue(int value)
-//{
-//    QObject *object = q_ptr->sender();
-//    const QMap<QSpinBox *, QtProperty *>::ConstIterator  ecend = m_editorToProperty.constEnd();
-//    for (QMap<QSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor !=  ecend; ++itEditor) {
-//        if (itEditor.key() == object) {
-//            QtProperty *property = itEditor.value();
-//            QtIntPropertyManager *manager = q_ptr->propertyManager(property);
-//            if (!manager)
-//                return;
-//            manager->setValue(property, value);
-//            return;
-//        }
-//    }
-//}
 
 void QtSpinBoxFactoryPrivate::slotEditFinished()
 {
@@ -313,7 +296,6 @@ QWidget *QtSpinBoxFactory::createEditor(QtIntPropertyManager *manager, QtPropert
     editor->setReadOnly(manager->isReadOnly(property));
 
 	connect(editor, SIGNAL(editingFinished()), this, SLOT(slotEditFinished()));
-    //connect(editor, SIGNAL(valueChanged(int)), this, SLOT(slotSetValue(int)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
     return editor;
@@ -988,7 +970,6 @@ QWidget *QtDoubleSpinBoxFactory::createEditor(QtDoublePropertyManager *manager,
     editor->setReadOnly(manager->isReadOnly(property));
 
 	connect(editor, SIGNAL(editingFinished()), this, SLOT(slotEditFinished()));
-    //connect(editor, SIGNAL(valueChanged(double)), this, SLOT(slotSetValue(double)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
     return editor;
@@ -1191,8 +1172,6 @@ QWidget *QtLineEditFactory::createEditor(QtStringPropertyManager *manager,
 
 	connect(editor, SIGNAL(editingFinished()),
 		this, SLOT(slotEditFinished()));
-    //connect(editor, SIGNAL(textChanged(const QString &)),
-    //            this, SLOT(slotSetValue(const QString &)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
     return editor;

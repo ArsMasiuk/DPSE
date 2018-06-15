@@ -46,8 +46,11 @@ void CGraphSimulatorDialog::setSimulator(CSimulatorBase &simu)
 
     m_simu->setLogger(*this);
 
-    //	connect(&m_simu, SIGNAL(stepFinished(double, int, std::vector<double>&)),
-    //		this, SLOT(onStepFinished(double, int, std::vector<double>&)));
+	connect(m_simu, SIGNAL(prepareOutput(const QStringList&, const QStringList&)),
+		this, SLOT(onPrepareOutput(const QStringList&, const QStringList&)));
+
+    connect(m_simu, SIGNAL(stepFinished(double, int, std::vector<double>&)),
+    	this, SLOT(onStepFinished(double, int, std::vector<double>&)));
 
     connect(m_simu, SIGNAL(simulationFinished()), this, SLOT(onSimulationFinished()));
 }
@@ -73,28 +76,10 @@ bool CGraphSimulatorDialog::run(const CNodeEditorScene& scene)
     m_graph.setScene(*m_simuScene);
     m_simu->setGraph(m_graph);
 
-	// sort by ids
-//    m_branchMap.clear();
-//	auto branches = m_simuScene->getItems<CBranchConnection>();
-//	for (auto branch : branches)
-//	{
-//		m_branchMap[branch->getId()] = branch;
-//	}
 
-
-//	// table
-//	ui->StepTable->clear();
-//	ui->StepTable->setRowCount(1);
-//	ui->StepTable->setColumnCount(m_branchMap.size());
-
-//	auto it = m_branchMap.constBegin();
-//	for (int r = 0; r < m_branchMap.size(); ++r, ++it)
-//	{
-//		ui->StepTable->setItem(0, r, new QTableWidgetItem());
-//		ui->StepTable->item(0, r)->setData(Qt::UserRole, r);
-
-//		ui->StepTable->setHorizontalHeaderItem(r, new QTableWidgetItem(it.key()));
-//	}
+	// table
+	ui->StepTable->clear();
+	ui->StepTable->setRowCount(1);
 
 
 	//m_simuScene->addUndoState();
@@ -168,14 +153,13 @@ void CGraphSimulatorDialog::on_Start_clicked()
 
     //m_simu.setSimulationTime(simTime);
 
-
     m_simu->run();
 }
 
 
 void CGraphSimulatorDialog::on_Stop_clicked()
 {
-    //m_simu.stop();
+    m_simu->stop();
 }
 
 
@@ -184,7 +168,6 @@ void CGraphSimulatorDialog::on_StepTable_itemSelectionChanged()
 	// chart 
 	m_Chart.removeAllSeries();
 
-
 	auto selectedItems = ui->StepTable->selectedItems();
 	for (auto item : selectedItems)
 	{
@@ -192,6 +175,23 @@ void CGraphSimulatorDialog::on_StepTable_itemSelectionChanged()
 		QLineSeries *ts = new QLineSeries();
 		ts->append(m_testPoints[index]);
 		m_Chart.addSeries(ts);
+	}
+}
+
+
+void CGraphSimulatorDialog::onPrepareOutput(const QStringList& branchIds, const QStringList& paramIds)
+{
+	m_branchIds = branchIds;
+
+	ui->StepTable->setColumnCount(branchIds.size());
+
+	auto it = branchIds.constBegin();
+	for (int r = 0; r < branchIds.size(); ++r, ++it)
+	{
+		ui->StepTable->setItem(0, r, new QTableWidgetItem());
+		ui->StepTable->item(0, r)->setData(Qt::UserRole, r);
+
+		ui->StepTable->setHorizontalHeaderItem(r, new QTableWidgetItem(*it));
 	}
 }
 
@@ -226,18 +226,13 @@ void CGraphSimulatorDialog::onStepFinished(double time, int step, std::vector<do
 
 
 		// scene update
-//		int count = qMin((int)qvec.size(), m_branchMap.size());
+		for (int r = 0; r < qvec.size(); ++r)
+		{
+			m_graph.setEdgeAttr(m_branchIds[r], "Q", qvec[r]);
+		}
 
-//		int Qi = 0;	// Q number
-
-//		auto orderedBranches = m_branchMap.values();
-
-//		for (int r = 0; r < count; ++r)
-//		{
-//			orderedBranches[r]->setAttribute("Q", qvec[r]);
-//		}
-
-		m_simuScene->addUndoState();
+		//m_simuScene->addUndoState();
+		m_simuScene->needUpdate();
 
 		qApp->processEvents();
 	}
@@ -257,7 +252,7 @@ void CGraphSimulatorDialog::onSimulationFinished()
 
 void CGraphSimulatorDialog::closeEvent(QCloseEvent *event)
 {
-    //m_simu.stop();
+    m_simu->stop();
 
 	QDialog::closeEvent(event);
 }

@@ -20,12 +20,16 @@ void CBranch::setNodes(int n1, int n2)
 }
 
 
-void CBranch::init(double L, double S, int M)
+void CBranch::init(double L, double S, double dX)
 {
 	m_L = L;
 	m_S = S;
-	m_M = M;
-	m_dX = (m_L / m_M);
+	
+	m_M = L / dX;
+	if ((int)L * (int)dX != m_M)
+		m_M++;
+
+	m_dX = L / m_M;
 
 	m_Pbeg = m_Pend = m_Qtgt = 0;
 
@@ -81,16 +85,6 @@ void CBranch::exchange()
 		m_Pbeg = 0;
 	else 
     {
-        // one with min L?
-        //double L = DBL_MAX;
-        //m_Pbeg = 0;
-
-        //for (int i = 0; i < m_inBeg.size(); ++i)
-        //	if (m_inBeg[i]->m_L < L){
-        //		m_Pbeg = m_inBeg[i]->getP();
-        //		L = m_inBeg[i]->m_L;
-        //	}
-
         double S = 0;
         m_Pbeg = 0;
 
@@ -113,17 +107,6 @@ void CBranch::exchange()
         }
         else
         {
-            // one with min L?
-            //double L = m_L;
-            //m_Pend = getP();
-
-            //for (int i = 0; i < m_inEnd.size(); ++i)
-            //	if (m_inEnd[i]->m_L < L)
-            //	{
-            //		m_Pend = m_inEnd[i]->getP();
-            //		L = m_inEnd[i]->m_L;
-            //	}
-
             double S = m_S;
             m_Pend = getP();
 

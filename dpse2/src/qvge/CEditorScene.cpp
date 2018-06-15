@@ -80,7 +80,10 @@ void CEditorScene::reset()
 {
 	initialize();
 
-	m_undoManager->reset();
+	if (m_undoManager)
+		m_undoManager->reset();
+
+	m_hasState = false;
 
 	setSceneRect(QRectF(-500,-500,1000,1000));
 }
@@ -223,8 +226,12 @@ void CEditorScene::addUndoState()
 		checkUndoState();
 	}
 
-	// notification
-	onSceneChanged();
+	// notification if had state already
+	if (m_hasState)
+		onSceneChanged();
+
+	// now with state
+	m_hasState = true;
 }
 
 int CEditorScene::availableUndoCount() const
@@ -1098,7 +1105,7 @@ void CEditorScene::layoutItemLabels()
 
 void CEditorScene::needUpdate()
 {
-	//m_labelsUpdate = true;
+	m_labelsUpdate = true;
 	m_needUpdateItems = true;
 
 	update();
@@ -1774,7 +1781,7 @@ void CEditorScene::focusInEvent(QFocusEvent *focusEvent)
 		s_firstRun = false;
 
 		// init scene
-		addUndoState();
+		//addUndoState();
 	}
 }
 
