@@ -22,7 +22,7 @@ public:
     // ISimulator
     //virtual void setGraph(const IGraphInterface& scene);
     virtual bool analyse();
-    virtual bool run();
+    virtual bool run(const SimuParams& params);
     virtual bool stop();
 
 Q_SIGNALS:
@@ -33,6 +33,7 @@ private:
     void cleanup();
     bool prepare();
 	bool simulate(int steps = 0);
+
 
     struct BranchInfo
     {
@@ -50,6 +51,9 @@ private:
     };
 
     QMap<QString, NodeInfo> m_nodeList;
+
+
+	SimuParams m_params;
 
 	bool m_inSimulation = false;
 

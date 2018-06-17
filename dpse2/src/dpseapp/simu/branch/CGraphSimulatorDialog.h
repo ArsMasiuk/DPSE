@@ -59,9 +59,18 @@ protected:
 private:
     Ui::CGraphSimulatorDialog *ui;
 
-	QChartView *m_ChartView;
+	QChartView *m_ChartView = nullptr;
 	QChart m_Chart;
-	QMap<int, QList<QPointF>> m_testPoints;
+	QValueAxis *m_AxisX = nullptr, *m_AxisY = nullptr;
+	double m_totalMax, m_totalMin;
+
+	struct SeriesData
+	{
+		QLineSeries *series = nullptr;
+		double yMax, yMin;
+	};
+
+	QVector<SeriesData> m_series;
 
 	QStringList m_branchIds;
 

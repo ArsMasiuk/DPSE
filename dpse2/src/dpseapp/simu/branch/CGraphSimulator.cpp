@@ -134,7 +134,7 @@ bool CGraphSimulator::prepare()
                 continue;
 
             // ok, prepare branch
-            edgeInfo.branch->init(L, S, 30);    // 30m: to dos
+            edgeInfo.branch->init(L, S, m_params.deltaX);    // 30m: to dos
             //edgeInfo.branch->setR(R);
 			edgeInfo.branch->prepare(R);
             edgeInfo.branch->setP(Pbeg, Pend);
@@ -235,11 +235,11 @@ bool CGraphSimulator::simulate(int steps)
 {
 	m_inSimulation = true;
 
-	if (steps <= 0) steps = 200000;	// test
+	if (steps <= 0) steps = INT_MAX;
 
 	double time = 0, dt = 0.001;
 
-	for (int step = 0; step < steps; ++step, time += dt)
+	for (int step = 0; step <= steps; ++step, time += dt)
 	{
 		int q = 0;
 		for (auto& edgeInfo : m_branchList.values())
@@ -263,11 +263,13 @@ bool CGraphSimulator::simulate(int steps)
 }
 
 
-bool CGraphSimulator::run()
+bool CGraphSimulator::run(const SimuParams& params)
 {
+	m_params = params;
+
     prepare();
 
-	simulate();
+	simulate(m_params.simuTime * 1000);
 
     Q_EMIT simulationFinished();
 

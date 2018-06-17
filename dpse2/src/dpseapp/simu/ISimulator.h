@@ -12,11 +12,19 @@ It can be used freely, maintaining the information above.
 class IGraphInterface;
 
 
+struct SimuParams
+{
+	int simuTime;	// s, <= 0 - infinite
+	float deltaX;
+	int method;
+};
+
+
 class ISimulator
 {
 public:
     virtual void setGraph(const IGraphInterface& scene) = 0;
     virtual bool analyse() = 0;
-    virtual bool run() = 0;
+    virtual bool run(const SimuParams& params) = 0;
     virtual bool stop() = 0;
 };

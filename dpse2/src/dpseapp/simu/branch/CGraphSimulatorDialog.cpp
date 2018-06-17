@@ -22,6 +22,9 @@ CGraphSimulatorDialog::CGraphSimulatorDialog(QWidget *parent) :
 
 	setWindowModality(Qt::WindowModal);
 
+	m_Chart.setAxisX(m_AxisX = new QValueAxis(this));
+	m_Chart.setAxisY(m_AxisY = new QValueAxis(this));
+
 	m_ChartView = new QChartView(ui->ChartBox);
 	ui->ChartBox->layout()->addWidget(m_ChartView);
 	m_ChartView->setChart(&m_Chart);
@@ -81,12 +84,7 @@ bool CGraphSimulatorDialog::run(const CNodeEditorScene& scene)
 	ui->StepTable->clear();
 	ui->StepTable->setRowCount(1);
 
-
-	//m_simuScene->addUndoState();
-
     //ui->NetInfo->setText(m_simu.getNetInfo());
-
-    ui->Tabs->setCurrentIndex(0);
 
 	showMaximized();
     exec();
@@ -125,23 +123,20 @@ void CGraphSimulatorDialog::write(const QString& text, int state, const QDateTim
 void CGraphSimulatorDialog::on_Start_clicked()
 {
     // temp
-    ui->Tabs->setTabEnabled(0, false);
-    ui->Tabs->setCurrentIndex(1);
+	ui->SimuParams->setEnabled(false);
 
     ui->SimuTimeLabel->setText("0");
     ui->SimuStepLabel->setText("0");
     ui->ProgressBar->setValue(0);
-    //ui->ProgressBar->setMaximum(m_simu.getMaxSteps());
 
-    m_testPoints.clear();
+	m_Chart.removeAllSeries();
 
 
     write(tr("Start topology check..."), LOG_OK);
     bool isChecked = m_simu->analyse();
     if (!isChecked)
     {
-        ui->Tabs->setTabEnabled(0, true);
-        ui->Tabs->setCurrentIndex(1);
+        ui->SimuParams->setEnabled(true);
 
         write(tr("Topology check failed. Cannot run the simulation."), LOG_ERROR);
         return;
@@ -151,9 +146,13 @@ void CGraphSimulatorDialog::on_Start_clicked()
     int simTime = ui->SimuTime->value();
 	write(tr("Start simulation (%1 s)").arg(simTime), LOG_OK);
 
-    //m_simu.setSimulationTime(simTime);
+	ui->ProgressBar->setMaximum(simTime * 1000);
 
-    m_simu->run();
+	SimuParams params = { simTime, (float) ui->DeltaX->value(), 0 };
+    m_simu->run(params);
+
+	if (ui->StepTable->columnCount() > 0 && ui->StepTable->rowCount() > 0)
+		ui->StepTable->setItemSelected(ui->StepTable->item(0, 0), true);
 }
 
 
@@ -165,16 +164,48 @@ void CGraphSimulatorDialog::on_Stop_clicked()
 
 void CGraphSimulatorDialog::on_StepTable_itemSelectionChanged()
 {
-	// chart 
-	m_Chart.removeAllSeries();
-
 	auto selectedItems = ui->StepTable->selectedItems();
-	for (auto item : selectedItems)
+	
+	// show all
+	if (selectedItems.isEmpty() || selectedItems.count() == m_series.count())
+	{
+		for (int i = 0; i < m_series.count(); ++i)
+		{
+			auto& ts = m_series[i].series;
+			m_Chart.addSeries(ts);
+			ts->attachAxis(m_AxisX);
+			ts->attachAxis(m_AxisY);
+		}
+
+		m_AxisY->setRange(m_totalMin, m_totalMax);
+
+		return;
+	}
+
+	// remove all at first
+	for (int i = 0; i < m_series.count(); ++i)
+	{
+		m_Chart.removeSeries(m_series[i].series);
+	}
+
+	// add only selected
+	for (auto& item : selectedItems)
 	{
 		int index = item->data(Qt::UserRole).toInt();
-		QLineSeries *ts = new QLineSeries();
-		ts->append(m_testPoints[index]);
+		auto& ts = m_series[index].series;
 		m_Chart.addSeries(ts);
+		ts->attachAxis(m_AxisX);
+		ts->attachAxis(m_AxisY);
+	}
+
+	if (selectedItems.count() > 1)
+	{
+		m_AxisY->setRange(m_totalMin, m_totalMax);
+	}
+	else
+	{
+		int index = selectedItems.first()->data(Qt::UserRole).toInt();
+		m_AxisY->setRange(m_series[index].yMin, m_series[index].yMax);
 	}
 }
 
@@ -192,6 +223,28 @@ void CGraphSimulatorDialog::onPrepareOutput(const QStringList& branchIds, const 
 		ui->StepTable->item(0, r)->setData(Qt::UserRole, r);
 
 		ui->StepTable->setHorizontalHeaderItem(r, new QTableWidgetItem(*it));
+	}
+
+	// temp
+	ui->StepTable->setVerticalHeaderItem(0, new QTableWidgetItem(paramIds.first()));
+
+
+	// charts
+	m_Chart.removeAllSeries();	// kills all of them
+	m_series.resize(branchIds.size());
+	for (int r = 0; r < branchIds.size(); ++r)
+	{
+		auto &ts = m_series[r].series;
+		ts = new QLineSeries();
+		ts->setName(m_branchIds[r]);
+
+		m_Chart.addSeries(ts);
+
+		ts->attachAxis(m_AxisX);
+		ts->attachAxis(m_AxisY);
+
+		m_series[r].yMax = INT_MIN;
+		m_series[r].yMin = INT_MAX;
 	}
 }
 
@@ -217,10 +270,24 @@ void CGraphSimulatorDialog::onStepFinished(double time, int step, std::vector<do
 
 
 		// chart update
+		if (step == 0)
+		{
+			m_totalMin = INT_MAX;
+			m_totalMax = INT_MIN;
+		}
+
 		for (int r = 0; r < qvec.size(); ++r)
 		{
-			m_testPoints[r] << QPointF(step, qvec[r]);
+			m_series[r].series->append(time, qvec[r]);
+
+			m_totalMin = qMin(m_totalMin, qvec[r]);
+			m_totalMax = qMax(m_totalMax, qvec[r]);
+
+			m_series[r].yMax = qMax(m_series[r].yMax, qvec[r]);
+			m_series[r].yMin = qMin(m_series[r].yMin, qvec[r]);
 		}
+
+		m_AxisX->setRange(0, time);
 
 		on_StepTable_itemSelectionChanged();
 
@@ -241,8 +308,7 @@ void CGraphSimulatorDialog::onStepFinished(double time, int step, std::vector<do
 
 void CGraphSimulatorDialog::onSimulationFinished()
 {
-	ui->Tabs->setTabEnabled(0, true);
-	ui->Tabs->setCurrentIndex(1);
+	ui->SimuParams->setEnabled(true);
 
 	write(tr("Simulation finished"), LOG_OK);
 }
