@@ -13,6 +13,8 @@ class dpseUIController : public CNodeEditorUIController
     Q_OBJECT
 
 public:
+	friend class dpseMainWindow;
+
     typedef CNodeEditorUIController Super;
 
     dpseUIController(CMainWindow *parent);

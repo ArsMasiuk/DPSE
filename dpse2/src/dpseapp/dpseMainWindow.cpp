@@ -10,6 +10,7 @@ It can be used freely, maintaining the information above.
 #include "dpseMainWindow.h"
 #include "dpseVersion.h"
 #include "dpseUIController.h"
+#include "CFileSerializerDDS.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -17,6 +18,8 @@ It can be used freely, maintaining the information above.
 #include <QFileInfo>
 
 #include <appbase/CPlatformServices.h>
+
+#include <qvge/CNodeEditorScene.h>
 
 
 dpseMainWindow::dpseMainWindow()
@@ -34,9 +37,9 @@ dpseMainWindow::dpseMainWindow()
 //    CDocumentFormat gr = { "Old plain GR", "*.gr", false, true };
 	CDocumentFormat xgr = { "XML Graph", "*.xgr", {"xgr"}, true, true };
     CDocumentFormat gml = { "GML", "*.gml", { "gml" }, false, true };
-    //CDocumentFormat dot = { "DOT", "*.dot *.gv", { "dot","gv" }, true, true };
+    CDocumentFormat dds = { "DDS", "*.dds", { "dds" }, false, true };
     CDocument graph = { tr("Graph Document"), tr("Directed or undirected graph"), "graph", true,
-                        {gexf, graphml, gml, xgr} };
+                        {gexf, graphml, gml, xgr, dds} };
     addDocument(graph);
 }
 
@@ -78,7 +81,7 @@ bool dpseMainWindow::openDocument(const QString &fileName, QByteArray &docType)
 {
 	QString format = QFileInfo(fileName).suffix().toLower();
 
-	// graph formats
+	// default graph formats
     if (format == "graphml" || format == "gexf" || format == "xgr" || format == "gml")
 	{
 		docType = "graph";
@@ -86,6 +89,22 @@ bool dpseMainWindow::openDocument(const QString &fileName, QByteArray &docType)
         if (createDocument(docType) && m_graphEditController->loadFromFile(fileName, format))
 		{
 			return true;
+		}
+
+		return false;
+	}
+
+
+	// dds format
+	if (format == "dds")
+	{
+		docType = "graph";
+
+		if (createDocument(docType))
+		{
+			CFileSerializerDDS dds;
+
+			return dds.load(fileName, *(m_graphEditController->scene()));
 		}
 
 		return false;
