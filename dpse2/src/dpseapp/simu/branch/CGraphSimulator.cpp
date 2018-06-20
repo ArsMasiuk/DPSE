@@ -267,7 +267,8 @@ bool CGraphSimulator::run(const SimuParams& params)
 {
 	m_params = params;
 
-    prepare();
+	if (!prepare())
+		return false;
 
 	simulate(m_params.simuTime * 1000);
 

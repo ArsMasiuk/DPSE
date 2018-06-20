@@ -655,11 +655,7 @@ void CNodeEditorUIController::onNewDocumentCreated()
     if (m_showNewGraphDialog)
 	{
 		COGDFNewGraphDialog dialog;
-		if (dialog.exec(*m_editorScene))
-		{
-			// update scene info
-			//onSceneChanged();
-		}
+		dialog.exec(*m_editorScene);
 
 		bool show = dialog.isShowOnStart();
         if (show != m_showNewGraphDialog)

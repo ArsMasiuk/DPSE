@@ -83,8 +83,6 @@ void CEditorScene::reset()
 	if (m_undoManager)
 		m_undoManager->reset();
 
-	m_hasState = false;
-
 	setSceneRect(QRectF(-500,-500,1000,1000));
 }
 
@@ -226,12 +224,7 @@ void CEditorScene::addUndoState()
 		checkUndoState();
 	}
 
-	// notification if had state already
-	if (m_hasState)
-		onSceneChanged();
-
-	// now with state
-	m_hasState = true;
+	onSceneChanged();
 }
 
 int CEditorScene::availableUndoCount() const

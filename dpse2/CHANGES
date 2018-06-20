@@ -1,0 +1,70 @@
+QVGE 0.4.4 (beta)
+-------------------------------------------------------------------------------
+- fixed issue with moving the mouse over the Mini Navigator when invoked 
+  by the corner button
+- fixed issue with restoring of scene interactive state
+- fixed issue with document change notification when a new document is created
+
+
+QVGE 0.4.3 (beta)
+-------------------------------------------------------------------------------
+- fixed a crash when leaving property editor after changing a value
+- fixed editing of string and numerical values after typing next character
+- fixed a couple of editing & display issues of double values
+
+
+QVGE 0.4.2 (beta)
+-------------------------------------------------------------------------------
+- added new color scheme (Sunny Spring)
+- added common editor modes to simplify the editing
+- default node & edge properties set to UI when new scene is attached
+- auto-assign of currently selected node & edge properties to the newly created items
+- more tool- & status tips displayed
+- some common operations made more intuitive (clone items with pressed Ctrl etc.)
+
+- fixed issue with dragging items over their labels
+- (Linux) fixed issue with default IO directory
+- (FreeBSD) fixed restoring of maximized windows (Qt issue)
+- (Windows) added uninstaller to the setup packages
+
+
+QVGE 0.4.1 (beta)
+-------------------------------------------------------------------------------
+- mouse navigation speedup
+- more precise node outline & edge width (resolution of 0.1 px)
+- nodes can have no background (i.e. be transparent)
+- single nodes may be created by left double click on empty space
+- added cropping scene to contents
+- added "hexagon" node shape
+- added editing of nodes & edges textual labels
+- added default color schemes
+- added support for FreeBSD platform
+
+- fixed potential memory leaks & crash when setting attributes constrains
+- fixed some default node & edge attributes
+- removed "label.size" subattribute (font's pointSize is used instead)
+- graph creation dialog made optional
+- (Windows) fixed issue with opening of associated files by double click
+- (Windows) added version info to the executable
+- (Linux) fixed restoring of maximized windows (Qt issue)
+
+
+QVGE 0.4.0 (beta)
+-------------------------------------------------------------------------------
+- added export to GEXF format
+- added import from GML format (via OGDF)
+- added support for Cygwin platform (not all features yet)
+- added support for node outline 
+
+- corrected and improved import from GEXF format
+- fixed some issues with attribute inheritance
+- fixed some issues with files IO
+- fixed some issues with application UI
+- fixed issue when a node was sometimes created on a wrong place
+- fixed issue with cancelling of edge creation by right mouse button
+- fixed scene panning by right mouse button when initially clicked on an item
+
+
+QVGE 0.3.0 (alpha)
+-------------------------------------------------------------------------------- 
+- initial public release

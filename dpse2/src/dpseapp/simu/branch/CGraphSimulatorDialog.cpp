@@ -122,7 +122,6 @@ void CGraphSimulatorDialog::write(const QString& text, int state, const QDateTim
 
 void CGraphSimulatorDialog::on_Start_clicked()
 {
-    // temp
 	ui->SimuParams->setEnabled(false);
 
     ui->SimuTimeLabel->setText("0");
@@ -136,10 +135,11 @@ void CGraphSimulatorDialog::on_Start_clicked()
     bool isChecked = m_simu->analyse();
     if (!isChecked)
     {
-        ui->SimuParams->setEnabled(true);
-
         write(tr("Topology check failed. Cannot run the simulation."), LOG_ERROR);
-        return;
+
+		ui->SimuParams->setEnabled(true);
+		onSimulationFinished();
+		return;
     }
 
 
@@ -149,7 +149,14 @@ void CGraphSimulatorDialog::on_Start_clicked()
 	ui->ProgressBar->setMaximum(simTime * 1000);
 
 	SimuParams params = { simTime, (float) ui->DeltaX->value(), 0 };
-    m_simu->run(params);
+	if (!m_simu->run(params))
+	{
+		write(tr("Simulation failed due to parameter errors. Please fix them and try again."), LOG_ERROR);
+
+		ui->SimuParams->setEnabled(true);
+		onSimulationFinished();
+		return;
+	}
 
 	if (ui->StepTable->columnCount() > 0 && ui->StepTable->rowCount() > 0)
 		ui->StepTable->setItemSelected(ui->StepTable->item(0, 0), true);

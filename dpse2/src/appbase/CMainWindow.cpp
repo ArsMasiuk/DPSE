@@ -321,9 +321,10 @@ void CMainWindow::doCreateNewDocument(const QByteArray &docType)
 		readSettings();
 
         m_currentDocType = docType;
-        m_isChanged = false;
 
 		onNewDocumentCreated(docType);
+
+		m_isChanged = false;
 
 		onCurrentFileChanged();
 
