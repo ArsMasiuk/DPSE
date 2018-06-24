@@ -113,6 +113,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="ChangeButton">
+       <property name="text">
+        <string>Change...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="RemoveButton">
        <property name="statusTip">
         <string>Remove the attribute from the selected items</string>
@@ -135,8 +142,10 @@
  </customwidgets>
  <tabstops>
   <tabstop>ClassId</tabstop>
+  <tabstop>ColorScheme</tabstop>
   <tabstop>Editor</tabstop>
   <tabstop>AddButton</tabstop>
+  <tabstop>ChangeButton</tabstop>
   <tabstop>RemoveButton</tabstop>
  </tabstops>
  <resources/>

@@ -8,9 +8,7 @@ It can be used freely, maintaining the information above.
 */
 
 #include "CClassAttributesEditorUI.h"
-#include "ui_CClassAttributesEditorUI.h"
 #include "CNewAttributeDialog.h"
-
 #include "CColorSchemesUIController.h"
 
 #include <qvge/CEditorScene.h>
@@ -33,7 +31,9 @@ CClassAttributesEditorUI::CClassAttributesEditorUI(QWidget *parent) :
     connect(&m_manager, SIGNAL(valueChanged(QtProperty*, const QVariant&)),
             this, SLOT(onValueChanged(QtProperty*, const QVariant&)));
 
-    ui->ClassId->setCurrentIndex(1);    // node by def.
+	ui->Editor->setResizeMode(ui->Editor->Interactive);
+
+    //ui->ClassId->setCurrentIndex(1);    // node by def.
 
 	//const QObjectList& objs = ui->Editor->children();
 	//qDebug() << objs
@@ -103,26 +103,217 @@ void CClassAttributesEditorUI::on_ClassId_currentIndexChanged(int)
 }
 
 
+void CClassAttributesEditorUI::onValueChanged(QtProperty *property, const QVariant &val)
+{
+    if (!m_scene || m_locked)
+        return;
+
+	// reject changes from subproperties
+	if (ui->Editor->topLevelItem(property) == nullptr)
+		return;
+
+    m_locked = true;
+
+	QByteArray classId = getClassId();
+
+	auto attrId = property->propertyName().toLatin1();
+	bool isSet = false;
+
+	// check for constrains
+	auto conn = m_scene->getClassAttributeConstrains(classId, attrId);
+	if (conn) {
+		auto connList = dynamic_cast<CAttributeConstrainsList*>(conn);
+		if (connList) {
+			int index = val.toInt();
+			if (index >= 0 && index < connList->ids.size())
+				m_scene->setClassAttribute(classId, attrId, connList->ids[index]);
+			else
+				m_scene->setClassAttribute(classId, attrId, connList->ids.first());
+
+			isSet = true;
+		}
+	}
+
+	// default
+	if (!isSet)
+		m_scene->setClassAttribute(classId, attrId, val);
+
+    // store state
+    m_scene->addUndoState();
+
+    m_locked = false;
+}
+
+
+void CClassAttributesEditorUI::on_Editor_currentItemChanged(QtBrowserItem* item)
+{
+	if (item)
+	{
+		// only custom attrs can be removed or changed
+		ui->RemoveButton->setEnabled(item->property()->isModified());
+		ui->ChangeButton->setEnabled(item->property()->isModified());
+	}
+	else
+	{
+		ui->RemoveButton->setEnabled(false);
+		ui->ChangeButton->setEnabled(false);
+	}
+}
+
+
+void CClassAttributesEditorUI::on_AddButton_clicked()
+{
+    if (!m_scene)
+        return;
+
+    CNewAttributeDialog dialog;
+    if (dialog.exec() == QDialog::Rejected)
+        return;
+
+    auto id = dialog.getId();
+    if (id.isEmpty())
+        return;
+
+	QByteArray classId = getClassId();
+
+    if (m_scene->getClassAttributes(classId, false).contains(id))
+    {
+        QMessageBox::critical(this, tr("Attribute exists"),
+                              tr("Class %1 already has attribute %2. Please pick another id.")
+                              .arg(QString(classId), QString(id)),
+                              QMessageBox::Ok);
+        return;
+    }
+
+    auto v = dialog.getValue();
+    CAttribute attr(id, id, v);
+	attr.userDefined = true;
+    m_scene->setClassAttribute(classId, attr);
+
+    // store state
+    m_scene->addUndoState();
+
+	// update
+	selectItemByName(id);
+
+	ui->Editor->setFocus();
+}
+
+
+void CClassAttributesEditorUI::on_ChangeButton_clicked()
+{
+	if (!m_scene)
+		return;
+
+	QByteArray attrId = getCurrentTopPropertyName().toLatin1();
+	if (attrId.isEmpty())
+		return;
+
+	QByteArray classId = getClassId();
+	auto attr = m_scene->getClassAttribute(classId, attrId, false);
+
+	CNewAttributeDialog dialog;
+	dialog.setWindowTitle(tr("Change Attribute"));
+	dialog.setId(attrId);
+	dialog.setType(attr.valueType);
+	if (dialog.exec() == QDialog::Rejected)
+		return;
+
+	QByteArray newId = dialog.getId();
+	if (newId.isEmpty())
+		return;
+
+	int newType = dialog.getType();
+	if (newType == attr.valueType && newId == attrId)
+		return;
+
+	// check for name duplicate
+	if (newId != attrId && m_scene->getClassAttributes(classId, false).contains(newId))
+	{
+		QMessageBox::critical(this, tr("Attribute exists"),
+			tr("Class %1 already has attribute %2. Please pick another id.")
+			.arg(QString(classId), QString(newId)),
+			QMessageBox::Ok);
+
+		return;
+	}
+
+	// remove old one and add new
+	CAttribute newAttr(attr);
+	newAttr.id = newId;
+	newAttr.name = newId;
+	newAttr.valueType = newType;
+	m_scene->removeClassAttribute(classId, attrId);
+	m_scene->setClassAttribute(classId, newAttr);
+
+	// store state
+	m_scene->addUndoState();
+
+	// update
+	selectItemByName(newId);
+
+	ui->Editor->setFocus();
+}
+
+
+void CClassAttributesEditorUI::on_RemoveButton_clicked()
+{
+	if (!m_scene)
+		return;
+
+	auto prop = getCurrentTopProperty();
+	if (!prop)
+		return;
+
+	QByteArray attrId = prop->propertyName().toLatin1();
+
+	QByteArray classId = getClassId();
+
+	int r = QMessageBox::question(NULL,
+		tr("Remove Attribute"),
+		tr("Remove attribute %1 from class %2?").arg(QString(attrId), QString(classId)),
+		QMessageBox::Yes, QMessageBox::Cancel);
+
+	if (r == QMessageBox::Cancel)
+		return;
+
+	// remove prop
+	m_locked = true;
+	delete prop;
+
+	m_scene->removeClassAttribute(classId, attrId);
+
+	// store state
+	m_scene->addUndoState();
+
+	m_locked = false;
+
+	ui->Editor->setFocus();
+}
+
+
+// internal stuff
+
 void CClassAttributesEditorUI::rebuild()
 {
-	on_Editor_currentItemChanged(NULL);
-
-    if (!m_scene || m_locked)
+	if (!m_scene || m_locked)
 		return;
+
+	QString oldName = getCurrentTopPropertyName();
+
+	on_Editor_currentItemChanged(NULL);
 
 	ui->Editor->setUpdatesEnabled(false);
 	ui->Editor->clear();
 
-    m_manager.blockSignals(true);
-    m_manager.clear();
+	m_manager.blockSignals(true);
+	m_manager.clear();
 
-    QByteArray classId;
-    if (ui->ClassId->currentIndex() > 0)
-        classId = ui->ClassId->currentText().toLatin1();
+	QByteArray classId = getClassId();
 
-    auto attrs = m_scene->getClassAttributes(classId, true);
-    for (auto it = attrs.constBegin(); it != attrs.constEnd(); ++it)
-    {
+	auto attrs = m_scene->getClassAttributes(classId, true);
+	for (auto it = attrs.constBegin(); it != attrs.constEnd(); ++it)
+	{
 		// skip not default
 		if (it.value().noDefault)
 			continue;
@@ -162,168 +353,72 @@ void CClassAttributesEditorUI::rebuild()
 
 			prop->setValue(it.value().defaultValue);
 		}
-        
-        auto item = ui->Editor->addProperty(prop);
-        ui->Editor->setExpanded(item, false);
+
+		auto item = ui->Editor->addProperty(prop);
+		ui->Editor->setExpanded(item, false);
 
 		if (it.value().userDefined)
 			prop->setModified(true);
 
 		if (ui->Editor->currentItem() == NULL)
 			ui->Editor->setCurrentItem(item);
-    }
-
-    ui->Editor->setUpdatesEnabled(true);
-
-    m_manager.blockSignals(false);
-}
-
-
-void CClassAttributesEditorUI::onValueChanged(QtProperty *property, const QVariant &val)
-{
-    if (!m_scene || m_locked)
-        return;
-
-    m_locked = true;
-
-    QByteArray classId;
-    if (ui->ClassId->currentIndex() > 0)
-        classId = ui->ClassId->currentText().toLatin1();
-
-	auto attrId = property->propertyName().toLatin1();
-	bool isSet = false;
-
-	// check for constrains
-	auto conn = m_scene->getClassAttributeConstrains(classId, attrId);
-	if (conn) {
-		auto connList = dynamic_cast<CAttributeConstrainsList*>(conn);
-		if (connList) {
-			int index = val.toInt();
-			if (index >= 0 && index < connList->ids.size())
-				m_scene->setClassAttribute(classId, attrId, connList->ids[index]);
-			else
-				m_scene->setClassAttribute(classId, attrId, connList->ids.first());
-
-			isSet = true;
-		}
 	}
 
-	// default
-	if (!isSet)
-		m_scene->setClassAttribute(classId, attrId, val);
+	ui->Editor->setUpdatesEnabled(true);
 
-    // store state
-    m_scene->addUndoState();
+	m_manager.blockSignals(false);
 
-    m_locked = false;
+	// restore selection
+	if (oldName.size())
+		selectItemByName(oldName);
 }
 
 
-void CClassAttributesEditorUI::on_AddButton_clicked()
+QtBrowserItem* CClassAttributesEditorUI::selectItemByName(const QString& name)
 {
-    if (!m_scene)
-        return;
-
-    QByteArray classId;
-    if (ui->ClassId->currentIndex() > 0)
-        classId = ui->ClassId->currentText().toLatin1();
-
-    CNewAttributeDialog dialog;
-    if (dialog.exec() == QDialog::Rejected)
-        return;
-
-    auto id = dialog.getId();
-    if (id.isEmpty())
-        return;
-
-    if (m_scene->getClassAttributes(classId, false).contains(id))
-    {
-        QMessageBox::critical(this, tr("Attribute exists"),
-                              tr("Class %1 already has attribute %2. Please pick another id.")
-                              .arg(QString(classId), QString(id)),
-                              QMessageBox::Ok);
-        return;
-    }
-
-    auto v = dialog.getValue();
-    CAttribute attr(id, id, v);
-	attr.userDefined = true;
-    m_scene->setClassAttribute(classId, attr);
-
-    // store state
-    m_scene->addUndoState();
-
-    // rebuild tree
-    rebuild();
-
-	// select item
 	QList<QtBrowserItem*> items = ui->Editor->topLevelItems();
 	for (auto item : items)
 	{
-		if (item->property()->propertyName().toLocal8Bit() == id)
+		if (item->property()->propertyName() == name)
 		{
 			ui->Editor->setCurrentItem(item);
-			break;
+			return item;
 		}
 	}
 
-	ui->Editor->setFocus();
+	return NULL;
 }
 
 
-void CClassAttributesEditorUI::on_Editor_currentItemChanged(QtBrowserItem* item)
+QtProperty* CClassAttributesEditorUI::getCurrentTopProperty() const
 {
-	if (!item)
-	{
-		ui->RemoveButton->setEnabled(false);
-		return;
-	}
-
-	// only custom attrs can be removed
-	ui->RemoveButton->setEnabled(item->property()->isModified());
-}
-
-
-void CClassAttributesEditorUI::on_RemoveButton_clicked()
-{
-	if (!m_scene)
-		return;
-
 	auto item = (ui->Editor->currentItem());
 	if (!item)
-		return;
+		return NULL;
 
-	// no subprops
-	if (item->parent())
-		return;
+	while (item->parent())
+		item = item->parent();
 
-	QString classId;
+	return item->property();
+}
+
+
+QString CClassAttributesEditorUI::getCurrentTopPropertyName() const
+{
+	QtProperty *prop = getCurrentTopProperty();
+	if (prop)
+		return prop->propertyName();
+	else
+		return "";
+}
+
+
+QByteArray CClassAttributesEditorUI::getClassId() const
+{
 	if (ui->ClassId->currentIndex() > 0)
-		classId = ui->ClassId->currentText();
-
-	auto prop = item->property();
-	QString attrId = prop->propertyName();
-
-	int r = QMessageBox::question(NULL,
-		tr("Remove Attribute"),
-		tr("Remove attribute '%1' from class '%2'?").arg(attrId, classId),
-		QMessageBox::Yes, QMessageBox::Cancel);
-
-	if (r == QMessageBox::Cancel)
-		return;
-
-	// remove prop
-	m_locked = true;
-	delete prop;
-
-	m_scene->removeClassAttribute(classId.toLatin1(), attrId.toLatin1());
-
-	// store state
-	m_scene->addUndoState();
-
-	m_locked = false;
-
-	ui->Editor->setFocus();
+		return ui->ClassId->currentText().toLatin1();
+	else
+		return QByteArray();
 }
 
 

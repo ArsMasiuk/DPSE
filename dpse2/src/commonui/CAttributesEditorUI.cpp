@@ -27,6 +27,8 @@ CAttributesEditorUI::CAttributesEditorUI(QWidget *parent) :
 
     connect(&m_manager, SIGNAL(valueChanged(QtProperty*, const QVariant&)),
             this, SLOT(onValueChanged(QtProperty*, const QVariant&)));
+
+	ui->Editor->setResizeMode(ui->Editor->Interactive);
 }
 
 CAttributesEditorUI::~CAttributesEditorUI()
@@ -212,7 +214,7 @@ void CAttributesEditorUI::on_RemoveButton_clicked()
 
 	int r = QMessageBox::question(NULL,
 		tr("Remove Attribute"),
-		tr("Remove attribute '%1' from selected item(s)?").arg(attrId),
+		tr("Remove attribute %1 from selected item(s)?").arg(attrId),
 		QMessageBox::Yes, QMessageBox::Cancel);
 
 	if (r == QMessageBox::Cancel)
@@ -236,9 +238,6 @@ void CAttributesEditorUI::on_RemoveButton_clicked()
 
 	// store state
 	m_scene->addUndoState();
-
-	// rebuild tree
-	//setupFromItems(*m_scene, m_items);
 
 	ui->Editor->setFocus();
 }

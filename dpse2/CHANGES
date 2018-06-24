@@ -1,9 +1,13 @@
 QVGE 0.4.4 (beta)
 -------------------------------------------------------------------------------
+- added button to change an attribute's name & type 
+
 - fixed issue with moving the mouse over the Mini Navigator when invoked 
   by the corner button
 - fixed issue with restoring of scene interactive state
 - fixed issue with document change notification when a new document is created
+- fixed issue with putting empty states into the undo/redo stack after editing
+	of complex attributes (color, font etc)
 
 
 QVGE 0.4.3 (beta)

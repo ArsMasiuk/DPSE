@@ -27,10 +27,18 @@ CNewAttributeDialog::~CNewAttributeDialog()
     delete ui;
 }
 
+
 QByteArray CNewAttributeDialog::getId() const
 {
     return ui->Id->text().toLatin1();
 }
+
+
+void CNewAttributeDialog::setId(const QString& id)
+{
+	ui->Id->setText(id);
+}
+
 
 int CNewAttributeDialog::getType() const
 {
@@ -45,6 +53,23 @@ int CNewAttributeDialog::getType() const
     }
 }
 
+
+int CNewAttributeDialog::setType(int type)
+{
+	switch (type)
+	{
+	case QVariant::Int:		ui->Type->setCurrentIndex(0); break;
+	case QVariant::Double:	ui->Type->setCurrentIndex(1); break;
+	case QVariant::Bool:	ui->Type->setCurrentIndex(2); break;
+	case QVariant::Color:	ui->Type->setCurrentIndex(3); break;
+	case QVariant::Font:	ui->Type->setCurrentIndex(4); break;
+	default:				ui->Type->setCurrentIndex(5); break;
+	}
+
+	return ui->Type->currentIndex();
+}
+
+
 QVariant CNewAttributeDialog::getValue() const
 {
     switch (ui->Type->currentIndex())
@@ -57,6 +82,7 @@ QVariant CNewAttributeDialog::getValue() const
     default:    return QString();
     }
 }
+
 
 void CNewAttributeDialog::on_Id_textChanged(const QString &text)
 {

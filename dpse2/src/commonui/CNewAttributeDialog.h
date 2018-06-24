@@ -25,7 +25,11 @@ public:
     ~CNewAttributeDialog();
 
     QByteArray getId() const;
+	void setId(const QString& id);
+
     int getType() const;
+	int setType(int type);
+
     QVariant getValue() const;
 
 private Q_SLOTS:

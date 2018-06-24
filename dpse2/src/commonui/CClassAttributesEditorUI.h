@@ -15,12 +15,12 @@ It can be used freely, maintaining the information above.
 #include <QtVariantPropertyManager>
 #include <QtVariantEditorFactory>
 
+#include "ui_CClassAttributesEditorUI.h"
+
+
 class CEditorScene;
 class CItem;
 
-namespace Ui {
-class CClassAttributesEditorUI;
-}
 
 class CClassAttributesEditorUI : public QWidget
 {
@@ -41,6 +41,11 @@ protected:
     void onSceneDetached(CEditorScene* scene);
 
     void rebuild();
+	QtBrowserItem* selectItemByName(const QString& name);
+	QtProperty* getCurrentTopProperty() const;
+	QString getCurrentTopPropertyName() const;
+
+	QByteArray getClassId() const;
 
 protected Q_SLOTS:
     void onSceneChanged();
@@ -49,6 +54,7 @@ protected Q_SLOTS:
 
 private Q_SLOTS:
     void on_AddButton_clicked();
+	void on_ChangeButton_clicked();
 	void on_RemoveButton_clicked();
     void onValueChanged(QtProperty *property, const QVariant &val);
 

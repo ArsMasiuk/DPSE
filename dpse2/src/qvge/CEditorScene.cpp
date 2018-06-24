@@ -534,7 +534,7 @@ bool CEditorScene::createClassAttribute(const QByteArray& classId,
 
 void CEditorScene::setClassAttribute(const QByteArray& classId, const CAttribute& attr, bool vis)
 {
-	// only update value if exists 
+	// only update value if exists
 	if (m_classAttributes[classId].contains(attr.id))
 		m_classAttributes[classId][attr.id].defaultValue = attr.defaultValue;
 	else 
@@ -624,16 +624,16 @@ QSet<QByteArray> CEditorScene::getVisibleClassAttributes(const QByteArray& class
 
 const CAttribute CEditorScene::getClassAttribute(const QByteArray& classId, const QByteArray& attrId, bool inherited) const 
 {
-	if (classId.isEmpty())
-		// fail
-		return CAttribute();
-
 	CAttribute attr = m_classAttributes[classId][attrId];
 	if (attr.id.size() || !inherited)
 		return attr;
 
 	// else inherited
 	QByteArray superId = getSuperClassId(classId);
+	if (superId.isEmpty())
+		// fail
+		return CAttribute();
+
 	return getClassAttribute(superId, attrId, true);
 }
 
