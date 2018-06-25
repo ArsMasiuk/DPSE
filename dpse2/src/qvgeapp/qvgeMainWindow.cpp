@@ -166,7 +166,14 @@ QString qvgeMainWindow::getAboutText() const
 		+ QString(
 			"<p>This is a free software."
 			"<br>It comes without warranty of any kind. Use it on your own risk."
-			"<p>&copy; 2016-2018 Ars L. Masiuk");
+			"<p>&copy; 2016-2018 Ars L. Masiuk"
+			"<hr>"
+			"<p>Credits:"
+			"<br>Qt framework &copy; The Qt Company Ltd"
+			"<br>Qt property browser framework &copy; Digia PLC"
+			"<br>QSint widgets library &copy; Sintegrial Technologies"
+			"<br>OGDF &copy; OREAS GmbH and others"
+		);
 }
 
 

@@ -41,9 +41,6 @@ protected:
     void onSceneDetached(CEditorScene* scene);
 
     void rebuild();
-	QtBrowserItem* selectItemByName(const QString& name);
-	QtProperty* getCurrentTopProperty() const;
-	QString getCurrentTopPropertyName() const;
 
 	QByteArray getClassId() const;
 

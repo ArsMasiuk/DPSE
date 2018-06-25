@@ -85,7 +85,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QtTreePropertyBrowser" name="Editor"/>
+    <widget class="CPropertyEditorUIBase" name="Editor"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -135,9 +135,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtTreePropertyBrowser</class>
+   <class>CPropertyEditorUIBase</class>
    <extends>QTreeWidget</extends>
-   <header location="global">QtTreePropertyBrowser</header>
+   <header location="global">CPropertyEditorUIBase.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -27,8 +27,6 @@ CAttributesEditorUI::CAttributesEditorUI(QWidget *parent) :
 
     connect(&m_manager, SIGNAL(valueChanged(QtProperty*, const QVariant&)),
             this, SLOT(onValueChanged(QtProperty*, const QVariant&)));
-
-	ui->Editor->setResizeMode(ui->Editor->Interactive);
 }
 
 CAttributesEditorUI::~CAttributesEditorUI()
@@ -43,6 +41,8 @@ CAttributesEditorUI::~CAttributesEditorUI()
 
 int CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &items)
 {
+	QString oldName = ui->Editor->getCurrentTopPropertyName();
+
 	// order of clear() is important!
 	ui->Editor->setUpdatesEnabled(false);
 	ui->Editor->clear();
@@ -137,6 +137,10 @@ int CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &item
 
     m_manager.blockSignals(false);
 
+	// restore selection
+	if (oldName.size())
+		ui->Editor->selectItemByName(oldName);
+
 	// force update
 	on_Editor_currentItemChanged(ui->Editor->currentItem());
 
@@ -180,15 +184,7 @@ void CAttributesEditorUI::on_AddButton_clicked()
 	setupFromItems(*m_scene, m_items);
 
 	// select item
-	QList<QtBrowserItem*> items = ui->Editor->topLevelItems();
-	for (auto item : items)
-	{
-		if (item->property()->propertyName().toLocal8Bit() == id)
-		{
-			ui->Editor->setCurrentItem(item);
-			break;
-		}
-	}
+	ui->Editor->selectItemByName(id);
 
 	ui->Editor->setFocus();
 }
@@ -199,22 +195,17 @@ void CAttributesEditorUI::on_RemoveButton_clicked()
 	if (!m_scene || m_items.isEmpty())
 		return;
 
-	auto item = (ui->Editor->currentItem());
-	if (!item)
+	auto prop = ui->Editor->getCurrentTopProperty();
+	if (!prop)
 		return;
 
-	// no subprops
-	if (item->parent())
-		return;
-
-	auto prop = item->property();
-	QString attrId = prop->propertyName();
+	QByteArray attrId = prop->propertyName().toLatin1();
 	if (attrId.isEmpty())
 		return;
 
 	int r = QMessageBox::question(NULL,
 		tr("Remove Attribute"),
-		tr("Remove attribute %1 from selected item(s)?").arg(attrId),
+		tr("Remove attribute %1 from selected item(s)?").arg(QString(attrId)),
 		QMessageBox::Yes, QMessageBox::Cancel);
 
 	if (r == QMessageBox::Cancel)
@@ -226,7 +217,7 @@ void CAttributesEditorUI::on_RemoveButton_clicked()
 
 	for (auto sceneItem : m_items)
 	{
-		bool ok = sceneItem->removeAttribute(attrId.toLatin1());
+		bool ok = sceneItem->removeAttribute(attrId);
 		if (ok)
 			sceneItem->getSceneItem()->update();
 

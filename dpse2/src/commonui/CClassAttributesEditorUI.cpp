@@ -31,8 +31,6 @@ CClassAttributesEditorUI::CClassAttributesEditorUI(QWidget *parent) :
     connect(&m_manager, SIGNAL(valueChanged(QtProperty*, const QVariant&)),
             this, SLOT(onValueChanged(QtProperty*, const QVariant&)));
 
-	ui->Editor->setResizeMode(ui->Editor->Interactive);
-
     //ui->ClassId->setCurrentIndex(1);    // node by def.
 
 	//const QObjectList& objs = ui->Editor->children();
@@ -194,7 +192,7 @@ void CClassAttributesEditorUI::on_AddButton_clicked()
     m_scene->addUndoState();
 
 	// update
-	selectItemByName(id);
+	ui->Editor->selectItemByName(id);
 
 	ui->Editor->setFocus();
 }
@@ -205,7 +203,7 @@ void CClassAttributesEditorUI::on_ChangeButton_clicked()
 	if (!m_scene)
 		return;
 
-	QByteArray attrId = getCurrentTopPropertyName().toLatin1();
+	QByteArray attrId = ui->Editor->getCurrentTopPropertyName().toLatin1();
 	if (attrId.isEmpty())
 		return;
 
@@ -250,7 +248,7 @@ void CClassAttributesEditorUI::on_ChangeButton_clicked()
 	m_scene->addUndoState();
 
 	// update
-	selectItemByName(newId);
+	ui->Editor->selectItemByName(newId);
 
 	ui->Editor->setFocus();
 }
@@ -261,7 +259,7 @@ void CClassAttributesEditorUI::on_RemoveButton_clicked()
 	if (!m_scene)
 		return;
 
-	auto prop = getCurrentTopProperty();
+	auto prop = ui->Editor->getCurrentTopProperty();
 	if (!prop)
 		return;
 
@@ -299,7 +297,7 @@ void CClassAttributesEditorUI::rebuild()
 	if (!m_scene || m_locked)
 		return;
 
-	QString oldName = getCurrentTopPropertyName();
+	QString oldName = ui->Editor->getCurrentTopPropertyName();
 
 	on_Editor_currentItemChanged(NULL);
 
@@ -370,46 +368,7 @@ void CClassAttributesEditorUI::rebuild()
 
 	// restore selection
 	if (oldName.size())
-		selectItemByName(oldName);
-}
-
-
-QtBrowserItem* CClassAttributesEditorUI::selectItemByName(const QString& name)
-{
-	QList<QtBrowserItem*> items = ui->Editor->topLevelItems();
-	for (auto item : items)
-	{
-		if (item->property()->propertyName() == name)
-		{
-			ui->Editor->setCurrentItem(item);
-			return item;
-		}
-	}
-
-	return NULL;
-}
-
-
-QtProperty* CClassAttributesEditorUI::getCurrentTopProperty() const
-{
-	auto item = (ui->Editor->currentItem());
-	if (!item)
-		return NULL;
-
-	while (item->parent())
-		item = item->parent();
-
-	return item->property();
-}
-
-
-QString CClassAttributesEditorUI::getCurrentTopPropertyName() const
-{
-	QtProperty *prop = getCurrentTopProperty();
-	if (prop)
-		return prop->propertyName();
-	else
-		return "";
+		ui->Editor->selectItemByName(oldName);
 }
 
 

@@ -27,3 +27,7 @@ qvge.file = $$PWD/qvge/qvge.pro
 
 SUBDIRS += dpseapp
 dpseapp.file = $$PWD/dpseapp/dpseapp.pro
+
+SUBDIRS += qvgeapp
+qvgeapp.file = $$PWD/qvgeapp/qvgeapp.pro
+
