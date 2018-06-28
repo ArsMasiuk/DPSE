@@ -8,7 +8,6 @@ It can be used freely, maintaining the information above.
 */
 
 #include "qvgeMainWindow.h"
-#include "CNodeEditorUIController.h"
 #include "qvgeVersion.h"
 
 #include <QFile>
@@ -17,6 +16,7 @@ It can be used freely, maintaining the information above.
 #include <QFileInfo>
 
 #include <appbase/CPlatformServices.h>
+#include <commonui/CNodeEditorUIController.h>
 
 
 qvgeMainWindow::qvgeMainWindow()

@@ -24,14 +24,10 @@ RESOURCES += $$files($$PWD/*.qrc)
 SOURCES += $$files($$PWD/simu/*.cpp)
 HEADERS += $$files($$PWD/simu/*.h)
 
-INCLUDEPATH += $$PWD
-#INCLUDEPATH += $$PWD/simu $$PWD/simu/branch
-
-# common sources
-include($$PWD/../commonui/commonui.pri)
-
 # includes & libs
-LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge
+INCLUDEPATH += $$PWD $$PWD/.. $$PWD/../3rdParty/qtpropertybrowser $$PWD/../3rdParty/qsint-widgets
+
+LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge -lcommonui
 
 USE_OGDF{
     LIBS += -logdf

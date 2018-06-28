@@ -19,11 +19,10 @@ HEADERS += $$files($$PWD/*.h)
 FORMS += $$files($$PWD/*.ui)
 RESOURCES += $$files($$PWD/*.qrc)
 
-# common sources
-include($$PWD/../commonui/commonui.pri)
-
 # includes & libs
-LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge
+INCLUDEPATH += $$PWD $$PWD/.. $$PWD/../3rdParty/qtpropertybrowser $$PWD/../3rdParty/qsint-widgets
+
+LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge -lcommonui
 
 win32{
     LIBS += -lopengl32 -lglu32 -lshell32 -luser32 -lpsapi

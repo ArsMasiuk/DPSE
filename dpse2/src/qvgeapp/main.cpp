@@ -15,7 +15,10 @@ It can be used freely, maintaining the information above.
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	a.setWindowIcon(QIcon(":/Icons/AppIcon"));
+    Q_INIT_RESOURCE(commonui);
+    Q_INIT_RESOURCE(appbase);
+
+    a.setWindowIcon(QIcon(":/Icons/AppIcon"));
 	qvgeMainWindow w;
 	w.init(argc, argv);
     w.show();

@@ -103,6 +103,8 @@ void CClassAttributesEditorUI::on_ClassId_currentIndexChanged(int)
 
 void CClassAttributesEditorUI::onValueChanged(QtProperty *property, const QVariant &val)
 {
+	ui->Editor->updateTooltip(dynamic_cast<QtVariantProperty*>(property));
+
     if (!m_scene || m_locked)
         return;
 
@@ -351,6 +353,8 @@ void CClassAttributesEditorUI::rebuild()
 
 			prop->setValue(it.value().defaultValue);
 		}
+
+		ui->Editor->updateTooltip(prop);
 
 		auto item = ui->Editor->addProperty(prop);
 		ui->Editor->setExpanded(item, false);

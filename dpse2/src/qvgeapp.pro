@@ -27,3 +27,7 @@ qvge.file = $$PWD/qvge/qvge.pro
 
 SUBDIRS += qvgeapp
 qvgeapp.file = $$PWD/qvgeapp/qvgeapp.pro
+
+SUBDIRS += commonui
+commonui.file = $$PWD/commonui/commonui.pro
+

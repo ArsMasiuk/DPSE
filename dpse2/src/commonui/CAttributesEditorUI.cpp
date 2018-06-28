@@ -124,6 +124,8 @@ int CAttributesEditorUI::setupFromItems(CEditorScene& scene, QList<CItem*> &item
 			prop->setAttribute("decimals", 13);
 
         prop->setValue(it.value().data);
+		ui->Editor->updateTooltip(prop);
+
         auto item = ui->Editor->addProperty(prop);
         ui->Editor->setExpanded(item, false);
 
@@ -190,6 +192,67 @@ void CAttributesEditorUI::on_AddButton_clicked()
 }
 
 
+void CAttributesEditorUI::on_ChangeButton_clicked()
+{
+	if (!m_scene || m_items.isEmpty())
+		return;
+
+	QByteArray attrId = ui->Editor->getCurrentTopPropertyName().toLatin1();
+	if (attrId.isEmpty())
+		return;
+
+	int attrType = ui->Editor->getCurrentTopPropertyValueType();
+	if (attrType < 0)
+		return;
+
+	QVariant attrValue = ui->Editor->getCurrentTopPropertyValue();
+
+	CNewAttributeDialog dialog;
+	dialog.setWindowTitle(tr("Change Attribute"));
+	dialog.setId(attrId);
+	dialog.setType(attrType);
+	if (dialog.exec() == QDialog::Rejected)
+		return;
+
+	QByteArray newId = dialog.getId();
+	if (newId.isEmpty())
+		return;
+
+	int newType = dialog.getType();
+	if (newType == attrType && newId == attrId)
+		return;
+
+	// check for name duplicate
+	//...
+
+	if (newType != attrType)
+	{
+		if (attrValue.canConvert(newType))
+			attrValue.convert(newType);
+		else
+			attrValue = QVariant((QVariant::Type)newType);	// we will loose the value but not type
+	}
+
+	for (auto sceneItem : m_items)
+	{
+		//if (!sceneItem->hasLocalAttribute(attrId))
+		//	continue;
+
+		// remove old one and add new
+		sceneItem->removeAttribute(attrId);
+		sceneItem->setAttribute(newId, attrValue);
+	}
+
+	// store state
+	m_scene->addUndoState();
+
+	// update
+	ui->Editor->selectItemByName(newId);
+
+	ui->Editor->setFocus();
+}
+
+
 void CAttributesEditorUI::on_RemoveButton_clicked()
 {
 	if (!m_scene || m_items.isEmpty())
@@ -237,11 +300,14 @@ void CAttributesEditorUI::on_RemoveButton_clicked()
 void CAttributesEditorUI::on_Editor_currentItemChanged(QtBrowserItem* item)
 {
 	ui->RemoveButton->setEnabled(item != NULL);
+	ui->ChangeButton->setEnabled(item != NULL);
 }
 
 
 void CAttributesEditorUI::onValueChanged(QtProperty *property, const QVariant &val)
 {
+	ui->Editor->updateTooltip(dynamic_cast<QtVariantProperty*>(property));
+
 	if (!m_scene || m_items.isEmpty())
 		return;
 

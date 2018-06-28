@@ -36,6 +36,7 @@ public:
 
 private Q_SLOTS:
 	void on_AddButton_clicked();
+	void on_ChangeButton_clicked();
 	void on_RemoveButton_clicked();
 	void on_Editor_currentItemChanged(QtBrowserItem*);
     void onValueChanged(QtProperty *property, const QVariant &val);

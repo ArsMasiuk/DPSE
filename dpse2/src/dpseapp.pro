@@ -11,6 +11,7 @@ CONFIG += ordered
 
 include($$PWD/config.pri)
 
+
 USE_OGDF{
     SUBDIRS += ogdf
     ogdf.file = $$PWD/3rdParty/ogdf/ogdf.pro
@@ -24,6 +25,10 @@ qsint.file = $$PWD/3rdParty/qsint-widgets/qsint-widgets.pro
 
 SUBDIRS += qvge
 qvge.file = $$PWD/qvge/qvge.pro
+
+SUBDIRS += commonui
+commonui.file = $$PWD/commonui/commonui.pro
+
 
 SUBDIRS += dpseapp
 dpseapp.file = $$PWD/dpseapp/dpseapp.pro

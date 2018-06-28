@@ -49,3 +49,59 @@ QString CPropertyEditorUIBase::getCurrentTopPropertyName() const
 	else
 		return "";
 }
+
+
+
+QVariant CPropertyEditorUIBase::getCurrentTopPropertyValue() const
+{
+	QtVariantProperty* vprop = dynamic_cast<QtVariantProperty*>(getCurrentTopProperty());
+	if (vprop)
+		return vprop->value();
+	else
+		return QVariant();
+}
+
+
+int CPropertyEditorUIBase::getCurrentTopPropertyValueType() const
+{
+	QtVariantProperty* vprop = dynamic_cast<QtVariantProperty*>(getCurrentTopProperty());
+	if (vprop)
+		return vprop->valueType();
+	else
+		return -1;
+}
+
+
+QVariant CPropertyEditorUIBase::getCurrentPropertyValue() const
+{
+	auto item = currentItem();
+	if (item)
+	{
+		QtVariantProperty* vprop = dynamic_cast<QtVariantProperty*>(item->property());
+		if (vprop)
+			return vprop->value();
+	}
+
+	return QVariant();
+}
+
+
+int CPropertyEditorUIBase::getCurrentPropertyValueType() const
+{
+	auto item = currentItem();
+	if (item)
+	{
+		QtVariantProperty* vprop = dynamic_cast<QtVariantProperty*>(item->property());
+		if (vprop)
+			return vprop->valueType();
+	}
+
+	return QVariant().type();
+}
+
+
+void CPropertyEditorUIBase::updateTooltip(QtVariantProperty* prop)
+{
+	if (prop)
+		prop->setToolTip(QString("%2<br><i>[%1]</i>").arg(prop->value().typeName()).arg(prop->valueText()));
+}

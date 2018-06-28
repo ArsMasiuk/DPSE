@@ -1,6 +1,7 @@
 QVGE 0.4.4 (beta)
 -------------------------------------------------------------------------------
-- added button to change an attribute's name & type 
+- added buttons to change an attribute's name & type 
+- item tooltips visually improved
 
 - fixed issue with moving the mouse over the Mini Navigator when invoked 
   by the corner button
