@@ -12,7 +12,7 @@ It can be used freely, maintaining the information above.
 #include "CEditorScene.h"
 
 class CNode;
-class CConnection;
+class CEdge;
 
 
 enum EditMode 
@@ -46,13 +46,13 @@ public:
 
 	// factorizations
 	virtual CNode* createNewNode() const;
-	virtual CConnection* createNewConnection() const;
+	virtual CEdge* createNewConnection() const;
 
     // selections
     virtual void moveSelectedItemsBy(const QPointF& d);
 
     const QList<CNode*>& getSelectedNodes() const;
-    const QList<CConnection*>& getSelectedEdges() const;
+    const QList<CEdge*>& getSelectedEdges() const;
 
 Q_SIGNALS:
 	void editModeChanged(int mode);
@@ -106,7 +106,7 @@ protected:
 
 	// creating
 	CNode *m_startNode, *m_endNode;
-	CConnection *m_connection;
+	CEdge *m_connection;
 	bool m_realStart;
 
 	enum InternState {
@@ -116,7 +116,7 @@ protected:
 
     // cached selections
     mutable QList<CNode*> m_selNodes;
-	mutable QList<CConnection*> m_selEdges;
+	mutable QList<CEdge*> m_selEdges;
 
     // drawing
     int m_nextIndex = 0;

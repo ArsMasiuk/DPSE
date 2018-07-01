@@ -16,7 +16,7 @@ It can be used freely, maintaining the information above.
 class CEditorScene;
 class CNodeEditorScene;
 class CNode;
-class CDirectConnection;
+class CDirectEdge;
 
 
 namespace Ui {
@@ -75,7 +75,7 @@ private:
     bool m_updateLock;
 
 	CNode *m_nodeFactory;
-	CDirectConnection *m_edgeFactory;
+	CDirectEdge *m_edgeFactory;
 
     Ui::CNodeEdgePropertiesUI *ui;
 };

@@ -10,7 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CCommutationTable.h"
 
 #include <qvge/CNodeEditorScene.h>
-#include <qvge/CConnection.h>
+#include <qvge/CEdge.h>
 #include <qvge/CNode.h>
 
 #include <QDebug>
@@ -92,7 +92,7 @@ void CCommutationTable::onSceneChanged()
 	ui.Table->clear();
 	m_edgeItemMap.clear();
 
-	QList<CConnection*> edges = m_scene->getItems<CConnection>();
+	QList<CEdge*> edges = m_scene->getItems<CEdge>();
 	for (auto edge : edges)
 	{
 		auto item = new NumSortItem();
@@ -121,7 +121,7 @@ void CCommutationTable::onSelectionChanged()
 
 	QTreeWidgetItem* scrollItem = NULL;
 
-    QList<CConnection*> edges = m_scene->getSelectedEdges();
+    QList<CEdge*> edges = m_scene->getSelectedEdges();
 
 	//QElapsedTimer tm;
 	//tm.start();
@@ -177,7 +177,7 @@ void CCommutationTable::on_Table_itemSelectionChanged()
 		selIds.insert(item->text(2));
 	}
 
-	QList<CConnection*> edges = m_scene->getItems<CConnection>();
+	QList<CEdge*> edges = m_scene->getItems<CEdge>();
 	for (auto edge : edges)
 	{
 		if (selIds.contains(edge->getId()))
@@ -211,7 +211,7 @@ void CCommutationTable::on_Table_itemDoubleClicked(QTreeWidgetItem *item, int co
 
 	if (column == 2)
 	{
-		auto edges = m_scene->getItemsById<CConnection>(item->text(column));
+		auto edges = m_scene->getItemsById<CEdge>(item->text(column));
 		if (edges.count())
 		{
 			m_scene->deselectAll();

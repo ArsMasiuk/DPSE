@@ -9,17 +9,17 @@ It can be used freely, maintaining the information above.
 
 #include <QGraphicsSceneMouseEvent>
 
-#include "CPolylineConnection.h"
+#include "CPolyEdge.h"
 #include "CNode.h"
 #include "CControlPoint.h"
 
 
-CPolylineConnection::CPolylineConnection(QGraphicsItem *parent): Super(parent)
+CPolyEdge::CPolyEdge(QGraphicsItem *parent): Super(parent)
 {
 }
 
 
-void CPolylineConnection::setPoints(const QList<QPointF> &points)
+void CPolyEdge::setPoints(const QList<QPointF> &points)
 {
 	m_polyPoints = points;
 
@@ -27,7 +27,7 @@ void CPolylineConnection::setPoints(const QList<QPointF> &points)
 }
 
 
-bool CPolylineConnection::insertPointAt(const QPointF &pos)
+bool CPolyEdge::insertPointAt(const QPointF &pos)
 {
 	// no points yet
 	if (m_polyPoints.isEmpty())
@@ -61,9 +61,9 @@ bool CPolylineConnection::insertPointAt(const QPointF &pos)
 
 // reimp
 
-CConnection* CPolylineConnection::clone()
+CEdge* CPolyEdge::clone()
 {
-	CPolylineConnection* c = new CPolylineConnection(parentItem());
+	CPolyEdge* c = new CPolyEdge(parentItem());
 	//c->setFirstNode(m_firstNode);
 	//c->setLastNode(m_lastNode);
 	//c->setPoints(m_polyPoints);
@@ -85,7 +85,7 @@ CConnection* CPolylineConnection::clone()
 
 // serialization 
 
-bool CPolylineConnection::storeTo(QDataStream& out, quint64 version64) const
+bool CPolyEdge::storeTo(QDataStream& out, quint64 version64) const
 {
 	Super::storeTo(out, version64);
 
@@ -95,7 +95,7 @@ bool CPolylineConnection::storeTo(QDataStream& out, quint64 version64) const
 }
 
 
-bool CPolylineConnection::restoreFrom(QDataStream& out, quint64 version64)
+bool CPolyEdge::restoreFrom(QDataStream& out, quint64 version64)
 {
 	if (Super::restoreFrom(out, version64))
 	{
@@ -113,7 +113,7 @@ bool CPolylineConnection::restoreFrom(QDataStream& out, quint64 version64)
 
 // mousing
 
-bool CPolylineConnection::onDoubleClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF &clickPos)
+bool CPolyEdge::onDoubleClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF &clickPos)
 {
 	// create control point at click pos
 	if (insertPointAt(clickPos))
@@ -138,13 +138,13 @@ bool CPolylineConnection::onDoubleClickDrag(QGraphicsSceneMouseEvent* /*mouseEve
 }
 
 
-void CPolylineConnection::onControlPointMoved(CControlPoint* /*controlPoint*/, const QPointF& /*pos*/)
+void CPolyEdge::onControlPointMoved(CControlPoint* /*controlPoint*/, const QPointF& /*pos*/)
 {
 	updateShapeFromPoints();
 }
 
 
-void CPolylineConnection::onControlPointDelete(CControlPoint* controlPoint)
+void CPolyEdge::onControlPointDelete(CControlPoint* controlPoint)
 {
 	int index = m_controlPoints.indexOf(controlPoint);
 	Q_ASSERT(index >= 0);
@@ -160,7 +160,7 @@ void CPolylineConnection::onControlPointDelete(CControlPoint* controlPoint)
 
 // selection
 
-void CPolylineConnection::onItemSelected(bool state)
+void CPolyEdge::onItemSelected(bool state)
 {
 	Super::onItemSelected(state);
 
@@ -173,7 +173,7 @@ void CPolylineConnection::onItemSelected(bool state)
 
 // moving
 
-void CPolylineConnection::onItemMoved(const QPointF& delta)
+void CPolyEdge::onItemMoved(const QPointF& delta)
 {
 	for (auto &p : m_polyPoints)
 	{
@@ -189,7 +189,7 @@ void CPolylineConnection::onItemMoved(const QPointF& delta)
 
 // drawing
 
-void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
+void CPolyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
 	// straight line
 	if (m_polyPoints.isEmpty())
@@ -241,7 +241,7 @@ void CPolylineConnection::paint(QPainter *painter, const QStyleOptionGraphicsIte
 }
 
 
-void CPolylineConnection::updateLabelPosition()
+void CPolyEdge::updateLabelPosition()
 {
 	// straight line
 	if (m_polyPoints.isEmpty())
@@ -270,7 +270,7 @@ void CPolylineConnection::updateLabelPosition()
 
 // callbacks 
 
-void CPolylineConnection::onParentGeometryChanged()
+void CPolyEdge::onParentGeometryChanged()
 {
 	// straight line
 	if (m_polyPoints.isEmpty())
@@ -322,7 +322,7 @@ void CPolylineConnection::onParentGeometryChanged()
 
 // private
 
-void CPolylineConnection::dropControlPoints()
+void CPolyEdge::dropControlPoints()
 {
 	for (auto cp : m_controlPoints)
 	{
@@ -333,7 +333,7 @@ void CPolylineConnection::dropControlPoints()
 }
 
 
-void CPolylineConnection::createControlPoints()
+void CPolyEdge::createControlPoints()
 {
 	dropControlPoints();
 
@@ -350,7 +350,7 @@ void CPolylineConnection::createControlPoints()
 }
 
 
-void CPolylineConnection::updateShapeFromPoints()
+void CPolyEdge::updateShapeFromPoints()
 {
 	m_polyPoints.clear();
 

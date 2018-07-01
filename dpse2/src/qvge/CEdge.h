@@ -7,8 +7,8 @@ QVGE - Qt Visual Graph Editor
 It can be used freely, maintaining the information above.
 */
 
-#ifndef CCONNECTION_H
-#define CCONNECTION_H
+#ifndef CEdge_H
+#define CEdge_H
 
 #include <QGraphicsLineItem>
 #include <QByteArray>
@@ -26,14 +26,14 @@ enum ConnectionFlags	// extends ItemFlags
 };
 
 
-class CConnection : public CItem, public QGraphicsLineItem
+class CEdge : public CItem, public QGraphicsLineItem
 {
 public:
 	typedef CItem Super;
 	typedef QGraphicsLineItem Shape;
 
-    CConnection(QGraphicsItem *parent = Q_NULLPTR);
-	virtual ~CConnection();
+    CEdge(QGraphicsItem *parent = Q_NULLPTR);
+	virtual ~CEdge();
 
 	// public
     void setFirstNode(CNode *node);
@@ -44,6 +44,9 @@ public:
 
 	CNode* firstNode() const { return m_firstNode; }
 	CNode* lastNode() const { return m_lastNode; }
+
+	const QByteArray& firstPortId() const { return m_firstPortId; }
+	const QByteArray& lastPortId() const { return m_lastPortId; }
 
 	bool isValid() const	{ return m_firstNode != NULL && m_lastNode != NULL; }
 	bool isCircled() const	{ return isValid() && m_firstNode == m_lastNode; }
@@ -101,8 +104,10 @@ protected:
 		quint64 m_tempLastNodeId;
     };
 
+	QByteArray m_firstPortId, m_lastPortId;
+
 	QPainterPath m_selectionShapePath;
 };
 
 
-#endif // CCONNECTION_H
+#endif // CEdge_H

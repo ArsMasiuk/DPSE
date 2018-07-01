@@ -1,6 +1,6 @@
 #include "CNode.h"
-#include "CConnection.h"
-#include "CDirectConnection.h"
+#include "CEdge.h"
+#include "CDirectEdge.h"
 
 #include <QPen>
 #include <QBrush>
@@ -42,12 +42,18 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 	m_labelItem->setPen(Qt::NoPen);
 	m_labelItem->setAcceptedMouseButtons(Qt::NoButton);
 	m_labelItem->setAcceptHoverEvents(false);
+
+
+	// temp
+	//addPort("Port 1", CNodePort::NE);
+	//addPort("Port 2", CNodePort::S);
+	//addPort("Port 3", CNodePort::W);
 }
 
 
 CNode::~CNode()
 {
-	for (CConnection *conn : m_connections)
+	for (CEdge *conn : m_connections)
 	{
 		conn->onNodeDeleted(this);
 	}
@@ -214,6 +220,39 @@ QVariant CNode::getAttribute(const QByteArray& attrId) const
 }
 
 
+// ports
+
+CNodePort* CNode::addPort(const QByteArray& portId, CNodePort::Anchor portAnchor, int portOrder)
+{
+	if (portId.isEmpty() || m_ports.contains(portId))
+		return NULL;
+
+	CNodePort* port = new CNodePort(this, portId, portAnchor, portOrder);
+	m_ports[portId] = port;
+
+	updateCachedItems();
+
+	return port;
+}
+
+
+bool CNode::removePort(const QByteArray& portId)
+{
+	if (portId.isEmpty() || !m_ports.contains(portId))
+		return false;
+
+	CNodePort* port = m_ports.take(portId);
+
+	// to do. update edges.
+
+	delete port;
+
+	updateCachedItems();
+
+	return port;
+}
+
+
 // serialization 
 
 bool CNode::storeTo(QDataStream& out, quint64 version64) const
@@ -274,9 +313,9 @@ void CNode::merge(CNode *node)
 	bool allowCircled = allowCircledConnection();
 
 	// make a copy because node's connections list will be updated
-	QSet<CConnection*> toReconnect = node->m_connections;
+	QSet<CEdge*> toReconnect = node->m_connections;
 
-	for (CConnection *conn : toReconnect)
+	for (CEdge *conn : toReconnect)
 	{
 		conn->reattach(node, this);
 	}
@@ -288,7 +327,7 @@ void CNode::merge(CNode *node)
 	{
 		toReconnect = m_connections;
 
-		for (CConnection *conn : toReconnect)
+		for (CEdge *conn : toReconnect)
 		{
 			if (conn->isCircled())
 				delete conn;
@@ -308,7 +347,7 @@ QList<CNode*> CNode::unlink()
 
 	while (m_connections.size() >= 2)
 	{
-		CConnection *c = *m_connections.begin();
+		CEdge *c = *m_connections.begin();
 		
 		CNode *n = dynamic_cast<CNode*>(clone());
 		xpos += xstep;
@@ -346,9 +385,9 @@ QList<CNode*> CNode::getCollidingNodes() const
 }
 
 
-QSet<CConnection*> CNode::getInConnections() const
+QSet<CEdge*> CNode::getInConnections() const
 {
-    QSet<CConnection*> edges;
+    QSet<CEdge*> edges;
 
     for (auto edge: m_connections)
     {
@@ -360,9 +399,9 @@ QSet<CConnection*> CNode::getInConnections() const
 }
 
 
-QSet<CConnection*> CNode::getOutConnections() const
+QSet<CEdge*> CNode::getOutConnections() const
 {
-    QSet<CConnection*> edges;
+    QSet<CEdge*> edges;
 
     for (auto edge: m_connections)
     {
@@ -410,7 +449,7 @@ QPointF CNode::getIntersectionPoint(const QLineF& line) const
 /// \brief CNode::onConnectionAttach
 /// \param conn
 ///
-void CNode::onConnectionAttach(CConnection *conn)
+void CNode::onConnectionAttach(CEdge *conn)
 {
 	Q_ASSERT(conn != NULL);
 
@@ -423,7 +462,7 @@ void CNode::onConnectionAttach(CConnection *conn)
 /// \brief CNode::onConnectionDetach
 /// \param conn
 ///
-void CNode::onConnectionDetach(CConnection *conn)
+void CNode::onConnectionDetach(CEdge *conn)
 {
 	Q_ASSERT(conn != NULL);
 
@@ -439,12 +478,12 @@ void CNode::updateConnections()
 	if (s_duringRestore)
 		return;
 
-	typedef QList<CDirectConnection*> EdgeList;
+	typedef QList<CDirectEdge*> EdgeList;
 	QMap<CNode*, EdgeList> edgeGroups;
 
 	for (auto conn : m_connections)
 	{
-		CDirectConnection* dconn = dynamic_cast<CDirectConnection*>(conn);
+		CDirectEdge* dconn = dynamic_cast<CDirectEdge*>(conn);
 		if (dconn)
 		{
 			CNode* node = dconn->firstNode() == this ? dconn->lastNode() : dconn->firstNode();
@@ -490,7 +529,7 @@ void CNode::updateConnections()
 }
 
 
-void CNode::onConnectionDeleted(CConnection *conn)
+void CNode::onConnectionDeleted(CEdge *conn)
 {
 	onConnectionDetach(conn);
 
@@ -502,7 +541,7 @@ void CNode::onConnectionDeleted(CConnection *conn)
 
 void CNode::onItemMoved(const QPointF& /*delta*/)
 {
-	for (CConnection *conn : m_connections)
+	for (CEdge *conn : m_connections)
 	{
 		conn->onNodeMoved(this); 
 	}
@@ -638,6 +677,9 @@ void CNode::updateCachedItems()
 	{
 		prepareGeometryChange();
 
+		// update ports
+		updatePortsLayout();
+
 		// update edges
 		for (auto edge : m_connections)
 		{
@@ -650,6 +692,15 @@ void CNode::updateCachedItems()
 			updateLabelPosition();
 			updateLabelDecoration();
 		}
+	}
+}
+
+
+void CNode::updatePortsLayout()
+{
+	for (auto port : m_ports.values())
+	{
+		port->onParentGeometryChanged();
 	}
 }
 

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include <CNodeEditorUIController.h>
+#include <commonui/CNodeEditorUIController.h>
 
 class CNodeEditorScene;
 

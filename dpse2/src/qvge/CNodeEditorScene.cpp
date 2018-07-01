@@ -1,7 +1,7 @@
 #include "CNodeEditorScene.h"
 #include "CNode.h"
-#include "CConnection.h"
-#include "CDirectConnection.h"
+#include "CEdge.h"
+#include "CDirectEdge.h"
 #include "CControlPoint.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -21,7 +21,7 @@ CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 	m_state(IS_None)
 {
 	// default factories
-	registerItemFactory<CDirectConnection>();
+	registerItemFactory<CDirectEdge>();
 	registerItemFactory<CNode>();
 
 	// go
@@ -219,19 +219,19 @@ CNode* CNodeEditorScene::createNewNode() const
 }
 
 
-CConnection* CNodeEditorScene::createNewConnection() const
+CEdge* CNodeEditorScene::createNewConnection() const
 {
-	auto edgeFactory = getActiveItemFactory("CDirectConnection");
+	auto edgeFactory = getActiveItemFactory("CDirectEdge");
 	if (edgeFactory)
 	{
-		auto edge = dynamic_cast<CDirectConnection*>(edgeFactory->create());
+		auto edge = dynamic_cast<CDirectEdge*>(edgeFactory->create());
 		Q_ASSERT(edge);
 		edge->copyDataFrom(edgeFactory);
 		return edge;
 	}
 
 	// here default
-	return new CDirectConnection();
+	return new CDirectEdge();
 }
 
 
@@ -370,12 +370,12 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 
 		// nodes & edges:
 		QSet<QGraphicsItem*> items;
-		QSet<CConnection*> edges;
+		QSet<CEdge*> edges;
 
 		CNode *dragNode = dynamic_cast<CNode*>(dragItem);
 		if (!dragNode) 
 		{
-			if (auto edge = dynamic_cast<CConnection*>(dragItem))
+			if (auto edge = dynamic_cast<CEdge*>(dragItem))
 			{
 				edges << edge;
 
@@ -392,7 +392,7 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 
 			for (auto item : selectedItems())
 			{
-				if (auto edge = dynamic_cast<CConnection*>(item))
+				if (auto edge = dynamic_cast<CEdge*>(item))
 				{
 					edges << edge;
 					items << edge->firstNode();
@@ -458,7 +458,7 @@ void CNodeEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, Q
 
 void CNodeEditorScene::moveSelectedEdgesBy(const QPointF& d)
 {
-	QList<CConnection*> edges = getSelectedItems<CConnection>();
+	QList<CEdge*> edges = getSelectedItems<CEdge>();
 	if (edges.size())
 	{
 		QSet<CNode*> unselNodes;	// not selected nodes
@@ -489,11 +489,11 @@ void CNodeEditorScene::moveSelectedEdgesBy(const QPointF& d)
 void CNodeEditorScene::moveSelectedItemsBy(const QPointF& d)
 {
 	QSet<QGraphicsItem*> items;
-	QSet<CConnection*> edges;
+	QSet<CEdge*> edges;
 
 	for (auto item : selectedItems())
 	{
-		if (auto edge = dynamic_cast<CConnection*>(item))
+		if (auto edge = dynamic_cast<CEdge*>(item))
 		{
 			edges << edge;
 			items << edge->firstNode();
@@ -520,7 +520,7 @@ QList<QGraphicsItem*> CNodeEditorScene::copyPasteItems() const
 
 	for (auto item: selectedItems())
 	{
-		if (auto edge = dynamic_cast<CConnection*>(item))
+		if (auto edge = dynamic_cast<CEdge*>(item))
 		{
 			result << edge;
 			nodes << edge->firstNode();
@@ -627,7 +627,7 @@ const QList<CNode*>& CNodeEditorScene::getSelectedNodes() const
 }
 
 
-const QList<CConnection*>& CNodeEditorScene::getSelectedEdges() const
+const QList<CEdge*>& CNodeEditorScene::getSelectedEdges() const
 {
     if (m_selEdges.isEmpty())
         prefetchSelection();
@@ -661,7 +661,7 @@ void CNodeEditorScene::prefetchSelection() const
             continue;
         }
 
-        if (CConnection* edge = dynamic_cast<CConnection*>(item))
+        if (CEdge* edge = dynamic_cast<CEdge*>(item))
         {
             m_selEdges << edge;
             continue;
@@ -724,7 +724,7 @@ void CNodeEditorScene::onActionNodeColor()
 
 void CNodeEditorScene::onActionEdgeColor()
 {
-    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
     if (edges.isEmpty())
         return;
 
@@ -743,7 +743,7 @@ void CNodeEditorScene::onActionEdgeColor()
 
 void CNodeEditorScene::onActionEdgeReverse()
 {
-    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
     if (edges.isEmpty())
         return;
 
@@ -758,7 +758,7 @@ void CNodeEditorScene::onActionEdgeReverse()
 
 void CNodeEditorScene::onActionEdgeDirected()
 {
-    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
     if (edges.isEmpty())
         return;
 
@@ -774,7 +774,7 @@ void CNodeEditorScene::onActionEdgeDirected()
 
 void CNodeEditorScene::onActionEdgeMutual()
 {
-    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
     if (edges.isEmpty())
         return;
 
@@ -790,7 +790,7 @@ void CNodeEditorScene::onActionEdgeMutual()
 
 void CNodeEditorScene::onActionEdgeUndirected()
 {
-    QList<CConnection*> edges = getSelectedItems<CConnection>(true);
+    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
     if (edges.isEmpty())
         return;
 
@@ -827,7 +827,7 @@ bool CNodeEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QLis
 	// add default edge actions
 	menu.addSeparator();
 
-	bool edgesSelected = getSelectedItems<CConnection>(true).size();
+	bool edgesSelected = getSelectedItems<CEdge>(true).size();
 
 	QAction *edgeColorAction = menu.addAction(tr("Connection(s) Color..."), this, SLOT(onActionEdgeColor()));
 	edgeColorAction->setEnabled(edgesSelected);

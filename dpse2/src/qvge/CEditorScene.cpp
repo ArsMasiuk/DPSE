@@ -32,7 +32,7 @@ It can be used freely, maintaining the information above.
 #include <qopengl.h>
 
 
-const quint64 version64 = 10;	// build
+const quint64 version64 = 11;	// build
 const char* versionId = "VersionId";
 
 
@@ -1658,7 +1658,7 @@ QGraphicsItem* CEditorScene::getItemAt(const QPointF& pos) const
 {
 	QGraphicsItem *hoverItem = itemAt(pos, QTransform());
 	
-	// if label: return parent insteam
+	// if label: return parent instead
 	if (dynamic_cast<QGraphicsSimpleTextItem*>(hoverItem) != NULL)
 	{
 		return hoverItem->parentItem();

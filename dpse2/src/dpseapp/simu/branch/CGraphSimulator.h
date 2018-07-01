@@ -7,7 +7,7 @@
 
 #include "CBranch.h"
 
-class CConnection;
+class CEdge;
 class CNode;
 
 
@@ -37,7 +37,7 @@ private:
 
     struct BranchInfo
     {
-        CConnection *edge = nullptr;
+        CEdge *edge = nullptr;
         CBranch *branch = nullptr;
         bool isOk = false;
     };

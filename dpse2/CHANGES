@@ -1,11 +1,9 @@
 QVGE 0.4.4 (beta)
 -------------------------------------------------------------------------------
-- added buttons to change an attribute's name & type 
-- item tooltips visually improved
+- changed project directory structure
 
-- fixed issue with moving the mouse over the Mini Navigator when invoked 
-  by the corner button
-- fixed issue with restoring of scene interactive state
+- added buttons to change an attribute's name & type 
+
 - fixed issue with document change notification when a new document is created
 - fixed issue with putting empty states into the undo/redo stack after editing
 	of complex attributes (color, font etc)
@@ -13,6 +11,10 @@ QVGE 0.4.4 (beta)
 
 QVGE 0.4.3 (beta)
 -------------------------------------------------------------------------------
+- item tooltips visually improved
+- fixed issue with moving the mouse over the Mini Navigator when invoked 
+  by the corner button
+- fixed issue with restoring of scene interactive state after panning
 - fixed a crash when leaving property editor after changing a value
 - fixed editing of string and numerical values after typing next character
 - fixed a couple of editing & display issues of double values

@@ -9,7 +9,7 @@ It can be used freely, maintaining the information above.
 
 #include "CFileSerializerGEXF.h"
 #include "CNode.h"
-#include "CDirectConnection.h"
+#include "CDirectEdge.h"
 
 #include <QFile>
 #include <QDate>
@@ -244,7 +244,7 @@ bool CFileSerializerGEXF::readEdge(int /*index*/, const QDomNode &domNode, const
 {
 	QDomElement elem = domNode.toElement();
 
-	auto* link = scene.createItemOfType<CDirectConnection>();
+	auto* link = scene.createItemOfType<CDirectEdge>();
 	if (!link)
 		return false;
 
@@ -360,7 +360,7 @@ bool CFileSerializerGEXF::save(const QString& fileName, CEditorScene& scene) con
 
 	// graph
 	QString edgetype = scene.getClassAttribute("edge", "direction", false).defaultValue.toString();
-	//QString edgetype = scene.getClassAttribute<CConnection>("direction", false).defaultValue.toString();
+	//QString edgetype = scene.getClassAttribute<CEdge>("direction", false).defaultValue.toString();
 	ts << "    <graph mode=\"static\" defaultedgetype=\"" << edgetype << "\">\n";
 
 	// node attrs
@@ -505,7 +505,7 @@ void CFileSerializerGEXF::writeEdges(QTextStream &ts, const CEditorScene& scene)
 {
 	ts << "    <edges>\n";
 
-	auto edges = scene.getItems<CConnection>();
+	auto edges = scene.getItems<CEdge>();
 	for (auto edge : edges)
 	{
 		QMap<QByteArray, QVariant> edgeAttrs = edge->getLocalAttributes();

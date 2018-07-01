@@ -2,7 +2,7 @@
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/IGraphInterface.h>
-#include <qvge/CConnection.h>
+#include <qvge/CEdge.h>
 #include <qvge/CNode.h>
 
 

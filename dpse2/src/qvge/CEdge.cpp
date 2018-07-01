@@ -7,7 +7,7 @@ QVGE - Qt Visual Graph Editor
 It can be used freely, maintaining the information above.
 */
 
-#include "CConnection.h"
+#include "CEdge.h"
 #include "CNode.h"
 
 #include <QPen>
@@ -23,7 +23,7 @@ It can be used freely, maintaining the information above.
 const int ARROW_SIZE = 6;
 
 
-CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
+CEdge::CEdge(QGraphicsItem *parent): Shape(parent)
 {
     m_firstNode = m_lastNode = NULL;
 
@@ -53,7 +53,7 @@ CConnection::CConnection(QGraphicsItem *parent): Shape(parent)
 }
 
 
-CConnection::~CConnection()
+CEdge::~CEdge()
 {
 	if (m_firstNode)
 		m_firstNode->onConnectionDeleted(this);
@@ -65,7 +65,7 @@ CConnection::~CConnection()
 
 // attributes
 
-bool CConnection::hasLocalAttribute(const QByteArray& attrId) const
+bool CEdge::hasLocalAttribute(const QByteArray& attrId) const
 {
 	if (attrId == "direction")
 		return true;
@@ -74,7 +74,7 @@ bool CConnection::hasLocalAttribute(const QByteArray& attrId) const
 }
 
 
-bool CConnection::setAttribute(const QByteArray& attrId, const QVariant& v)
+bool CEdge::setAttribute(const QByteArray& attrId, const QVariant& v)
 {
 	if (attrId == "direction")
 	{
@@ -88,7 +88,7 @@ bool CConnection::setAttribute(const QByteArray& attrId, const QVariant& v)
 }
 
 
-bool CConnection::removeAttribute(const QByteArray& attrId)
+bool CEdge::removeAttribute(const QByteArray& attrId)
 {
 	bool res = Super::removeAttribute(attrId);
 
@@ -104,7 +104,7 @@ bool CConnection::removeAttribute(const QByteArray& attrId)
 
 // cached attributes
 
-void CConnection::updateCachedItems()
+void CEdge::updateCachedItems()
 {
 	Super::updateCachedItems();
 
@@ -112,7 +112,7 @@ void CConnection::updateCachedItems()
 }
 
 
-void CConnection::updateArrowFlags(const QString& direction)
+void CEdge::updateArrowFlags(const QString& direction)
 {
 	if (direction == "directed")
 	{
@@ -132,19 +132,19 @@ void CConnection::updateArrowFlags(const QString& direction)
 
 // reimp
 
-QPainterPath CConnection::shape() const
+QPainterPath CEdge::shape() const
 {
 	return m_selectionShapePath;
 }
 
 
-QRectF CConnection::boundingRect() const
+QRectF CEdge::boundingRect() const
 {
     return Shape::boundingRect().adjusted(-10,-10,10,10);
 }
 
 
-void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* /*widget*/)
+void CEdge::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* /*widget*/)
 {
 	// weight
 	bool ok = false;
@@ -177,7 +177,7 @@ void CConnection::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem
 }
 
 
-QLineF CConnection::calculateArrowLine(const QPainterPath &path, bool first, const QLineF &direction) const
+QLineF CEdge::calculateArrowLine(const QPainterPath &path, bool first, const QLineF &direction) const
 {
 	// optimization: disable during drag or pan
 	Qt::MouseButtons buttons = QGuiApplication::mouseButtons();
@@ -208,7 +208,7 @@ QLineF CConnection::calculateArrowLine(const QPainterPath &path, bool first, con
 }
 
 
-void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, bool first, const QLineF& direction) const
+void CEdge::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, bool first, const QLineF& direction) const
 {
 	if (first && m_firstNode)
 	{
@@ -223,7 +223,7 @@ void CConnection::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /
 }
 
 
-void CConnection::drawArrow(QPainter* painter, qreal shift, const QLineF& direction) const
+void CEdge::drawArrow(QPainter* painter, qreal shift, const QLineF& direction) const
 {
 	static QPolygonF arrowHead;
 	if (arrowHead.isEmpty())
@@ -249,7 +249,7 @@ void CConnection::drawArrow(QPainter* painter, qreal shift, const QLineF& direct
 
 // IO 
 
-bool CConnection::storeTo(QDataStream &out, quint64 version64) const
+bool CEdge::storeTo(QDataStream &out, quint64 version64) const
 {
 	Super::storeTo(out, version64);
 
@@ -259,7 +259,7 @@ bool CConnection::storeTo(QDataStream &out, quint64 version64) const
 }
 
 
-bool CConnection::restoreFrom(QDataStream &out, quint64 version64)
+bool CEdge::restoreFrom(QDataStream &out, quint64 version64)
 {
 	if (Super::restoreFrom(out, version64))
 	{
@@ -273,7 +273,7 @@ bool CConnection::restoreFrom(QDataStream &out, quint64 version64)
 }
 
 
-bool CConnection::linkAfterRestore(const CItemLinkMap &idToItem)
+bool CEdge::linkAfterRestore(const CItemLinkMap &idToItem)
 {
     CNode *node1 = dynamic_cast<CNode*>(idToItem.value(m_tempFirstNodeId));
     CNode *node2 = dynamic_cast<CNode*>(idToItem.value(m_tempLastNodeId));
@@ -287,7 +287,7 @@ bool CConnection::linkAfterRestore(const CItemLinkMap &idToItem)
 }
 
 
-bool CConnection::linkAfterPaste(const CItemLinkMap& idToItem)
+bool CEdge::linkAfterPaste(const CItemLinkMap& idToItem)
 {
 	bool res = linkAfterRestore(idToItem);
 
@@ -297,7 +297,7 @@ bool CConnection::linkAfterPaste(const CItemLinkMap& idToItem)
 
 // impl
 
-void CConnection::setFirstNode(CNode *node)
+void CEdge::setFirstNode(CNode *node)
 {
     if (m_firstNode)
         m_firstNode->onConnectionDetach(this);
@@ -311,7 +311,7 @@ void CConnection::setFirstNode(CNode *node)
 }
 
 
-void CConnection::setLastNode(CNode *node)
+void CEdge::setLastNode(CNode *node)
 {
     if (m_lastNode)
         m_lastNode->onConnectionDetach(this);
@@ -325,7 +325,7 @@ void CConnection::setLastNode(CNode *node)
 }
 
 
-void CConnection::reattach(CNode *oldNode, CNode *newNode)
+void CEdge::reattach(CNode *oldNode, CNode *newNode)
 {
 	if (oldNode == newNode && !newNode->allowCircledConnection())
 		return;
@@ -338,7 +338,7 @@ void CConnection::reattach(CNode *oldNode, CNode *newNode)
 }
 
 
-void CConnection::reverse()
+void CEdge::reverse()
 {
 	qSwap(m_firstNode, m_lastNode);
 
@@ -348,7 +348,7 @@ void CConnection::reverse()
 
 // reimp
 
-QString CConnection::createNewId() const
+QString CEdge::createNewId() const
 {
 	static int count = 0;
 
@@ -358,7 +358,7 @@ QString CConnection::createNewId() const
 
 // callbacks
 
-void CConnection::onNodeMoved(CNode *node)
+void CEdge::onNodeMoved(CNode *node)
 {
 	Q_ASSERT(node == m_firstNode || node == m_lastNode);
 	Q_ASSERT(node != NULL);
@@ -367,7 +367,7 @@ void CConnection::onNodeMoved(CNode *node)
 }
 
 
-void CConnection::onNodeDetached(CNode *node)
+void CEdge::onNodeDetached(CNode *node)
 {
 	if (node == m_firstNode)
 	{
@@ -381,7 +381,7 @@ void CConnection::onNodeDetached(CNode *node)
 }
 
 
-void CConnection::onNodeDeleted(CNode *node)
+void CEdge::onNodeDeleted(CNode *node)
 {
 	onNodeDetached(node);
 
@@ -391,7 +391,7 @@ void CConnection::onNodeDeleted(CNode *node)
 
 // reimp
 
-void CConnection::onItemRestored()
+void CEdge::onItemRestored()
 {
 	updateCachedItems();
 
@@ -399,7 +399,7 @@ void CConnection::onItemRestored()
 }
 
 
-QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+QVariant CEdge::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
 	if (change == ItemSceneHasChanged)
 	{
@@ -434,7 +434,7 @@ QVariant CConnection::itemChange(QGraphicsItem::GraphicsItemChange change, const
 }
 
 
-void CConnection::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+void CEdge::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
 	onHoverEnter(this, event);
 }

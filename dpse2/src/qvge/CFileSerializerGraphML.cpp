@@ -10,7 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CFileSerializerGraphML.h"
 #include "CAttribute.h"
 #include "CNode.h"
-#include "CDirectConnection.h"
+#include "CDirectEdge.h"
 
 #include <QFile>
 #include <QDebug>
@@ -163,7 +163,7 @@ bool CFileSerializerGraphML::readEdge(int /*index*/, const QDomNode &domNode, CE
 	if (!start || !last)
 		return false;
 
-	CConnection* link = scene.createItemOfType<CDirectConnection>();
+	CEdge* link = scene.createItemOfType<CDirectEdge>();
 	if (!link)
 		return false;
 

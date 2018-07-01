@@ -15,7 +15,7 @@ It can be used freely, maintaining the information above.
 class CEditorScene;
 class CNodeEditorScene;
 struct CAttribute;
-class CConnection;
+class CEdge;
 
 #include "ui_CCommutationTable.h"
 
@@ -46,7 +46,7 @@ private:
 
 	CNodeEditorScene *m_scene;
 
-	QMap<CConnection*, QTreeWidgetItem*> m_edgeItemMap;
+	QMap<CEdge*, QTreeWidgetItem*> m_edgeItemMap;
 };
 
 #endif // CCommutationTable_H

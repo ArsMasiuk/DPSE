@@ -9,7 +9,7 @@ It can be used freely, maintaining the information above.
 
 #include "CFileSerializerDOT.h"
 #include "CNode.h"
-#include "CConnection.h"
+#include "CEdge.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -53,7 +53,7 @@ bool CFileSerializerDOT::save(const QString& fileName, CEditorScene& scene) cons
 
 		ts << "\n\n";
 
-        auto edges = scene.getItems<CConnection>();
+        auto edges = scene.getItems<CEdge>();
         for (auto edge: edges)
         {
 			doWriteEdge(ts, *edge, scene);
@@ -216,7 +216,7 @@ void CFileSerializerDOT::doWriteEdgeDefaults(QTextStream& ts, const CEditorScene
 }
 
 
-void CFileSerializerDOT::doWriteEdge(QTextStream& ts, const CConnection& edge, const CEditorScene& /*scene*/) const
+void CFileSerializerDOT::doWriteEdge(QTextStream& ts, const CEdge& edge, const CEditorScene& /*scene*/) const
 {
 	const auto& edgeAttrs = edge.getLocalAttributes();
 

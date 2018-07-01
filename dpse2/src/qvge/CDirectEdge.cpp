@@ -9,17 +9,17 @@ It can be used freely, maintaining the information above.
 
 #include <QDebug>
 
-#include "CDirectConnection.h"
+#include "CDirectEdge.h"
 #include "CNode.h"
 
 
-CDirectConnection::CDirectConnection(QGraphicsItem *parent): Super(parent)
+CDirectEdge::CDirectEdge(QGraphicsItem *parent): Super(parent)
 {
 	m_bendFactor = 0;
 }
 
 
-void CDirectConnection::setBendFactor(int bf)
+void CDirectEdge::setBendFactor(int bf)
 {
 	if (bf != m_bendFactor)
 	{
@@ -32,9 +32,9 @@ void CDirectConnection::setBendFactor(int bf)
 
 // reimp
 
-CConnection* CDirectConnection::clone()
+CEdge* CDirectEdge::clone()
 {
-	CDirectConnection* c = new CDirectConnection(parentItem());
+	CDirectEdge* c = new CDirectEdge(parentItem());
 
 	//c->setFirstNode(m_firstNode);
 	//c->setLastNode(m_lastNode);
@@ -52,7 +52,7 @@ CConnection* CDirectConnection::clone()
 }
 
 
-void CDirectConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
+void CDirectEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget* widget)
 {
 	//qDebug() << boundingRect() << option->exposedRect << option->rect;
 
@@ -107,7 +107,7 @@ void CDirectConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 }
 
 
-void CDirectConnection::updateLabelPosition()
+void CDirectEdge::updateLabelPosition()
 {
 	auto r = m_labelItem->boundingRect();
 	int w = r.width();
@@ -136,7 +136,7 @@ void CDirectConnection::updateLabelPosition()
 
 // callbacks 
 
-void CDirectConnection::onParentGeometryChanged()
+void CDirectEdge::onParentGeometryChanged()
 {
 	if (!m_firstNode || !m_lastNode)
 		return;

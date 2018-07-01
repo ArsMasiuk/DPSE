@@ -11,7 +11,7 @@ It can be used freely, maintaining the information above.
 
 #include <qvge/CAttribute.h>
 #include <qvge/CNode.h>
-#include <qvge/CDirectConnection.h>
+#include <qvge/CDirectEdge.h>
 #include <qvge/CGraphInterface.h>
 #include <qvge/CNodeEditorScene.h>
 

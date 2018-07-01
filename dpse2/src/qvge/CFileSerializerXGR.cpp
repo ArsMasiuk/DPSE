@@ -32,9 +32,9 @@ public:
             return scene.createItemOfType("CNode");
         }
 
-        if (typeId == "CBranchConnection")
+        if (typeId == "CBranchConnection" || typeId == "CDirectConnection")
         {
-            return scene.createItemOfType("CDirectConnection");
+            return scene.createItemOfType("CDirectEdge");
         }
 
         return nullptr;

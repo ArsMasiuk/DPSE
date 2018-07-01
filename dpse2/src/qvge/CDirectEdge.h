@@ -9,26 +9,26 @@ It can be used freely, maintaining the information above.
 
 #pragma once
 
-#include "CConnection.h"
+#include "CEdge.h"
 
 
-class CDirectConnection : public CConnection
+class CDirectEdge : public CEdge
 {
 public:
-	typedef CConnection Super;
+	typedef CEdge Super;
 
-	CDirectConnection(QGraphicsItem *parent = Q_NULLPTR);
+	CDirectEdge(QGraphicsItem *parent = Q_NULLPTR);
 
 	void setBendFactor(int bf);
 
 	// reimp
-	static QByteArray factoryId() { return "CDirectConnection"; }
+	static QByteArray factoryId() { return "CDirectEdge"; }
 	virtual QByteArray typeId() const { return this->factoryId(); }
 	virtual QByteArray classId() const { return "edge"; }
 	virtual QByteArray superClassId() const { return Super::classId(); }
 
-	virtual CItem* create() const { return new CDirectConnection(parentItem()); }
-	CConnection* clone();
+	virtual CItem* create() const { return new CDirectEdge(parentItem()); }
+	CEdge* clone();
 
 protected:
 	// reimp

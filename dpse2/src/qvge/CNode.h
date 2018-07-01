@@ -11,13 +11,14 @@ It can be used freely, maintaining the information above.
 #define CNODE_H
 
 #include "CItem.h"
+#include "CNodePort.h"
 
 #include <QGraphicsEllipseItem>
 #include <QGraphicsRectItem>
 #include <QSet>
 
  
-class CConnection;
+class CEdge;
 
 
 enum NodeFlags
@@ -62,6 +63,10 @@ public:
     virtual QByteArray classId() const { return "node"; }
     virtual QByteArray superClassId() const { return Super::classId(); }
 
+	// ports
+	virtual CNodePort* addPort(const QByteArray& portId, CNodePort::Anchor portAnchor = CNodePort::E, int portOrder = 0);
+	virtual bool removePort(const QByteArray& portId);
+
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);
@@ -78,13 +83,13 @@ public:
 	QList<CNode*> getCollidingNodes() const;
 	
 	// returns all connections of the node.
-	QSet<CConnection*> getConnections() const { return m_connections; }
+	QSet<CEdge*> getConnections() const { return m_connections; }
 
     // returns all incoming connections of the node.
-    QSet<CConnection*> getInConnections() const;
+    QSet<CEdge*> getInConnections() const;
 
     // returns all outgoing connections of the node.
-    QSet<CConnection*> getOutConnections() const;
+    QSet<CEdge*> getOutConnections() const;
 
 	// returns true if new connection from this node is allowed.
 	virtual bool allowStartConnection() const { return true; }
@@ -99,9 +104,9 @@ public:
 	virtual QPointF getIntersectionPoint(const QLineF& line) const;
 
 	// callbacks
-	virtual void onConnectionAttach(CConnection *conn);
-	virtual void onConnectionDetach(CConnection *conn);
-	virtual void onConnectionDeleted(CConnection *conn);
+	virtual void onConnectionAttach(CEdge *conn);
+	virtual void onConnectionDetach(CEdge *conn);
+	virtual void onConnectionDeleted(CEdge *conn);
 
 	virtual void onItemMoved(const QPointF& delta);
 	virtual void onItemRestored();
@@ -119,6 +124,7 @@ protected:
 	virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 	virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event); 
 
+	virtual void updatePortsLayout();
 	virtual void updateLabelPosition();
 	virtual void updateCachedItems();
 
@@ -127,8 +133,10 @@ private:
 	void updateConnections();
 
 protected:
-	QSet<CConnection*> m_connections;
+	QSet<CEdge*> m_connections;
 	int m_nodeFlags;
+
+	QMap<QByteArray, CNodePort*> m_ports;
 
 	QPolygonF m_shapeCache;
 	QRectF m_sizeCache;

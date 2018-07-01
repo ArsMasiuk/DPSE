@@ -9,30 +9,30 @@ It can be used freely, maintaining the information above.
 
 #pragma once
 
-#include "CDirectConnection.h"
+#include "CDirectEdge.h"
 
 
 class CControlPoint;
 
 
-class CPolylineConnection : public CDirectConnection
+class CPolyEdge : public CDirectEdge
 {
 public:
-	typedef CDirectConnection Super;
+	typedef CDirectEdge Super;
 
-	CPolylineConnection(QGraphicsItem *parent = Q_NULLPTR);
+	CPolyEdge(QGraphicsItem *parent = Q_NULLPTR);
 
 	void setPoints(const QList<QPointF> &points);
 	bool insertPointAt(const QPointF &pos);
 
 	// reimp
-	static QByteArray factoryId() { return "CPolylineConnection"; }
+	static QByteArray factoryId() { return "CPolyEdge"; }
 	virtual QByteArray typeId() const { return this->factoryId(); }
 	virtual QByteArray classId() const { return "polyedge"; }
 	virtual QByteArray superClassId() const { return Super::classId(); }
 
-	virtual CItem* create() const { return new CPolylineConnection(parentItem()); }
-	CConnection* clone();
+	virtual CItem* create() const { return new CPolyEdge(parentItem()); }
+	CEdge* clone();
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;

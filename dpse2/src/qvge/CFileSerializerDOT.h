@@ -16,7 +16,7 @@ It can be used freely, maintaining the information above.
 #include "qvge/IFileSerializer.h"
 
 class CNode;
-class CConnection;
+class CEdge;
 
 class QTextStream;
 
@@ -57,7 +57,7 @@ private:
 	void doWriteNodeAttrs(QTextStream& ts, QMap<QByteArray, QVariant> nodeAttrs) const;
 
 	void doWriteEdgeDefaults(QTextStream& ts, const CEditorScene& scene) const;
-	void doWriteEdge(QTextStream& ts, const CConnection& edge, const CEditorScene& scene) const;
+	void doWriteEdge(QTextStream& ts, const CEdge& edge, const CEditorScene& scene) const;
 	void doWriteEdgeAttrs(QTextStream& ts, QMap<QByteArray, QVariant> edgeAttrs) const;
 };
 

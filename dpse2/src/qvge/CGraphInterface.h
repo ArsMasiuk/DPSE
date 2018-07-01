@@ -21,11 +21,11 @@ public:
     virtual CNode* addNode(const QString& nodeId);    
 	virtual CNode* getNode(const QString& nodeId, bool autoCreate = false);
 
-	virtual CConnection* addEdge(const QString& edgeId, const QString& startNodeId, const QString& endNodeId);
-	virtual CConnection* getEdge(const QString& edgeId);
+	virtual CEdge* addEdge(const QString& edgeId, const QString& startNodeId, const QString& endNodeId);
+	virtual CEdge* getEdge(const QString& edgeId);
 	virtual bool setEdgeAttr(const QString& edgeId, const QByteArray& attrId, const QVariant& value);
 
-    virtual QList<CConnection*> getEdges() const;
+    virtual QList<CEdge*> getEdges() const;
     virtual QList<CNode*> getNodes() const;
 
 private:

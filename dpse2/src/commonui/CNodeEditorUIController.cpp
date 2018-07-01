@@ -23,7 +23,7 @@ It can be used freely, maintaining the information above.
 #include <appbase/CMainWindow.h>
 
 #include <qvge/CNode.h>
-#include <qvge/CConnection.h>
+#include <qvge/CEdge.h>
 #include <qvge/CImageExport.h>
 #include <qvge/CPDFExport.h>
 #include <qvge/CNodeEditorScene.h>
@@ -404,7 +404,7 @@ void CNodeEditorUIController::onSelectionChanged()
 void CNodeEditorUIController::onSceneChanged()
 {
     auto nodes = m_editorScene->getItems<CNode>();
-    auto edges = m_editorScene->getItems<CConnection>();
+    auto edges = m_editorScene->getItems<CEdge>();
 
     m_statusLabel->setText(tr("Nodes: %1 | Edges: %2").arg(nodes.size()).arg(edges.size()));
 }

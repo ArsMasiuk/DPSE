@@ -1,7 +1,7 @@
 #include "CGraphInterface.h"
 #include "CNodeEditorScene.h"
 #include "CNode.h"
-#include "CDirectConnection.h"
+#include "CDirectEdge.h"
 
 
 CGraphInterface::CGraphInterface(CNodeEditorScene &scene)
@@ -10,16 +10,16 @@ CGraphInterface::CGraphInterface(CNodeEditorScene &scene)
 }
 
 
-CConnection* CGraphInterface::addEdge(const QString &edgeId, const QString &startNodeId, const QString &endNodeId)
+CEdge* CGraphInterface::addEdge(const QString &edgeId, const QString &startNodeId, const QString &endNodeId)
 {
     if (m_scene == nullptr)
         return nullptr;
 
     // look for existing edge
-    if (m_scene->getItemsById<CConnection>(edgeId).count())
+    if (m_scene->getItemsById<CEdge>(edgeId).count())
         return nullptr;
 
-    auto* edge = m_scene->createItemOfType<CDirectConnection>();
+    auto* edge = m_scene->createItemOfType<CDirectEdge>();
     if (!edge)
         return nullptr;
 
@@ -89,13 +89,13 @@ CNode* CGraphInterface::getNode(const QString &nodeId, bool autoCreate)
 }
 
 
-CConnection* CGraphInterface::getEdge(const QString& edgeId)
+CEdge* CGraphInterface::getEdge(const QString& edgeId)
 {
 	if (m_scene == nullptr)
 		return nullptr;
 
 	// look for existing edge
-	auto edges = (m_scene->getItemsById<CConnection>(edgeId));
+	auto edges = (m_scene->getItemsById<CEdge>(edgeId));
 	if (edges.count())
 		return edges.first();
 
@@ -105,7 +105,7 @@ CConnection* CGraphInterface::getEdge(const QString& edgeId)
 
 bool CGraphInterface::setEdgeAttr(const QString& edgeId, const QByteArray& attrId, const QVariant& value)
 {
-	CConnection* edge = getEdge(edgeId);
+	CEdge* edge = getEdge(edgeId);
 	if (edge)
 		return edge->setAttribute(attrId, value);
 	else
@@ -113,15 +113,15 @@ bool CGraphInterface::setEdgeAttr(const QString& edgeId, const QByteArray& attrI
 }
 
 
-QList<CConnection*> CGraphInterface::getEdges() const
+QList<CEdge*> CGraphInterface::getEdges() const
 {
-    QList<CConnection*> edges;
+    QList<CEdge*> edges;
 
     if (m_scene)
     {
         auto items = m_scene->items();
         for (auto item: items)
-            if (auto edge = dynamic_cast<CConnection*>(item))
+            if (auto edge = dynamic_cast<CEdge*>(item))
                 edges << edge;
     }
 

@@ -15,8 +15,8 @@ It can be used freely, maintaining the information above.
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CNode.h>
-#include <qvge/CConnection.h>
-#include <qvge/CDirectConnection.h>
+#include <qvge/CEdge.h>
+#include <qvge/CDirectEdge.h>
 #include <qvge/CAttribute.h>
 
 
@@ -27,7 +27,7 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
     ui(new Ui::CNodeEdgePropertiesUI)
 {
 	m_nodeFactory = new CNode;
-	m_edgeFactory = new CDirectConnection;
+	m_edgeFactory = new CDirectEdge;
 
 
     ui->setupUi(this);
@@ -154,7 +154,7 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
 
     m_updateLock = true;
 
-    QList<CConnection*> edges = m_scene->getSelectedEdges();
+    QList<CEdge*> edges = m_scene->getSelectedEdges();
     QList<CNode*> nodes = m_scene->getSelectedNodes();
 
 
@@ -279,7 +279,7 @@ void CNodeEdgePropertiesUI::setEdgesAttribute(const QByteArray& attrId, const QV
 	if (m_updateLock || m_scene == NULL)
 		return;
 
-	QList<CConnection*> edges = m_scene->getSelectedEdges();
+	QList<CEdge*> edges = m_scene->getSelectedEdges();
 	if (edges.isEmpty())
 		return;
 
@@ -462,7 +462,7 @@ void CNodeEdgePropertiesUI::on_EdgeDirection_activated(QVariant data)
 
 void CNodeEdgePropertiesUI::on_EdgeLabel_clicked()
 {
-	QList<CConnection*> edges = m_scene->getSelectedEdges();
+	QList<CEdge*> edges = m_scene->getSelectedEdges();
 	if (edges.count() != 1)
 		return;
 
@@ -472,7 +472,7 @@ void CNodeEdgePropertiesUI::on_EdgeLabel_clicked()
 
 void CNodeEdgePropertiesUI::on_EdgeId_clicked()
 {
-    QList<CConnection*> edges = m_scene->getSelectedEdges();
+    QList<CEdge*> edges = m_scene->getSelectedEdges();
     if (edges.count() != 1)
         return;
 
@@ -490,7 +490,7 @@ _again:
     auto items = m_scene->getItemsById(newId);
     for (auto item: items)
     {
-        CConnection* edge = dynamic_cast<CConnection*>(item);
+        CEdge* edge = dynamic_cast<CEdge*>(item);
         if (edge == NULL || edge == edges.first())
             continue;
 
@@ -545,7 +545,7 @@ void CNodeEdgePropertiesUI::on_LabelFont_activated(const QFont &font)
     if (m_updateLock || m_scene == NULL)
         return;
 
-    QList<CConnection*> edges = m_scene->getSelectedEdges();
+    QList<CEdge*> edges = m_scene->getSelectedEdges();
 	QList<CNode*> nodes = m_scene->getSelectedNodes();
 	if (nodes.isEmpty() && edges.isEmpty())
 		return;
@@ -569,7 +569,7 @@ void CNodeEdgePropertiesUI::on_LabelColor_activated(const QColor &color)
 	if (m_updateLock || m_scene == NULL)
 		return;
 
-	QList<CConnection*> edges = m_scene->getSelectedEdges();
+	QList<CEdge*> edges = m_scene->getSelectedEdges();
 	QList<CNode*> nodes = m_scene->getSelectedNodes();
 	if (nodes.isEmpty() && edges.isEmpty())
 		return;

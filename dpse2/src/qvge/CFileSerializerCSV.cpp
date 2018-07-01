@@ -10,7 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CFileSerializerCSV.h"
 #include "CAttribute.h"
 #include "CNode.h"
-#include "CDirectConnection.h"
+#include "CDirectEdge.h"
 #include "CGraphInterface.h"
 #include "CNodeEditorScene.h"
 
