@@ -21,6 +21,10 @@ CNodePort::CNodePort(CNode *node, const QByteArray& portId, CNodePort::Anchor po
 	setRect(-3, -3, 7, 7);
 	setBrush(Qt::gray);
 	setPen(QPen(Qt::black, 1));
+
+	setToolTip(portId);
+
+	setFlags(QGraphicsItem::ItemClipsToShape | QGraphicsItem::ItemIgnoresParentOpacity);
 }
 
 

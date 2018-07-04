@@ -41,7 +41,9 @@ CEdge* CDirectEdge::clone()
 
 	// assign directly!
 	c->m_firstNode = m_firstNode;
+	c->m_firstPortId = m_firstPortId;
 	c->m_lastNode = m_lastNode;
+	c->m_lastPortId = m_lastPortId;
 
 	if (scene())
 		scene()->addItem(c);
@@ -148,7 +150,15 @@ void CDirectEdge::onParentGeometryChanged()
 	prepareGeometryChange();
 
 	// update line position
-	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();
+	QPointF p1 = m_firstNode->pos();
+	if (m_firstPortId.size())
+		p1 = m_firstNode->getPort(m_firstPortId)->scenePos();
+
+	QPointF p2 = m_lastNode->pos();
+	if (m_lastPortId.size())
+		p1 = m_lastNode->getPort(m_lastPortId)->scenePos();
+
+
 	QLineF l(p1, p2);
 	setLine(l);
 

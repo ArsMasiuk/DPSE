@@ -66,6 +66,7 @@ public:
 	// ports
 	virtual CNodePort* addPort(const QByteArray& portId, CNodePort::Anchor portAnchor = CNodePort::E, int portOrder = 0);
 	virtual bool removePort(const QByteArray& portId);
+	virtual CNodePort* getPort(const QByteArray& portId);
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;

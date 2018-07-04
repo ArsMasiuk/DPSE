@@ -297,12 +297,13 @@ bool CEdge::linkAfterPaste(const CItemLinkMap& idToItem)
 
 // impl
 
-void CEdge::setFirstNode(CNode *node)
+void CEdge::setFirstNode(CNode *node, const QByteArray& portId)
 {
     if (m_firstNode)
         m_firstNode->onConnectionDetach(this);
 
     m_firstNode = node;
+	m_firstPortId = portId;
 
     if (m_firstNode)
         m_firstNode->onConnectionAttach(this);
@@ -311,12 +312,13 @@ void CEdge::setFirstNode(CNode *node)
 }
 
 
-void CEdge::setLastNode(CNode *node)
+void CEdge::setLastNode(CNode *node, const QByteArray& portId)
 {
     if (m_lastNode)
         m_lastNode->onConnectionDetach(this);
 
     m_lastNode = node;
+	m_lastPortId = portId;
 
     if (m_lastNode)
         m_lastNode->onConnectionAttach(this);
@@ -341,6 +343,7 @@ void CEdge::reattach(CNode *oldNode, CNode *newNode)
 void CEdge::reverse()
 {
 	qSwap(m_firstNode, m_lastNode);
+	qSwap(m_firstPortId, m_lastPortId);
 
 	onParentGeometryChanged();
 }

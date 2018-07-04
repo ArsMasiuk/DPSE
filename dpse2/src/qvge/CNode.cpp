@@ -45,9 +45,9 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 
 
 	// temp
-	//addPort("Port 1", CNodePort::NE);
-	//addPort("Port 2", CNodePort::S);
-	//addPort("Port 3", CNodePort::W);
+	addPort("Port 1", CNodePort::NE);
+	addPort("Port 2", CNodePort::S);
+	addPort("Port 3", CNodePort::W);
 }
 
 
@@ -250,6 +250,15 @@ bool CNode::removePort(const QByteArray& portId)
 	updateCachedItems();
 
 	return port;
+}
+
+
+CNodePort* CNode::getPort(const QByteArray& portId)
+{
+	if (portId.isEmpty() || !m_ports.contains(portId))
+		return NULL;
+	else
+		return m_ports[portId];
 }
 
 

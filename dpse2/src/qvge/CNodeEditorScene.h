@@ -13,6 +13,7 @@ It can be used freely, maintaining the information above.
 
 class CNode;
 class CEdge;
+class CNodePort;
 
 
 enum EditMode 
@@ -46,7 +47,10 @@ public:
 
 	// factorizations
 	virtual CNode* createNewNode() const;
+	CNode* createNewNode(const QPointF& pos);		// calls createNewNode(), attaches to scene and sets pos
+	
 	virtual CEdge* createNewConnection() const;
+	CEdge* createNewConnection(CNode* startNode, CNode* endNode);	// calls createNewConnection(), attaches to scene and sets nodes
 
     // selections
     virtual void moveSelectedItemsBy(const QPointF& d);
@@ -108,6 +112,7 @@ protected:
 	CNode *m_startNode, *m_endNode;
 	CEdge *m_connection;
 	bool m_realStart;
+	CNodePort *m_startNodePort, *m_endNodePort;
 
 	enum InternState {
 		IS_None, IS_Creating, IS_Finishing, IS_Cancelling

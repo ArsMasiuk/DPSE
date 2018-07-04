@@ -36,8 +36,8 @@ public:
 	virtual ~CEdge();
 
 	// public
-    void setFirstNode(CNode *node);
-    void setLastNode(CNode *node);
+    void setFirstNode(CNode *node, const QByteArray& portId = "");
+    void setLastNode(CNode *node, const QByteArray& portId = "");
 
 	void reattach(CNode *oldNode, CNode *newNode);
 	void reverse();

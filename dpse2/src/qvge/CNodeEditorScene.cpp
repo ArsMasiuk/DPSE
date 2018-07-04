@@ -1,5 +1,6 @@
 #include "CNodeEditorScene.h"
 #include "CNode.h"
+#include "CNodePort.h"
 #include "CEdge.h"
 #include "CDirectEdge.h"
 #include "CControlPoint.h"
@@ -128,32 +129,54 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 		if (!item->isEnabled())
 			return false;
 
-		CNode *node = dynamic_cast<CNode*>(item);
-		if (!node)
-			return false;
+		// check for port first
+		CNodePort *port = dynamic_cast<CNodePort*>(item);
+		if (port)
+		{
+			CNode *node = port->getNode();
+			Q_ASSERT(node != NULL);
 
-		if (!node->allowStartConnection())
-			return false;
+			if (!node->allowStartConnection())
+				return false;
 
-		m_realStart = false;
-		m_startNode = node;
+			m_realStart = false;
+			m_startNode = node;
+			m_startNodePort = port;
+		}
+		else
+		{
+			// check for node
+			CNode *node = dynamic_cast<CNode*>(item);
+			if (!node)
+				return false;
+
+			if (!node->allowStartConnection())
+				return false;
+
+			m_realStart = false;
+			m_startNode = node;
+			m_startNodePort = NULL;
+		}
 	}
 	else
 	{
 		m_realStart = true;
-		m_startNode = createNewNode();
-		item = m_startNode;
-		addItem(item);
-		item->setPos(getSnapped(pos));
+		m_startNode = createNewNode(getSnapped(pos));
+		m_startNodePort = NULL;
 	}
 
-	m_endNode = dynamic_cast<CNode*>(m_startNode->clone());
+	//m_endNode = dynamic_cast<CNode*>(m_startNode->clone());
+	//addItem(m_endNode);
+	//m_endNode->setPos(getSnapped(pos));
+
+	m_endNode = createNewNode(getSnapped(pos));
+
 	Super::startDrag(m_endNode);
 
-	m_connection = createNewConnection();
-	addItem(m_connection);
-	m_connection->setFirstNode(m_startNode);
-	m_connection->setLastNode(m_endNode);
+	m_connection = createNewConnection(m_startNode, m_endNode);
+
+	if (m_startNodePort)
+		m_connection->setFirstNode(m_startNode, m_startNodePort->getId());
 
 	m_state = IS_Creating;
 
@@ -219,6 +242,15 @@ CNode* CNodeEditorScene::createNewNode() const
 }
 
 
+CNode* CNodeEditorScene::createNewNode(const QPointF& pos)
+{
+	auto node = createNewNode();
+	addItem(node);
+	node->setPos(pos);
+	return node;
+}
+
+
 CEdge* CNodeEditorScene::createNewConnection() const
 {
 	auto edgeFactory = getActiveItemFactory("CDirectEdge");
@@ -232,6 +264,16 @@ CEdge* CNodeEditorScene::createNewConnection() const
 
 	// here default
 	return new CDirectEdge();
+}
+
+
+CEdge* CNodeEditorScene::createNewConnection(CNode* startNode, CNode* endNode)
+{
+	auto edge = createNewConnection();
+	addItem(edge);
+	edge->setFirstNode(startNode);
+	edge->setLastNode(endNode);
+	return edge;
 }
 
 
@@ -358,6 +400,21 @@ bool CNodeEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, c
 
 void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* dragItem)
 {
+	CNode *dragNode = dynamic_cast<CNode*>(dragItem);
+
+	// drop node on a port?
+	//auto item = getItemAt(mouseEvent->scenePos());
+	//if (auto port = dynamic_cast<CNodePort*>(item))
+	//{
+	//	if (dragNode)
+	//	{
+
+	//	}
+
+	//	return;
+	//}
+
+	// else perform snap
 	if (gridSnapEnabled())
 	{
 		// control point:
@@ -372,7 +429,6 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 		QSet<QGraphicsItem*> items;
 		QSet<CEdge*> edges;
 
-		CNode *dragNode = dynamic_cast<CNode*>(dragItem);
 		if (!dragNode) 
 		{
 			if (auto edge = dynamic_cast<CEdge*>(dragItem))
@@ -441,9 +497,7 @@ void CNodeEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, Q
 	if (!clickedItem)
 	{
 		// create a node here
-		auto node = createNewNode();
-		addItem(node);
-		node->setPos(getSnapped(mouseEvent->scenePos()));
+		auto node = createNewNode(getSnapped(mouseEvent->scenePos()));
 		node->setSelected(true);
 
 		addUndoState();
@@ -493,6 +547,9 @@ void CNodeEditorScene::moveSelectedItemsBy(const QPointF& d)
 
 	for (auto item : selectedItems())
 	{
+		if (!(item->flags() & item->ItemIsMovable))
+			continue;
+		else
 		if (auto edge = dynamic_cast<CEdge*>(item))
 		{
 			edges << edge;

@@ -26,6 +26,7 @@ CItem::CItem()
 	m_internalStateFlags = IS_Attribute_Changed | IS_Need_Update;
 }
 
+
 CItem::~CItem()
 {
 	CEditorScene *scene = getScene();
@@ -50,6 +51,7 @@ bool CItem::storeTo(QDataStream &out, quint64 version64) const
 
 	return true;
 }
+
 
 bool CItem::restoreFrom(QDataStream &out, quint64 version64)
 {
@@ -84,6 +86,7 @@ bool CItem::hasLocalAttribute(const QByteArray& attrId) const
 		return m_attributes.contains(attrId);
 }
 
+
 bool CItem::setAttribute(const QByteArray& attrId, const QVariant& v)
 {
 	setItemStateFlag(IS_Attribute_Changed);
@@ -100,6 +103,7 @@ bool CItem::setAttribute(const QByteArray& attrId, const QVariant& v)
 	return true;
 }
 
+
 bool CItem::removeAttribute(const QByteArray& attrId)
 {
 	if (m_attributes.remove(attrId))
@@ -110,6 +114,7 @@ bool CItem::removeAttribute(const QByteArray& attrId)
 	else
 		return false;
 }
+
 
 QVariant CItem::getAttribute(const QByteArray& attrId) const
 {
@@ -124,6 +129,7 @@ QVariant CItem::getAttribute(const QByteArray& attrId) const
 
 	return QVariant();
 }
+
 
 QSet<QByteArray> CItem::getVisibleAttributeIds(int flags) const
 {
@@ -165,6 +171,7 @@ CEditorScene* CItem::getScene() const
 
 	return NULL;
 }
+
 
 void CItem::addUndoState()
 {

@@ -27,6 +27,9 @@ public:
 	explicit CNodePort(CNode *node, const QByteArray& portId, CNodePort::Anchor portAnchor = CNodePort::E, int portOrder = 0);
 	virtual ~CNodePort() {}
 
+	CNode* getNode() const				{ return m_node;	}
+	const QByteArray& getId() const		{ return m_id;		}
+
 	// callbacks
 	virtual void onParentGeometryChanged();
 
