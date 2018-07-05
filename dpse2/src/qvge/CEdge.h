@@ -39,7 +39,7 @@ public:
     void setFirstNode(CNode *node, const QByteArray& portId = "");
     void setLastNode(CNode *node, const QByteArray& portId = "");
 
-	void reattach(CNode *oldNode, CNode *newNode);
+	void reattach(CNode *oldNode, CNode *newNode, const QByteArray& portId = "");
 	void reverse();
 
 	CNode* firstNode() const { return m_firstNode; }

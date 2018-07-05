@@ -327,16 +327,16 @@ void CEdge::setLastNode(CNode *node, const QByteArray& portId)
 }
 
 
-void CEdge::reattach(CNode *oldNode, CNode *newNode)
+void CEdge::reattach(CNode *oldNode, CNode *newNode, const QByteArray& portId)
 {
 	if (oldNode == newNode && !newNode->allowCircledConnection())
 		return;
 
 	if (m_firstNode == oldNode)
-		setFirstNode(newNode);
+		setFirstNode(newNode, portId);
 
 	if (m_lastNode == oldNode)
-		setLastNode(newNode);
+		setLastNode(newNode, portId);
 }
 
 

@@ -11,10 +11,13 @@ It can be used freely, maintaining the information above.
 
 #include <QGraphicsRectItem>
 
+#include "IInteractive.h"
+
+
 class CNode;
 
 
-class CNodePort : public QGraphicsRectItem
+class CNodePort : public QGraphicsRectItem, public IInteractive
 {
 public:
 	typedef QGraphicsRectItem Shape;
@@ -32,6 +35,8 @@ public:
 
 	// callbacks
 	virtual void onParentGeometryChanged();
+
+	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem);
 
 protected:
 	CNode *m_node;

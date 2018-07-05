@@ -18,6 +18,7 @@ It can be used freely, maintaining the information above.
 #include "CEditorScene.h"
 #include "Properties.h"
 #include "CUtils.h"
+#include "IInteractive.h"
 
 
 enum ItemFlags
@@ -40,14 +41,6 @@ enum ItemStateFlags
 };
 
 
-enum ItemDragTestResult
-{
-	Rejected,
-	Accepted,
-	Ignored
-};
-
-
 class CControlPoint;
 
 
@@ -58,7 +51,8 @@ public:
 	static QByteArray factoryId() { return ""; }
 };
 
-class CItem
+
+class CItem: public IInteractive
 {
 public:
 	typedef Stub Super;
@@ -133,16 +127,9 @@ public:
 	virtual void copyDataFrom(CItem* from);
 
 	// callbacks
-	virtual void onItemMoved(const QPointF& /*delta*/) {}
 	virtual void onItemRestored();
 	virtual void onItemSelected(bool state);
 	virtual void onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent* event);
-	virtual void onHoverLeave(QGraphicsItem* /*sceneItem*/, QGraphicsSceneHoverEvent* /*event*/) {}
-	virtual void onDraggedOver(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
-	virtual void onDroppedOn(const QSet<CItem*>& /*acceptedItems*/, const QSet<CItem*>& /*rejectedItems*/) {}
-	virtual void onClick(QGraphicsSceneMouseEvent* /*mouseEvent*/) {}
-	virtual bool onClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF& /*clickPos*/) { return true; }
-	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF& /*clickPos*/) { return false; }
 
 	// call from control points
 	virtual void onControlPointMoved(CControlPoint* /*controlPoint*/, const QPointF& /*pos*/) {}
@@ -150,7 +137,6 @@ public:
 
 	// call from drag event
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Accepted; }
-	virtual void leaveDragFromItem(QGraphicsItem* /*draggedItem*/) {}
 
 	// called after restoring data (reimplement to update cached attribute values)
 	virtual void updateCachedItems() {}

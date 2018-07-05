@@ -74,7 +74,7 @@ public:
 
 	// merges node with the current one.
 	// node will be deleted afterwards if no circled connection allowed.
-	virtual void merge(CNode *node);
+	virtual void merge(CNode *node, CNodePort *port = NULL);
 
 	// splits all the connections from this node.
 	// result is the list of the newly created nodes (or empty list if connections < 2).
@@ -111,8 +111,7 @@ public:
 
 	virtual void onItemMoved(const QPointF& delta);
 	virtual void onItemRestored();
-	virtual void onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
-	
+	virtual void onDroppedOn(const QSet<IInteractive*>& acceptedItems, const QSet<IInteractive*>& rejectedItems);
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem);
 
 	// reimp 

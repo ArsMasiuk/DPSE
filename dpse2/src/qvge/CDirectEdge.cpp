@@ -156,7 +156,7 @@ void CDirectEdge::onParentGeometryChanged()
 
 	QPointF p2 = m_lastNode->pos();
 	if (m_lastPortId.size())
-		p1 = m_lastNode->getPort(m_lastPortId)->scenePos();
+		p2 = m_lastNode->getPort(m_lastPortId)->scenePos();
 
 
 	QLineF l(p1, p2);

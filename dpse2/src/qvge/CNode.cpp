@@ -314,7 +314,7 @@ bool CNode::restoreFrom(QDataStream& out, quint64 version64)
 
 // node operations
 
-void CNode::merge(CNode *node)
+void CNode::merge(CNode *node, CNodePort *port)
 {
 	if (!node || (node == this))
 		return;
@@ -324,9 +324,11 @@ void CNode::merge(CNode *node)
 	// make a copy because node's connections list will be updated
 	QSet<CEdge*> toReconnect = node->m_connections;
 
+	auto portId = port ? port->getId() : "";
+
 	for (CEdge *conn : toReconnect)
 	{
-		conn->reattach(node, this);
+		conn->reattach(node, this, portId);
 	}
 
 	// kill old node
@@ -565,16 +567,36 @@ void CNode::onItemRestored()
 }
 
 
-void CNode::onDroppedOn(const QSet<CItem*>& acceptedItems, const QSet<CItem*>& /*rejectedItems*/)
+void CNode::onDroppedOn(const QSet<IInteractive*>& acceptedItems, const QSet<IInteractive*>& /*rejectedItems*/)
 {
 	if (acceptedItems.size())
 	{
-		CNode* node = dynamic_cast<CNode*>(*acceptedItems.begin());
-		if (node)
-        {
-            node->merge(this);
-            node->setSelected(true);
-        }
+		// check for ports
+		for (auto item : acceptedItems)
+		{
+			CNodePort* port = dynamic_cast<CNodePort*>(item);
+			if (port)
+			{
+				CNode* node = port->getNode();
+				node->merge(this, port);
+				node->setSelected(true);
+				return;
+			}
+		}
+
+		// check for nodes
+		for (auto item : acceptedItems)
+		{
+			CNode* node = dynamic_cast<CNode*>(item);
+			if (node)
+			{
+				node->merge(this);
+				node->setSelected(true);
+				return;
+			}
+		}
+
+		// nothing...
 	}
 }
 

@@ -1251,17 +1251,22 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 				processDrag(mouseEvent, dragItem);		
 			}
 
-			QSet<CItem*> oldHovers = m_acceptedHovers + m_rejectedHovers;
+			QSet<IInteractive*> oldHovers = m_acceptedHovers + m_rejectedHovers;
 
 			QList<QGraphicsItem*> hoveredItems = dragItem->collidingItems();
 
-			for (int i = 0; i < hoveredItems.size(); ++i)
+			for (auto hoverItem: hoveredItems)
 			{
 				// dont drop on disabled
-				if (!hoveredItems.at(i)->isEnabled())
+				if (!hoverItem->isEnabled())
 					continue;
 
-				CItem* item = dynamic_cast<CItem*>(hoveredItems.at(i));
+				if (hoverItem->parentItem() == dragItem)
+					continue;
+
+				IInteractive* item = dynamic_cast<IInteractive*>(hoverItem);
+				CItem* citem = dynamic_cast<CItem*>(hoverItem);
+
 				if (item)
 				{
 					oldHovers.remove(item);
@@ -1274,36 +1279,46 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 					{
 						m_acceptedHovers.insert(item);
 
-						item->setItemStateFlag(IS_Drag_Accepted);
-						item->resetItemStateFlag(IS_Drag_Rejected);
+						if (citem)
+						{
+							citem->setItemStateFlag(IS_Drag_Accepted);
+							citem->resetItemStateFlag(IS_Drag_Rejected);
+						}
 					}
 					else if (result == Rejected)
 					{
 						m_rejectedHovers.insert(item);
 
-						item->resetItemStateFlag(IS_Drag_Accepted);
-						item->setItemStateFlag(IS_Drag_Rejected);
+						if (citem)
+						{
+							citem->resetItemStateFlag(IS_Drag_Accepted);
+							citem->setItemStateFlag(IS_Drag_Rejected);
+						}
 					}
 				}
 			}
 
 			// deactivate left hovers
-			for (CItem* item : oldHovers)
+			for (IInteractive* item : oldHovers)
 			{
 				item->leaveDragFromItem(dragItem);
 
 				m_acceptedHovers.remove(item);
 				m_rejectedHovers.remove(item);
 
-				item->resetItemStateFlag(IS_Drag_Accepted);
-				item->resetItemStateFlag(IS_Drag_Rejected);
+				CItem* citem = dynamic_cast<CItem*>(item);
+				if (citem)
+				{
+					citem->resetItemStateFlag(IS_Drag_Accepted);
+					citem->resetItemStateFlag(IS_Drag_Rejected);
+				}
 			}
 
 			// inform the dragger
-			CItem* draggedCItem = dynamic_cast<CItem*>(dragItem);
-			if (draggedCItem)
+			IInteractive* draggedItem = dynamic_cast<IInteractive*>(dragItem);
+			if (draggedItem)
 			{
-				draggedCItem->onDraggedOver(m_acceptedHovers, m_rejectedHovers);
+				draggedItem->onDraggedOver(m_acceptedHovers, m_rejectedHovers);
 			}
 
 			// inform the scene
@@ -1368,24 +1383,30 @@ void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsIte
 	if (dragItem)
 	{
 		// deactivate left hovers
-		for (CItem* item : m_acceptedHovers)
+		for (IInteractive* item : m_acceptedHovers)
 		{
 			item->leaveDragFromItem(dragItem);
 
-			item->resetItemStateFlag(IS_Drag_Accepted);
-			item->resetItemStateFlag(IS_Drag_Rejected);
+			if (auto *citem = dynamic_cast<CItem*>(item))
+			{
+				citem->resetItemStateFlag(IS_Drag_Accepted);
+				citem->resetItemStateFlag(IS_Drag_Rejected);
+			}
 		}
 
-		for (CItem* item : m_rejectedHovers)
+		for (IInteractive* item : m_rejectedHovers)
 		{
 			item->leaveDragFromItem(dragItem);
 
-			item->resetItemStateFlag(IS_Drag_Accepted);
-			item->resetItemStateFlag(IS_Drag_Rejected);
+			if (auto *citem = dynamic_cast<CItem*>(item))
+			{
+				citem->resetItemStateFlag(IS_Drag_Accepted);
+				citem->resetItemStateFlag(IS_Drag_Rejected);
+			}
 		}
 
 		// inform the dragger
-		CItem* draggedItem = dynamic_cast<CItem*>(dragItem);
+		IInteractive* draggedItem = dynamic_cast<IInteractive*>(dragItem);
 		if (draggedItem && !dragCancelled)
 		{
 			draggedItem->onDroppedOn(m_acceptedHovers, m_rejectedHovers);
@@ -1432,7 +1453,7 @@ void CEditorScene::onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 }
 
 
-void CEditorScene::onDragging(QGraphicsItem* /*dragItem*/, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems)
+void CEditorScene::onDragging(QGraphicsItem* /*dragItem*/, const QSet<IInteractive*>& /*acceptedItems*/, const QSet<IInteractive*>& /*rejectedItems*/)
 {
 	updateCursorState();
 

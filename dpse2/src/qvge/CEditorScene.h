@@ -22,6 +22,7 @@ It can be used freely, maintaining the information above.
 class CItem;
 class IUndoManager;
 class ISceneItemFactory;
+class IInteractive;
 
 
 class CItemsEvaluator
@@ -239,7 +240,7 @@ protected:
 	virtual void updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem);
 
 	// callbacks
-	virtual void onDragging(QGraphicsItem* dragItem, const QSet<CItem*>& acceptedItems, const QSet<CItem*>& rejectedItems);
+	virtual void onDragging(QGraphicsItem* dragItem, const QSet<IInteractive*>& acceptedItems, const QSet<IInteractive*>& rejectedItems);
 	virtual void onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* hoverItem);
 	virtual void onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* dragItem);
 	virtual void onLeftClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
@@ -286,7 +287,7 @@ private:
     bool m_gridSnap;
     QPen m_gridPen;
 
-	QSet<CItem*> m_acceptedHovers, m_rejectedHovers;
+	QSet<IInteractive*> m_acceptedHovers, m_rejectedHovers;
 
 	QGraphicsItem *m_menuTriggerItem;
 	QGraphicsItem *m_draggedItem;

@@ -402,19 +402,7 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 {
 	CNode *dragNode = dynamic_cast<CNode*>(dragItem);
 
-	// drop node on a port?
-	//auto item = getItemAt(mouseEvent->scenePos());
-	//if (auto port = dynamic_cast<CNodePort*>(item))
-	//{
-	//	if (dragNode)
-	//	{
-
-	//	}
-
-	//	return;
-	//}
-
-	// else perform snap
+	// perform snap
 	if (gridSnapEnabled())
 	{
 		// control point:

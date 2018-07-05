@@ -61,3 +61,12 @@ void CNodePort::onParentGeometryChanged()
 	}
 }
 
+
+ItemDragTestResult CNodePort::acceptDragFromItem(QGraphicsItem* draggedItem)
+{
+	if (dynamic_cast<CNode*>(draggedItem))
+		return Accepted;
+	else
+		return Ignored;
+}
+
