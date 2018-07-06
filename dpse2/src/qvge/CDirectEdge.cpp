@@ -151,11 +151,11 @@ void CDirectEdge::onParentGeometryChanged()
 
 	// update line position
 	QPointF p1 = m_firstNode->pos();
-	if (m_firstPortId.size())
+	if (m_firstPortId.size() && m_firstNode->getPort(m_firstPortId))
 		p1 = m_firstNode->getPort(m_firstPortId)->scenePos();
 
 	QPointF p2 = m_lastNode->pos();
-	if (m_lastPortId.size())
+	if (m_lastPortId.size() && m_lastNode->getPort(m_lastPortId))
 		p2 = m_lastNode->getPort(m_lastPortId)->scenePos();
 
 

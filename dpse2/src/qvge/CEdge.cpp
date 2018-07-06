@@ -255,6 +255,9 @@ bool CEdge::storeTo(QDataStream &out, quint64 version64) const
 
     out << quint64(m_firstNode) << quint64(m_lastNode);
 
+	// since version 11
+	out << m_firstPortId << m_lastPortId;
+
 	return true;
 }
 
@@ -265,6 +268,9 @@ bool CEdge::restoreFrom(QDataStream &out, quint64 version64)
 	{
 		// these are TEMP ids
         out >> m_tempFirstNodeId >> m_tempLastNodeId;
+
+		if (version64 >= 11)
+			out >> m_firstPortId >> m_lastPortId;
 
 		return true;
 	}
@@ -280,8 +286,8 @@ bool CEdge::linkAfterRestore(const CItemLinkMap &idToItem)
 
 	m_firstNode = m_lastNode = NULL;
 
-	setFirstNode(node1);
-	setLastNode(node2);
+	setFirstNode(node1, m_firstPortId);
+	setLastNode(node2, m_lastPortId);
 
 	return true;
 }

@@ -37,6 +37,7 @@ public:
 	virtual void onParentGeometryChanged();
 
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem);
+	virtual void leaveDragFromItem(QGraphicsItem* draggedItem);
 
 protected:
 	CNode *m_node;

@@ -314,17 +314,15 @@ bool CNode::restoreFrom(QDataStream& out, quint64 version64)
 
 // node operations
 
-void CNode::merge(CNode *node, CNodePort *port)
+bool CNode::merge(CNode *node, const QByteArray& portId)
 {
 	if (!node || (node == this))
-		return;
+		return false;
 
 	bool allowCircled = allowCircledConnection();
 
 	// make a copy because node's connections list will be updated
 	QSet<CEdge*> toReconnect = node->m_connections;
-
-	auto portId = port ? port->getId() : "";
 
 	for (CEdge *conn : toReconnect)
 	{
@@ -344,6 +342,8 @@ void CNode::merge(CNode *node, CNodePort *port)
 				delete conn;
 		}
 	}
+
+	return true;
 }
 
 
@@ -578,7 +578,7 @@ void CNode::onDroppedOn(const QSet<IInteractive*>& acceptedItems, const QSet<IIn
 			if (port)
 			{
 				CNode* node = port->getNode();
-				node->merge(this, port);
+				node->merge(this, port->getId());
 				node->setSelected(true);
 				return;
 			}
@@ -672,6 +672,11 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 	int strokeStyle = CUtils::textToPenStyle(getAttribute(QByteArrayLiteral("stroke.style")).toString(), Qt::SolidLine);
 
 	painter->setPen(QPen(strokeColor, strokeSize, (Qt::PenStyle)strokeStyle));
+
+
+	// hover opacity
+	if (itemStateFlags() & IS_Drag_Accepted)
+		painter->setOpacity(0.6);
 
 
 	// draw shape: disc if no cache

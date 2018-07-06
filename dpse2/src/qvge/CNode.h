@@ -74,7 +74,7 @@ public:
 
 	// merges node with the current one.
 	// node will be deleted afterwards if no circled connection allowed.
-	virtual void merge(CNode *node, CNodePort *port = NULL);
+	virtual bool merge(CNode *node, const QByteArray& portId = "");
 
 	// splits all the connections from this node.
 	// result is the list of the newly created nodes (or empty list if connections < 2).

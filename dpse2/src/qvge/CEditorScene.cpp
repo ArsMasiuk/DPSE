@@ -1257,11 +1257,12 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 
 			for (auto hoverItem: hoveredItems)
 			{
-				// dont drop on disabled
-				if (!hoverItem->isEnabled())
+				// filter out children
+				if (hoverItem->parentItem() == dragItem)
 					continue;
 
-				if (hoverItem->parentItem() == dragItem)
+				// dont drop on disabled
+				if (!hoverItem->isEnabled())
 					continue;
 
 				IInteractive* item = dynamic_cast<IInteractive*>(hoverItem);
@@ -1295,6 +1296,8 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 							citem->setItemStateFlag(IS_Drag_Rejected);
 						}
 					}
+
+					hoverItem->update();
 				}
 			}
 
@@ -1312,6 +1315,9 @@ void CEditorScene::moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem*
 					citem->resetItemStateFlag(IS_Drag_Accepted);
 					citem->resetItemStateFlag(IS_Drag_Rejected);
 				}
+
+				if (auto hoverItem = dynamic_cast<QGraphicsItem*>(item))
+					hoverItem->update();
 			}
 
 			// inform the dragger

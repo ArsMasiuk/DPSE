@@ -65,8 +65,20 @@ void CNodePort::onParentGeometryChanged()
 ItemDragTestResult CNodePort::acceptDragFromItem(QGraphicsItem* draggedItem)
 {
 	if (dynamic_cast<CNode*>(draggedItem))
+	{
+		setOpacity(0.5);
 		return Accepted;
+	}
 	else
+	{
+		setOpacity(1);
 		return Ignored;
+	}
+}
+
+
+void CNodePort::leaveDragFromItem(QGraphicsItem* draggedItem)
+{
+	setOpacity(1);
 }
 

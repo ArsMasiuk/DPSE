@@ -121,8 +121,8 @@ void CNodeEdgePropertiesUI::updateFromScene(CEditorScene* scene)
 void CNodeEdgePropertiesUI::onSceneAttached(CEditorScene* scene)
 {
 	// factories for new items
-	scene->setActiveItemFactory(m_nodeFactory);
-	scene->setActiveItemFactory(m_edgeFactory);
+	//scene->setActiveItemFactory(m_nodeFactory);
+	//scene->setActiveItemFactory(m_edgeFactory);
 
 	// default attrs
 	updateFromScene(scene);
