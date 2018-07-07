@@ -11,10 +11,10 @@ It can be used freely, maintaining the information above.
 #include "CNode.h"
 
 
-CNodePort::CNodePort(CNode *node, const QByteArray& portId, CNodePort::Anchor portAnchor, int portOrder) :
+CNodePort::CNodePort(CNode *node, const QByteArray& portId, int align, int xoff, int yoff) :
 	Shape(dynamic_cast<QGraphicsItem*>(node)),
 	m_node(node),
-	m_id(portId), m_anchor(portAnchor), m_order(portOrder)
+	m_id(portId), m_align(align), m_xoff(xoff), m_yoff(yoff)
 {
  	Q_ASSERT(m_node != NULL);
 
@@ -34,31 +34,19 @@ void CNodePort::onParentGeometryChanged()
 
 	QRectF nodeBox = m_node->Shape::boundingRect();
 
-	switch (m_anchor)
-	{
-	case W: case NW: case SW:
-		setX(nodeBox.left());
-		break;
-	case E: case NE: case SE:
-		setX(nodeBox.right());
-		break;
-	default:
-		setX(nodeBox.center().x());
-		break;
-	}
+	int x = m_xoff, y = m_yoff;
+	
+	if (m_align & Qt::AlignLeft)
+		x -= nodeBox.width() / 2;
+	else if (m_align & Qt::AlignRight)
+		x += nodeBox.width() / 2;
 
-	switch (m_anchor)
-	{
-	case N: case NW: case NE:
-		setY(nodeBox.top());
-		break;
-	case S: case SE: case SW:
-		setY(nodeBox.bottom());
-		break;
-	default:
-		setY(nodeBox.center().y());
-		break;
-	}
+	if (m_align & Qt::AlignTop)
+		y -= nodeBox.height() / 2;
+	else if (m_align & Qt::AlignBottom)
+		y += nodeBox.height() / 2;
+
+	setX(x); setY(y);
 }
 
 

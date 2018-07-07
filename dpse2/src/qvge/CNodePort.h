@@ -22,12 +22,7 @@ class CNodePort : public QGraphicsRectItem, public IInteractive
 public:
 	typedef QGraphicsRectItem Shape;
 
-	enum Anchor
-	{
-		N, S, E, W, NE, NW, SE, SW
-	};
-
-	explicit CNodePort(CNode *node, const QByteArray& portId, CNodePort::Anchor portAnchor = CNodePort::E, int portOrder = 0);
+	explicit CNodePort(CNode *node, const QByteArray& portId, int align, int xoff = 0, int yoff = 0);
 	virtual ~CNodePort() {}
 
 	CNode* getNode() const				{ return m_node;	}
@@ -41,9 +36,9 @@ public:
 
 protected:
 	CNode *m_node;
-	
-	Anchor m_anchor;
+
 	QByteArray m_id;
-	int m_order;
+	int m_align;
+	double m_xoff, m_yoff;
 };
 

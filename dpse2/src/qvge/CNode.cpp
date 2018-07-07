@@ -5,6 +5,8 @@
 #include <QPen>
 #include <QBrush>
 #include <QEvent>
+#include <QSet>
+#include <QByteArray>
 #include <QtMath>
 
 // test
@@ -45,9 +47,9 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 
 
 	// temp
-	addPort("Port 1", CNodePort::NE);
-	addPort("Port 2", CNodePort::S);
-	addPort("Port 3", CNodePort::W);
+	addPort("Port 1", Qt::AlignLeft | Qt::AlignVCenter);
+	addPort("Port 2", Qt::AlignBottom | Qt::AlignRight);
+	addPort("Port 3", Qt::AlignBottom | Qt::AlignRight, 0, -20);
 }
 
 
@@ -222,12 +224,12 @@ QVariant CNode::getAttribute(const QByteArray& attrId) const
 
 // ports
 
-CNodePort* CNode::addPort(const QByteArray& portId, CNodePort::Anchor portAnchor, int portOrder)
+CNodePort* CNode::addPort(const QByteArray& portId, int align, int xoff, int yoff)
 {
 	if (portId.isEmpty() || m_ports.contains(portId))
 		return NULL;
 
-	CNodePort* port = new CNodePort(this, portId, portAnchor, portOrder);
+	CNodePort* port = new CNodePort(this, portId, align, xoff, yoff);
 	m_ports[portId] = port;
 
 	updateCachedItems();
@@ -490,22 +492,23 @@ void CNode::updateConnections()
 		return;
 
 	typedef QList<CDirectEdge*> EdgeList;
-	QMap<CNode*, EdgeList> edgeGroups;
+	typedef QSet<QPair<CNode*, QByteArray>> Key;
+	QHash<Key, EdgeList> edgeGroups;
 
 	for (auto conn : m_connections)
 	{
 		CDirectEdge* dconn = dynamic_cast<CDirectEdge*>(conn);
 		if (dconn)
 		{
-			CNode* node = dconn->firstNode() == this ? dconn->lastNode() : dconn->firstNode();
-			edgeGroups[node].append(dconn);
+			QPair<CNode*, QByteArray> key1 = { dconn->firstNode(), dconn->firstPortId() };
+			QPair<CNode*, QByteArray> key2 = { dconn->lastNode(), dconn->lastPortId() };
+			Key key = { key1, key2 };
+			edgeGroups[key].append(dconn);
 		}
 	}
 
-	for (auto it = edgeGroups.constBegin(); it != edgeGroups.constEnd(); ++it)
+	for (const EdgeList& values: edgeGroups)
 	{
-		const EdgeList& values = it.value();
-
 		if (values.count() == 1)
 		{
 			values.first()->setBendFactor(0);
