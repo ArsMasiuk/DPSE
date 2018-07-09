@@ -11,7 +11,7 @@ It can be used freely, maintaining the information above.
 #include "CNode.h"
 
 
-CNodePort::CNodePort(CNode *node, const QByteArray& portId, int align, int xoff, int yoff) :
+CNodePort::CNodePort(CNode *node, const QByteArray& portId, int align, double xoff, double yoff) :
 	Shape(dynamic_cast<QGraphicsItem*>(node)),
 	m_node(node),
 	m_id(portId), m_align(align), m_xoff(xoff), m_yoff(yoff)
@@ -25,6 +25,20 @@ CNodePort::CNodePort(CNode *node, const QByteArray& portId, int align, int xoff,
 	setToolTip(portId);
 
 	setFlags(QGraphicsItem::ItemClipsToShape | QGraphicsItem::ItemIgnoresParentOpacity);
+}
+
+
+CNodePort::~CNodePort()
+{
+	if (m_node)
+		m_node->onPortDeleted(this);
+}
+
+
+void CNodePort::onParentDeleted()
+{
+	// clear m_node if it is removed already
+	m_node = NULL;
 }
 
 
@@ -70,3 +84,18 @@ void CNodePort::leaveDragFromItem(QGraphicsItem* draggedItem)
 	setOpacity(1);
 }
 
+
+// serialization 
+
+bool CNodePort::storeTo(QDataStream& out, quint64 version64) const
+{
+	out << m_id;
+	out << m_align << m_xoff << m_yoff;
+	return true;
+}
+
+
+//bool CNodePort::restoreFrom(QDataStream& out, quint64 version64)
+//{
+//
+//}

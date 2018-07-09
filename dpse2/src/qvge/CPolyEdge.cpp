@@ -272,6 +272,10 @@ void CPolyEdge::updateLabelPosition()
 
 void CPolyEdge::onParentGeometryChanged()
 {
+	// optimize: no update while restoring
+	if (s_duringRestore)
+		return;
+
 	// straight line
 	if (m_polyPoints.isEmpty())
 	{
@@ -281,10 +285,6 @@ void CPolyEdge::onParentGeometryChanged()
 
 	// polyline
 	if (!m_firstNode || !m_lastNode)
-		return;
-
-	// optimize: no update while restoring
-	if (s_duringRestore)
 		return;
 
 	prepareGeometryChange();

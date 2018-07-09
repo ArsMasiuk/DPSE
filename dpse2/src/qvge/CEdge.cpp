@@ -305,13 +305,15 @@ bool CEdge::linkAfterPaste(const CItemLinkMap& idToItem)
 
 void CEdge::setFirstNode(CNode *node, const QByteArray& portId)
 {
-    if (m_firstNode)
+    if (m_firstNode && m_firstNode != node)
         m_firstNode->onConnectionDetach(this);
 
     m_firstNode = node;
-	m_firstPortId = portId;
 
-    if (m_firstNode)
+	if (m_firstPortId != portId)
+		m_firstPortId = portId;
+
+	if (m_firstNode)
         m_firstNode->onConnectionAttach(this);
 
 	onParentGeometryChanged();
@@ -320,11 +322,13 @@ void CEdge::setFirstNode(CNode *node, const QByteArray& portId)
 
 void CEdge::setLastNode(CNode *node, const QByteArray& portId)
 {
-    if (m_lastNode)
+    if (m_lastNode && m_lastNode != node)
         m_lastNode->onConnectionDetach(this);
 
     m_lastNode = node;
-	m_lastPortId = portId;
+
+	if (m_lastPortId != portId)
+		m_lastPortId = portId;
 
     if (m_lastNode)
         m_lastNode->onConnectionAttach(this);
@@ -333,16 +337,40 @@ void CEdge::setLastNode(CNode *node, const QByteArray& portId)
 }
 
 
-void CEdge::reattach(CNode *oldNode, CNode *newNode, const QByteArray& portId)
+bool CEdge::reattach(CNode *oldNode, CNode *newNode, const QByteArray& portId)
 {
-	if (oldNode == newNode && !newNode->allowCircledConnection())
-		return;
+	if (newNode && oldNode == newNode && !newNode->allowCircledConnection())
+		return false;
+
+	bool done = false;
 
 	if (m_firstNode == oldNode)
-		setFirstNode(newNode, portId);
+		setFirstNode(newNode, portId), done = true;
 
 	if (m_lastNode == oldNode)
-		setLastNode(newNode, portId);
+		setLastNode(newNode, portId), done = true;
+
+	return done;
+}
+
+
+bool CEdge::reattach(CNode *node, const QByteArray& oldPortId, const QByteArray& newPortId)
+{
+	if (node == nullptr)
+		return false;
+
+	if (oldPortId == newPortId && !node->allowCircledConnection())
+		return false;
+
+	bool done = false;
+
+	if (m_firstNode == node && m_firstPortId == oldPortId)
+		setFirstNode(node, newPortId), done = true;
+
+	if (m_lastNode == node && m_lastPortId == oldPortId)
+		setLastNode(node, newPortId), done = true;
+
+	return done;
 }
 
 
@@ -395,6 +423,13 @@ void CEdge::onNodeDeleted(CNode *node)
 	onNodeDetached(node);
 
 	delete this;	// die as well
+}
+
+
+void CEdge::onNodePortDeleted(CNode *node, const QByteArray& portId)
+{
+	//if ((node == m_firstNode && portId == m_firstPortId) || (node == m_lastNode && portId == m_lastPortId))
+		reattach(node, portId, "");
 }
 
 

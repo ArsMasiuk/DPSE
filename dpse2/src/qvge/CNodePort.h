@@ -22,13 +22,18 @@ class CNodePort : public QGraphicsRectItem, public IInteractive
 public:
 	typedef QGraphicsRectItem Shape;
 
-	explicit CNodePort(CNode *node, const QByteArray& portId, int align, int xoff = 0, int yoff = 0);
-	virtual ~CNodePort() {}
+	explicit CNodePort(CNode *node, const QByteArray& portId, int align, double xoff = 0, double yoff = 0);
+	virtual ~CNodePort();
 
 	CNode* getNode() const				{ return m_node;	}
 	const QByteArray& getId() const		{ return m_id;		}
 
+	// serialization 
+	virtual bool storeTo(QDataStream& out, quint64 version64) const;
+	//virtual bool restoreFrom(QDataStream& out, quint64 version64);
+
 	// callbacks
+	void onParentDeleted();
 	virtual void onParentGeometryChanged();
 
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem);

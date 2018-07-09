@@ -47,14 +47,19 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 
 
 	// temp
-	addPort("Port 1", Qt::AlignLeft | Qt::AlignVCenter);
-	addPort("Port 2", Qt::AlignBottom | Qt::AlignRight);
-	addPort("Port 3", Qt::AlignBottom | Qt::AlignRight, 0, -20);
+	//addPort("Port 1", Qt::AlignLeft | Qt::AlignVCenter);
+	//addPort("Port 2", Qt::AlignBottom | Qt::AlignRight);
+	//addPort("Port 3", Qt::AlignBottom | Qt::AlignRight, 0, -20);
 }
 
 
 CNode::~CNode()
 {
+	for (CNodePort *port : m_ports)
+	{
+		port->onParentDeleted();
+	}
+
 	for (CEdge *conn : m_connections)
 	{
 		conn->onNodeDeleted(this);
@@ -224,7 +229,7 @@ QVariant CNode::getAttribute(const QByteArray& attrId) const
 
 // ports
 
-CNodePort* CNode::addPort(const QByteArray& portId, int align, int xoff, int yoff)
+CNodePort* CNode::addPort(const QByteArray& portId, int align, double xoff, double yoff)
 {
 	if (portId.isEmpty() || m_ports.contains(portId))
 		return NULL;
@@ -268,22 +273,18 @@ CNodePort* CNode::getPort(const QByteArray& portId)
 
 bool CNode::storeTo(QDataStream& out, quint64 version64) const
 {
-	if (version64 >= 7)
-	{
-		out << getSize();
-	}
-	else if (version64 > 0)
-	{
-		out << getSize().width();
-	}
+	out << getSize();
 
 	out << pos() << itemFlags();
 
-	if (version64 > 0)
-	{
-		qreal zv = zValue();
-		out << zv;
-	}
+	out << zValue();
+
+	// ports since v.11
+	int portsCount = m_ports.size();
+	out << portsCount;
+
+	for (auto port: m_ports)
+		port->storeTo(out, version64);
 
 	return Super::storeTo(out, version64);
 }
@@ -302,12 +303,36 @@ bool CNode::restoreFrom(QDataStream& out, quint64 version64)
 
 	static QPointF p; out >> p; setPos(p);
 
-	int f; out >> f;
+	static int f; out >> f;
 	//setItemFlags(f);
 
 	if (version64 > 0)
 	{
 		qreal z; out >> z; setZValue(z);
+	}
+
+	// ports
+	m_ports.clear();
+	if (version64 >= 11)
+	{
+		int count = 0; 
+		out >> count;
+		
+		QByteArray id;
+		int align;
+		double xoff, yoff;
+
+		for (int i = 0; i < count; ++i)
+		{
+			out >> id;
+			out >> align >> xoff >> yoff;
+
+			CNodePort *port = new CNodePort(this, id, align, xoff, yoff);
+			m_ports[id] = port;
+
+			// update
+			port->onParentGeometryChanged();
+		}
 	}
 
 	return Super::restoreFrom(out, version64);
@@ -550,6 +575,15 @@ void CNode::onConnectionDeleted(CEdge *conn)
 	// remove orphan node if allowed
 	if (m_connections.isEmpty() && !(m_nodeFlags & NF_OrphanAllowed))
 		delete this;
+}
+
+
+void CNode::onPortDeleted(CNodePort *port)
+{
+	for (auto edge : m_connections)
+		edge->onNodePortDeleted(this, port->getId());
+
+	m_ports.remove(port->getId());
 }
 
 

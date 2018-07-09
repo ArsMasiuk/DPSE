@@ -39,8 +39,9 @@ public:
     void setFirstNode(CNode *node, const QByteArray& portId = "");
     void setLastNode(CNode *node, const QByteArray& portId = "");
 
-	void reattach(CNode *oldNode, CNode *newNode, const QByteArray& portId = "");
 	void reverse();
+	bool reattach(CNode *oldNode, CNode *newNode, const QByteArray& portId = "");
+	bool reattach(CNode *node, const QByteArray& oldPortId, const QByteArray& newPortId);
 
 	CNode* firstNode() const { return m_firstNode; }
 	CNode* lastNode() const { return m_lastNode; }
@@ -76,6 +77,7 @@ public:
 	virtual void onNodeMoved(CNode *node);
 	virtual void onNodeDetached(CNode *node);
 	virtual void onNodeDeleted(CNode *node);
+	virtual void onNodePortDeleted(CNode *node, const QByteArray& portId);
 	virtual void onParentGeometryChanged() = 0;
 	virtual void onItemRestored();
 

@@ -140,11 +140,11 @@ void CDirectEdge::updateLabelPosition()
 
 void CDirectEdge::onParentGeometryChanged()
 {
-	if (!m_firstNode || !m_lastNode)
-		return;
-
 	// optimize: no update while restoring
 	if (s_duringRestore)
+		return;
+
+	if (!m_firstNode || !m_lastNode)
 		return;
 
 	prepareGeometryChange();
