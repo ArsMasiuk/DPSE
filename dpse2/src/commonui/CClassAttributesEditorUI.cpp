@@ -28,8 +28,8 @@ CClassAttributesEditorUI::CClassAttributesEditorUI(QWidget *parent) :
 
     ui->Editor->setFactoryForManager(&m_manager, &m_factory);
 
-    connect(&m_manager, SIGNAL(valueChanged(QtProperty*, const QVariant&)),
-            this, SLOT(onValueChanged(QtProperty*, const QVariant&)));
+    connect(&m_manager, SIGNAL(valueChanged(QtProperty*, const QVariant&)), 
+		this, SLOT(onValueChanged(QtProperty*, const QVariant&)));
 
     //ui->ClassId->setCurrentIndex(1);    // node by def.
 
@@ -39,7 +39,8 @@ CClassAttributesEditorUI::CClassAttributesEditorUI(QWidget *parent) :
     // color schemes
     m_schemesController = new CColorSchemesUIController(this);
     ui->ColorScheme->setMenu(m_schemesController->getSchemesMenu());
-	connect(m_schemesController, &CColorSchemesUIController::colorSchemeApplied, this, &CClassAttributesEditorUI::colorSchemeApplied);
+	connect(m_schemesController, &CColorSchemesUIController::colorSchemeApplied, 
+		this, &CClassAttributesEditorUI::colorSchemeApplied);
 }
 
 CClassAttributesEditorUI::~CClassAttributesEditorUI()

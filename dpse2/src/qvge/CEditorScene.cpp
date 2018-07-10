@@ -92,7 +92,6 @@ void CEditorScene::initialize()
 
 	m_classAttributes.clear();
 	m_classAttributesVis.clear();
-	//qDeleteAll(m_classAttributesConstrains);
 	m_classAttributesConstrains.clear();
 
 	// default item attrs
@@ -565,9 +564,8 @@ void CEditorScene::setClassAttribute(const QByteArray& classId, const QByteArray
 			m_classAttributes[classId][attrId] = attr;
 			
 			needUpdate();
+			return;
 		}
-
-		return;
 	}
 
 	// else just update the value

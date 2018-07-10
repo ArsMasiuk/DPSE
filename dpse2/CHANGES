@@ -1,12 +1,14 @@
 QVGE 0.4.4 (beta)
 -------------------------------------------------------------------------------
 - changed project directory structure
+- globally renamed: CConnection -> CEdge
 
 - added buttons to change an attribute's name & type 
 
 - fixed issue with document change notification when a new document is created
 - fixed issue with putting empty states into the undo/redo stack after editing
 	of complex attributes (color, font etc)
+- fixed issue with default id generation for nodes/edges
 
 
 QVGE 0.4.3 (beta)

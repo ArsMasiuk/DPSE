@@ -75,6 +75,9 @@ public:
 	virtual QString createNewId() const { return QString::number((quint64)this); }
 	virtual bool setDefaultId();
 
+	template<class C>
+	QString createUniqueId(const QString& Tmpl) const;
+
 	// attributes
 	virtual bool hasLocalAttribute(const QByteArray& attrId) const;
 	const QMap<QByteArray, QVariant>& getLocalAttributes() const { return m_attributes; }
@@ -150,6 +153,31 @@ protected:
 
 	// restore optimization
 	static bool s_duringRestore;
+};
+
+
+template<class C>
+QString CItem::createUniqueId(const QString& tmpl) const 
+{
+	auto editorScene = getScene();
+	if (editorScene == NULL)
+	{
+		static int count = 0;
+		return tmpl.arg(++count);
+	}
+
+	auto citems = editorScene->getItems<C>();
+	QSet<QString> ids;
+	for (const auto &citem : citems)
+		ids << citem->getId();
+
+	int count = 0;
+	QString newId;
+	do
+		newId = tmpl.arg(++count);
+	while (ids.contains(newId));
+
+	return newId;
 };
 
 

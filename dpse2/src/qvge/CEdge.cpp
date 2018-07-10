@@ -387,9 +387,8 @@ void CEdge::reverse()
 
 QString CEdge::createNewId() const
 {
-	static int count = 0;
-
-	return QString("C%1").arg(++count);
+	static const QString tmpl("E%1");
+	return createUniqueId<CEdge>(tmpl);
 }
 
 

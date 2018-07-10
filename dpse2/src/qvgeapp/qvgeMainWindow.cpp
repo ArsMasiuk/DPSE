@@ -23,11 +23,13 @@ qvgeMainWindow::qvgeMainWindow()
 {
 	QString bitString;
 	int bits = CPlatformServices::GetPlatformBits();
-	if (bits > 0) bitString = QString(" %1bit").arg(bits);
+	if (bits > 0) bitString = QString("%1bit").arg(bits);
 
     QApplication::setOrganizationName("qvge");
     QApplication::setApplicationName("Qt Visual Graph Editor");
-    QApplication::setApplicationVersion(qvgeVersion.toString() + tr(" (Beta)") + bitString);
+	QApplication::setApplicationVersion(qvgeVersion.toString() + " (Beta)");
+    QApplication::setApplicationDisplayName(QString("%1 %2 %3")
+		.arg(QApplication::applicationName(), QApplication::applicationVersion(), bitString));
 
 	CDocumentFormat gexf = { "GEXF", "*.gexf", {"gexf"}, true, true };
 	CDocumentFormat graphml = { "GraphML", "*.graphml", {"graphml"}, false, true };

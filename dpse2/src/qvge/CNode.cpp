@@ -71,9 +71,8 @@ CNode::~CNode()
 
 QString CNode::createNewId() const
 {
-	static int count = 0;
-
-	return QString("N%1").arg(++count);
+	static const QString tmpl("N%1");
+	return createUniqueId<CNode>(tmpl);
 }
 
 

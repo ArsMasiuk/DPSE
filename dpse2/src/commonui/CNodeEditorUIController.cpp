@@ -651,6 +651,9 @@ void CNodeEditorUIController::onNewDocumentCreated()
 	m_editorScene->setClassAttributeVisible("item", "id", true);
 	m_editorScene->setClassAttributeVisible("item", "label", true);
 
+	m_editorScene->setClassAttribute("", "comment", QString());
+	m_editorScene->setClassAttribute("", "creator", QApplication::applicationName() + " " + QApplication::applicationVersion());
+
 #ifdef USE_OGDF
     if (m_showNewGraphDialog)
 	{
@@ -669,3 +672,4 @@ void CNodeEditorUIController::onNewDocumentCreated()
 	// store newly created state
 	m_editorScene->addUndoState();
 }
+ 

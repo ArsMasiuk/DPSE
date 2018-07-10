@@ -469,12 +469,14 @@ void CFileSerializerGEXF::writeNodes(QTextStream &ts, const CEditorScene& scene)
 
 		if (nodeAttrs.contains("size"))
 		{
-			// size exported incompletely, only max. 
 			QVariant sizeV = nodeAttrs.take("size");
 			if (sizeV.canConvert(QMetaType::QSizeF))
 			{
 				QSizeF size = sizeV.toSizeF();
-				ts << "            <viz:size value=\"" << qMax(size.width(), size.height()) << "\"/>\n";
+				if (size.width() == size.height())
+					ts << "            <viz:size value=\"" << size.width() << "\"/>\n";
+				else
+					ts << "            <viz:size x=\"" << size.width() << " y=\"" << size.height() << "\"/>\n";		// non-standard extension
 			}
 			else
 				ts << "            <viz:size value=\"" << sizeV.toFloat() << "\"/>\n";

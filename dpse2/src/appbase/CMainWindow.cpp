@@ -244,9 +244,8 @@ void CMainWindow::createFileToolbar()
 
 void CMainWindow::updateTitle()
 {
-    setWindowTitle(QString("%1 - %2 %3")
+    setWindowTitle(QString("%1 - %2")
                    .arg(m_mainTitleText, QApplication::applicationDisplayName())
-                   .arg(QApplication::applicationVersion())
     );
 }
 
@@ -807,7 +806,7 @@ void CMainWindow::onAboutApplication()
 QString CMainWindow::getAboutText() const
 {
 	return QString("<b>%1</b><br>Version %2")
-		.arg(qApp->applicationDisplayName())
+		.arg(qApp->applicationName())
 		.arg(qApp->applicationVersion());
 }
 
