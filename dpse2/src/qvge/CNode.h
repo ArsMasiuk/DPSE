@@ -66,7 +66,7 @@ public:
 	// ports
 	virtual CNodePort* addPort(const QByteArray& portId, int align, double xoff = 0, double yoff = 0);
 	virtual bool removePort(const QByteArray& portId);
-	virtual CNodePort* getPort(const QByteArray& portId);
+	virtual CNodePort* getPort(const QByteArray& portId) const;
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
@@ -99,7 +99,7 @@ public:
 	virtual bool allowCircledConnection() const { return true; }
 
 	// calculates distance to the line's end point (used to draw connections to this item).
-	virtual double getDistanceToLineEnd(const QLineF& line) const;
+	virtual double getDistanceToLineEnd(const QLineF& line, const QByteArray& portId) const;
 
 	// calculates point on the node's outline intersecting with line.
 	virtual QPointF getIntersectionPoint(const QLineF& line) const;

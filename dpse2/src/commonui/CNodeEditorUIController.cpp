@@ -423,9 +423,15 @@ void CNodeEditorUIController::onSceneStatusChanged(int status)
 	case SIS_Hover:
 		onSceneHint(tr("Ctrl+Click - (un)select item | Click & drag - move selected items | Ctrl+Click & drag - clone selected items"));
 		return;
+
 	case SIS_Drag:
 		onSceneHint(tr("Shift - horizontal or vertical snap | Alt - toggle grid snap"));
 		return;
+
+	case SIS_Hover_Port:
+		onSceneHint(tr("Click & drag - make a connection at this port"));
+		return;
+
 	default:
 		onSceneHint(tr("Click & drag - select an area"));
 	}

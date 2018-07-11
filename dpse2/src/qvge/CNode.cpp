@@ -32,7 +32,7 @@ CNode::CNode(QGraphicsItem* parent) : QGraphicsRectItem(parent)
 
 	// accept hovers
 	setAcceptHoverEvents(true);
-	setFiltersChildEvents(true);
+	//setFiltersChildEvents(true);
 
 	// cache
 	setCacheMode(DeviceCoordinateCache);
@@ -259,7 +259,7 @@ bool CNode::removePort(const QByteArray& portId)
 }
 
 
-CNodePort* CNode::getPort(const QByteArray& portId)
+CNodePort* CNode::getPort(const QByteArray& portId) const
 {
 	if (portId.isEmpty() || !m_ports.contains(portId))
 		return NULL;
@@ -450,8 +450,18 @@ QSet<CEdge*> CNode::getOutConnections() const
 }
 
 
-double CNode::getDistanceToLineEnd(const QLineF& line) const
+double CNode::getDistanceToLineEnd(const QLineF& line, const QByteArray& portId) const
 {
+	// port
+	if (portId.size())
+	{
+		if (CNodePort* port = getPort(portId) )
+		{
+			double shift = (port->boundingRect().width() / 2);
+			return shift;
+		}
+	}
+
 	// circle 
 	if (m_shapeCache.isEmpty())
 	{

@@ -206,7 +206,7 @@ Q_SIGNALS:
 	void infoStatusChanged(int status);
 
 protected:
-	void updateCursorState();
+	virtual bool updateCursorState();
 	void setInfoStatus(int status);
 
 	void calculateTransformRect();

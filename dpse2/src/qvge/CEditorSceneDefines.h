@@ -14,6 +14,7 @@ enum SceneInfoState
 {
 	SIS_Select = 0,
 	SIS_Hover,
-	SIS_Drag
+	SIS_Drag,
+	SIS_Hover_Port
 };
 

@@ -16,6 +16,7 @@ enum ItemDragTestResult
 class IInteractive
 {
 public:
+	// callbacks
 	virtual void onItemMoved(const QPointF& delta) {}
 	virtual void onDraggedOver(const QSet<IInteractive*>& acceptedItems, const QSet<IInteractive*>& rejectedItems) {}
 	virtual void onDroppedOn(const QSet<IInteractive*>& acceptedItems, const QSet<IInteractive*>& rejectedItems) {}

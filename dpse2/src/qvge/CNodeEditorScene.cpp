@@ -4,6 +4,7 @@
 #include "CEdge.h"
 #include "CDirectEdge.h"
 #include "CControlPoint.h"
+#include "CEditorSceneDefines.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QColorDialog> 
@@ -599,6 +600,33 @@ QList<QGraphicsItem*> CNodeEditorScene::transformableItems() const
 	return result;
 }
 
+
+bool CNodeEditorScene::updateCursorState()
+{
+	// handled by super?
+	if (Super::updateCursorState())
+		return true;
+
+	if (QGraphicsItem *hoverItem = getItemAt(m_mousePos))
+	{
+		if (CNodePort *portItem = dynamic_cast<CNodePort*>(hoverItem))
+		{
+			if (portItem->isEnabled())
+			{
+				setSceneCursor(Qt::UpArrowCursor);
+				setInfoStatus(SIS_Hover_Port);
+			}
+
+			return true;
+		}
+	}
+
+	// still not handled
+	return false;
+}
+
+
+// painting
 
 void CNodeEditorScene::drawBackground(QPainter *painter, const QRectF &r)
 {

@@ -85,6 +85,24 @@ void CNodePort::leaveDragFromItem(QGraphicsItem* draggedItem)
 }
 
 
+void CNodePort::onClick(QGraphicsSceneMouseEvent* /*mouseEvent*/)
+{
+	setSelected(true);
+}
+//
+//
+//void CNodePort::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+//{
+//	
+//}
+//
+//
+//void CNodePort::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+//{
+//
+//}
+
+
 // serialization 
 
 bool CNodePort::storeTo(QDataStream& out, quint64 version64) const

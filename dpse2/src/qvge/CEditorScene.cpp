@@ -1039,7 +1039,7 @@ void CEditorScene::drawForeground(QPainter *painter, const QRectF &r)
 	m_labelsUpdate = false;
 
 	// draw transformer
-	drawTransformRect(painter);
+	//drawTransformRect(painter);
 }
 
 
@@ -1595,12 +1595,10 @@ void CEditorScene::setInfoStatus(int status)
 }
 
 
-void CEditorScene::updateCursorState()
+bool CEditorScene::updateCursorState()
 {
 	auto keys = qApp->queryKeyboardModifiers();
 	auto mouseButtons = qApp->mouseButtons();
-
-	QGraphicsItem *hoverItem = getItemAt(m_mousePos);
 
 	// drag?
 	if (m_dragInProgress)
@@ -1608,13 +1606,13 @@ void CEditorScene::updateCursorState()
 		if (m_acceptedHovers.size())
 		{
 			setSceneCursor(Qt::CrossCursor);
-			return;
+			return true;
 		}
 
 		if (m_rejectedHovers.size())
 		{
 			setSceneCursor(Qt::ForbiddenCursor);
-			return;
+			return true;
 		}
 
 		// clone?
@@ -1625,11 +1623,11 @@ void CEditorScene::updateCursorState()
 		//}
 
 		setSceneCursor(Qt::SizeAllCursor);
-		return;
+		return true;
 	}
 
 	// can drag a hover item?
-	if (hoverItem)
+	if (QGraphicsItem *hoverItem = getItemAt(m_mousePos))
 	{
 		if (hoverItem->isEnabled() && (hoverItem->flags() & hoverItem->ItemIsMovable))
 		{
@@ -1637,19 +1635,20 @@ void CEditorScene::updateCursorState()
 			if (keys == Qt::ControlModifier)
 			{
 				setSceneCursor(Qt::DragCopyCursor);
-				return;
+				return true;
 			}
 
 			if (mouseButtons == Qt::NoButton)
 			{
 				setSceneCursor(Qt::SizeAllCursor);
-				return;
+				return true;
 			}
 		}
 	}
 
 	// default scene cursor
 	setSceneCursor(Qt::ArrowCursor);
+	return false;
 }
 
 

@@ -192,14 +192,14 @@ QLineF CEdge::calculateArrowLine(const QPainterPath &path, bool first, const QLi
 
 	if (first && m_firstNode)
 	{
-		qreal shift = m_firstNode->getDistanceToLineEnd(direction);
+		qreal shift = m_firstNode->getDistanceToLineEnd(direction, m_firstPortId);
 		qreal arrowStart = path.percentAtLength(shift + ARROW_SIZE);
 		return QLineF(path.pointAtPercent(arrowStart), direction.p2());
 	}
 	else if (!first && m_lastNode)
 	{
 		qreal len = path.length();
-		qreal shift = m_lastNode->getDistanceToLineEnd(direction);
+		qreal shift = m_lastNode->getDistanceToLineEnd(direction, m_lastPortId);
 		qreal arrowStart = path.percentAtLength(len - shift - ARROW_SIZE);
 		return QLineF(path.pointAtPercent(arrowStart), direction.p2());
 	}
@@ -212,12 +212,12 @@ void CEdge::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*optio
 {
 	if (first && m_firstNode)
 	{
-		qreal shift = m_firstNode->getDistanceToLineEnd(direction);
+		qreal shift = m_firstNode->getDistanceToLineEnd(direction, m_firstPortId);
 		drawArrow(painter, shift, direction);
 	}
 	else if (!first && m_lastNode)
 	{
-		qreal shift = m_lastNode->getDistanceToLineEnd(direction);
+		qreal shift = m_lastNode->getDistanceToLineEnd(direction, m_lastPortId);
 		drawArrow(painter, shift, direction);
 	}
 }

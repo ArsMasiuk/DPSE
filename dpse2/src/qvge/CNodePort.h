@@ -36,8 +36,13 @@ public:
 	void onParentDeleted();
 	virtual void onParentGeometryChanged();
 
+	virtual void onClick(QGraphicsSceneMouseEvent* /*mouseEvent*/);
+
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem);
 	virtual void leaveDragFromItem(QGraphicsItem* draggedItem);
+
+	//virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+	//virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 protected:
 	CNode *m_node;
