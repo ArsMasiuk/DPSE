@@ -9,7 +9,6 @@ It can be used freely, maintaining the information above.
 
 #include "CClassAttributesEditorUI.h"
 #include "CNewAttributeDialog.h"
-#include "CColorSchemesUIController.h"
 
 #include <qvge/CEditorScene.h>
 #include <qvge/CItem.h>
@@ -35,12 +34,6 @@ CClassAttributesEditorUI::CClassAttributesEditorUI(QWidget *parent) :
 
 	//const QObjectList& objs = ui->Editor->children();
 	//qDebug() << objs
-
-    // color schemes
-    m_schemesController = new CColorSchemesUIController(this);
-    ui->ColorScheme->setMenu(m_schemesController->getSchemesMenu());
-	connect(m_schemesController, &CColorSchemesUIController::colorSchemeApplied, 
-		this, &CClassAttributesEditorUI::colorSchemeApplied);
 }
 
 CClassAttributesEditorUI::~CClassAttributesEditorUI()
@@ -64,9 +57,6 @@ void CClassAttributesEditorUI::setScene(CEditorScene* scene)
 
     if (m_scene)
         onSceneAttached(m_scene);
-
-    // schemes
-    m_schemesController->setScene(m_scene);
 }
 
 

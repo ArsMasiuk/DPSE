@@ -769,6 +769,12 @@ void CNodeEditorScene::onActionNodeColor()
 }
 
 
+void CNodeEditorScene::onActionAddPort()
+{
+
+}
+
+
 void CNodeEditorScene::onActionEdgeColor()
 {
     QList<CEdge*> edges = getSelectedItems<CEdge>(true);
@@ -871,12 +877,15 @@ bool CNodeEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QLis
 	QAction *nodeColorAction = menu.addAction(tr("Node(s) Color..."), this, SLOT(onActionNodeColor()));
 	nodeColorAction->setEnabled(nodesSelected);
 
+	QAction *addPortAction = menu.addAction(tr("Add Port..."), this, SLOT(onActionAddPort()));
+	addPortAction->setEnabled(nodesCount == 1);
+
 	// add default edge actions
 	menu.addSeparator();
 
 	bool edgesSelected = getSelectedItems<CEdge>(true).size();
 
-	QAction *edgeColorAction = menu.addAction(tr("Connection(s) Color..."), this, SLOT(onActionEdgeColor()));
+	QAction *edgeColorAction = menu.addAction(tr("Edge(s) Color..."), this, SLOT(onActionEdgeColor()));
 	edgeColorAction->setEnabled(edgesSelected);
 
 	QMenu *arrowsMenu = menu.addMenu(tr("Direction"));

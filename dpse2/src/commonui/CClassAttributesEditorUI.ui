@@ -63,25 +63,6 @@
        </item>
       </widget>
      </item>
-     <item>
-      <widget class="QToolButton" name="ColorScheme">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="statusTip">
-        <string>Apply predefined color scheme to graph</string>
-       </property>
-       <property name="text">
-        <string>Color scheme</string>
-       </property>
-       <property name="popupMode">
-        <enum>QToolButton::InstantPopup</enum>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
@@ -142,7 +123,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>ClassId</tabstop>
-  <tabstop>ColorScheme</tabstop>
   <tabstop>Editor</tabstop>
   <tabstop>AddButton</tabstop>
   <tabstop>ChangeButton</tabstop>

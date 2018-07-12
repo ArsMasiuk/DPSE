@@ -112,4 +112,6 @@ private:
 #ifdef USE_OGDF
 	class COGDFLayoutUIController *m_ogdfController;
 #endif
+
+	class CColorSchemesUIController *m_schemesController;
 };

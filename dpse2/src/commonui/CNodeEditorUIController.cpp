@@ -8,6 +8,7 @@ It can be used freely, maintaining the information above.
 */
 
 #include <CNodeEditorUIController.h>
+#include <CColorSchemesUIController.h>
 #include <CCommutationTable.h>
 #include <CSceneOptionsDialog.h>
 #include <CNodeEdgePropertiesUI.h>
@@ -211,11 +212,22 @@ void CNodeEditorUIController::createMenus()
 	sceneCropAction->setStatusTip(tr("Crop document area to contents"));
     connect(sceneCropAction, &QAction::triggered, this, &CNodeEditorUIController::sceneCrop);
 
+
+	// color schemes
+	editMenu->addSeparator();
+
+	m_schemesController = new CColorSchemesUIController(this);
+	m_schemesController->setScene(m_editorScene);
+	QAction *schemesAction = editMenu->addMenu(m_schemesController->getSchemesMenu());
+	schemesAction->setText(tr("Apply Colors"));
+	schemesAction->setStatusTip(tr("Apply predefined color scheme to the document"));
+
+
 	// scene options
 	editMenu->addSeparator();
 
 	QAction *sceneAction = editMenu->addAction(QIcon(":/Icons/Settings"), tr("&Options..."));
-	sceneAction->setStatusTip(tr("Set up the scene"));
+	sceneAction->setStatusTip(tr("Change document properties"));
     connect(sceneAction, &QAction::triggered, this, &CNodeEditorUIController::sceneOptions);
 
 
@@ -335,7 +347,8 @@ void CNodeEditorUIController::createPanels()
     defaultsDock->setWidget(defaultsPanel);
 
 	// connect color schemes
-	connect(defaultsPanel, &CClassAttributesEditorUI::colorSchemeApplied, propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene);
+	connect(m_schemesController, &CColorSchemesUIController::colorSchemeApplied,
+		propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene);
 }
 
 

@@ -316,11 +316,9 @@ private:
 template<class T>
 T* CEditorScene::createItemOfType(QPointF* at) const
 {
-	CItem* item = createItemOfType(T::factoryId());
-	if (item)
+	if (CItem* item = createItemOfType(T::factoryId()))
 	{
-		T* titem = dynamic_cast<T*>(item);
-		if (titem)
+		if (T* titem = dynamic_cast<T*>(item))
 		{
 			if (at)
 			{

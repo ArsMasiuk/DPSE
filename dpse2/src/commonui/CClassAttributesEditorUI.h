@@ -32,9 +32,6 @@ public:
 
     void setScene(CEditorScene* scene);
 
-Q_SIGNALS:
-	void colorSchemeApplied(CEditorScene* scene);
-
 protected:
     void connectSignals(CEditorScene* scene);
     void onSceneAttached(CEditorScene* scene);
@@ -62,8 +59,6 @@ private:
     QtVariantEditorFactory m_factory;
 
     CEditorScene *m_scene;
-
-    class CColorSchemesUIController *m_schemesController;
 
     bool m_locked;
 };

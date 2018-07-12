@@ -62,10 +62,12 @@ Q_SIGNALS:
 	void editModeChanged(int mode);
 
 public Q_SLOTS:
-	virtual void onActionLink();
-	virtual void onActionUnlink();
-	virtual void onActionNodeColor();
-	virtual void onActionEdgeColor();
+	void onActionLink();
+	void onActionUnlink();
+	void onActionNodeColor();
+	void onActionAddPort();
+
+	void onActionEdgeColor();
 	void onActionEdgeReverse();
 	void onActionEdgeDirected();
 	void onActionEdgeMutual();
