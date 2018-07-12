@@ -2,7 +2,7 @@
 
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CNode.h>
-#include <qvge/CDirectConnection.h>
+#include <qvge/CDirectEdge.h>
 
 #include <ogdf/basic/Graph.h>
 #include <ogdf/basic/GraphAttributes.h>
@@ -72,7 +72,7 @@ void COGDFLayout::doLayout(ogdf::LayoutModule &layout, CNodeEditorScene &scene)
 
     // qvge -> ogdf
     auto nodes = scene.getItems<CNode>();
-    auto edges = scene.getItems<CConnection>();
+    auto edges = scene.getItems<CEdge>();
 
     QMap<CNode*, ogdf::node> nodeMap;
 
@@ -87,7 +87,7 @@ void COGDFLayout::doLayout(ogdf::LayoutModule &layout, CNodeEditorScene &scene)
         nodeMap[node] = n;
     }
 
-    for (CConnection* edge: edges)
+    for (CEdge* edge: edges)
     {
         ogdf::node n1 = nodeMap[edge->firstNode()];
         ogdf::node n2 = nodeMap[edge->lastNode()];
@@ -140,7 +140,7 @@ void COGDFLayout::graphTopologyToScene(const ogdf::Graph &G, const ogdf::GraphAt
 
     for (auto e: G.edges)
     {
-        CConnection* edge = new CDirectConnection;
+		CEdge* edge = new CDirectEdge;
         scene.addItem(edge);
 
         edge->setFirstNode(nodeMap[e->source()]);
@@ -203,7 +203,7 @@ void COGDFLayout::graphToScene(const ogdf::Graph &G, const ogdf::GraphAttributes
 
     for (auto e: G.edges)
     {
-        CConnection* edge = scene.createNewConnection();
+		CEdge* edge = scene.createNewConnection();
         scene.addItem(edge);
 
         edge->setFirstNode(nodeMap[e->source()]);
