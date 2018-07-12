@@ -81,10 +81,11 @@ protected:
     void prefetchSelection() const;
 
 	// scene events
-	virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+	//virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void keyPressEvent(QKeyEvent *keyEvent);
 
+	virtual void onLeftButtonPressed(QGraphicsSceneMouseEvent *mouseEvent);
 	// called on drag after single click; returns true if handled
 	virtual bool onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos);
 	// called on drag after double click; returns true if handled

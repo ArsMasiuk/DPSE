@@ -279,27 +279,6 @@ CEdge* CNodeEditorScene::createNewConnection(CNode* startNode, CNode* endNode)
 
 // events
 
-void CNodeEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
-{
-	// add nodes?
-	if (m_editMode == EM_AddNodes)
-	{
-		if (mouseEvent->button() == Qt::LeftButton)
-		{
-			deselectAll();
-
-			onLeftButtonPressed(mouseEvent);
-
-			// skip calling super to avoid auto selection
-			mouseEvent->accept();
-			return;
-		}
-	}
-
-	Super::mousePressEvent(mouseEvent);
-}
-
-
 void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 	//if (m_state == IS_None)
@@ -363,17 +342,29 @@ void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 
 // handlers
 
+void CNodeEditorScene::onLeftButtonPressed(QGraphicsSceneMouseEvent *mouseEvent)
+{
+	Super::onLeftButtonPressed(mouseEvent);
+
+	// add nodes?
+	if (m_editMode == EM_AddNodes || isItemAt<CNodePort>(mouseEvent->scenePos()))
+	{
+		deselectAll();
+
+		// skip calling super to avoid auto selection
+		mouseEvent->accept();
+	}
+}
+
+
 bool CNodeEditorScene::onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
 {
 	// add nodes?
-	if ((m_editMode == EM_AddNodes) || (dynamic_cast<CNodePort*>(getItemAt(clickPos)) != nullptr))
+	if ((m_editMode == EM_AddNodes) || isItemAt<CNodePort>(clickPos))
 	{
 		if (startNewConnection(clickPos))
 		{
 			setEditMode(EM_Default);
-
-			mouseEvent->accept();
-
 			return true;
 		}
 	}

@@ -140,6 +140,11 @@ public:
 
 	QGraphicsItem* getItemAt(const QPointF& pos) const;
 
+	template<class T>
+	T* isItemAt(const QPointF& pos) const {
+		return dynamic_cast<T*>(getItemAt(pos));
+	}
+
 	// selections
 	QList<QGraphicsItem*> createSelectedList(const CItemsEvaluator&) const;
 
@@ -214,7 +219,6 @@ protected:
 	void drawTransformRect(QPainter *painter);
 
 	// internal call
-	void onLeftButtonPressed(QGraphicsSceneMouseEvent *mouseEvent);
 	void selectUnderMouse(QGraphicsSceneMouseEvent *mouseEvent);
 
 	// reimp
@@ -243,6 +247,8 @@ protected:
 	virtual void onDragging(QGraphicsItem* dragItem, const QSet<IInteractive*>& acceptedItems, const QSet<IInteractive*>& rejectedItems);
 	virtual void onMoving(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* hoverItem);
 	virtual void onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* dragItem);
+	virtual void onLeftButtonPressed(QGraphicsSceneMouseEvent *mouseEvent);
+	virtual void onRightButtonPressed(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void onLeftClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 	virtual void onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 	// called on drag after single click; returns true if handled

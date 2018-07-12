@@ -1107,22 +1107,21 @@ void CEditorScene::needUpdate()
 
 void CEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	// workaround: do not deselect selected items by RMB
 	if (mouseEvent->button() == Qt::RightButton)
 	{	
-		selectUnderMouse(mouseEvent);
-
-		mouseEvent->accept();
-		return;
+		onRightButtonPressed(mouseEvent);
 	}
-
-	// call super
-	Super::mousePressEvent(mouseEvent);
 
 	// check LMB
 	if (mouseEvent->button() == Qt::LeftButton)
 	{
 		onLeftButtonPressed(mouseEvent);
+	}
+
+	// call super is allowed
+	if (!mouseEvent->isAccepted())
+	{
+		Super::mousePressEvent(mouseEvent);
 	}
 }
 
@@ -1146,6 +1145,16 @@ void CEditorScene::onLeftButtonPressed(QGraphicsSceneMouseEvent *mouseEvent)
 	m_dragInProgress = false;
 
 	m_leftClickPos = mouseEvent->scenePos();
+}
+
+
+void CEditorScene::onRightButtonPressed(QGraphicsSceneMouseEvent *mouseEvent)
+{
+	// workaround: do not deselect selected items by RMB
+	selectUnderMouse(mouseEvent);
+
+	mouseEvent->accept();
+	return;
 }
 
 
@@ -1504,8 +1513,7 @@ void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, Q
 
 bool CEditorScene::onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
 {
-	QGraphicsItem* item = getItemAt(clickPos);
-	if (item)
+	if (QGraphicsItem* item = getItemAt(clickPos))
 	{
 		if (!item->isEnabled())
 			return false;
@@ -1516,8 +1524,7 @@ bool CEditorScene::onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPoin
 		// transform reset
 		m_transformRect = QRectF();
 
-		CItem *citem = dynamic_cast<CItem*>(item);
-		if (citem)
+		if (CItem *citem = dynamic_cast<CItem*>(item))
 		{
 			// clone?
 			if (mouseEvent->modifiers() == Qt::ControlModifier)
