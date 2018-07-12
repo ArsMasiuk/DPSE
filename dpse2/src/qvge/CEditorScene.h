@@ -206,8 +206,9 @@ Q_SIGNALS:
 	void infoStatusChanged(int status);
 
 protected:
-	virtual bool updateCursorState();
 	void setInfoStatus(int status);
+	void updateCursorState();
+	virtual bool doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem);
 
 	void calculateTransformRect();
 	void drawTransformRect(QPainter *painter);
@@ -237,7 +238,6 @@ protected:
 	void moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool performDrag);
 	virtual void processDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem);
 	void finishDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool dragCancelled);
-	virtual void updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem);
 
 	// callbacks
 	virtual void onDragging(QGraphicsItem* dragItem, const QSet<IInteractive*>& acceptedItems, const QSet<IInteractive*>& rejectedItems);

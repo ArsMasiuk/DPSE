@@ -1441,11 +1441,6 @@ void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsIte
 }
 
 
-void CEditorScene::updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
-{
-}
-
-
 void CEditorScene::onMoving(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
 {
 	updateCursorState();
@@ -1595,11 +1590,17 @@ void CEditorScene::setInfoStatus(int status)
 }
 
 
-bool CEditorScene::updateCursorState()
+void CEditorScene::updateCursorState()
 {
 	auto keys = qApp->queryKeyboardModifiers();
-	auto mouseButtons = qApp->mouseButtons();
+	auto buttons = qApp->mouseButtons();
+	QGraphicsItem *hoverItem = getItemAt(m_mousePos);
+	doUpdateCursorState(keys, buttons, hoverItem);
+}
 
+
+bool CEditorScene::doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem)
+{
 	// drag?
 	if (m_dragInProgress)
 	{
@@ -1627,7 +1628,7 @@ bool CEditorScene::updateCursorState()
 	}
 
 	// can drag a hover item?
-	if (QGraphicsItem *hoverItem = getItemAt(m_mousePos))
+	if (hoverItem)
 	{
 		if (hoverItem->isEnabled() && (hoverItem->flags() & hoverItem->ItemIsMovable))
 		{
@@ -1638,7 +1639,7 @@ bool CEditorScene::updateCursorState()
 				return true;
 			}
 
-			if (mouseButtons == Qt::NoButton)
+			if (buttons == Qt::NoButton)
 			{
 				setSceneCursor(Qt::SizeAllCursor);
 				return true;
@@ -1646,7 +1647,7 @@ bool CEditorScene::updateCursorState()
 		}
 	}
 
-	// default scene cursor
+	// default
 	setSceneCursor(Qt::ArrowCursor);
 	return false;
 }

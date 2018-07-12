@@ -124,8 +124,7 @@ void CNodeEditorScene::setEditMode(EditMode mode)
 
 bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 {
-	QGraphicsItem* item = getItemAt(pos);
-	if (item)
+	if (QGraphicsItem* item = getItemAt(pos))
 	{
 		if (!item->isEnabled())
 			return false;
@@ -367,11 +366,14 @@ void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 bool CNodeEditorScene::onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos)
 {
 	// add nodes?
-	if (m_editMode == EM_AddNodes)
+	if ((m_editMode == EM_AddNodes) || (dynamic_cast<CNodePort*>(getItemAt(clickPos)) != nullptr))
 	{
 		if (startNewConnection(clickPos))
 		{
 			setEditMode(EM_Default);
+
+			mouseEvent->accept();
+
 			return true;
 		}
 	}
@@ -601,22 +603,18 @@ QList<QGraphicsItem*> CNodeEditorScene::transformableItems() const
 }
 
 
-bool CNodeEditorScene::updateCursorState()
+bool CNodeEditorScene::doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem)
 {
 	// handled by super?
-	if (Super::updateCursorState())
+	if (Super::doUpdateCursorState(keys, buttons, hoverItem))
 		return true;
 
-	if (QGraphicsItem *hoverItem = getItemAt(m_mousePos))
+	if (CNodePort *portItem = dynamic_cast<CNodePort*>(hoverItem))
 	{
-		if (CNodePort *portItem = dynamic_cast<CNodePort*>(hoverItem))
+		if (portItem->isEnabled())
 		{
-			if (portItem->isEnabled())
-			{
-				setSceneCursor(Qt::UpArrowCursor);
-				setInfoStatus(SIS_Hover_Port);
-			}
-
+			setSceneCursor(Qt::UpArrowCursor);
+			setInfoStatus(SIS_Hover_Port);
 			return true;
 		}
 	}
@@ -671,21 +669,6 @@ void CNodeEditorScene::drawItems(QPainter *painter, int numItems, QGraphicsItem 
     }
 
 }
-
-//
-//void CNodeEditorScene::updateMovedCursor(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* hoverItem)
-//{
-//	if (mouseEvent->buttons() == Qt::NoButton)
-//	{
-//		if (dynamic_cast<CControlPoint*>(hoverItem))
-//		{
-//			setSceneCursor(Qt::CrossCursor);
-//			return;
-//		}
-//	}
-//
-//	return Super::updateMovedCursor(mouseEvent, hoverItem);
-//}
 
 
 

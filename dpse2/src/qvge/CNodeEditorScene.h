@@ -97,8 +97,7 @@ protected:
 	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);
 	virtual QList<QGraphicsItem*> copyPasteItems() const;
 	virtual QList<QGraphicsItem*> transformableItems() const;
-	
-	virtual bool updateCursorState();
+	virtual bool doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem);
 
     // draw
     virtual void drawBackground(QPainter *painter, const QRectF &);
