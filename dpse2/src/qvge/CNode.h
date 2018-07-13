@@ -64,8 +64,9 @@ public:
     virtual QByteArray superClassId() const { return Super::classId(); }
 
 	// ports
-	virtual CNodePort* addPort(const QByteArray& portId, int align, double xoff = 0, double yoff = 0);
+	virtual CNodePort* addPort(const QByteArray& portId = "", int align = Qt::AlignCenter, double xoff = 0, double yoff = 0);
 	virtual bool removePort(const QByteArray& portId);
+	virtual bool movePort(const QByteArray& portId, int align = Qt::AlignCenter, double xoff = 0, double yoff = 0);
 	virtual CNodePort* getPort(const QByteArray& portId) const;
 
 	// serialization 

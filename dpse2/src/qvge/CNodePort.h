@@ -27,6 +27,12 @@ public:
 
 	CNode* getNode() const				{ return m_node;	}
 	const QByteArray& getId() const		{ return m_id;		}
+	int getAlign() const				{ return m_align;	}
+	double getX() const					{ return m_xoff; }
+	double getY() const					{ return m_yoff; }
+
+	void setAlign(int newAlign);
+	void setOffset(double xoff, double yoff);
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;

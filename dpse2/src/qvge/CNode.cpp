@@ -86,6 +86,8 @@ void CNode::copyDataFrom(CItem* from)
 		resize(fromNode->getSize());
 		setPos(fromNode->pos());
 		setZValue(fromNode->zValue());
+
+		// to do: ports...
 	}
 
 	updateCachedItems();
@@ -230,11 +232,20 @@ QVariant CNode::getAttribute(const QByteArray& attrId) const
 
 CNodePort* CNode::addPort(const QByteArray& portId, int align, double xoff, double yoff)
 {
-	if (portId.isEmpty() || m_ports.contains(portId))
+	if (m_ports.contains(portId))
 		return NULL;
 
-	CNodePort* port = new CNodePort(this, portId, align, xoff, yoff);
-	m_ports[portId] = port;
+	QByteArray newPortId(portId);
+	if (portId.isEmpty())
+	{
+		int suffix = 1;
+		do {
+			newPortId = "Port " + QByteArray::number(suffix++);
+		} while (m_ports.contains(newPortId));
+	}
+
+	CNodePort* port = new CNodePort(this, newPortId, align, xoff, yoff);
+	m_ports[newPortId] = port;
 
 	updateCachedItems();
 
@@ -256,6 +267,21 @@ bool CNode::removePort(const QByteArray& portId)
 	updateCachedItems();
 
 	return port;
+}
+
+
+bool CNode::movePort(const QByteArray& portId, int align, double xoff, double yoff)
+{
+	if (!m_ports.contains(portId))
+		return false;
+
+	CNodePort *port = m_ports[portId];
+	port->setAlign(align);
+	port->setOffset(xoff, yoff);
+
+	updatePortsLayout();
+
+	return true;
 }
 
 

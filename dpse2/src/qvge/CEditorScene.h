@@ -272,6 +272,9 @@ protected:
 	bool m_dragInProgress;
 	QGraphicsItem *m_startDragItem;
 	QPointF m_lastDragPos;
+	QGraphicsItem *m_draggedItem;
+	QSet<IInteractive*> m_acceptedHovers, m_rejectedHovers;
+	QGraphicsItem *m_menuTriggerItem;
 
 private:
 	int m_infoStatus;
@@ -292,11 +295,6 @@ private:
     bool m_gridEnabled;
     bool m_gridSnap;
     QPen m_gridPen;
-
-	QSet<IInteractive*> m_acceptedHovers, m_rejectedHovers;
-
-	QGraphicsItem *m_menuTriggerItem;
-	QGraphicsItem *m_draggedItem;
 
 	bool m_needUpdateItems;
 

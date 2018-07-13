@@ -13,6 +13,8 @@
 #include <QDebug>
 #include <QElapsedTimer>
 
+#include <commonui/CNodePortEditorDialog.h>
+
 
 CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 	m_editMode(EM_Default),
@@ -771,7 +773,18 @@ void CNodeEditorScene::onActionNodeColor()
 
 void CNodeEditorScene::onActionAddPort()
 {
+	CNode *node = dynamic_cast<CNode*>(m_menuTriggerItem);
+	if (!node)
+		return;
 
+	CNodePort *port = node->addPort();
+	if (!port)
+		return;
+
+	CNodePortEditorDialog dialog;
+	int r = dialog.exec(*port);
+
+	addUndoState();
 }
 
 

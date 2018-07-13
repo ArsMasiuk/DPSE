@@ -64,6 +64,19 @@ void CNodePort::onParentGeometryChanged()
 }
 
 
+void CNodePort::setAlign(int newAlign)
+{
+	m_align = newAlign;
+}
+
+
+void CNodePort::setOffset(double xoff, double yoff)
+{
+	m_xoff = xoff;
+	m_yoff = yoff;
+}
+
+
 ItemDragTestResult CNodePort::acceptDragFromItem(QGraphicsItem* draggedItem)
 {
 	if (dynamic_cast<CNode*>(draggedItem))
