@@ -783,16 +783,8 @@ void CNode::updateCachedItems()
 	// update caches & connections 
 	if (m_shapeCache != shapeCache || m_sizeCache != sizeCache)
 	{
-		prepareGeometryChange();
-
-		// update ports
+		// update ports & edges
 		updatePortsLayout();
-
-		// update edges
-		for (auto edge : m_connections)
-		{
-			edge->onParentGeometryChanged();
-		}
 
 		// update text label
 		if (getScene() && getScene()->itemLabelsEnabled())
@@ -806,9 +798,18 @@ void CNode::updateCachedItems()
 
 void CNode::updatePortsLayout()
 {
+	prepareGeometryChange();
+
+	// update ports layout
 	for (auto port : m_ports.values())
 	{
 		port->onParentGeometryChanged();
+	}
+
+	// update edges as well
+	for (auto edge : m_connections)
+	{
+		edge->onParentGeometryChanged();
 	}
 }
 

@@ -22,6 +22,7 @@ class CNodePort : public QGraphicsRectItem, public IInteractive
 public:
 	typedef QGraphicsRectItem Shape;
 
+	CNodePort(const CNodePort &port);
 	explicit CNodePort(CNode *node, const QByteArray& portId, int align, double xoff = 0, double yoff = 0);
 	virtual ~CNodePort();
 
@@ -33,6 +34,8 @@ public:
 
 	void setAlign(int newAlign);
 	void setOffset(double xoff, double yoff);
+
+	void copyDataFrom(const CNodePort &port);
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
@@ -51,7 +54,7 @@ public:
 	//virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 protected:
-	CNode *m_node;
+	CNode *m_node = nullptr;
 
 	QByteArray m_id;
 	int m_align;

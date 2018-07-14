@@ -10,13 +10,13 @@ CNodePortEditorDialog::CNodePortEditorDialog(): ui(new Ui::CNodePortEditorDialog
 	ui->setupUi(this);
 
 	ui->Anchor->addItem(tr("Left"), Qt::AlignLeft + Qt::AlignVCenter);
-	ui->Anchor->addItem(tr("Top"), Qt::AlignTop + Qt::AlignHCenter);
-	ui->Anchor->addItem(tr("Right"), Qt::AlignRight + Qt::AlignVCenter);
-	ui->Anchor->addItem(tr("Bottom"), Qt::AlignBottom + Qt::AlignHCenter);
 	ui->Anchor->addItem(tr("Top-Left"), Qt::AlignTop + Qt::AlignLeft);
+	ui->Anchor->addItem(tr("Top"), Qt::AlignTop + Qt::AlignHCenter);
 	ui->Anchor->addItem(tr("Top-Right"), Qt::AlignTop + Qt::AlignRight);
-	ui->Anchor->addItem(tr("Bottom-Left"), Qt::AlignBottom + Qt::AlignLeft);
+	ui->Anchor->addItem(tr("Right"), Qt::AlignRight + Qt::AlignVCenter);
 	ui->Anchor->addItem(tr("Bottom-Right"), Qt::AlignBottom + Qt::AlignRight);
+	ui->Anchor->addItem(tr("Bottom"), Qt::AlignBottom + Qt::AlignHCenter);
+	ui->Anchor->addItem(tr("Bottom-Left"), Qt::AlignBottom + Qt::AlignLeft);
 	ui->Anchor->addItem(tr("Center"), Qt::AlignCenter);
 }
 
@@ -29,6 +29,7 @@ CNodePortEditorDialog::~CNodePortEditorDialog()
 int CNodePortEditorDialog::exec(CNodePort &port)
 {
 	m_port = &port;
+	m_node = port.getNode();
 
 	ui->PortId->setText(port.getId());
 
@@ -46,15 +47,12 @@ int CNodePortEditorDialog::exec(CNodePort &port)
 
 void CNodePortEditorDialog::doUpdate()
 {
-	if (m_port)
+	if (m_port && m_node)
 	{
-		if (CNode *node = dynamic_cast<CNode*>(m_port->parentItem()))
-		{
-			int align = ui->Anchor->currentData().toInt();
-			int xv = ui->OffsetX->value();
-			int yv = ui->OffsetY->value();
-			node->movePort(m_port->getId(), align, xv, yv);
-		}
+		int align = ui->Anchor->currentData().toInt();
+		int xv = ui->OffsetX->value();
+		int yv = ui->OffsetY->value();
+		m_node->movePort(m_port->getId(), align, xv, yv);
 	}
 }
 

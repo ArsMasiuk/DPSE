@@ -66,6 +66,7 @@ public Q_SLOTS:
 	void onActionUnlink();
 	void onActionNodeColor();
 	void onActionAddPort();
+	void onActionEditPort();
 
 	void onActionEdgeColor();
 	void onActionEdgeReverse();

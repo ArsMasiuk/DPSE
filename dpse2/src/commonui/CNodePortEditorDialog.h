@@ -6,6 +6,7 @@ namespace Ui {
 	class CNodePortEditorDialog;
 }
 
+class CNode;
 class CNodePort;
 
 
@@ -30,5 +31,6 @@ private:
 	Ui::CNodePortEditorDialog *ui;
 	
 	CNodePort *m_port = nullptr;
+	CNode *m_node = nullptr;
 };
 

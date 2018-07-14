@@ -782,9 +782,29 @@ void CNodeEditorScene::onActionAddPort()
 		return;
 
 	CNodePortEditorDialog dialog;
-	int r = dialog.exec(*port);
+	if (dialog.exec(*port) == QDialog::Accepted)
+		addUndoState();
+	else
+		delete port;
+}
 
-	addUndoState();
+
+void CNodeEditorScene::onActionEditPort()
+{
+	CNodePort *port = dynamic_cast<CNodePort*>(m_menuTriggerItem);
+	if (!port)
+		return;
+
+	CNodePortEditorDialog dialog;
+	if (dialog.exec(*port) == QDialog::Accepted)
+	{
+		addUndoState();
+	}
+	else
+	{
+		addUndoState();
+		undo();
+	}
 }
 
 
@@ -890,8 +910,13 @@ bool CNodeEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QLis
 	QAction *nodeColorAction = menu.addAction(tr("Node(s) Color..."), this, SLOT(onActionNodeColor()));
 	nodeColorAction->setEnabled(nodesSelected);
 
+	menu.addSeparator();
+
 	QAction *addPortAction = menu.addAction(tr("Add Port..."), this, SLOT(onActionAddPort()));
 	addPortAction->setEnabled(nodesCount == 1);
+
+	QAction *editPortAction = menu.addAction(tr("Edit Port..."), this, SLOT(onActionEditPort()));
+	editPortAction->setEnabled(dynamic_cast<CNodePort*>(item));
 
 	// add default edge actions
 	menu.addSeparator();
