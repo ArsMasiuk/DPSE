@@ -22,7 +22,6 @@ class CNodePort : public QGraphicsRectItem, public IInteractive
 public:
 	typedef QGraphicsRectItem Shape;
 
-	CNodePort(const CNodePort &port);
 	explicit CNodePort(CNode *node, const QByteArray& portId, int align, double xoff = 0, double yoff = 0);
 	virtual ~CNodePort();
 

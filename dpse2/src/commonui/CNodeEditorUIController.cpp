@@ -9,6 +9,7 @@ It can be used freely, maintaining the information above.
 
 #include <CNodeEditorUIController.h>
 #include <CColorSchemesUIController.h>
+#include <CSceneMenuUIController.h>
 #include <CCommutationTable.h>
 #include <CSceneOptionsDialog.h>
 #include <CNodeEdgePropertiesUI.h>
@@ -66,6 +67,9 @@ CNodeEditorUIController::CNodeEditorUIController(CMainWindow *parent) :
 
     connect(m_editorScene, &CEditorScene::infoStatusChanged, this, &CNodeEditorUIController::onSceneStatusChanged);
     connect(m_editorScene, &CNodeEditorScene::editModeChanged, this, &CNodeEditorUIController::onEditModeChanged);
+
+	CSceneMenuUIController *menuController = new CSceneMenuUIController(this);
+	m_editorScene->setContextMenuController(menuController);
 
 	// connect view
 	connect(m_editorView, SIGNAL(scaleChanged(double)), this, SLOT(onZoomChanged(double)));

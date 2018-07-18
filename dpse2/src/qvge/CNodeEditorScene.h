@@ -98,7 +98,6 @@ protected:
 	virtual void onLeftDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* clickedItem);
 
 	// reimp
-	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);
 	virtual QList<QGraphicsItem*> copyPasteItems() const;
 	virtual QList<QGraphicsItem*> transformableItems() const;
 	virtual bool doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem);

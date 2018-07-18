@@ -23,6 +23,7 @@ class CItem;
 class IUndoManager;
 class ISceneItemFactory;
 class IInteractive;
+class ISceneMenuController;
 
 
 class CItemsEvaluator
@@ -165,6 +166,11 @@ public:
 	// operations
 	void startDrag(QGraphicsItem* dragItem);
 
+	// context menu
+	void setContextMenuController(ISceneMenuController *controller) {
+		m_menuController = controller;
+	}
+
 	// other
 	bool checkLabelRegion(const QRectF& r);
 	void layoutItemLabels();
@@ -228,13 +234,12 @@ protected:
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
-	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent);
 	virtual void keyPressEvent(QKeyEvent *keyEvent);
 	virtual void keyReleaseEvent(QKeyEvent *keyEvent);
 	virtual void focusInEvent(QFocusEvent *focusEvent);
+	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent);
 
 	// to reimplement
-	virtual bool populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems);
 	virtual QList<QGraphicsItem*> copyPasteItems() const;
 	virtual QList<QGraphicsItem*> transformableItems() const;
 
@@ -274,18 +279,20 @@ protected:
 	QPointF m_lastDragPos;
 	QGraphicsItem *m_draggedItem;
 	QSet<IInteractive*> m_acceptedHovers, m_rejectedHovers;
-	QGraphicsItem *m_menuTriggerItem;
+
+	QGraphicsItem *m_menuTriggerItem = nullptr;
+	ISceneMenuController *m_menuController = nullptr;
 
 private:
 	int m_infoStatus;
 
 	QMap<QByteArray, CItem*> m_itemFactories;
 	QMap<QByteArray, CItem*> m_activeItemFactory;
-	ISceneItemFactory *m_itemFactoryFilter = NULL;
+	ISceneItemFactory *m_itemFactoryFilter = nullptr;
 
 	QMap<QByteArray, QByteArray> m_classToSuperIds;
 
-	IUndoManager *m_undoManager = NULL;
+	IUndoManager *m_undoManager = nullptr;
 
 	ClassAttributesMap m_classAttributes;
     QMap<QByteArray, QSet<QByteArray>> m_classAttributesVis;

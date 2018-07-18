@@ -14,6 +14,7 @@ It can be used freely, maintaining the information above.
 #include "CDiffUndoManager.h"
 #include "IContextMenuProvider.h"
 #include "ISceneItemFactory.h"
+#include "ISceneMenuController.h"
 
 #include <QPainter>
 #include <QPaintEngine>
@@ -1830,23 +1831,8 @@ void CEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuE
 	}
 
 	// else custom menu
-	if (populateMenu(sceneMenu, m_menuTriggerItem, selectedItems()))
-	{
-		sceneMenu.exec(contextMenuEvent->screenPos());
-	}
-}
-
-
-bool CEditorScene::populateMenu(QMenu& menu, QGraphicsItem* item, const QList<QGraphicsItem*>& selectedItems)
-{
-	if (!item && selectedItems.isEmpty())
-		return false;
-
-	// add default actions
-	QAction *deleteAction = menu.addAction(tr("Delete"), this, SLOT(onActionDelete()));
-	deleteAction->setEnabled(createSelectedList(CDeletableItems()).size());
-
-	return true;
+	if (m_menuController)
+		m_menuController->exec(this, m_menuTriggerItem, contextMenuEvent);
 }
 
 
