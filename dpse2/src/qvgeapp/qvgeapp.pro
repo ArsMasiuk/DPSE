@@ -22,7 +22,7 @@ RESOURCES += $$files($$PWD/*.qrc)
 # includes & libs
 INCLUDEPATH += $$PWD $$PWD/.. $$PWD/../3rdParty/qtpropertybrowser $$PWD/../3rdParty/qsint-widgets
 
-LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge -lcommonui
+LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge -lqvgeio -lcommonui
 
 win32{
     LIBS += -lopengl32 -lglu32 -lshell32 -luser32 -lpsapi

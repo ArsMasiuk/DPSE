@@ -110,14 +110,6 @@ void CEditorScene::initialize()
     CAttribute idAttr("id", "ID", "");
 	idAttr.noDefault = true;
 	setClassAttribute("item", idAttr, true);
-
-	// static init
-	static bool s_init = false;
-	if (!s_init)
-	{
-		s_init = true;
-		initializeOnce();
-	}
 }
 
 void CEditorScene::removeItems()

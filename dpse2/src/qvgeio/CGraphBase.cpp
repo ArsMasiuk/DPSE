@@ -7,13 +7,17 @@ QVGE - Qt Visual Graph Editor
 It can be used freely, maintaining the information above.
 */
 
-#ifndef QVGEVERSION_H
-#define QVGEVERSION_H
-
-#include <QVersionNumber>
+#include "CGraphBase.h"
 
 
-static QVersionNumber qvgeVersion(0,4,4);
+void Graph::clear()
+{
+	attrs.clear();
+	nodes.clear();
+	edges.clear();
 
+	nodeAttrs.clear();
+	edgeAttrs.clear();
+	graphAttrs.clear();
+}
 
-#endif // QVGEVERSION_H

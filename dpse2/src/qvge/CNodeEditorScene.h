@@ -35,7 +35,8 @@ public:
 
 	// reimp
 	virtual void initialize();
-	virtual void initializeOnce();
+	virtual bool fromGraph(const Graph& g);
+	virtual bool toGraph(Graph& g);
 
 	// operations
 	bool startNewConnection(const QPointF& pos);

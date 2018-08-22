@@ -25,6 +25,8 @@ class ISceneItemFactory;
 class IInteractive;
 class ISceneMenuController;
 
+struct Graph;
+
 
 class CItemsEvaluator
 {
@@ -52,7 +54,9 @@ public:
 
 	virtual void reset();
 	virtual void initialize();
-	virtual void initializeOnce() {}	// static initialization (called once)
+
+	virtual bool fromGraph(const Graph&)	{ return false; }
+	virtual bool toGraph(Graph&)			{ return false; }
 
 	// properties
     void setGridSize(int newSize);

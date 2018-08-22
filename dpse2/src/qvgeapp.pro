@@ -25,6 +25,9 @@ qsint.file = $$PWD/3rdParty/qsint-widgets/qsint-widgets.pro
 SUBDIRS += qvge
 qvge.file = $$PWD/qvge/qvge.pro
 
+SUBDIRS += qvgeio
+qvgeio.file = $$PWD/qvgeio/qvgeio.pro
+
 SUBDIRS += qvgeapp
 qvgeapp.file = $$PWD/qvgeapp/qvgeapp.pro
 

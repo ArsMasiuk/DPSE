@@ -11,13 +11,6 @@ It can be used freely, maintaining the information above.
 
 #include "IFileSerializer.h"
 
-#include <QtXml/QDomDocument>
-#include <QMap>
-#include <QByteArray>
-#include <QVariant>
-
-class CNode;
-
 
 class CFileSerializerGraphML : public IFileSerializer
 {
@@ -49,23 +42,6 @@ public:
 	virtual bool save(const QString& /*fileName*/, CEditorScene& /*scene*/) const {
 		return false;
 	}
-
-private:
-	typedef QPair<QByteArray, QByteArray> ClassAttrId;
-	typedef QMap<QByteArray, ClassAttrId> KeyAttrMap;
-
-	bool readAttrKey(int index, const QDomNode &domNode, CEditorScene& scene, KeyAttrMap& cka) const;
-	bool readNode(int index, const QDomNode &domNode, CEditorScene& scene, const KeyAttrMap& cka) const;
-	bool readEdge(int index, const QDomNode &domNode, CEditorScene& scene, const KeyAttrMap& cka) const;
-
-	mutable QMap<QString, CNode*> m_nodeMap;
-
-	enum EdgeType {
-		Directed,
-		Undirected,
-		Mutual
-	};
-	mutable QString m_edgeType;
 };
 
 

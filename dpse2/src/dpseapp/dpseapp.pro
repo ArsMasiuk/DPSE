@@ -27,7 +27,7 @@ HEADERS += $$files($$PWD/simu/*.h)
 # includes & libs
 INCLUDEPATH += $$PWD $$PWD/.. $$PWD/../3rdParty/qtpropertybrowser $$PWD/../3rdParty/qsint-widgets
 
-LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge -lcommonui
+LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge -lqvgeio -lcommonui
 
 USE_OGDF{
     LIBS += -logdf

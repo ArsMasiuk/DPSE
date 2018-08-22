@@ -6,6 +6,8 @@
 #include "CControlPoint.h"
 #include "CEditorSceneDefines.h"
 
+#include <qvgeio/CGraphBase.h>
+
 #include <QGraphicsSceneMouseEvent>
 #include <QColorDialog> 
 #include <QKeyEvent>
@@ -30,6 +32,79 @@ CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 
 	// go
 	initialize();
+}
+
+
+bool CNodeEditorScene::fromGraph(const Graph& g)
+{
+	reset();
+
+	
+	for (const auto& attr : g.graphAttrs)
+	{
+		createClassAttribute("", attr.id, attr.name, attr.defaultValue);
+	}
+
+	for (auto& it = g.attrs.constBegin(); it != g.attrs.constEnd(); ++it)
+	{
+		setClassAttribute("", it.key(), it.value());
+	}
+
+
+	for (const auto& attr : g.nodeAttrs)
+	{
+		createClassAttribute("node", attr.id, attr.name, attr.defaultValue);
+	}
+
+
+	for (const auto& attr : g.edgeAttrs)
+	{
+		createClassAttribute("edge", attr.id, attr.name, attr.defaultValue);
+	}
+
+
+	QMap<QByteArray, CNode*> nodesMap;
+
+	for (const Node& n : g.nodes)
+	{
+		CNode* node = createNewNode();
+		addItem(node);
+
+		node->setId(n.id);
+		nodesMap[n.id] = node;
+
+		for (auto& it = n.attrs.constBegin(); it != n.attrs.constEnd(); ++it)
+		{
+			node->setAttribute(it.key(), it.value());
+		}
+	}
+
+
+	for (const Edge& e : g.edges)
+	{
+		CEdge* edge = createNewConnection();
+		addItem(edge);
+
+		edge->setId(e.id);
+		edge->setFirstNode(nodesMap[e.startNodeId], e.startPortId);
+		edge->setLastNode(nodesMap[e.endNodeId], e.endPortId);
+
+		for (auto& it = e.attrs.constBegin(); it != e.attrs.constEnd(); ++it)
+		{
+			edge->setAttribute(it.key(), it.value());
+		}
+	}
+
+	// finalize
+	setSceneRect(itemsBoundingRect());
+
+	return true;
+}
+
+
+bool CNodeEditorScene::toGraph(Graph& g)
+{
+	return false;
 }
 
 
@@ -102,12 +177,6 @@ void CNodeEditorScene::initialize()
 			<< QIcon(":/Icons/Node-Triangle-Down") << QIcon(":/Icons/Node-Diamond") << QIcon(":/Icons/Node-Hexagon");
 	}
 	setClassAttributeConstrains("node", "shape", nodeShapes);
-}
-
-
-void CNodeEditorScene::initializeOnce()
-{
-	Super::initializeOnce();
 }
 
 
