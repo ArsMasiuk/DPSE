@@ -3,6 +3,7 @@ QVGE 0.4.4 (beta)
 - changed project directory structure
 - globally renamed: CConnection -> CEdge etc.
 
+- added basic support of node ports
 - added buttons to change attribute's name & type 
 - color schemes menu moved into Edit
 
@@ -10,6 +11,7 @@ QVGE 0.4.4 (beta)
 - fixed issue with putting empty states into the undo/redo stack after editing
 	of complex attributes (color, font etc)
 - fixed generation of the default id for nodes/edges
+- fixed opening of documents with unicode names
 
 
 QVGE 0.4.3 (beta)

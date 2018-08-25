@@ -77,6 +77,11 @@ bool CNodeEditorScene::fromGraph(const Graph& g)
 		{
 			node->setAttribute(it.key(), it.value());
 		}
+
+		for (auto& it = n.ports.constBegin(); it != n.ports.constEnd(); ++it)
+		{
+			CNodePort* port = node->addPort(it.key().toLocal8Bit());
+		}
 	}
 
 
@@ -97,6 +102,8 @@ bool CNodeEditorScene::fromGraph(const Graph& g)
 
 	// finalize
 	setSceneRect(itemsBoundingRect());
+
+	addUndoState();
 
 	return true;
 }

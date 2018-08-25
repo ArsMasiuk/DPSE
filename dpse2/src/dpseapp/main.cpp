@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
 	a.setWindowIcon(QIcon(":/Icons/AppIcon"));
 	dpseMainWindow w;
-	w.init(argc, argv);
+	w.init(QCoreApplication::arguments());
     w.show();
 	return a.exec();
 }

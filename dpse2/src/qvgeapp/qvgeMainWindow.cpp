@@ -49,9 +49,9 @@ qvgeMainWindow::qvgeMainWindow()
 }
 
 
-void qvgeMainWindow::init(int argc, char *argv[])
+void qvgeMainWindow::init(const QStringList& args)
 {
-    Super::init(argc, argv);
+    Super::init(args);
 
     statusBar()->showMessage(tr("qvge started."));
 }

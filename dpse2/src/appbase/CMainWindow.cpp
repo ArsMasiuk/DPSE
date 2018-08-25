@@ -59,7 +59,7 @@ void CMainWindow::addDocument(const CDocument& doc)
 
 // protected
 
-void CMainWindow::init(int argc, char *argv[])
+void CMainWindow::init(const QStringList& args)
 {
     createMainMenu();
 
@@ -71,7 +71,7 @@ void CMainWindow::init(int argc, char *argv[])
 
     readSettings();
 
-    processParams(argc, argv);
+    processParams(args);
 }
 
 
@@ -125,29 +125,29 @@ void CMainWindow::dropEvent(QDropEvent* event)
 }
 
 
-void CMainWindow::processParams(int argc, char *argv[])
+void CMainWindow::processParams(const QStringList& args)
 {
-    if (argc >= 3)
+    if (args.count() >= 3)
     {
-        QByteArray command(argv[1]);
+        QString command(args.at(1));
 
         if (command == "create")
         {
-            doCreateNewDocument(argv[2]);
+            doCreateNewDocument(args.at(2).toLocal8Bit());
             return;
         }
 
         if (command == "open")
         {
-            doOpenDocument(argv[2]);
+            doOpenDocument(args.at(2));
             return;
         }
     }
 
 	// assotiated file?
-	if (argc == 2)
+	if (args.count() == 2)
 	{
-		doOpenDocument(argv[1]);
+		doOpenDocument(args.at(1));
 		return;
 	}
 

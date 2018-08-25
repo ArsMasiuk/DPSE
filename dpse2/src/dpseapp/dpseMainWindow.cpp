@@ -44,9 +44,9 @@ dpseMainWindow::dpseMainWindow()
 }
 
 
-void dpseMainWindow::init(int argc, char *argv[])
+void dpseMainWindow::init(const QStringList& args)
 {
-    Super::init(argc, argv);
+    Super::init(args);
 
     statusBar()->showMessage(tr("DPSE started."));
 }

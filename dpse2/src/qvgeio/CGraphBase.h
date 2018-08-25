@@ -29,10 +29,20 @@ struct AttrInfo
 typedef QMap<QByteArray, AttrInfo> AttributeInfos;
 
 
+struct NodePort
+{
+	QString name;
+	//QPoint pos;
+};
+
+typedef QMap<QString, NodePort> NodePorts;
+
+
 struct Node
 {
 	QByteArray id;
 	GraphAttributes attrs;
+	NodePorts ports;
 };
 
 

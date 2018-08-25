@@ -38,7 +38,7 @@ public:
     explicit CMainWindow(QWidget *parent = nullptr);
     virtual ~CMainWindow();
 
-    virtual void init(int argc, char *argv[]);
+    virtual void init(const QStringList& args);
 
     void addDocument(const CDocument& doc);
 
@@ -62,7 +62,7 @@ protected:
 	void dragLeaveEvent(QDragLeaveEvent* event);
 	void dropEvent(QDropEvent* event);
 
-    virtual void processParams(int argc, char *argv[]);
+    virtual void processParams(const QStringList& args);
 
     virtual void createMainMenu();
 	virtual void createWindowsMenu();

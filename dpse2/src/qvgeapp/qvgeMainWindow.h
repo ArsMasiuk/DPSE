@@ -30,7 +30,7 @@ public:
 
     qvgeMainWindow();
 
-    virtual void init(int argc, char *argv[]);
+    virtual void init(const QStringList& args);
 
 protected:
     virtual bool createDocument(const QByteArray &docType);

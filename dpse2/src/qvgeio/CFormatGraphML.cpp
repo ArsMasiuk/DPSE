@@ -136,7 +136,7 @@ bool CFormatGraphML::readNode(int /*index*/, const QDomNode &domNode, Graph& gra
 		QDomElement de = dm.toElement();
 
 		QString key = de.attribute("key", "");
-		ClassAttrId classAttrId = cka[key.toLatin1()];
+		ClassAttrId classAttrId = cka[key.toLocal8Bit()];
 		QByteArray attrId = classAttrId.second;
 
 		if (!attrId.isEmpty())
@@ -154,6 +154,22 @@ bool CFormatGraphML::readNode(int /*index*/, const QDomNode &domNode, Graph& gra
 		}
 	}
 
+	// ports
+	QDomNodeList portNodes = elem.elementsByTagName("port");
+	for (int i = 0; i < data.count(); ++i)
+	{
+		QDomNode dm = data.at(i);
+		QDomElement de = dm.toElement();
+
+		QString portName = de.attribute("name", "");
+		if (portName.isEmpty())
+			continue;
+
+		NodePort port;
+		port.name = portName;
+		node.ports[portName] = port;
+	}
+
 	graph.nodes.append(node);
 
 	return true;
@@ -164,12 +180,11 @@ bool CFormatGraphML::readEdge(int /*index*/, const QDomNode &domNode, Graph& gra
 {
 	QDomElement elem = domNode.toElement();
 	
-	QString source = elem.attribute("source", "");
-	QString target = elem.attribute("target", "");
-
 	Edge edge;
-	edge.startNodeId = source.toLocal8Bit();
-	edge.endNodeId = target.toLocal8Bit();
+	edge.startNodeId = elem.attribute("source", "").toLocal8Bit();
+	edge.startPortId = elem.attribute("sourceport", "").toLocal8Bit();
+	edge.endNodeId = elem.attribute("target", "").toLocal8Bit();
+	edge.endPortId = elem.attribute("targetport", "").toLocal8Bit();
 
 	// common attrs
 	QString id = elem.attribute("id", "");
