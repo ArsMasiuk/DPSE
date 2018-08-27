@@ -41,6 +41,9 @@
 
 #include "qteditorfactory.h"
 #include "qtpropertybrowserutils_p.h"
+
+#include "lineedit.h"
+
 #include <QSpinBox>
 #include <QScrollBar>
 #include <QComboBox>
@@ -996,7 +999,7 @@ void QtDoubleSpinBoxFactory::disconnectPropertyManager(QtDoublePropertyManager *
 
 // QtLineEditFactory
 
-class QtLineEditFactoryPrivate : public EditorFactoryPrivate<QLineEdit>
+class QtLineEditFactoryPrivate : public EditorFactoryPrivate<LineEdit>
 {
     QtLineEditFactory *q_ptr;
     Q_DECLARE_PUBLIC(QtLineEditFactory)
@@ -1015,9 +1018,9 @@ void QtLineEditFactoryPrivate::slotPropertyChanged(QtProperty *property,
     if (!m_createdEditors.contains(property))
         return;
 
-    QListIterator<QLineEdit *> itEditor( m_createdEditors[property]);
+    QListIterator<LineEdit *> itEditor( m_createdEditors[property]);
     while (itEditor.hasNext()) {
-        QLineEdit *editor = itEditor.next();
+        LineEdit *editor = itEditor.next();
         if (editor->text() != value) {
             editor->blockSignals(true);
             editor->setText(value);
@@ -1036,9 +1039,9 @@ void QtLineEditFactoryPrivate::slotRegExpChanged(QtProperty *property,
     if (!manager)
         return;
 
-    QListIterator<QLineEdit *> itEditor(m_createdEditors[property]);
+    QListIterator<LineEdit *> itEditor(m_createdEditors[property]);
     while (itEditor.hasNext()) {
-        QLineEdit *editor = itEditor.next();
+        LineEdit *editor = itEditor.next();
         editor->blockSignals(true);
         const QValidator *oldValidator = editor->validator();
         QValidator *newValidator = 0;
@@ -1061,9 +1064,9 @@ void QtLineEditFactoryPrivate::slotEchoModeChanged(QtProperty *property, int ech
     if (!manager)
         return;
 
-    QListIterator<QLineEdit *> itEditor(m_createdEditors[property]);
+    QListIterator<LineEdit *> itEditor(m_createdEditors[property]);
     while (itEditor.hasNext()) {
-        QLineEdit *editor = itEditor.next();
+        LineEdit *editor = itEditor.next();
         editor->blockSignals(true);
         editor->setEchoMode((EchoMode)echoMode);
         editor->blockSignals(false);
@@ -1079,9 +1082,9 @@ void QtLineEditFactoryPrivate::slotReadOnlyChanged( QtProperty *property, bool r
     if (!manager)
         return;
 
-    QListIterator<QLineEdit *> itEditor(m_createdEditors[property]);
+    QListIterator<LineEdit *> itEditor(m_createdEditors[property]);
     while (itEditor.hasNext()) {
-        QLineEdit *editor = itEditor.next();
+        LineEdit *editor = itEditor.next();
         editor->blockSignals(true);
         editor->setReadOnly(readOnly);
         editor->blockSignals(false);
@@ -1091,8 +1094,8 @@ void QtLineEditFactoryPrivate::slotReadOnlyChanged( QtProperty *property, bool r
 void QtLineEditFactoryPrivate::slotEditFinished()
 {
 	QObject *object = q_ptr->sender();
-	const QMap<QLineEdit *, QtProperty *>::ConstIterator ecend = m_editorToProperty.constEnd();
-	for (QMap<QLineEdit *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
+	const auto ecend = m_editorToProperty.constEnd();
+	for (auto itEditor = m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
 		if (itEditor.key() == object) {
 			QtProperty *property = itEditor.value();
 			QtStringPropertyManager *manager = q_ptr->propertyManager(property);
@@ -1122,7 +1125,6 @@ QtLineEditFactory::QtLineEditFactory(QObject *parent)
 {
     d_ptr = new QtLineEditFactoryPrivate();
     d_ptr->q_ptr = this;
-
 }
 
 /*!
@@ -1159,8 +1161,8 @@ void QtLineEditFactory::connectPropertyManager(QtStringPropertyManager *manager)
 QWidget *QtLineEditFactory::createEditor(QtStringPropertyManager *manager,
         QtProperty *property, QWidget *parent)
 {
+    LineEdit *editor = d_ptr->createEditor(property, parent);
 
-    QLineEdit *editor = d_ptr->createEditor(property, parent);
     editor->setEchoMode((EchoMode)manager->echoMode(property));
     editor->setReadOnly(manager->isReadOnly(property));
     QRegExp regExp = manager->regExp(property);
@@ -1170,10 +1172,8 @@ QWidget *QtLineEditFactory::createEditor(QtStringPropertyManager *manager,
     }
     editor->setText(manager->value(property));
 
-	connect(editor, SIGNAL(editingFinished()),
-		this, SLOT(slotEditFinished()));
-    connect(editor, SIGNAL(destroyed(QObject *)),
-                this, SLOT(slotEditorDestroyed(QObject *)));
+	connect(editor, SIGNAL(editingFinished()), this, SLOT(slotEditFinished()));
+    connect(editor, SIGNAL(destroyed(QObject *)), this, SLOT(slotEditorDestroyed(QObject *)));
     return editor;
 }
 

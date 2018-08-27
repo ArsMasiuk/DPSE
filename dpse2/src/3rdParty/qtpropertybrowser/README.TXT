@@ -100,6 +100,6 @@ Version history:
 			the current locale.
 		- trailing decimal zeros are visually trimmed.
 		- no group separators shown.
-		
+	 - String property: editor of multiline text added. 
 	 
 	 

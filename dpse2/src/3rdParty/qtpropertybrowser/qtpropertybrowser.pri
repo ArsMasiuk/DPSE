@@ -14,7 +14,8 @@ qtpropertybrowser-uselib:!qtpropertybrowser-buildlib {
             $$PWD/qttreepropertybrowser.cpp \
             $$PWD/qtbuttonpropertybrowser.cpp \
             $$PWD/qtgroupboxpropertybrowser.cpp \
-            $$PWD/qtpropertybrowserutils.cpp
+            $$PWD/qtpropertybrowserutils.cpp \
+			$$PWD/lineedit.cpp 
     HEADERS += $$PWD/qtpropertybrowser.h \
             $$PWD/qtpropertymanager.h \
             $$PWD/qteditorfactory.h \
@@ -22,7 +23,8 @@ qtpropertybrowser-uselib:!qtpropertybrowser-buildlib {
             $$PWD/qttreepropertybrowser.h \
             $$PWD/qtbuttonpropertybrowser.h \
             $$PWD/qtgroupboxpropertybrowser.h \
-            $$PWD/qtpropertybrowserutils_p.h
+            $$PWD/qtpropertybrowserutils_p.h \
+			$$PWD/lineedit.h
     RESOURCES += $$PWD/qtpropertybrowser.qrc
 }
 
