@@ -11,6 +11,8 @@ It can be used freely, maintaining the information above.
 #define CCommutationTable_H
 
 #include <QWidget>
+#include <QMap>
+#include <QList>
 
 class CEditorScene;
 class CNodeEditorScene;
@@ -40,6 +42,9 @@ protected Q_SLOTS:
 	void onSelectionChanged();
 	void on_Table_itemSelectionChanged();
 	void on_Table_itemDoubleClicked(QTreeWidgetItem *item, int column);
+	void onCustomContextMenu(const QPoint &);
+	void onAddSection();
+	void onRemoveSection();
 
 private:
 	Ui::CCommutationTable ui;
@@ -47,6 +52,8 @@ private:
 	CNodeEditorScene *m_scene;
 
 	QMap<CEdge*, QTreeWidgetItem*> m_edgeItemMap;
+	
+	QByteArrayList m_extraSectionIds;
 };
 
 #endif // CCommutationTable_H

@@ -15,6 +15,7 @@ It can be used freely, maintaining the information above.
 
 #include <QDebug>
 #include <QElapsedTimer>
+#include <QInputDialog>
 
 
 // NumSortItem: numeric sorting by ids
@@ -36,6 +37,15 @@ public:
 };
 
 
+// fixed section Ids
+
+static enum FixedSectionIds 
+{
+	StartNodeId, EndNodeId, EdgeId,
+	CustomId
+};
+
+
 // CCommutationTable
 
 CCommutationTable::CCommutationTable(QWidget *parent)
@@ -44,6 +54,9 @@ CCommutationTable::CCommutationTable(QWidget *parent)
 {
 	ui.setupUi(this);
 	ui.Table->setUniformRowHeights(true);
+
+	ui.Table->header()->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui.Table->header(), SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
 }
 
 CCommutationTable::~CCommutationTable()
@@ -92,6 +105,14 @@ void CCommutationTable::onSceneChanged()
 	ui.Table->clear();
 	m_edgeItemMap.clear();
 
+	ui.Table->setColumnCount(m_extraSectionIds.size() + CustomId);
+
+	int extraSectionIndex = CustomId;
+	for (auto paramId : m_extraSectionIds)
+	{
+		ui.Table->headerItem()->setText(extraSectionIndex++, paramId);
+	}
+
 	QList<CEdge*> edges = m_scene->getItems<CEdge>();
 	for (auto edge : edges)
 	{
@@ -101,16 +122,23 @@ void CCommutationTable::onSceneChanged()
 		m_edgeItemMap[edge] = item;
 
 		if (edge->firstPortId().size())
-			item->setText(0, edge->firstNode()->getId() + ":" + edge->firstPortId());
+			item->setText(StartNodeId, edge->firstNode()->getId() + ":" + edge->firstPortId());
 		else
-			item->setText(0, edge->firstNode()->getId());
+			item->setText(StartNodeId, edge->firstNode()->getId());
 		
 		if (edge->lastPortId().size())
-			item->setText(1, edge->lastNode()->getId() + ":" + edge->lastPortId());
+			item->setText(EndNodeId, edge->lastNode()->getId() + ":" + edge->lastPortId());
 		else
-			item->setText(1, edge->lastNode()->getId());
+			item->setText(EndNodeId, edge->lastNode()->getId());
 
-		item->setText(2, edge->getId());
+		item->setText(EdgeId, edge->getId());
+
+		int extraSectionIndex = CustomId;
+		for (auto paramId : m_extraSectionIds)
+		{
+			QString val = edge->getAttribute(paramId).toString();
+			item->setText(extraSectionIndex++, val);
+		}
 	}
 
 	ui.Table->setUpdatesEnabled(true);
@@ -228,4 +256,45 @@ void CCommutationTable::on_Table_itemDoubleClicked(QTreeWidgetItem *item, int co
 			return;
 		}
 	}
+}
+
+
+void CCommutationTable::onCustomContextMenu(const QPoint& pos)
+{
+	QMenu contextMenu;
+
+	int sectionIndex = ui.Table->header()->logicalIndexAt(pos);
+	if (sectionIndex >= CustomId) 
+	{
+		QAction* act = contextMenu.addAction(
+			tr("Remove Column (%1)").arg(ui.Table->headerItem()->text(sectionIndex)), 
+			this, 
+			SLOT(onRemoveSection()));
+
+		act->setData(sectionIndex - CustomId);
+	}
+
+	contextMenu.addAction(tr("Add Column..."), this, SLOT(onAddSection()));
+
+	contextMenu.exec(ui.Table->header()->mapToGlobal(pos));
+}
+
+
+void CCommutationTable::onAddSection()
+{
+	QString paramId = QInputDialog::getText(NULL, tr("Add Column"), tr("Enter edge parameter ID:"));
+	if (paramId.size() && !m_extraSectionIds.contains(paramId.toLocal8Bit()))
+	{
+		m_extraSectionIds.append(paramId.toLocal8Bit());
+		onSceneChanged();
+	}
+}
+
+
+void CCommutationTable::onRemoveSection()
+{
+	QAction* act = (QAction*)sender();
+	int listIndex = act->data().toInt();
+	m_extraSectionIds.removeAt(listIndex);
+	onSceneChanged();
 }
