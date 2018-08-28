@@ -55,14 +55,18 @@ CCommutationTable::CCommutationTable(QWidget *parent)
 	ui.setupUi(this);
 	ui.Table->setUniformRowHeights(true);
 
+	ui.Table->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui.Table, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+
 	ui.Table->header()->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui.Table->header(), SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
 }
 
+
 CCommutationTable::~CCommutationTable()
 {
-
 }
+
 
 void CCommutationTable::setScene(CNodeEditorScene* scene)
 {
@@ -79,11 +83,13 @@ void CCommutationTable::setScene(CNodeEditorScene* scene)
 		onSceneAttached(m_scene);
 }
 
+
 void CCommutationTable::connectSignals(CEditorScene* scene)
 {
     connect(scene, SIGNAL(sceneChanged()), this, SLOT(onSceneChanged()), Qt::QueuedConnection);
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()), Qt::QueuedConnection);
 }
+
 
 void CCommutationTable::onSceneAttached(CEditorScene* scene)
 {
@@ -92,10 +98,12 @@ void CCommutationTable::onSceneAttached(CEditorScene* scene)
 	onSceneChanged();
 }
 
+
 void CCommutationTable::onSceneDetached(CEditorScene* scene)
 {
 	scene->disconnect(this);
 }
+
 
 void CCommutationTable::onSceneChanged()
 {
@@ -148,6 +156,7 @@ void CCommutationTable::onSceneChanged()
 	onSelectionChanged();
 }
 
+
 void CCommutationTable::onSelectionChanged()
 {
 	ui.Table->setUpdatesEnabled(false);
@@ -195,6 +204,7 @@ void CCommutationTable::onSelectionChanged()
 	ui.Table->blockSignals(false);
 }
 
+
 void CCommutationTable::on_Table_itemSelectionChanged()
 {
 	if (!m_scene)
@@ -227,6 +237,7 @@ void CCommutationTable::on_Table_itemSelectionChanged()
 
 	m_scene->endSelection();
 }
+
 
 void CCommutationTable::on_Table_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
@@ -276,7 +287,7 @@ void CCommutationTable::onCustomContextMenu(const QPoint& pos)
 
 	contextMenu.addAction(tr("Add Column..."), this, SLOT(onAddSection()));
 
-	contextMenu.exec(ui.Table->header()->mapToGlobal(pos));
+	contextMenu.exec(ui.Table->mapToGlobal(pos));
 }
 
 
