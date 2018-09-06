@@ -15,6 +15,7 @@ It can be used freely, maintaining the information above.
 #include <CNodeEdgePropertiesUI.h>
 #include <CClassAttributesEditorUI.h>
 #include <CExtListInputDialog.h>
+#include <CNodesFactorDialog.h>
 
 #ifdef USE_OGDF
 #include <ogdf/COGDFLayoutUIController.h>
@@ -167,16 +168,6 @@ void CNodeEditorUIController::createMenus()
 	delAction->setStatusTip(tr("Delete selection"));
 	delAction->setShortcut(QKeySequence::Delete);
 	connect(delAction, &QAction::triggered, m_editorScene, &CEditorScene::del);
-
-	editMenu->addSeparator();
-
-	linkAction = editMenu->addAction(QIcon(":/Icons/Link"), tr("&Link"));
-	linkAction->setStatusTip(tr("Link selected nodes together"));
-	connect(linkAction, &QAction::triggered, m_editorScene, &CNodeEditorScene::onActionLink);
-
-	unlinkAction = editMenu->addAction(QIcon(":/Icons/Unlink"), tr("&Unlink"));
-	unlinkAction->setStatusTip(tr("Unlink selected nodes"));
-	connect(unlinkAction, &QAction::triggered, m_editorScene, &CNodeEditorScene::onActionUnlink);
 
 
 	// edit modes
@@ -411,10 +402,6 @@ void CNodeEditorUIController::onSelectionChanged()
 	cutAction->setEnabled(selectionCount > 0);
 	copyAction->setEnabled(selectionCount > 0);
 	delAction->setEnabled(selectionCount > 0);
-
-	auto nodes = m_editorScene->getSelectedItems<CNode>();
-	linkAction->setEnabled(nodes.size() > 1);
-	unlinkAction->setEnabled(nodes.size() > 0);
 }
 
 
@@ -696,3 +683,17 @@ void CNodeEditorUIController::onNewDocumentCreated()
 	m_editorScene->addUndoState();
 }
  
+
+void CNodeEditorUIController::factorNodes()
+{
+	CNodesFactorDialog dialog;
+	if (dialog.exec(*m_editorScene) == QDialog::Accepted)
+	{
+		m_editorScene->addUndoState();
+	}
+	else
+	{
+		m_editorScene->addUndoState();
+		m_editorScene->undo();
+	}
+}

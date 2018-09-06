@@ -42,6 +42,9 @@ bool CSceneMenuUIController::exec(CEditorScene * scene, QGraphicsItem * triggerI
 	QAction *nodeColorAction = menu.addAction(tr("Node(s) Color..."), scene, SLOT(onActionNodeColor()));
 	nodeColorAction->setEnabled(nodesSelected);
 
+	QAction *factorAction = menu.addAction(tr("Factor Nodes..."), parent(), SLOT(factorNodes()));
+	factorAction->setEnabled(nodesCount > 1);
+
 	menu.addSeparator();
 
 	QAction *addPortAction = menu.addAction(tr("Add Port..."), scene, SLOT(onActionAddPort()));

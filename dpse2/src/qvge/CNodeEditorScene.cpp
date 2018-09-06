@@ -736,7 +736,6 @@ void CNodeEditorScene::drawItems(QPainter *painter, int numItems, QGraphicsItem 
         maxtime = tm.elapsed();
         qDebug() << tm.elapsed();
     }
-
 }
 
 

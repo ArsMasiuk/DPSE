@@ -6,6 +6,7 @@ QVGE 0.4.4 (beta)
 - added basic support of node ports
 - added buttons to change attribute's name & type 
 - color schemes menu moved into Edit
+- added factor nodes dialog (#23)
 
 - fixed issue with document change notification when a new document is created
 - fixed issue with putting empty states into the undo/redo stack after editing

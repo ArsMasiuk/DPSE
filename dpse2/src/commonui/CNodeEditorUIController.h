@@ -52,6 +52,8 @@ private Q_SLOTS:
 	void exportPDF();
 	void exportDOT();
 
+	void onNavigatorShown();
+
 	void onSelectionChanged();
     void onSceneChanged();
 	void onSceneHint(const QString& text);
@@ -67,7 +69,7 @@ private Q_SLOTS:
 	void sceneCrop();
     void sceneOptions();
 
-    void onNavigatorShown();
+	void factorNodes();
 
 private:
 	void createMenus();
@@ -89,8 +91,6 @@ private:
 	QAction *copyAction;
 	QAction *pasteAction;
 	QAction *delAction;
-	QAction *linkAction;
-	QAction *unlinkAction;
 
 	QActionGroup *m_editModesGroup;
 	QAction *modeDefaultAction;
