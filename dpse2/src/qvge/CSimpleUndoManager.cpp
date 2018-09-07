@@ -48,6 +48,17 @@ void CSimpleUndoManager::addState()
 	}
 }
 
+void CSimpleUndoManager::revertState()
+{
+	if (availableUndoCount())
+	{
+		QByteArray &compressedSnap = m_stateStack[m_stackIndex];
+		QByteArray snap = qUncompress(compressedSnap);
+		QDataStream ds(&snap, QIODevice::ReadOnly);
+		m_scene->restoreFrom(ds, false);
+	}
+}
+
 void CSimpleUndoManager::undo()
 {
 	if (availableUndoCount())

@@ -26,6 +26,7 @@ public:
 	// reimp
 	virtual void reset();
 	virtual void addState();
+	virtual void revertState();
 	virtual void undo();
 	virtual void redo();
 	virtual int availableUndoCount() const;

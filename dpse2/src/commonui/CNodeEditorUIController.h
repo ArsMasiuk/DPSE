@@ -69,6 +69,8 @@ private Q_SLOTS:
 	void sceneCrop();
     void sceneOptions();
 
+	void addNodePort();
+	void editNodePort();
 	void factorNodes();
 
 private:

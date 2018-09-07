@@ -14,6 +14,7 @@ It can be used freely, maintaining the information above.
 class CNode;
 class CEdge;
 class CNodePort;
+class CNodeSceneActions;
 
 
 enum EditMode 
@@ -63,24 +64,13 @@ Q_SIGNALS:
 	void editModeChanged(int mode);
 
 public Q_SLOTS:
-	void onActionLink();
-	void onActionUnlink();
-	void onActionNodeColor();
-	void onActionAddPort();
-	void onActionEditPort();
-
-	void onActionEdgeColor();
-	void onActionEdgeReverse();
-	void onActionEdgeDirected();
-	void onActionEdgeMutual();
-	void onActionEdgeUndirected();
-
 	void setEditMode(EditMode mode);
 
 protected Q_SLOTS:
 	virtual void onSelectionChanged();
 
 protected:
+	// selection
 	void moveSelectedEdgesBy(const QPointF& d);
     void prefetchSelection() const;
 
@@ -102,6 +92,7 @@ protected:
 	virtual QList<QGraphicsItem*> copyPasteItems() const;
 	virtual QList<QGraphicsItem*> transformableItems() const;
 	virtual bool doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem);
+	virtual QObject* createActions();
 
     // draw
     virtual void drawBackground(QPainter *painter, const QRectF &);

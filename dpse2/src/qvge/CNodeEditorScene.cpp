@@ -1,4 +1,5 @@
 #include "CNodeEditorScene.h"
+#include "CNodeSceneActions.h"
 #include "CNode.h"
 #include "CNodePort.h"
 #include "CEdge.h"
@@ -14,8 +15,6 @@
 #include <QApplication>
 #include <QDebug>
 #include <QElapsedTimer>
-
-#include <commonui/CNodePortEditorDialog.h>
 
 
 CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
@@ -796,171 +795,8 @@ void CNodeEditorScene::prefetchSelection() const
 
 // menu & actions
 
-void CNodeEditorScene::onActionLink()
+QObject* CNodeEditorScene::createActions()
 {
-	QList<CNode*> nodes = getSelectedItems<CNode>(true);
-	if (nodes.count() < 2)
-		return;
-
-	auto baseNode = nodes.takeFirst();
-	for (auto node : nodes)
-	{
-		baseNode->merge(node);
-	}
-
-	addUndoState();
-}
-
-
-void CNodeEditorScene::onActionUnlink()
-{
-    QList<CNode*> nodes = getSelectedItems<CNode>(true);
-    if (nodes.isEmpty())
-        return;
-
-    for (auto node : nodes)
-    {
-        node->unlink();
-    }
-
-    addUndoState();
-}
-
-
-void CNodeEditorScene::onActionNodeColor()
-{
-    QList<CNode*> nodes = getSelectedItems<CNode>(true);
-    if (nodes.isEmpty())
-        return;
-
-    QColor color = QColorDialog::getColor(nodes.first()->getAttribute("color").value<QColor>());
-    if (!color.isValid())
-        return;
-
-    for (auto node: nodes)
-    {
-        node->setAttribute("color", color);
-    }
-
-    addUndoState();
-}
-
-
-void CNodeEditorScene::onActionAddPort()
-{
-	CNode *node = dynamic_cast<CNode*>(m_menuTriggerItem);
-	if (!node)
-		return;
-
-	CNodePort *port = node->addPort();
-	if (!port)
-		return;
-
-	CNodePortEditorDialog dialog;
-	if (dialog.exec(*port) == QDialog::Accepted)
-		addUndoState();
-	else
-		delete port;
-}
-
-
-void CNodeEditorScene::onActionEditPort()
-{
-	CNodePort *port = dynamic_cast<CNodePort*>(m_menuTriggerItem);
-	if (!port)
-		return;
-
-	CNodePortEditorDialog dialog;
-	if (dialog.exec(*port) == QDialog::Accepted)
-	{
-		addUndoState();
-	}
-	else
-	{
-		addUndoState();
-		undo();
-	}
-}
-
-
-void CNodeEditorScene::onActionEdgeColor()
-{
-    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
-    if (edges.isEmpty())
-        return;
-
-    QColor color = QColorDialog::getColor(edges.first()->getAttribute("color").value<QColor>());
-    if (!color.isValid())
-        return;
-
-    for (auto edge : edges)
-    {
-        edge->setAttribute("color", color);
-    }
-
-    addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeReverse()
-{
-    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
-    if (edges.isEmpty())
-        return;
-
-    for (auto edge : edges)
-    {
-        edge->reverse();
-    }
-
-    addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeDirected()
-{
-    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
-    if (edges.isEmpty())
-        return;
-
-    for (auto edge : edges)
-    {
-        edge->setAttribute("direction", "directed");
-        edge->update();
-    }
-
-    addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeMutual()
-{
-    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
-    if (edges.isEmpty())
-        return;
-
-    for (auto edge : edges)
-    {
-        edge->setAttribute("direction", "mutual");
-        edge->update();
-    }
-
-    addUndoState();
-}
-
-
-void CNodeEditorScene::onActionEdgeUndirected()
-{
-    QList<CEdge*> edges = getSelectedItems<CEdge>(true);
-    if (edges.isEmpty())
-        return;
-
-    for (auto edge : edges)
-    {
-        edge->setAttribute("direction", "undirected");
-        edge->update();
-    }
-
-    addUndoState();
+	return new CNodeSceneActions(this);
 }
 

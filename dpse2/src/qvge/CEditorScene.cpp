@@ -219,6 +219,18 @@ void CEditorScene::addUndoState()
 	onSceneChanged();
 }
 
+void CEditorScene::revertUndoState()
+{
+	if (m_undoManager)
+	{
+		m_undoManager->revertState();
+
+		checkUndoState();
+	}
+
+	onSceneChanged();
+}
+
 int CEditorScene::availableUndoCount() const
 { 
 	return m_undoManager ? m_undoManager->availableUndoCount() : 0; 
@@ -1943,3 +1955,22 @@ bool CDeletableItems::evaluate(const QGraphicsItem& item) const
 	// can delete QGraphicsItem
 	return true;
 }
+
+
+// actions
+
+QObject* CEditorScene::getActions()
+{
+	if (m_actions == NULL)
+		m_actions = createActions();
+
+	return m_actions;
+}
+
+
+QObject* CEditorScene::createActions()
+{
+	// temp
+	return new QObject(this);
+}
+

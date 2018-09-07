@@ -72,6 +72,12 @@ void CDiffUndoManager::addState()
 	m_lastState = snap;
 }
 
+void CDiffUndoManager::revertState()
+{
+	QDataStream ds(&m_lastState, QIODevice::ReadOnly);
+	m_scene->restoreFrom(ds, true);
+}
+
 void CDiffUndoManager::undo()
 {
 	if (availableUndoCount())

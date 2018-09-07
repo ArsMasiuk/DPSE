@@ -16,6 +16,7 @@ It can be used freely, maintaining the information above.
 #include <CClassAttributesEditorUI.h>
 #include <CExtListInputDialog.h>
 #include <CNodesFactorDialog.h>
+#include <CNodePortEditorDialog.h>
 
 #ifdef USE_OGDF
 #include <ogdf/COGDFLayoutUIController.h>
@@ -684,16 +685,46 @@ void CNodeEditorUIController::onNewDocumentCreated()
 }
  
 
+// actions
+
 void CNodeEditorUIController::factorNodes()
 {
 	CNodesFactorDialog dialog;
 	if (dialog.exec(*m_editorScene) == QDialog::Accepted)
-	{
 		m_editorScene->addUndoState();
-	}
 	else
-	{
-		m_editorScene->addUndoState();
-		m_editorScene->undo();
-	}
+		m_editorScene->revertUndoState();
 }
+
+
+void CNodeEditorUIController::addNodePort()
+{
+	CNode *node = dynamic_cast<CNode*>(m_editorScene->getContextMenuTrigger());
+	if (!node)
+		return;
+
+	CNodePort *port = node->addPort();
+	if (!port)
+		return;
+
+	CNodePortEditorDialog dialog;
+	if (dialog.exec(*port) == QDialog::Accepted)
+		m_editorScene->addUndoState();
+	else
+		delete port;
+}
+
+
+void CNodeEditorUIController::editNodePort()
+{
+	CNodePort *port = dynamic_cast<CNodePort*>(m_editorScene->getContextMenuTrigger());
+	if (!port)
+		return;
+
+	CNodePortEditorDialog dialog;
+	if (dialog.exec(*port) == QDialog::Accepted)
+		m_editorScene->addUndoState();
+	else
+		m_editorScene->revertUndoState();
+}
+

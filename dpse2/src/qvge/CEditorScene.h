@@ -81,6 +81,8 @@ public:
 	int availableRedoCount() const;
 	// must be called after scene state changed
 	void addUndoState();
+	// must be called to discard recent changes without undo
+	void revertUndoState();
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, bool storeOptions) const;
@@ -175,6 +177,14 @@ public:
 		m_menuController = controller;
 	}
 
+	ISceneMenuController* getContextMenuController() const {
+		return m_menuController;
+	}
+
+	QGraphicsItem* getContextMenuTrigger() const {
+		return m_menuTriggerItem;
+	}
+
 	// other
 	bool checkLabelRegion(const QRectF& r);
 	void layoutItemLabels();
@@ -189,6 +199,9 @@ public:
 
 	// callbacks
 	virtual void onItemDestroyed(CItem *citem);
+
+	// actions
+	QObject* getActions();
 
 public Q_SLOTS:
     void enableGrid(bool on = true);
@@ -227,6 +240,8 @@ protected:
 
 	void calculateTransformRect();
 	void drawTransformRect(QPainter *painter);
+
+	virtual QObject* createActions();
 
 	// internal call
 	void selectUnderMouse(QGraphicsSceneMouseEvent *mouseEvent);
@@ -286,6 +301,8 @@ protected:
 
 	QGraphicsItem *m_menuTriggerItem = nullptr;
 	ISceneMenuController *m_menuController = nullptr;
+
+	QObject *m_actions = nullptr;
 
 private:
 	int m_infoStatus;
