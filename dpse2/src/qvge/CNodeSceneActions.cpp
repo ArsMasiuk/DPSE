@@ -29,7 +29,7 @@ CNodeSceneActions::~CNodeSceneActions()
 
 void CNodeSceneActions::onActionNodeColor()
 {
-	QList<CNode*> nodes = nodeScene.getSelectedItems<CNode>(true);
+	auto nodes = nodeScene.getSelectedNodes();
 	if (nodes.isEmpty())
 		return;
 
@@ -48,7 +48,7 @@ void CNodeSceneActions::onActionNodeColor()
 
 void CNodeSceneActions::onActionLink()
 {
-	QList<CNode*> nodes = nodeScene.getSelectedItems<CNode>(true);
+	auto nodes = nodeScene.getSelectedNodes();
 	if (nodes.count() < 2)
 		return;
 
@@ -64,7 +64,7 @@ void CNodeSceneActions::onActionLink()
 
 void CNodeSceneActions::onActionUnlink()
 {
-	QList<CNode*> nodes = nodeScene.getSelectedItems<CNode>(true);
+	auto nodes = nodeScene.getSelectedNodes();
 	if (nodes.isEmpty())
 		return;
 
@@ -79,7 +79,7 @@ void CNodeSceneActions::onActionUnlink()
 
 void CNodeSceneActions::onActionEdgeColor()
 {
-	QList<CEdge*> edges = nodeScene.getSelectedItems<CEdge>(true);
+	auto edges = nodeScene.getSelectedEdges();
 	if (edges.isEmpty())
 		return;
 
@@ -98,7 +98,7 @@ void CNodeSceneActions::onActionEdgeColor()
 
 void CNodeSceneActions::onActionEdgeReverse()
 {
-	QList<CEdge*> edges = nodeScene.getSelectedItems<CEdge>(true);
+	auto edges = nodeScene.getSelectedEdges();
 	if (edges.isEmpty())
 		return;
 
@@ -113,7 +113,7 @@ void CNodeSceneActions::onActionEdgeReverse()
 
 void CNodeSceneActions::onActionEdgeDirected()
 {
-	QList<CEdge*> edges = nodeScene.getSelectedItems<CEdge>(true);
+	auto edges = nodeScene.getSelectedEdges();
 	if (edges.isEmpty())
 		return;
 
@@ -129,7 +129,7 @@ void CNodeSceneActions::onActionEdgeDirected()
 
 void CNodeSceneActions::onActionEdgeMutual()
 {
-	QList<CEdge*> edges = nodeScene.getSelectedItems<CEdge>(true);
+	auto edges = nodeScene.getSelectedEdges();
 	if (edges.isEmpty())
 		return;
 
@@ -145,7 +145,7 @@ void CNodeSceneActions::onActionEdgeMutual()
 
 void CNodeSceneActions::onActionEdgeUndirected()
 {
-	QList<CEdge*> edges = nodeScene.getSelectedItems<CEdge>(true);
+	auto edges = nodeScene.getSelectedEdges();
 	if (edges.isEmpty())
 		return;
 

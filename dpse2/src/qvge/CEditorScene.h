@@ -299,11 +299,6 @@ protected:
 	QGraphicsItem *m_draggedItem;
 	QSet<IInteractive*> m_acceptedHovers, m_rejectedHovers;
 
-	QGraphicsItem *m_menuTriggerItem = nullptr;
-	ISceneMenuController *m_menuController = nullptr;
-
-	QObject *m_actions = nullptr;
-
 private:
 	int m_infoStatus;
 
@@ -311,10 +306,14 @@ private:
 	QMap<QByteArray, CItem*> m_activeItemFactory;
 	ISceneItemFactory *m_itemFactoryFilter = nullptr;
 
-	QMap<QByteArray, QByteArray> m_classToSuperIds;
-
 	IUndoManager *m_undoManager = nullptr;
+	
+	QGraphicsItem *m_menuTriggerItem = nullptr;
+	ISceneMenuController *m_menuController = nullptr;
+	
+	QObject *m_actions = nullptr;
 
+	QMap<QByteArray, QByteArray> m_classToSuperIds;
 	ClassAttributesMap m_classAttributes;
     QMap<QByteArray, QSet<QByteArray>> m_classAttributesVis;
 	AttributeConstrainsMap m_classAttributesConstrains;

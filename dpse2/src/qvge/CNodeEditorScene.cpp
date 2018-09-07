@@ -571,12 +571,12 @@ void CNodeEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, Q
 
 void CNodeEditorScene::moveSelectedEdgesBy(const QPointF& d)
 {
-	QList<CEdge*> edges = getSelectedItems<CEdge>();
+	auto edges = getSelectedEdges();
 	if (edges.size())
 	{
 		QSet<CNode*> unselNodes;	// not selected nodes
 
-									// move selected edges
+		// move selected edges
 		for (auto edge : edges)
 		{
 			if (!edge->firstNode()->isSelected())
