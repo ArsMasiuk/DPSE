@@ -104,6 +104,7 @@ private:
 	QAction *resetZoomAction;
 	QAction *resetZoomAction2;
 	QAction *fitZoomAction;
+	QAction *fitZoomSelectedAction;
 
     QAction *gridAction;
     QAction *gridSnapAction;

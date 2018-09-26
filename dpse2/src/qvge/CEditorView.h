@@ -33,6 +33,7 @@ public:
 	void zoomBy(double factor);
 
 	void fitToView();
+	void fitSelectedToView();
 
 	// reimp
 	virtual void mousePressEvent(QMouseEvent *e);

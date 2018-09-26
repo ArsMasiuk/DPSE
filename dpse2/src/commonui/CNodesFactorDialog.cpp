@@ -33,7 +33,7 @@ int CNodesFactorDialog::exec(CNodeEditorScene& scene)
 	for (auto node : nodes)
 	{
 		m_sourceMap[node] = node->pos();
-		boundingRect = boundingRect.united(QRectF(node->pos(), node->pos()));
+		boundingRect = boundingRect.united(QRectF(node->pos(), QSizeF(1,1)));
 	}
 
 	m_sourceCenter = boundingRect.center();

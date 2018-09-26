@@ -295,6 +295,11 @@ void CNodeEditorUIController::createMenus()
 	fitZoomAction->setStatusTip(tr("Zoom to fit all the items to view"));
 	connect(fitZoomAction, &QAction::triggered, m_editorView, &CEditorView::fitToView);
 
+	fitZoomSelectedAction = viewMenu->addAction(QIcon(":/Icons/ZoomFitSelected"), tr("Fit &Selection to View"));
+	fitZoomSelectedAction->setStatusTip(tr("Zoom to fit selected items to view"));
+	connect(fitZoomSelectedAction, &QAction::triggered, m_editorView, &CEditorView::fitSelectedToView);
+
+
 
 	// add view toolbar
 	QToolBar *zoomToolbar = m_parent->addToolBar(tr("View"));
@@ -310,6 +315,7 @@ void CNodeEditorUIController::createMenus()
 
 	zoomToolbar->addAction(unzoomAction);
 	zoomToolbar->addAction(fitZoomAction);
+	zoomToolbar->addAction(fitZoomSelectedAction);
 }
 
 
@@ -403,6 +409,8 @@ void CNodeEditorUIController::onSelectionChanged()
 	cutAction->setEnabled(selectionCount > 0);
 	copyAction->setEnabled(selectionCount > 0);
 	delAction->setEnabled(selectionCount > 0);
+
+	fitZoomSelectedAction->setEnabled(selectionCount > 0);
 }
 
 

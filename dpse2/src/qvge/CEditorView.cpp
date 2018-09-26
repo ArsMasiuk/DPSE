@@ -84,6 +84,26 @@ void CEditorView::fitToView()
 }
 
 
+void CEditorView::fitSelectedToView()
+{
+	auto items = scene()->selectedItems();
+	if (items.isEmpty())
+		return;
+
+	QRectF r;
+	for (const auto item : items)
+	{
+		r |= item->sceneBoundingRect();
+	}
+
+	fitInView(r, Qt::KeepAspectRatio);
+
+	m_currentZoom = matrix().m11();
+
+	Q_EMIT scaleChanged(m_currentZoom);
+}
+
+
 // reimp
 
 void CEditorView::mousePressEvent(QMouseEvent *e)
