@@ -117,4 +117,8 @@ private:
 #endif
 
 	class CColorSchemesUIController *m_schemesController;
+
+	class CNodeEdgePropertiesUI *m_propertiesPanel;
+	class CCommutationTable *m_connectionsPanel;
+	class CClassAttributesEditorUI *m_defaultsPanel;
 };

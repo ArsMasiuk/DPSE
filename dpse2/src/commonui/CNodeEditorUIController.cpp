@@ -326,31 +326,31 @@ void CNodeEditorUIController::createPanels()
     propertyDock->setObjectName("propertyDock");
 	m_parent->addDockWidget(Qt::RightDockWidgetArea, propertyDock);
 
-    CNodeEdgePropertiesUI *propertiesPanel = new CNodeEdgePropertiesUI(propertyDock);
-    propertiesPanel->setScene(m_editorScene);
-    propertyDock->setWidget(propertiesPanel);
+    m_propertiesPanel = new CNodeEdgePropertiesUI(propertyDock);
+	m_propertiesPanel->setScene(m_editorScene);
+    propertyDock->setWidget(m_propertiesPanel);
 
 	// connections
     QDockWidget *connectionsDock = new QDockWidget(tr("Topology"));
     connectionsDock->setObjectName("connectionsDock");
 	m_parent->addDockWidget(Qt::RightDockWidgetArea, connectionsDock);
 
-    CCommutationTable *connectionsPanel = new CCommutationTable(connectionsDock);
-	connectionsDock->setWidget(connectionsPanel);
-	connectionsPanel->setScene(m_editorScene);
+    m_connectionsPanel = new CCommutationTable(connectionsDock);
+	connectionsDock->setWidget(m_connectionsPanel);
+	m_connectionsPanel->setScene(m_editorScene);
 
     // default properties
     QDockWidget *defaultsDock = new QDockWidget(tr("Default Properties"));
-    defaultsDock ->setObjectName("defaultsDock");
+    defaultsDock->setObjectName("defaultsDock");
     m_parent->addDockWidget(Qt::LeftDockWidgetArea, defaultsDock);
 
-    CClassAttributesEditorUI *defaultsPanel = new CClassAttributesEditorUI(defaultsDock);
-    defaultsPanel->setScene(m_editorScene);
-    defaultsDock->setWidget(defaultsPanel);
+	m_defaultsPanel = new CClassAttributesEditorUI(defaultsDock);
+	m_defaultsPanel->setScene(m_editorScene);
+    defaultsDock->setWidget(m_defaultsPanel);
 
 	// connect color schemes
 	connect(m_schemesController, &CColorSchemesUIController::colorSchemeApplied,
-		propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene);
+		m_propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene);
 }
 
 
@@ -584,7 +584,20 @@ void CNodeEditorUIController::doReadSettings(QSettings& settings)
 	QPixmapCache::setCacheLimit(cacheRam);
 
 	m_lastExportPath = settings.value("lastExportPath", m_lastExportPath).toString();
-	m_showNewGraphDialog  = settings.value("autoCreateGraphDialog", m_showNewGraphDialog ).toBool();
+	m_showNewGraphDialog = settings.value("autoCreateGraphDialog", m_showNewGraphDialog).toBool();
+
+	// UI elements
+	settings.beginGroup("UI/ItemProperties");
+	m_propertiesPanel->doReadSettings(settings);
+	settings.endGroup();
+
+	settings.beginGroup("UI/Topology");
+	m_connectionsPanel->doReadSettings(settings);
+	settings.endGroup();
+
+	settings.beginGroup("UI/ClassAttributes");
+	m_defaultsPanel->doReadSettings(settings);
+	settings.endGroup();
 }
 
 
@@ -597,7 +610,20 @@ void CNodeEditorUIController::doWriteSettings(QSettings& settings)
 	settings.setValue("cacheRam", cacheRam);
 
 	settings.setValue("lastExportPath", m_lastExportPath);
-	settings.setValue("autoCreateGraphDialog", m_showNewGraphDialog );
+	settings.setValue("autoCreateGraphDialog", m_showNewGraphDialog);
+
+	// UI elements
+	settings.beginGroup("UI/ItemProperties");
+	m_propertiesPanel->doWriteSettings(settings);
+	settings.endGroup();
+
+	settings.beginGroup("UI/Topology");
+	m_connectionsPanel->doWriteSettings(settings);
+	settings.endGroup();
+
+	settings.beginGroup("UI/ClassAttributes");
+	m_defaultsPanel->doWriteSettings(settings);
+	settings.endGroup();
 }
 
 
@@ -682,7 +708,7 @@ void CNodeEditorUIController::onNewDocumentCreated()
 		bool show = dialog.isShowOnStart();
         if (show != m_showNewGraphDialog)
 		{
-			m_showNewGraphDialog  = show;
+			m_showNewGraphDialog = show;
 			m_parent->writeSettings();
 		}
 	}

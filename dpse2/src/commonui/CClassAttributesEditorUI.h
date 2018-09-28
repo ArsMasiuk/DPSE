@@ -11,6 +11,7 @@ It can be used freely, maintaining the information above.
 
 #include <QWidget>
 #include <QList>
+#include <QSettings>
 
 #include <QtVariantPropertyManager>
 #include <QtVariantEditorFactory>
@@ -31,6 +32,9 @@ public:
     ~CClassAttributesEditorUI();
 
     void setScene(CEditorScene* scene);
+
+	void doReadSettings(QSettings& settings);
+	void doWriteSettings(QSettings& settings);
 
 protected:
     void connectSignals(CEditorScene* scene);

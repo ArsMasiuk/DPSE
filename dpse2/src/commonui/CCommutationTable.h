@@ -13,6 +13,7 @@ It can be used freely, maintaining the information above.
 #include <QWidget>
 #include <QMap>
 #include <QList>
+#include <QSettings>
 
 class CEditorScene;
 class CNodeEditorScene;
@@ -31,6 +32,9 @@ public:
 	~CCommutationTable();
 
 	void setScene(CNodeEditorScene* scene);
+
+	void doReadSettings(QSettings& settings);
+	void doWriteSettings(QSettings& settings);
 
 protected:
 	void connectSignals(CEditorScene* scene);

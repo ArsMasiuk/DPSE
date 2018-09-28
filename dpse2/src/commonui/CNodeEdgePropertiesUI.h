@@ -12,6 +12,7 @@ It can be used freely, maintaining the information above.
 
 #include <QWidget>
 #include <QVariant>
+#include <QSettings>
 
 class CEditorScene;
 class CNodeEditorScene;
@@ -32,6 +33,9 @@ public:
     ~CNodeEdgePropertiesUI();
 
     void setScene(CNodeEditorScene* scene);
+
+	void doReadSettings(QSettings& settings);
+	void doWriteSettings(QSettings& settings);
 
 public Q_SLOTS:
 	void updateFromScene(CEditorScene* scene);

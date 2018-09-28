@@ -10,6 +10,8 @@ It can be used freely, maintaining the information above.
 #include <QInputDialog>
 #include <QMessageBox>
 
+#include "CAttributesEditorUI.h"
+#include "CPropertyEditorUIBase.h"
 #include "CNodeEdgePropertiesUI.h"
 #include "ui_CNodeEdgePropertiesUI.h"
 
@@ -66,6 +68,25 @@ CNodeEdgePropertiesUI::~CNodeEdgePropertiesUI()
 {
 	delete m_nodeFactory;
     delete ui;
+}
+
+
+void CNodeEdgePropertiesUI::doReadSettings(QSettings& settings)
+{
+	int pos = settings.value("nodes/splitterPosition", -1).toInt();
+	if (pos >= 0)
+		ui->NodeAttrEditor->getEditor()->setSplitterPosition(pos);
+
+	/*int*/ pos = settings.value("edges/splitterPosition", -1).toInt();
+	if (pos >= 0)
+		ui->EdgeAttrEditor->getEditor()->setSplitterPosition(pos);
+}
+
+
+void CNodeEdgePropertiesUI::doWriteSettings(QSettings& settings)
+{
+	settings.setValue("nodes/splitterPosition", ui->NodeAttrEditor->getEditor()->splitterPosition());
+	settings.setValue("edges/splitterPosition", ui->EdgeAttrEditor->getEditor()->splitterPosition());
 }
 
 

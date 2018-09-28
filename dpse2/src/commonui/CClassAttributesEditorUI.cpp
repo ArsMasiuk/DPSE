@@ -36,6 +36,7 @@ CClassAttributesEditorUI::CClassAttributesEditorUI(QWidget *parent) :
 	//qDebug() << objs
 }
 
+
 CClassAttributesEditorUI::~CClassAttributesEditorUI()
 {
 	// important to avoid crash
@@ -43,6 +44,20 @@ CClassAttributesEditorUI::~CClassAttributesEditorUI()
 	disconnect(this);
 
 	delete ui;
+}
+
+
+void CClassAttributesEditorUI::doReadSettings(QSettings& settings)
+{
+	int pos = settings.value("splitterPosition", -1).toInt();
+	if (pos >= 0)
+		ui->Editor->setSplitterPosition(pos);
+}
+
+
+void CClassAttributesEditorUI::doWriteSettings(QSettings& settings)
+{
+	settings.setValue("splitterPosition", ui->Editor->splitterPosition());
 }
 
 

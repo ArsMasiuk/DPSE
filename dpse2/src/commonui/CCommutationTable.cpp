@@ -68,6 +68,18 @@ CCommutationTable::~CCommutationTable()
 }
 
 
+void CCommutationTable::doReadSettings(QSettings& settings)
+{
+
+}
+
+
+void CCommutationTable::doWriteSettings(QSettings& settings)
+{
+
+}
+
+
 void CCommutationTable::setScene(CNodeEditorScene* scene)
 {
 	ui.Table->clear();

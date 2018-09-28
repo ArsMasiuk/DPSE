@@ -29,6 +29,7 @@ CAttributesEditorUI::CAttributesEditorUI(QWidget *parent) :
             this, SLOT(onValueChanged(QtProperty*, const QVariant&)));
 }
 
+
 CAttributesEditorUI::~CAttributesEditorUI()
 {
 	// important to avoid crash
@@ -36,6 +37,12 @@ CAttributesEditorUI::~CAttributesEditorUI()
 	disconnect(this);
 
 	delete ui;
+}
+
+
+CPropertyEditorUIBase* CAttributesEditorUI::getEditor() 
+{
+	return ui->Editor;
 }
 
 

@@ -19,6 +19,8 @@ It can be used freely, maintaining the information above.
 class CEditorScene;
 class CItem;
 
+class CPropertyEditorUIBase;
+
 
 namespace Ui {
 class CAttributesEditorUI;
@@ -33,6 +35,8 @@ public:
     ~CAttributesEditorUI();
 
     int setupFromItems(CEditorScene& scene, QList<CItem*>& items);
+
+	CPropertyEditorUIBase* getEditor();
 
 private Q_SLOTS:
 	void on_AddButton_clicked();

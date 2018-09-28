@@ -6,7 +6,9 @@ QVGE 0.4.4 (beta)
 - added basic support of node ports
 - added buttons to change attribute's name & type 
 - color schemes menu moved into Edit
-- added factor nodes dialog (#23)
+- added "Factor Nodes" dialog
+- added zoom/fit to selection
+- added custom columns to the Topology editor
 
 - fixed issue with document change notification when a new document is created
 - fixed issue with putting empty states into the undo/redo stack after editing
