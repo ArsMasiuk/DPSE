@@ -20,12 +20,24 @@ CSceneMenuUIController::~CSceneMenuUIController()
 }
 
 
-bool CSceneMenuUIController::exec(CEditorScene * scene, QGraphicsItem * triggerItem, QGraphicsSceneContextMenuEvent * contextMenuEvent)
+bool CSceneMenuUIController::exec(CEditorScene *scene, QGraphicsItem *triggerItem, QGraphicsSceneContextMenuEvent *contextMenuEvent)
+{
+	QMenu menu;
+	fillMenu(menu, scene, triggerItem, contextMenuEvent);
+
+	Q_EMIT onContextMenu(menu);
+
+	// execute
+	menu.exec(contextMenuEvent->screenPos());
+
+	return false;
+}
+
+
+void CSceneMenuUIController::fillMenu(QMenu &menu, CEditorScene *scene, QGraphicsItem *triggerItem, QGraphicsSceneContextMenuEvent *contextMenuEvent)
 {
 	auto sceneActions = scene->getActions();
 	auto nodeScene = dynamic_cast<CNodeEditorScene*>(scene);
-
-	QMenu menu;
 
 	// add default actions
 	QAction *deleteAction = menu.addAction(tr("Delete"), scene, SLOT(onActionDelete()));
@@ -72,10 +84,4 @@ bool CSceneMenuUIController::exec(CEditorScene * scene, QGraphicsItem * triggerI
 	arrowsMenu->addAction(tr("None"), sceneActions, SLOT(onActionEdgeUndirected()));
 	arrowsMenu->addSeparator();
 	arrowsMenu->addAction(tr("Reverse"), sceneActions, SLOT(onActionEdgeReverse()));
-
-
-	// execute
-	menu.exec(contextMenuEvent->screenPos());
-
-	return false;
 }

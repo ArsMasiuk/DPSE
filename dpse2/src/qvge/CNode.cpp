@@ -194,6 +194,7 @@ bool CNode::removeAttribute(const QByteArray& attrId)
 	if (Super::removeAttribute(attrId))
 	{
 		updateCachedItems();
+
 		return true;
 	}
 	else
@@ -793,6 +794,8 @@ void CNode::updateCachedItems()
 			updateLabelDecoration();
 		}
 	}
+
+	update();
 }
 
 

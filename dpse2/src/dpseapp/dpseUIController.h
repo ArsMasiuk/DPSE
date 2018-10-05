@@ -22,7 +22,11 @@ public:
 private Q_SLOTS:
     void doNetSimulation();
 
-private:
+	void doContextMenu(QMenu &menu);
+	void setSimpleNodeModel();
+	void setAtmNodeModel();
+	void setMainFanNodeModel();
+	void setLocalFanNodeModel();
 };
 
 
