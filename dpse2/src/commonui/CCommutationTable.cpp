@@ -70,13 +70,27 @@ CCommutationTable::~CCommutationTable()
 
 void CCommutationTable::doReadSettings(QSettings& settings)
 {
+	QByteArray extraSections = settings.value("userColumns").toByteArray();
+	if (!extraSections.isEmpty())
+	{
+		m_extraSectionIds = extraSections.split(';');
+		onSceneChanged();
+	}
 
+	auto *header = ui.Table->header();
+	QByteArray headerState = settings.value("headerState").toByteArray();
+	if (!headerState.isNull())
+	{
+		header->restoreState(headerState);
+	}
 }
 
 
 void CCommutationTable::doWriteSettings(QSettings& settings)
 {
-
+	auto *header = ui.Table->header();
+	settings.setValue("headerState", header->saveState());
+	settings.setValue("userColumns", m_extraSectionIds.join(';'));
 }
 
 

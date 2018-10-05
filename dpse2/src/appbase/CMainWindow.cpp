@@ -77,11 +77,13 @@ void CMainWindow::init(const QStringList& args)
 
 void CMainWindow::closeEvent(QCloseEvent *event)
 {
-	if (saveOnExit()) {
+	if (saveOnExit()) 
+	{
 		writeSettings();
 		event->accept();
 	}
-	else {
+	else 
+	{
 		event->ignore();
 	}
 }
@@ -397,9 +399,6 @@ bool CMainWindow::doOpenDocument(const QString &fileName)
     // no document - open in place
     if (openDocument(normalizedName, m_currentDocType))
     {
-		// restore settings for this instance
-		readSettings();
-
         m_currentFileName = normalizedName;
         m_isChanged = false;
 		m_lastPath = QFileInfo(m_currentFileName).absolutePath();
@@ -407,6 +406,9 @@ bool CMainWindow::doOpenDocument(const QString &fileName)
         statusBar()->showMessage(tr("Opened successfully: %1").arg(fileName));
 
 		onCurrentFileChanged();
+
+		// restore settings for this instance
+		readSettings();
 
 		return true;
 	}

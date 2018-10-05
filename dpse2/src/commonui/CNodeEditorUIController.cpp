@@ -586,17 +586,32 @@ void CNodeEditorUIController::doReadSettings(QSettings& settings)
 	m_lastExportPath = settings.value("lastExportPath", m_lastExportPath).toString();
 	m_showNewGraphDialog = settings.value("autoCreateGraphDialog", m_showNewGraphDialog).toBool();
 
+
 	// UI elements
 	settings.beginGroup("UI/ItemProperties");
 	m_propertiesPanel->doReadSettings(settings);
 	settings.endGroup();
 
-	settings.beginGroup("UI/Topology");
-	m_connectionsPanel->doReadSettings(settings);
-	settings.endGroup();
-
 	settings.beginGroup("UI/ClassAttributes");
 	m_defaultsPanel->doReadSettings(settings);
+	settings.endGroup();
+
+
+	// custom topology of the current document
+	settings.beginGroup("CustomFiles");
+
+	QString filename = QFileInfo(m_parent->getCurrentFileName()).fileName();
+	if (!filename.isEmpty() && settings.childGroups().contains(filename))
+	{
+		settings.beginGroup(filename);
+
+		settings.beginGroup("UI/Topology");
+		m_connectionsPanel->doReadSettings(settings);
+		settings.endGroup();
+
+		settings.endGroup();
+	}
+
 	settings.endGroup();
 }
 
@@ -612,17 +627,32 @@ void CNodeEditorUIController::doWriteSettings(QSettings& settings)
 	settings.setValue("lastExportPath", m_lastExportPath);
 	settings.setValue("autoCreateGraphDialog", m_showNewGraphDialog);
 
+
 	// UI elements
 	settings.beginGroup("UI/ItemProperties");
 	m_propertiesPanel->doWriteSettings(settings);
 	settings.endGroup();
 
-	settings.beginGroup("UI/Topology");
-	m_connectionsPanel->doWriteSettings(settings);
-	settings.endGroup();
-
 	settings.beginGroup("UI/ClassAttributes");
 	m_defaultsPanel->doWriteSettings(settings);
+	settings.endGroup();
+
+
+	// custom topology of the current document
+	settings.beginGroup("CustomFiles");
+
+	QString filename = QFileInfo(m_parent->getCurrentFileName()).fileName();
+	if (!filename.isEmpty())
+	{
+		settings.beginGroup(filename);
+
+		settings.beginGroup("UI/Topology");
+		m_connectionsPanel->doWriteSettings(settings);
+		settings.endGroup();
+
+		settings.endGroup();
+	}
+
 	settings.endGroup();
 }
 
