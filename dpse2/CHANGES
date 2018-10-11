@@ -1,4 +1,4 @@
-QVGE 0.4.4 (beta)
+QVGE 0.5.0 (beta)
 -------------------------------------------------------------------------------
 - changed project directory structure
 - globally renamed: CConnection -> CEdge etc.
@@ -13,8 +13,12 @@ QVGE 0.4.4 (beta)
 - fixed issue with document change notification when a new document is created
 - fixed issue with putting empty states into the undo/redo stack after editing
 	of complex attributes (color, font etc)
-- fixed generation of the default id for nodes/edges
+- fixed generation of the default ids for nodes/edges
 - fixed opening of documents with unicode names
+- fixed writing non-latin symbols to GEXF files as well as description & version number (#33)
+
+DPSE changes:
+- added node models conversion via context menu for selected nodes
 
 
 QVGE 0.4.3 (beta)

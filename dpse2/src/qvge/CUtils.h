@@ -33,9 +33,6 @@ public:
 	static QPointF closestIntersection(const QLineF& line, const QPolygonF& with);
 
 	static QString cutLastSuffix(const QString& fileName);
-
-private:
-
 };
 
 

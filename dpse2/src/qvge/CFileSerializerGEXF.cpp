@@ -14,20 +14,25 @@ It can be used freely, maintaining the information above.
 #include <QFile>
 #include <QDate>
 #include <QDebug>
+#include <QApplication>
+
 
 // reimp
 
 bool CFileSerializerGEXF::load(const QString& fileName, CEditorScene& scene) const
 {
 	// read file into document
-	QDomDocument doc("gexf");
 	QFile file(fileName);
 	if (!file.open(QIODevice::ReadOnly))
 		return false;
-	if (!doc.setContent(&file)) {
+	
+	QDomDocument doc("gexf");
+	if (!doc.setContent(&file))
+	{
 		file.close();
 		return false;
 	}
+	
 	file.close();
 
 	// try to parse
@@ -343,6 +348,7 @@ bool CFileSerializerGEXF::save(const QString& fileName, CEditorScene& scene) con
 		return false;
 
 	QTextStream ts(&file);
+	ts.setCodec("UTF-8");
 
 	// header
 	ts << 
@@ -353,9 +359,9 @@ bool CFileSerializerGEXF::save(const QString& fileName, CEditorScene& scene) con
 		"    xsi:schemaLocation = \"http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd\">\n";
 
 	ts << 
-		"    <meta lastmodifieddate = \"" << QDate::currentDate().toString() << "\">\n"
-		"        <creator>QVGE 0.3.0</creator>\n"
-		"        <description></description>\n"
+		"    <meta lastmodifieddate = \"" << QDate::currentDate().toString(Qt::ISODate) << "\">\n"
+		"        <creator>" << QApplication::applicationDisplayName() << "</creator>\n"
+		"        <description>" << scene.getClassAttribute("", "comment", false).defaultValue.toString() << "</description>\n"
 		"    </meta>\n";
 
 	// graph

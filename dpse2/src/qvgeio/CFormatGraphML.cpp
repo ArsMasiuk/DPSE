@@ -18,14 +18,17 @@ It can be used freely, maintaining the information above.
 bool CFormatGraphML::load(const QString& fileName, Graph& graph) const
 {
 	// read file into document
-	QDomDocument doc("graphml");
 	QFile file(fileName);
 	if (!file.open(QIODevice::ReadOnly))
 		return false;
-	if (!doc.setContent(&file)) {
+
+	QDomDocument doc("graphml");
+	if (!doc.setContent(&file)) 
+	{
 		file.close();
 		return false;
 	}
+
 	file.close();
 
 	// try to parse
