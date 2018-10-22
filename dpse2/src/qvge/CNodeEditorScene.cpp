@@ -4,6 +4,7 @@
 #include "CNodePort.h"
 #include "CEdge.h"
 #include "CDirectEdge.h"
+#include "CPolyEdge.h"
 #include "CControlPoint.h"
 #include "CEditorSceneDefines.h"
 
@@ -28,6 +29,12 @@ CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 	// default factories
 	registerItemFactory<CDirectEdge>();
 	registerItemFactory<CNode>();
+
+	m_nodesFactory = factory<CNode>();
+	m_edgesFactory = factory<CDirectEdge>();
+
+	// test
+	//setEdgesFactory(factory<CPolyEdge>());
 
 	// go
 	initialize();
@@ -305,12 +312,11 @@ void CNodeEditorScene::cancel(const QPointF& /*pos*/)
 
 CNode* CNodeEditorScene::createNewNode() const
 {
-	auto nodeFactory = getActiveItemFactory("CNode");
-	if (nodeFactory)
+	if (m_nodesFactory)
 	{
-		auto node = dynamic_cast<CNode*>(nodeFactory->create());
+		auto node = dynamic_cast<CNode*>(m_nodesFactory->create());
 		Q_ASSERT(node);
-		node->copyDataFrom(nodeFactory);
+		node->copyDataFrom(m_nodesFactory);
 		return node;
 	}
 
@@ -330,12 +336,11 @@ CNode* CNodeEditorScene::createNewNode(const QPointF& pos)
 
 CEdge* CNodeEditorScene::createNewConnection() const
 {
-	auto edgeFactory = getActiveItemFactory("CDirectEdge");
-	if (edgeFactory)
+	if (m_edgesFactory)
 	{
-		auto edge = dynamic_cast<CDirectEdge*>(edgeFactory->create());
+		auto edge = dynamic_cast<CEdge*>(m_edgesFactory->create());
 		Q_ASSERT(edge);
-		edge->copyDataFrom(edgeFactory);
+		edge->copyDataFrom(m_edgesFactory);
 		return edge;
 	}
 
@@ -351,6 +356,18 @@ CEdge* CNodeEditorScene::createNewConnection(CNode* startNode, CNode* endNode)
 	edge->setFirstNode(startNode);
 	edge->setLastNode(endNode);
 	return edge;
+}
+
+
+void CNodeEditorScene::setNodesFactory(CNode* nodeFactory)
+{
+	m_nodesFactory = nodeFactory;
+}
+
+
+void CNodeEditorScene::setEdgesFactory(CEdge* edgeFactory)
+{
+	m_edgesFactory = edgeFactory;
 }
 
 

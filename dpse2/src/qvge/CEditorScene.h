@@ -95,11 +95,14 @@ public:
 		return setItemFactory(&f);
 	}
 
+	template<class T>
+	static T* factory() { 
+		static T s_item; 
+		return &s_item; 
+	}
+
 	bool setItemFactory(CItem *factoryItem, const QByteArray& typeId = "");
 	CItem* getItemFactory(const QByteArray& typeId) const;
-
-	bool setActiveItemFactory(CItem *factoryItem, const QByteArray& typeId = "");
-	CItem* getActiveItemFactory(const QByteArray& typeId) const;
 
 	virtual CItem* createItemOfType(const QByteArray& typeId) const;
 
@@ -303,7 +306,6 @@ private:
 	int m_infoStatus;
 
 	QMap<QByteArray, CItem*> m_itemFactories;
-	QMap<QByteArray, CItem*> m_activeItemFactory;
 	ISceneItemFactory *m_itemFactoryFilter = nullptr;
 
 	IUndoManager *m_undoManager = nullptr;

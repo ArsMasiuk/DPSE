@@ -471,29 +471,6 @@ CItem* CEditorScene::getItemFactory(const QByteArray& typeId) const
 }
 
 
-bool CEditorScene::setActiveItemFactory(CItem *factoryItem, const QByteArray& typeId)
-{
-	if (typeId.isEmpty() && factoryItem == NULL)
-		return false;
-
-	if (factoryItem)
-	{
-		QByteArray id = typeId.isEmpty() ? factoryItem->typeId() : typeId;
-		m_activeItemFactory[id] = factoryItem;
-	}
-	else
-		m_activeItemFactory[typeId] = NULL;
-
-	return true;
-}
-
-
-CItem* CEditorScene::getActiveItemFactory(const QByteArray& typeId) const
-{
-	return m_activeItemFactory.contains(typeId) ? m_activeItemFactory[typeId] : NULL;
-}
-
-
 CItem* CEditorScene::createItemOfType(const QByteArray &id) const
 {
 	// check for filter

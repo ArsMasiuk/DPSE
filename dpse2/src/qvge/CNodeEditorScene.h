@@ -54,6 +54,9 @@ public:
 	virtual CEdge* createNewConnection() const;
 	CEdge* createNewConnection(CNode* startNode, CNode* endNode);	// calls createNewConnection(), attaches to scene and sets nodes
 
+	void setNodesFactory(CNode* node);
+	void setEdgesFactory(CEdge* node);
+
     // selections
     virtual void moveSelectedItemsBy(const QPointF& d);
 
@@ -114,6 +117,9 @@ protected:
 		IS_None, IS_Creating, IS_Finishing, IS_Cancelling
 	};
 	InternState m_state;
+
+	CNode *m_nodesFactory = 0;
+	CEdge *m_edgesFactory = 0;
 
     // cached selections
     mutable QList<CNode*> m_selNodes;
