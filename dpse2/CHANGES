@@ -9,6 +9,7 @@ QVGE 0.5.0 (beta)
 - added "Factor Nodes" dialog
 - added zoom/fit to selection
 - added custom columns to the Topology editor
+- added "Search" feature
 
 - fixed issue with document change notification when a new document is created
 - fixed issue with putting empty states into the undo/redo stack after editing

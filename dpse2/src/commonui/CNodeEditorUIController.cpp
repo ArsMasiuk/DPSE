@@ -17,6 +17,7 @@ It can be used freely, maintaining the information above.
 #include <CExtListInputDialog.h>
 #include <CNodesFactorDialog.h>
 #include <CNodePortEditorDialog.h>
+#include <CSearchDialog.h>
 
 #ifdef USE_OGDF
 #include <ogdf/COGDFLayoutUIController.h>
@@ -95,6 +96,9 @@ CNodeEditorUIController::CNodeEditorUIController(CMainWindow *parent) :
     onZoomChanged(1);
 	onSceneStatusChanged(m_editorScene->getInfoStatus());
 
+	// search dialog
+	m_searchDialog = new CSearchDialog(parent);
+
     // OGDF
 #ifdef USE_OGDF
     m_ogdfController = new COGDFLayoutUIController(parent, m_editorScene);
@@ -147,6 +151,13 @@ void CNodeEditorUIController::createMenus()
 	connect(redoAction, &QAction::triggered, m_editorScene, &CEditorScene::redo);
 	connect(m_editorScene, &CEditorScene::redoAvailable, redoAction, &QAction::setEnabled);
 	redoAction->setEnabled(m_editorScene->availableRedoCount());
+
+	editMenu->addSeparator();
+
+	findAction = editMenu->addAction(QIcon(":/Icons/Find"), tr("&Find..."));
+	findAction->setStatusTip(tr("Search for items and attributes"));
+	findAction->setShortcut(QKeySequence::Find);
+	connect(findAction, &QAction::triggered, this, &CNodeEditorUIController::find);
 
 	editMenu->addSeparator();
 
@@ -792,3 +803,8 @@ void CNodeEditorUIController::editNodePort()
 		m_editorScene->revertUndoState();
 }
 
+
+void CNodeEditorUIController::find()
+{
+	m_searchDialog->exec(*m_editorScene);
+}

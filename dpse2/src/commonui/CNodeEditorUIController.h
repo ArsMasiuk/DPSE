@@ -71,7 +71,10 @@ private Q_SLOTS:
 
 	void addNodePort();
 	void editNodePort();
+	
 	void factorNodes();
+
+	void find();
 
 private:
 	void createMenus();
@@ -93,6 +96,8 @@ private:
 	QAction *copyAction;
 	QAction *pasteAction;
 	QAction *delAction;
+
+	QAction *findAction;
 
 	QActionGroup *m_editModesGroup;
 	QAction *modeDefaultAction;
@@ -121,4 +126,6 @@ private:
 	class CNodeEdgePropertiesUI *m_propertiesPanel;
 	class CCommutationTable *m_connectionsPanel;
 	class CClassAttributesEditorUI *m_defaultsPanel;
+
+	class CSearchDialog *m_searchDialog;
 };
