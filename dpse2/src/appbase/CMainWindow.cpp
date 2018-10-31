@@ -204,8 +204,10 @@ void CMainWindow::fillNewFileMenu()
     if (m_docTypeCreate.count() == 1)
     {
         const CDocument& doc = m_docTypes[*m_docTypeCreate.begin()];
-        m_newDocument->setText(tr("New") + " " + doc.name);
+		m_newDocument->setText(tr("New"));
+        m_newDocument->setToolTip(tr("New") + " " + doc.name);
         m_newDocument->setStatusTip(doc.description);
+		m_newDocument->setShortcut(QKeySequence::New);
 
         connect(m_newDocument, SIGNAL(triggered()), this, SLOT(createNewDocument()));
         m_newDocument->setEnabled(true);

@@ -1873,11 +1873,15 @@ void CEditorScene::deselectAll()
 
 void CEditorScene::selectItems(const QList<CItem*>& items, bool exclusive)
 {
+	beginSelection();
+
 	if (exclusive)
 		deselectAll();
 
 	for (auto item : items)
 		item->getSceneItem()->setSelected(true);
+
+	endSelection();
 }
 
 
@@ -1892,6 +1896,19 @@ void CEditorScene::endSelection()
 	blockSignals(false);
 
 	Q_EMIT selectionChanged();
+}
+
+
+void CEditorScene::ensureSelectionVisible()
+{
+	auto items = selectedItems();
+
+	QRectF r;
+	for (const auto item : items)
+		r |= item->sceneBoundingRect();
+
+	if (items.count())
+		items.first()->ensureVisible(r);
 }
 
 

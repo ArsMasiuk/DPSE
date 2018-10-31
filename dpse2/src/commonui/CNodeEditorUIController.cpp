@@ -156,28 +156,33 @@ void CNodeEditorUIController::createMenus()
 
 	findAction = editMenu->addAction(QIcon(":/Icons/Find"), tr("&Find..."));
 	findAction->setStatusTip(tr("Search for items and attributes"));
+	findAction->setToolTip(tr("Find text"));
 	findAction->setShortcut(QKeySequence::Find);
 	connect(findAction, &QAction::triggered, this, &CNodeEditorUIController::find);
 
 	editMenu->addSeparator();
 
 	cutAction = editMenu->addAction(QIcon(":/Icons/Cut"), tr("Cu&t"));
-	cutAction->setStatusTip(tr("Cut selection to clipboard"));
+	cutAction->setStatusTip(tr("Cut selected item(s) to clipboard"));
+	cutAction->setToolTip(tr("Cut selection"));
 	cutAction->setShortcut(QKeySequence::Cut);
 	connect(cutAction, &QAction::triggered, m_editorScene, &CEditorScene::cut);
 
 	copyAction = editMenu->addAction(QIcon(":/Icons/Copy"), tr("&Copy"));
-	copyAction->setStatusTip(tr("Copy selection to clipboard"));
+	copyAction->setStatusTip(tr("Copy selected item(s) to clipboard"));
+	copyAction->setToolTip(tr("Copy selection"));
 	copyAction->setShortcut(QKeySequence::Copy);
 	connect(copyAction, &QAction::triggered, m_editorScene, &CEditorScene::copy);
 
 	pasteAction = editMenu->addAction(QIcon(":/Icons/Paste"), tr("&Paste"));
-	pasteAction->setStatusTip(tr("Paste selection from clipboard"));
+	pasteAction->setStatusTip(tr("Paste item(s) from clipboard"));
+	pasteAction->setToolTip(tr("Paste from clipboard"));
 	pasteAction->setShortcut(QKeySequence::Paste);
 	connect(pasteAction, &QAction::triggered, m_editorScene, &CEditorScene::paste);
 
 	delAction = editMenu->addAction(QIcon(":/Icons/Delete"), tr("&Delete"));
-	delAction->setStatusTip(tr("Delete selection"));
+	delAction->setStatusTip(tr("Delete selected item(s)"));
+	delAction->setToolTip(tr("Delete selection"));
 	delAction->setShortcut(QKeySequence::Delete);
 	connect(delAction, &QAction::triggered, m_editorScene, &CEditorScene::del);
 

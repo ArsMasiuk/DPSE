@@ -243,5 +243,22 @@
   <tabstop>Results</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>Text</sender>
+   <signal>returnPressed()</signal>
+   <receiver>Find</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>191</x>
+     <y>40</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>390</x>
+     <y>46</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

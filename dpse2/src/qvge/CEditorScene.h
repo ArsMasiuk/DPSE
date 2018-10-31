@@ -164,6 +164,8 @@ public:
 	virtual void beginSelection();
 	virtual void endSelection();
 
+	void ensureSelectionVisible();
+
 	void moveSelectedItemsBy(double x, double y) {
 		moveSelectedItemsBy(QPointF(x, y));
 	}

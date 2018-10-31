@@ -36,8 +36,6 @@ CSearchDialog::CSearchDialog(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	setWindowOpacity(0.8);
-
 	connect(ui->Text, &QLineEdit::textChanged, this, &CSearchDialog::updateButtons);
 	connect(ui->NamesScope, &QCheckBox::toggled, this, &CSearchDialog::updateButtons);
 	connect(ui->AttrNamesScope, &QCheckBox::toggled, this, &CSearchDialog::updateButtons);
@@ -170,5 +168,6 @@ void CSearchDialog::on_Results_itemSelectionChanged()
 	}
 
 	m_scene->selectItems(selected);
+	m_scene->ensureSelectionVisible();
 }
 
