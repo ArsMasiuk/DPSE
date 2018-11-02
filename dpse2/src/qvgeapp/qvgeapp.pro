@@ -8,7 +8,7 @@
 
 TEMPLATE = app
 TARGET = qvgeapp
-VERSION = 0.4.3.0
+VERSION = 0.5.0.0
 
 include(../config.pri)
 include(../app.pri)

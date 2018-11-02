@@ -337,36 +337,38 @@ void CNodeEditorUIController::createMenus()
 
 void CNodeEditorUIController::createPanels()
 {
-	// propertis
-    QDockWidget *propertyDock = new QDockWidget(tr("Item Properties"));
-    propertyDock->setObjectName("propertyDock");
-	m_parent->addDockWidget(Qt::RightDockWidgetArea, propertyDock);
+	// properties
+	m_parent->createDockWindow(
+		"propertyDock", tr("Item Properties"), Qt::RightDockWidgetArea, 
+		m_propertiesPanel = new CNodeEdgePropertiesUI(m_parent)
+	);
 
-    m_propertiesPanel = new CNodeEdgePropertiesUI(propertyDock);
 	m_propertiesPanel->setScene(m_editorScene);
-    propertyDock->setWidget(m_propertiesPanel);
+
 
 	// connections
-    QDockWidget *connectionsDock = new QDockWidget(tr("Topology"));
-    connectionsDock->setObjectName("connectionsDock");
-	m_parent->addDockWidget(Qt::RightDockWidgetArea, connectionsDock);
+	m_parent->createDockWindow(
+		"connectionsDock", tr("Topology"), Qt::RightDockWidgetArea,
+		m_connectionsPanel = new CCommutationTable(m_parent)
+	);
 
-    m_connectionsPanel = new CCommutationTable(connectionsDock);
-	connectionsDock->setWidget(m_connectionsPanel);
 	m_connectionsPanel->setScene(m_editorScene);
 
+
     // default properties
-    QDockWidget *defaultsDock = new QDockWidget(tr("Default Properties"));
-    defaultsDock->setObjectName("defaultsDock");
-    m_parent->addDockWidget(Qt::LeftDockWidgetArea, defaultsDock);
-
-	m_defaultsPanel = new CClassAttributesEditorUI(defaultsDock);
+	m_parent->createDockWindow(
+		"defaultsDock", tr("Default Properties"), Qt::LeftDockWidgetArea,
+		m_defaultsPanel = new CClassAttributesEditorUI(m_parent)
+	);
+	
 	m_defaultsPanel->setScene(m_editorScene);
-    defaultsDock->setWidget(m_defaultsPanel);
 
+	
 	// connect color schemes
-	connect(m_schemesController, &CColorSchemesUIController::colorSchemeApplied,
-		m_propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene);
+	connect(
+		m_schemesController, &CColorSchemesUIController::colorSchemeApplied,
+		m_propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene
+	);
 }
 
 

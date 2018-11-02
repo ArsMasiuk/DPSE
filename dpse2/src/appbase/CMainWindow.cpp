@@ -57,6 +57,21 @@ void CMainWindow::addDocument(const CDocument& doc)
 }
 
 
+QDockWidget* CMainWindow::createDockWindow(const QString& name, const QString& title, Qt::DockWidgetArea area, QWidget* widget)
+{
+	QDockWidget *docker = new QDockWidget(title);
+	docker->setObjectName(name);
+
+	addDockWidget(area, docker);
+	if (area == Qt::NoDockWidgetArea)
+		docker->setFloating(true);
+
+	docker->setWidget(widget);
+
+	return docker;
+}
+
+
 // protected
 
 void CMainWindow::init(const QStringList& args)

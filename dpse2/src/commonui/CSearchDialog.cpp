@@ -99,7 +99,7 @@ void CSearchDialog::on_Find_clicked()
 		if (lookNames)
 		{
 			QString id = item->getId();
-			if (look(text, id, sens, word))
+			if (look(id, text, sens, word))
 			{
 				textToShow = "ID:" + id;
 			}

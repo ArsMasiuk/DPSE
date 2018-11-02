@@ -42,6 +42,8 @@ public:
 
     void addDocument(const CDocument& doc);
 
+	QDockWidget* createDockWindow(const QString& name, const QString& title, Qt::DockWidgetArea area, QWidget* widget = nullptr);
+
     virtual void readSettings();
     virtual void writeSettings();
 
