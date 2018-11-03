@@ -29,12 +29,13 @@ CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 	// default factories
 	registerItemFactory<CDirectEdge>();
 	registerItemFactory<CNode>();
+	registerItemFactory<CPolyEdge>();
 
 	m_nodesFactory = factory<CNode>();
 	m_edgesFactory = factory<CDirectEdge>();
 
 	// test
-	//setEdgesFactory(factory<CPolyEdge>());
+	setEdgesFactory(factory<CPolyEdge>());
 
 	// go
 	initialize();

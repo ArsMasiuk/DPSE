@@ -10,6 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CEditorScene.h"
 #include "CEditorSceneDefines.h"
 #include "CItem.h"
+#include "CControlPoint.h"
 #include "CSimpleUndoManager.h"
 #include "CDiffUndoManager.h"
 #include "IContextMenuProvider.h"
@@ -1110,7 +1111,8 @@ void CEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CEditorScene::selectUnderMouse(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	if (auto item = getItemAt(mouseEvent->scenePos()))
+	auto item = getItemAt(mouseEvent->scenePos());
+	if (item)
 	{
 		if (!item->isSelected())
 		{
@@ -1132,8 +1134,20 @@ void CEditorScene::onLeftButtonPressed(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CEditorScene::onRightButtonPressed(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	// workaround: do not deselect selected items by RMB
-	selectUnderMouse(mouseEvent);
+	auto item = getItemAt(mouseEvent->scenePos());
+	if (!item)
+		return;
+
+	// bypass control points
+	if (dynamic_cast<CControlPoint*>(item))
+		return;
+
+	// do not deselect selected items by RMB, but select exclusive if not selected
+	if (!item->isSelected())
+	{
+		deselectAll();
+		item->setSelected(true);
+	}
 
 	mouseEvent->accept();
 	return;
@@ -1194,6 +1208,8 @@ void CEditorScene::startDrag(QGraphicsItem* dragItem)
 
 void CEditorScene::processDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem)
 {
+	QPointF d = mouseEvent->scenePos() - mouseEvent->lastScenePos();	// delta pos
+
 	if (m_startDragItem)
 	{
 		auto keys = qApp->queryKeyboardModifiers();
@@ -1207,22 +1223,25 @@ void CEditorScene::processDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsIt
 			else
 				hpos.setX(m_leftClickPos.x());
 
-			QPointF d = hpos - m_lastDragPos;
+			d = hpos - m_lastDragPos;
 			m_lastDragPos = hpos;
-			moveSelectedItemsBy(d);
 		}
 		else
 		{
-			QPointF d = mouseEvent->scenePos() - m_lastDragPos;	// delta pos
+			d = mouseEvent->scenePos() - m_lastDragPos;	// delta pos
 			m_lastDragPos = mouseEvent->scenePos();
-			moveSelectedItemsBy(d);
 		}
+	}
 
+	// if control point: move only it
+	if (auto ctrl = dynamic_cast<CControlPoint*>(m_startDragItem))
+	{
+		//deselectAll();
+		ctrl->moveBy(d.x(), d.y());
 		return;
 	}
 
 	// fallback
-	QPointF d = mouseEvent->scenePos() - mouseEvent->lastScenePos();	// delta pos
 	moveSelectedItemsBy(d);
 }
 
