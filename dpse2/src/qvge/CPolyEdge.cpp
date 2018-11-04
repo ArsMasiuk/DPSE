@@ -64,9 +64,6 @@ bool CPolyEdge::insertPointAt(const QPointF &pos)
 CEdge* CPolyEdge::clone()
 {
 	CPolyEdge* c = new CPolyEdge(parentItem());
-	//c->setFirstNode(m_firstNode);
-	//c->setLastNode(m_lastNode);
-	//c->setPoints(m_polyPoints);
 
 	// assign directly!
 	c->m_firstNode = m_firstNode;
@@ -78,8 +75,16 @@ CEdge* CPolyEdge::clone()
 
 	c->copyDataFrom(this);
 
-
 	return c;
+}
+
+
+void CPolyEdge::reverse()
+{
+	std::reverse(m_polyPoints.begin(), m_polyPoints.end());
+	std::reverse(m_controlPoints.begin(), m_controlPoints.end());
+
+	Super::reverse();
 }
 
 
@@ -203,7 +208,13 @@ void CPolyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 	setupPainter(painter, option, widget);
 
-	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();
+	QPointF p1 = m_firstNode->pos();
+	if (m_firstPortId.size() && m_firstNode->getPort(m_firstPortId))
+		p1 = m_firstNode->getPort(m_firstPortId)->scenePos();
+
+	QPointF p2 = m_lastNode->pos();
+	if (m_lastPortId.size() && m_lastNode->getPort(m_lastPortId))
+		p2 = m_lastNode->getPort(m_lastPortId)->scenePos();
 
 	QPainterPath path;
 	path.moveTo(p1);
@@ -220,7 +231,7 @@ void CPolyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 	painter->restore();
 
-	qreal r = qMax(2.0, painter->pen().widthF());
+	qreal r = qMax(3.0, painter->pen().widthF());
 	painter->setBrush(painter->pen().brush());
 
 	for (const QPointF &p : m_polyPoints)
@@ -290,7 +301,14 @@ void CPolyEdge::onParentGeometryChanged()
 	prepareGeometryChange();
 
 	// update line position
-	QPointF p1 = m_firstNode->pos(), p2 = m_lastNode->pos();
+	QPointF p1 = m_firstNode->pos();
+	if (m_firstPortId.size() && m_firstNode->getPort(m_firstPortId))
+		p1 = m_firstNode->getPort(m_firstPortId)->scenePos();
+
+	QPointF p2 = m_lastNode->pos();
+	if (m_lastPortId.size() && m_lastNode->getPort(m_lastPortId))
+		p2 = m_lastNode->getPort(m_lastPortId)->scenePos();
+
 	QLineF l(p1, p2);
 	setLine(l);
 

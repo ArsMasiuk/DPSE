@@ -39,7 +39,6 @@ public:
     void setFirstNode(CNode *node, const QByteArray& portId = "");
     void setLastNode(CNode *node, const QByteArray& portId = "");
 
-	void reverse();
 	bool reattach(CNode *oldNode, CNode *newNode, const QByteArray& portId = "");
 	bool reattach(CNode *node, const QByteArray& oldPortId, const QByteArray& newPortId);
 
@@ -51,6 +50,8 @@ public:
 
 	bool isValid() const	{ return m_firstNode != NULL && m_lastNode != NULL; }
 	bool isCircled() const	{ return isValid() && m_firstNode == m_lastNode; }
+
+	virtual void reverse();
 
 	// reimp
 	virtual QString createNewId() const;

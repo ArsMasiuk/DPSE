@@ -34,6 +34,8 @@ public:
 	virtual CItem* create() const { return new CPolyEdge(parentItem()); }
 	CEdge* clone();
 
+	virtual void reverse();
+
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
 	virtual bool restoreFrom(QDataStream& out, quint64 version64);
@@ -42,6 +44,7 @@ public:
 	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPointF &clickPos);
 	virtual void onControlPointMoved(CControlPoint* controlPoint, const QPointF& pos);
 
+	// deleting
 	virtual void onControlPointDelete(CControlPoint* controlPoint);
 
 	// selection
