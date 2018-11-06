@@ -22,15 +22,16 @@ qtpropertybrowser.file = $$PWD/3rdParty/qtpropertybrowser/qtpropertybrowser.pro
 SUBDIRS += qsint
 qsint.file = $$PWD/3rdParty/qsint-widgets/qsint-widgets.pro
 
+SUBDIRS += qvgeio
+qvgeio.file = $$PWD/qvgeio/qvgeio.pro
+
 SUBDIRS += qvge
 qvge.file = $$PWD/qvge/qvge.pro
 
-SUBDIRS += qvgeio
-qvgeio.file = $$PWD/qvgeio/qvgeio.pro
+SUBDIRS += commonui
+commonui.file = $$PWD/commonui/commonui.pro
 
 SUBDIRS += qvgeapp
 qvgeapp.file = $$PWD/qvgeapp/qvgeapp.pro
 
-SUBDIRS += commonui
-commonui.file = $$PWD/commonui/commonui.pro
 

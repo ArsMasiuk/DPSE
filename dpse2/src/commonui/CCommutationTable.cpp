@@ -39,7 +39,7 @@ public:
 
 // fixed section Ids
 
-static enum FixedSectionIds 
+enum FixedSectionIds 
 {
 	StartNodeId, EndNodeId, EdgeId,
 	CustomId

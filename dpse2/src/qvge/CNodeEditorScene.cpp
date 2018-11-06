@@ -35,7 +35,7 @@ CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 	m_edgesFactory = factory<CDirectEdge>();
 
 	// test
-	setEdgesFactory(factory<CPolyEdge>());
+	//setEdgesFactory(factory<CPolyEdge>());
 
 	// go
 	initialize();
@@ -52,7 +52,7 @@ bool CNodeEditorScene::fromGraph(const Graph& g)
 		createClassAttribute("", attr.id, attr.name, attr.defaultValue);
 	}
 
-	for (auto& it = g.attrs.constBegin(); it != g.attrs.constEnd(); ++it)
+	for (auto it = g.attrs.constBegin(); it != g.attrs.constEnd(); ++it)
 	{
 		setClassAttribute("", it.key(), it.value());
 	}
@@ -80,12 +80,12 @@ bool CNodeEditorScene::fromGraph(const Graph& g)
 		node->setId(n.id);
 		nodesMap[n.id] = node;
 
-		for (auto& it = n.attrs.constBegin(); it != n.attrs.constEnd(); ++it)
+		for (auto it = n.attrs.constBegin(); it != n.attrs.constEnd(); ++it)
 		{
 			node->setAttribute(it.key(), it.value());
 		}
 
-		for (auto& it = n.ports.constBegin(); it != n.ports.constEnd(); ++it)
+		for (auto it = n.ports.constBegin(); it != n.ports.constEnd(); ++it)
 		{
 			CNodePort* port = node->addPort(it.key().toLocal8Bit());
 		}
@@ -101,7 +101,7 @@ bool CNodeEditorScene::fromGraph(const Graph& g)
 		edge->setFirstNode(nodesMap[e.startNodeId], e.startPortId);
 		edge->setLastNode(nodesMap[e.endNodeId], e.endPortId);
 
-		for (auto& it = e.attrs.constBegin(); it != e.attrs.constEnd(); ++it)
+		for (auto it = e.attrs.constBegin(); it != e.attrs.constEnd(); ++it)
 		{
 			edge->setAttribute(it.key(), it.value());
 		}
