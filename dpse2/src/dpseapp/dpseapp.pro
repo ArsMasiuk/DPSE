@@ -27,7 +27,7 @@ HEADERS += $$files($$PWD/simu/*.h)
 # includes & libs
 INCLUDEPATH += $$PWD $$PWD/.. $$PWD/../3rdParty/qtpropertybrowser $$PWD/../3rdParty/qsint-widgets
 
-LIBS += -lqtpropertybrowser -lqsint-widgets -lqvge -lqvgeio -lcommonui
+LIBS += -lcommonui -lqvge -lqvgeio -lqtpropertybrowser -lqsint-widgets
 
 USE_OGDF{
     LIBS += -logdf
@@ -42,4 +42,8 @@ win32{
 cygwin*{
     LIBS += -lopengl32 -lglu32 -lshell32 -luser32 -lpsapi
 }
+
+# install
+target.path = /usr/local/bin
+INSTALLS += target
 
