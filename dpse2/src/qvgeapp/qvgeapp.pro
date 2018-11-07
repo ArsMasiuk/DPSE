@@ -23,23 +23,7 @@ RESOURCES += $$files($$PWD/*.qrc)
 
 
 # includes & libs
-INCLUDEPATH += $$PWD $$PWD/.. $$PWD/../3rdParty/qtpropertybrowser $$PWD/../3rdParty/qsint-widgets
-
-LIBS += -lcommonui -lqvge -lqvgeio -lqtpropertybrowser -lqsint-widgets
-
-USE_OGDF{
-    LIBS += -logdf
-}
-
-win32{
-    LIBS += -lopengl32 -lglu32 -lshell32 -luser32 -lpsapi
-
-    RC_FILE = $$PWD/win32/icon.rc
-}
-
-cygwin*{
-    LIBS += -lopengl32 -lglu32 -lshell32 -luser32 -lpsapi
-}
+INCLUDEPATH += $$PWD
 
 
 # install

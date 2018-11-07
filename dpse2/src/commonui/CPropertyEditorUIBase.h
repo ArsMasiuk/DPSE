@@ -1,8 +1,7 @@
 ﻿#pragma once
 
 #include <QtTreePropertyBrowser>
-#include <QtVariantProperty.h>
-
+#include <QtVariantProperty>
 
 class CPropertyEditorUIBase : public QtTreePropertyBrowser
 {
