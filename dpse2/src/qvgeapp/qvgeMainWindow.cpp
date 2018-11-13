@@ -27,7 +27,7 @@ qvgeMainWindow::qvgeMainWindow()
 
     QApplication::setOrganizationName("qvge");
     QApplication::setApplicationName("Qt Visual Graph Editor");
-	QApplication::setApplicationVersion(qvgeVersion.toString() + " (Beta)");
+	QApplication::setApplicationVersion(qvgeVersion.toString());
     QApplication::setApplicationDisplayName(QString("%1 %2 %3")
 		.arg(QApplication::applicationName(), QApplication::applicationVersion(), bitString));
 

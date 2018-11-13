@@ -30,7 +30,7 @@ dpseMainWindow::dpseMainWindow()
 
     QApplication::setOrganizationName("DonNTU");
     QApplication::setApplicationName("Distributed Parallel Simulation Environment");
-    QApplication::setApplicationVersion(dpseVersion.toString() + tr(" (Beta)"));
+    QApplication::setApplicationVersion(dpseVersion.toString());
 	QApplication::setApplicationDisplayName(QString("%1 %2 %3")
 		.arg(QApplication::applicationName(), QApplication::applicationVersion(), bitString));
 

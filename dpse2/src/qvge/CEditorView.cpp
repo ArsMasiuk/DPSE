@@ -10,8 +10,6 @@ It can be used freely, maintaining the information above.
 #include "CEditorView.h"
 #include "CEditorScene.h"
 
-//#include <QGLWidget>
-#include <QOpenGLWidget> 
 #include <QMouseEvent> 
 #include <QTimer> 
 #include <QDebug> 
@@ -37,13 +35,6 @@ CEditorView::CEditorView(QWidget *parent)
 
 CEditorView::CEditorView(CEditorScene *scene, QWidget *parent): CEditorView(parent)
 {
-    //auto glw = new QOpenGLWidget();
-
-    //setViewport(glw);
-
-	//auto glw = new QGLWidget();
-	//setViewport(glw);
-
 	setScene(scene);
 }
 
@@ -104,7 +95,16 @@ void CEditorView::fitSelectedToView()
 }
 
 
+void CEditorView::restoreContextMenu()
+{
+	setContextMenuPolicy(m_menuModeTmp);
+}
+
+
 // reimp
+
+#if defined Q_OS_WIN && !defined Q_OS_CYGWIN		// Windows-conform panning & context menu
+
 
 void CEditorView::mousePressEvent(QMouseEvent *e)
 {
@@ -156,6 +156,77 @@ void CEditorView::mouseReleaseEvent(QMouseEvent *e)
 	}
 }
 
+#else	// Linux/Unix/etc.
+
+void CEditorView::mousePressEvent(QMouseEvent *e)
+{
+	m_moved = false;
+
+	// enable RMB pan
+	if (e->button() == Qt::RightButton)
+	{
+		if (dragMode() != ScrollHandDrag)
+		{
+			m_menuModeTmp = contextMenuPolicy();
+			setContextMenuPolicy(Qt::PreventContextMenu);
+
+			setDragMode(ScrollHandDrag);
+
+			m_interactiveTmp = isInteractive();
+			setInteractive(false);
+
+			QMouseEvent fake(e->type(), e->pos(), Qt::LeftButton, Qt::LeftButton, e->modifiers());
+			Super::mousePressEvent(&fake);
+
+			return;
+		}
+	}
+
+	Super::mousePressEvent(e);
+}
+
+
+void CEditorView::mouseMoveEvent(QMouseEvent *e)
+{
+	m_moved = true;
+
+	Super::mouseMoveEvent(e);
+}
+
+
+void CEditorView::mouseReleaseEvent(QMouseEvent *e)
+{
+	// disabel RMB pan
+	if (e->button() == Qt::RightButton && dragMode() == ScrollHandDrag)
+	{
+		QMouseEvent fake(e->type(), e->pos(), Qt::LeftButton, Qt::LeftButton, e->modifiers());
+		Super::mouseReleaseEvent(&fake);
+
+		setDragMode(RubberBandDrag);
+
+		setInteractive(m_interactiveTmp);
+
+		setContextMenuPolicy(m_menuModeTmp);
+
+		if (!m_moved)
+		{
+			QMouseEvent fake(QEvent::MouseButtonPress, e->pos(), Qt::RightButton, Qt::RightButton, Qt::NoModifier);
+			Super::mousePressEvent(&fake);
+
+			Super::mouseReleaseEvent(e);
+
+			QContextMenuEvent fake2(QContextMenuEvent::Mouse, e->pos());
+			contextMenuEvent(&fake2);
+		}
+
+		return;
+	}
+
+	Super::mouseReleaseEvent(e);
+}
+
+#endif
+
 
 void CEditorView::wheelEvent(QWheelEvent *e)
 {
@@ -205,8 +276,3 @@ void CEditorView::wheelEvent(QWheelEvent *e)
 	}
 }
 
-
-void CEditorView::restoreContextMenu()
-{
-	setContextMenuPolicy(m_menuModeTmp);
-}

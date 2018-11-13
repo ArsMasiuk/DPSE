@@ -54,6 +54,8 @@ Q_SIGNALS:
 private:
 	Qt::ContextMenuPolicy m_menuModeTmp;
 	bool m_interactiveTmp = false;
+	bool m_moved = false;
+	QPoint m_pos;
 
 	double m_currentZoom;
 
