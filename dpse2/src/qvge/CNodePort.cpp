@@ -18,7 +18,7 @@ CNodePort::CNodePort(CNode *node, const QByteArray& portId, int align, double xo
 {
  	Q_ASSERT(m_node != NULL);
 
-	setRect(-3, -3, 7, 7);
+	setRect(-4, -4, 9, 9);
 	setBrush(Qt::gray);
 	setPen(QPen(Qt::black, 1));
 

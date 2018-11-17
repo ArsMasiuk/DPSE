@@ -83,11 +83,22 @@ void CNode::copyDataFrom(CItem* from)
 	CNode* fromNode = dynamic_cast<CNode*>(from);
 	if (fromNode)
 	{
+		// shape & position
 		resize(fromNode->getSize());
 		setPos(fromNode->pos());
 		setZValue(fromNode->zValue());
 
-		// to do: ports...
+		// ports
+		qDeleteAll(m_ports);
+		m_ports.clear();
+		for (auto it = fromNode->m_ports.begin(); it != fromNode->m_ports.end(); ++it)
+		{
+			CNodePort* port = new CNodePort(this);
+			port->copyDataFrom(**it);
+			m_ports[it.key()] = port;
+		}
+
+		updatePortsLayout();
 	}
 
 	updateCachedItems();
