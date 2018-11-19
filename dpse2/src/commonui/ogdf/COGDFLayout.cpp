@@ -234,7 +234,7 @@ void COGDFLayout::graphToScene(const ogdf::Graph &G, const ogdf::GraphAttributes
 
 // file IO
 
-bool COGDFLayout::loadGraph(const std::string &filename, CNodeEditorScene &scene)
+bool COGDFLayout::loadGraph(const std::string &filename, CNodeEditorScene &scene, QString* lastError)
 {
     ogdf::Graph G;
     ogdf::GraphAttributes GA(G, 0xffffff);   // all attrs

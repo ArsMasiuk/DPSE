@@ -1,3 +1,9 @@
+QVGE 0.5.2 
+-------------------------------------------------------------------------------
+- item ids can be hidded separately
+- more diagnostic shown if file reading failed
+
+
 QVGE 0.5.1 (bugfix beta)
 -------------------------------------------------------------------------------
 - some GEXF format IO fixes

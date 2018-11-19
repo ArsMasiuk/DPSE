@@ -20,7 +20,7 @@ It can be used freely, maintaining the information above.
 
 // reimp
 
-bool CFileSerializerGEXF::load(const QString& fileName, CEditorScene& scene) const
+bool CFileSerializerGEXF::load(const QString& fileName, CEditorScene& scene, QString* lastError) const
 {
 	// read file into document
 	QFile file(fileName);
@@ -35,11 +35,9 @@ bool CFileSerializerGEXF::load(const QString& fileName, CEditorScene& scene) con
 	{
 		file.close();
 
-		QMessageBox::critical(NULL, 
-			QObject::tr("Cannot open document"), 
-			QObject::tr("%1\nline: %2, column: %3")
-			.arg(errorString).arg(errorLine).arg(errorColumn));
-
+		if (lastError)
+			*lastError = QObject::tr("%1\nline: %2, column: %3").arg(errorString).arg(errorLine).arg(errorColumn);
+			
 		return false;
 	}
 	
@@ -361,7 +359,7 @@ bool CFileSerializerGEXF::readEdge(int /*index*/, const QDomNode &domNode, const
 }
 
 
-bool CFileSerializerGEXF::save(const QString& fileName, CEditorScene& scene) const
+bool CFileSerializerGEXF::save(const QString& fileName, CEditorScene& scene, QString* lastError) const
 {
 	QFile file(fileName);
 	if (!file.open(QIODevice::WriteOnly))

@@ -33,8 +33,8 @@ public:
 	void doReadSettings(QSettings& settings);
 	void doWriteSettings(QSettings& settings);
 
-	bool loadFromFile(const QString &fileName, const QString &format);
-	bool saveToFile(const QString &fileName, const QString &format);
+	bool loadFromFile(const QString &fileName, const QString &format, QString* lastError);
+	bool saveToFile(const QString &fileName, const QString &format, QString* lastError);
 
 public Q_SLOTS:
     // callback
@@ -68,6 +68,9 @@ private Q_SLOTS:
 
 	void sceneCrop();
     void sceneOptions();
+
+	void showItemIds(bool on);
+	void showItemLabels(bool on);
 
 	void addNodePort();
 	void editNodePort();
@@ -114,6 +117,7 @@ private:
     QAction *gridAction;
     QAction *gridSnapAction;
     QAction *actionShowLabels;
+	QAction *actionShowIds;
 
     bool m_showNewGraphDialog = true;
 

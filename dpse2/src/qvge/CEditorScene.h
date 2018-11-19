@@ -137,6 +137,7 @@ public:
 
 	QSet<QByteArray> getVisibleClassAttributes(const QByteArray& classId, bool inherited) const;
 	void setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis = true);
+	bool isClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId) const;
 
 	CAttributeConstrains* getClassAttributeConstrains(const QByteArray& classId, const QByteArray& attrId) const;
 	void setClassAttributeConstrains(const QByteArray& classId, const QByteArray& attrId, CAttributeConstrains* cptr);

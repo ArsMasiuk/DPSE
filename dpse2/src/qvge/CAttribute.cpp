@@ -13,21 +13,23 @@ It can be used freely, maintaining the information above.
 // attributes
 
 CAttribute::CAttribute()
-    : isVirtual(false),
-	valueType(QVariant::String)
+    : isVirtual(false)
 {
+	this->valueType = QVariant::String;
 }
+
 
 CAttribute::CAttribute(
 	const QByteArray& attrId, const QString& attrName, 
 	const QVariant& defaultValue)
-	: isVirtual(false),
-	valueType(defaultValue.type())
+	: isVirtual(false)
 {
 	this->id = attrId;
 	this->name = attrName;
 	this->defaultValue = defaultValue;
+	this->valueType = defaultValue.type();
 }
+
 
 bool CAttribute::storeTo(QDataStream& out, quint64 /*version64*/) const
 {
@@ -35,6 +37,7 @@ bool CAttribute::storeTo(QDataStream& out, quint64 /*version64*/) const
 
 	return true;
 }
+
 
 bool CAttribute::restoreFrom(QDataStream& out, quint64 version64)
 {

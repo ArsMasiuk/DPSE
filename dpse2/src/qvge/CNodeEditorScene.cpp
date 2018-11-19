@@ -118,7 +118,38 @@ bool CNodeEditorScene::fromGraph(const Graph& g)
 
 bool CNodeEditorScene::toGraph(Graph& g)
 {
-	return false;
+	g.clear();
+
+	auto graphAttrs = getClassAttributes("", false);
+	for (auto it = graphAttrs.constBegin(); it != graphAttrs.constEnd(); ++it)
+	{
+		AttrInfo attr = *it;
+		if (attr.name.isEmpty())
+			attr.name = QString(attr.id);
+		g.graphAttrs[it.key()] = attr;
+	}
+
+	auto nodeAttrs = getClassAttributes("node", false);
+	for (auto it = nodeAttrs.constBegin(); it != nodeAttrs.constEnd(); ++it)
+	{
+		AttrInfo attr = *it;
+		if (attr.name.isEmpty())
+			attr.name = QString(attr.id);
+		g.nodeAttrs[it.key()] = attr;
+	}
+
+	auto edgeAttrs = getClassAttributes("edge", false);
+	for (auto it = edgeAttrs.constBegin(); it != edgeAttrs.constEnd(); ++it)
+	{
+		AttrInfo attr = *it;
+		if (attr.name.isEmpty())
+			attr.name = QString(attr.id);
+		g.edgeAttrs[it.key()] = attr;
+	}
+
+	// TODO
+
+	return true;
 }
 
 

@@ -18,7 +18,7 @@ It can be used freely, maintaining the information above.
 
 // reimp
 
-bool CFileSerializerDOT::save(const QString& fileName, CEditorScene& scene) const
+bool CFileSerializerDOT::save(const QString& fileName, CEditorScene& scene, QString* lastError) const
 {
 	QFile saveFile(fileName);
 	if (saveFile.open(QFile::WriteOnly))

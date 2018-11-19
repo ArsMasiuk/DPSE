@@ -14,6 +14,7 @@ It can be used freely, maintaining the information above.
 #include <QTextStream>
 #include <QApplication>
 #include <QFileInfo>
+#include <QMessageBox>
 
 #include <appbase/CPlatformServices.h>
 #include <commonui/CNodeEditorUIController.h>
@@ -31,14 +32,14 @@ qvgeMainWindow::qvgeMainWindow()
     QApplication::setApplicationDisplayName(QString("%1 %2 (%3)")
 		.arg(QApplication::applicationName(), QApplication::applicationVersion(), bitString));
 
+	CDocumentFormat xgr = { "XGR binary graph format", "*.xgr",{ "xgr" }, true, true };
 	CDocumentFormat gexf = { "GEXF", "*.gexf", {"gexf"}, true, true };
-	CDocumentFormat graphml = { "GraphML", "*.graphml", {"graphml"}, false, true };
-	CDocumentFormat xgr = { "XGR binary graph format", "*.xgr", {"xgr"}, true, true };
+	CDocumentFormat graphml = { "GraphML", "*.graphml", {"graphml"}, true, true };
     CDocumentFormat gml = { "GML", "*.gml", { "gml" }, false, true };
     CDocumentFormat csv = { "CSV text file", "*.csv", { "csv" }, false, true };
 
     CDocument graph = { tr("Graph Document"), tr("Directed or undirected graph"), "graph", true,
-                        {gexf, graphml, gml, xgr, csv} };
+                        { xgr, gexf, graphml, gml, csv} };
     addDocument(graph);
 
     CDocumentFormat txt = { tr("Plain text file"), "*.txt", { "txt" }, true, true };
@@ -101,9 +102,16 @@ bool qvgeMainWindow::openDocument(const QString &fileName, QByteArray &docType)
 	{
 		docType = "graph";
 
-        if (createDocument(docType) && m_graphEditController->loadFromFile(fileName, format))
+		QString lastError;
+
+        if (createDocument(docType) && m_graphEditController->loadFromFile(fileName, format, &lastError))
 		{
 			return true;
+		}
+
+		if (lastError.size())
+		{
+			QMessageBox::critical(NULL, fileName, lastError);
 		}
 
 		return false;
@@ -152,7 +160,9 @@ bool qvgeMainWindow::saveDocument(const QString &fileName, const QString &/*sele
 	{
 		QString extType = QFileInfo(fileName).suffix().toLower();
 
-        return m_graphEditController->saveToFile(fileName, extType);
+		QString lastError;	// TODO
+
+        return m_graphEditController->saveToFile(fileName, extType, &lastError);
 	}
 
     // unknown type

@@ -590,6 +590,12 @@ void CEditorScene::setClassAttributeVisible(const QByteArray& classId, const QBy
 }
 
 
+bool CEditorScene::isClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId) const
+{
+	return m_classAttributesVis[classId].contains(attrId);
+}
+
+
 QSet<QByteArray> CEditorScene::getVisibleClassAttributes(const QByteArray& classId, bool inherited) const
 {
 	QSet<QByteArray> result = m_classAttributesVis[classId];

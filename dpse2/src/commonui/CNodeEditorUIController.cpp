@@ -288,8 +288,16 @@ void CNodeEditorUIController::createMenus()
     actionShowLabels = viewMenu->addAction(QIcon(":/Icons/Label"), tr("Show &Labels"));
     actionShowLabels->setCheckable(true);
     actionShowLabels->setStatusTip(tr("Show/hide item labels"));
-    actionShowLabels->setChecked(m_editorScene->itemLabelsEnabled());
-    connect(actionShowLabels, SIGNAL(toggled(bool)), m_editorScene, SLOT(enableItemLabels(bool)));
+	actionShowLabels->setChecked(m_editorScene->isClassAttributeVisible("item", "label"));
+	connect(actionShowLabels, SIGNAL(toggled(bool)), this, SLOT(showItemLabels(bool)));
+	//actionShowLabels->setChecked(m_editorScene->itemLabelsEnabled());
+    //connect(actionShowLabels, SIGNAL(toggled(bool)), m_editorScene, SLOT(enableItemLabels(bool)));
+
+	actionShowIds = viewMenu->addAction(tr("Show &Ids"));
+	actionShowIds->setCheckable(true);
+	actionShowIds->setStatusTip(tr("Show/hide item ids"));
+	actionShowIds->setChecked(m_editorScene->isClassAttributeVisible("item", "id"));
+	connect(actionShowIds, SIGNAL(toggled(bool)), this, SLOT(showItemIds(bool)));
 
     viewMenu->addSeparator();
 
@@ -493,19 +501,6 @@ void CNodeEditorUIController::resetZoom()
 }
 
 
-void CNodeEditorUIController::sceneCrop()
-{
-    QRectF itemsRect = m_editorScene->itemsBoundingRect().adjusted(-20, -20, 20, 20);
-    if (itemsRect == m_editorScene->sceneRect())
-        return;
-
-    // update scene rect
-    m_editorScene->setSceneRect(itemsRect);
-
-    m_editorScene->addUndoState();
-}
-
-
 void CNodeEditorUIController::sceneOptions()
 {
     CSceneOptionsDialog dialog;
@@ -604,6 +599,9 @@ void CNodeEditorUIController::doReadSettings(QSettings& settings)
     m_lastExportPath = settings.value("lastExportPath", m_lastExportPath).toString();
     m_showNewGraphDialog = settings.value("autoCreateGraphDialog", m_showNewGraphDialog).toBool();
 
+	actionShowIds->setChecked(settings.value("showItemIds", actionShowIds->isChecked()).toBool());
+	actionShowLabels->setChecked(settings.value("showItemLabel", actionShowLabels->isChecked()).toBool());
+
 
     // UI elements
     settings.beginGroup("UI/ItemProperties");
@@ -645,6 +643,9 @@ void CNodeEditorUIController::doWriteSettings(QSettings& settings)
     settings.setValue("lastExportPath", m_lastExportPath);
     settings.setValue("autoCreateGraphDialog", m_showNewGraphDialog);
 
+	settings.setValue("showItemIds", actionShowIds->isChecked());
+	settings.setValue("showItemLables", actionShowLabels->isChecked());
+
 
     // UI elements
     settings.beginGroup("UI/ItemProperties");
@@ -675,21 +676,21 @@ void CNodeEditorUIController::doWriteSettings(QSettings& settings)
 }
 
 
-bool CNodeEditorUIController::loadFromFile(const QString &fileName, const QString &format)
+bool CNodeEditorUIController::loadFromFile(const QString &fileName, const QString &format, QString* lastError)
 {
     if (format == "xgr")
     {
-        return (CFileSerializerXGR().load(fileName, *m_editorScene));
+        return (CFileSerializerXGR().load(fileName, *m_editorScene, lastError));
     }
 
     if (format == "graphml")
     {
-        return (CFileSerializerGraphML().load(fileName, *m_editorScene));
+        return (CFileSerializerGraphML().load(fileName, *m_editorScene, lastError));
     }
 
     if (format == "gexf")
     {
-        return (CFileSerializerGEXF().load(fileName, *m_editorScene));
+        return (CFileSerializerGEXF().load(fileName, *m_editorScene, lastError));
     }
 
     if (format == "csv")
@@ -712,28 +713,31 @@ bool CNodeEditorUIController::loadFromFile(const QString &fileName, const QStrin
             default:    csvLoader.setDelimiter('\t');   break;
         }
 
-        return (csvLoader.load(fileName, *m_editorScene));
+        return (csvLoader.load(fileName, *m_editorScene, lastError));
     }
 
     // else via ogdf
 #ifdef USE_OGDF
-    return (COGDFLayout::loadGraph(fileName.toStdString(), *m_editorScene));
+    return (COGDFLayout::loadGraph(fileName.toStdString(), *m_editorScene, lastError));
 #else
     return false;
 #endif
 }
 
 
-bool CNodeEditorUIController::saveToFile(const QString &fileName, const QString &format)
+bool CNodeEditorUIController::saveToFile(const QString &fileName, const QString &format, QString* lastError)
 {
     if (format == "xgr")
-        return (CFileSerializerXGR().save(fileName, *m_editorScene));
+        return (CFileSerializerXGR().save(fileName, *m_editorScene, lastError));
 
     if (format == "dot")
-        return (CFileSerializerDOT().save(fileName, *m_editorScene));
+        return (CFileSerializerDOT().save(fileName, *m_editorScene, lastError));
 
     if (format == "gexf")
-        return (CFileSerializerGEXF().save(fileName, *m_editorScene));
+        return (CFileSerializerGEXF().save(fileName, *m_editorScene, lastError));
+
+	if (format == "graphml")
+		return (CFileSerializerGraphML().save(fileName, *m_editorScene, lastError));
 
     return false;
 }
@@ -741,7 +745,7 @@ bool CNodeEditorUIController::saveToFile(const QString &fileName, const QString 
 
 void CNodeEditorUIController::onNewDocumentCreated()
 {
-    m_editorScene->setClassAttributeVisible("item", "id", true);
+    m_editorScene->setClassAttributeVisible("item", "id", false);
     m_editorScene->setClassAttributeVisible("item", "label", true);
 
     m_editorScene->setClassAttribute("", "comment", QString());
@@ -815,3 +819,29 @@ void CNodeEditorUIController::find()
 {
     m_searchDialog->exec(*m_editorScene);
 }
+
+
+void CNodeEditorUIController::sceneCrop()
+{
+	QRectF itemsRect = m_editorScene->itemsBoundingRect().adjusted(-20, -20, 20, 20);
+	if (itemsRect == m_editorScene->sceneRect())
+		return;
+
+	// update scene rect
+	m_editorScene->setSceneRect(itemsRect);
+
+	m_editorScene->addUndoState();
+}
+
+
+void CNodeEditorUIController::showItemIds(bool on)
+{
+	m_editorScene->setClassAttributeVisible("item", "id", on);
+}
+
+
+void CNodeEditorUIController::showItemLabels(bool on)
+{
+	m_editorScene->setClassAttributeVisible("item", "label", on);
+}
+

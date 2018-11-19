@@ -17,23 +17,19 @@ It can be used freely, maintaining the information above.
 #include <QList>
 #include <QIcon>
 
+#include <qvgeio/CGraphBase.h>
+
 
 // attribute class
 
-struct CAttribute
+struct CAttribute: public AttrInfo
 {
 	CAttribute();
     CAttribute(const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue);
 
-	QByteArray id;
-	QString name;
-	QVariant defaultValue;
-
 	bool isVirtual = false;	// x,y,label,color etc.
 	bool noDefault = false;	// default value makes no sense (id, label, position)
     bool userDefined = true;
-
-	int valueType = 0;
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, quint64 version64) const;
