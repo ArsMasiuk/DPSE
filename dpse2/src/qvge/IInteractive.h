@@ -23,6 +23,7 @@ public:
 	virtual void onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent* event) {}
 	virtual void onHoverLeave(QGraphicsItem* /*sceneItem*/, QGraphicsSceneHoverEvent* /*event*/) {}
 	virtual void onClick(QGraphicsSceneMouseEvent* /*mouseEvent*/) {}
+	virtual void onDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/) {}
 	virtual bool onClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF& /*clickPos*/) { return true; }
 	virtual bool onDoubleClickDrag(QGraphicsSceneMouseEvent* /*mouseEvent*/, const QPointF& /*clickPos*/) { return false; }
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* draggedItem) {	return Ignored;	}

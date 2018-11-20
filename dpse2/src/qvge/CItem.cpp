@@ -342,3 +342,4 @@ void CItem::onHoverEnter(QGraphicsItem* sceneItem, QGraphicsSceneHoverEvent*)
 
 	sceneItem->setToolTip(tooltipToShow);
 }
+

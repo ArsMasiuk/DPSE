@@ -290,6 +290,7 @@ protected:
 
 protected Q_SLOTS:
 	virtual void onSelectionChanged();
+	void onFocusItemChanged(QGraphicsItem *newFocusItem, QGraphicsItem *oldFocusItem, Qt::FocusReason reason);
 
 private:
 	void removeItems();
@@ -330,14 +331,17 @@ private:
 
 	bool m_needUpdateItems;
 
+	// selector
+	QRectF m_transformRect;
+
 	// labels
 	QPainterPath m_usedLabelsRegion;
 	bool m_labelsEnabled, m_labelsUpdate;
 
 	bool m_isFontAntialiased = true;
 
-	// selector
-	QRectF m_transformRect;
+	// pimpl
+	class CEditorScene_p* m_pimpl = nullptr;
 };
 
 
