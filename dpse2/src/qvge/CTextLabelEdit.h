@@ -28,7 +28,11 @@ public:
 protected:
 	virtual bool sceneEvent(QEvent *event);
 
+private Q_SLOT:
+	void updateGeometry();
+
 private:
 	CItem *m_item = nullptr;
+	QString m_storedText;
 };
 

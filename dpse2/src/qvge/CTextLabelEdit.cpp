@@ -12,15 +12,30 @@ It can be used freely, maintaining the information above.
 #include "CItem.h"
 
 #include <QTextCursor>
+#include <QTextDocument>
 
 
 CTextLabelEdit::CTextLabelEdit()
 {
 	setTextInteractionFlags(Qt::TextEditorInteraction);
+
+	connect(document(), &QTextDocument::contentsChanged, this, &CTextLabelEdit::updateGeometry);
 }
 
 CTextLabelEdit::~CTextLabelEdit()
 {
+}
+
+
+void CTextLabelEdit::updateGeometry()
+{
+	if (m_item)
+	{
+		QPointF center = m_item->getSceneItem()->boundingRect().center();
+		QPointF bcenter = boundingRect().center();
+		QPointF delta = center - bcenter;
+		setPos(m_item->getSceneItem()->pos() + delta);
+	}
 }
 
 
@@ -67,14 +82,18 @@ void CTextLabelEdit::startEdit(CItem *item)
 	if (scene == nullptr)
 		return;
 
-	setPlainText(m_item->getAttribute("label").toString());
+	m_storedText = m_item->getAttribute("label").toString();
+	m_item->showLabel(false);
+
+	setPlainText(m_storedText);
 	setFont(m_item->getAttribute("label.font").value<QFont>());
+
+	updateGeometry();
 
 	QTextCursor c = textCursor();
 	c.select(QTextCursor::Document);
 	setTextCursor(c);
 	
-	setPos(item->getSceneItem()->pos());
 	setFocus();
 
 	scene->addItem(this);
@@ -91,13 +110,15 @@ void CTextLabelEdit::finishEdit(bool accept)
 	if (scene == nullptr)
 		return;
 
-	if (accept && 
-		m_item->getAttribute("label").toString() != toPlainText()	)
+	QString text = toPlainText();
+	if (accept && m_storedText != text)
 	{
-		m_item->setAttribute("label", toPlainText());
+		m_item->setAttribute("label", text);
 
 		scene->addUndoState();
 	}
+
+	m_item->showLabel(true);
 
 	m_item = nullptr;
 	scene->removeItem(this);
