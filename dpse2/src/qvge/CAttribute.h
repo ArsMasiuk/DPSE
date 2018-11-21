@@ -25,6 +25,7 @@ It can be used freely, maintaining the information above.
 struct CAttribute: public AttrInfo
 {
 	CAttribute();
+	CAttribute(const QByteArray& attrId, const QString& attrName = QString());
     CAttribute(const QByteArray& attrId, const QString& attrName, const QVariant& defaultValue);
 
 	bool isVirtual = false;	// x,y,label,color etc.

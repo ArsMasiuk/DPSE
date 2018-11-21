@@ -15,19 +15,34 @@ It can be used freely, maintaining the information above.
 CAttribute::CAttribute()
     : isVirtual(false)
 {
-	this->valueType = QVariant::String;
+	valueType = QVariant::String;
+}
+
+
+CAttribute::CAttribute(const QByteArray& attrId, const QString& attrName)
+	: isVirtual(false),
+	noDefault(true)
+{
+	id = attrId;
+	name = attrName;
+	if (name.isEmpty()) name = id;
+	
+	valueType = QVariant::String;
 }
 
 
 CAttribute::CAttribute(
 	const QByteArray& attrId, const QString& attrName, 
 	const QVariant& defaultValue)
-	: isVirtual(false)
+	: isVirtual(false),
+	noDefault(false)
 {
-	this->id = attrId;
-	this->name = attrName;
+	id = attrId;
+	name = attrName;
+	if (name.isEmpty()) name = id;
+	
 	this->defaultValue = defaultValue;
-	this->valueType = defaultValue.type();
+	valueType = defaultValue.type();
 }
 
 

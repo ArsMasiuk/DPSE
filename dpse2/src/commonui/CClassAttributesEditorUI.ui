@@ -27,41 +27,146 @@
     <number>1</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,0,0,1">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QLabel" name="label">
+       <property name="statusTip">
+        <string>Choose element to edit default attributes</string>
+       </property>
        <property name="text">
-        <string>Attributes of</string>
+        <string>Attributes of:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="ClassId">
+      <widget class="QToolButton" name="GraphButton">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="statusTip">
-        <string>Choose element to edit default attributes</string>
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>23</height>
+        </size>
        </property>
-       <item>
-        <property name="text">
-         <string>graph</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>node</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>edge</string>
-        </property>
-       </item>
+       <property name="statusTip">
+        <string>Edit graph attributes</string>
+       </property>
+       <property name="text">
+        <string>Graph</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
       </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="NodeButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>23</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>Edit default node attributes</string>
+       </property>
+       <property name="text">
+        <string>Node</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="EdgeButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>23</height>
+        </size>
+       </property>
+       <property name="statusTip">
+        <string>Edit default edge attributes</string>
+       </property>
+       <property name="text">
+        <string>Edge</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -122,7 +227,9 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>ClassId</tabstop>
+  <tabstop>GraphButton</tabstop>
+  <tabstop>NodeButton</tabstop>
+  <tabstop>EdgeButton</tabstop>
   <tabstop>Editor</tabstop>
   <tabstop>AddButton</tabstop>
   <tabstop>ChangeButton</tabstop>

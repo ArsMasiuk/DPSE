@@ -30,10 +30,9 @@ CClassAttributesEditorUI::CClassAttributesEditorUI(QWidget *parent) :
     connect(&m_manager, SIGNAL(valueChanged(QtProperty*, const QVariant&)), 
 		this, SLOT(onValueChanged(QtProperty*, const QVariant&)));
 
-    //ui->ClassId->setCurrentIndex(1);    // node by def.
-
-	//const QObjectList& objs = ui->Editor->children();
-	//qDebug() << objs
+	connect(ui->NodeButton, SIGNAL(clicked()), this, SLOT(rebuild()));
+	connect(ui->EdgeButton, SIGNAL(clicked()), this, SLOT(rebuild()));
+	connect(ui->GraphButton, SIGNAL(clicked()), this, SLOT(rebuild()));
 }
 
 
@@ -100,11 +99,11 @@ void CClassAttributesEditorUI::onSceneChanged()
     rebuild();
 }
 
-
-void CClassAttributesEditorUI::on_ClassId_currentIndexChanged(int)
-{
-    rebuild();
-}
+//
+//void CClassAttributesEditorUI::on_ClassId_currentIndexChanged(int)
+//{
+//    rebuild();
+//}
 
 
 void CClassAttributesEditorUI::onValueChanged(QtProperty *property, const QVariant &val)
@@ -332,7 +331,7 @@ void CClassAttributesEditorUI::rebuild()
 			auto connList = dynamic_cast<CAttributeConstrainsList*>(conn);
 			if (connList) {
 				prop = m_manager.addProperty(QtVariantPropertyManager::enumTypeId(), it.key());
-				prop->setAttribute(QLatin1String("enumNames"), connList->ids);
+				prop->setAttribute(QLatin1String("enumNames"), connList->names);
 				QVariant v;
 				qVariantSetValue(v, connList->iconsAsMap());
 				prop->setAttribute(QLatin1String("enumIcons"), v);
@@ -384,10 +383,13 @@ void CClassAttributesEditorUI::rebuild()
 
 QByteArray CClassAttributesEditorUI::getClassId() const
 {
-	if (ui->ClassId->currentIndex() > 0)
-		return ui->ClassId->currentText().toLatin1();
+	if (ui->NodeButton->isChecked())
+		return QByteArrayLiteral("node");
 	else
-		return QByteArray();
+	if (ui->EdgeButton->isChecked())
+		return QByteArrayLiteral("edge");
+	else
+		return QByteArrayLiteral("");
 }
 
 

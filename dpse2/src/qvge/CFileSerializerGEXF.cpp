@@ -154,7 +154,6 @@ bool CFileSerializerGEXF::readAttrs(int /*index*/, const QDomNode &domNode, CEdi
 
 		scene.setClassAttribute(classId, attr);
 
-
         m_classIdMap[classId][id] = attrInfo;
     }
 
@@ -438,6 +437,26 @@ static QString typeToString(int valueType)
 void CFileSerializerGEXF::writeClassAttrs(QTextStream &ts, const CEditorScene& scene, const QByteArray &classId) const
 {
 	auto attrs = scene.getClassAttributes(classId, false);
+
+	// add local attributes if any
+	if (classId.size())
+	{
+		auto items = (classId == "node") ? 
+			scene.getItems<CItem, CNode>(): 
+			scene.getItems<CItem, CEdge>();
+
+		for (auto item : items)
+		{
+			auto itemAttrs = item->getLocalAttributes();
+			for (auto it = itemAttrs.constBegin(); it != itemAttrs.constEnd(); ++it)
+			{
+				auto id = it.key();
+				if (!attrs.contains(id))
+					attrs[id] = CAttribute(id);
+			}
+		}
+	}
+
 	if (attrs.isEmpty())
 		return;
 
@@ -446,7 +465,7 @@ void CFileSerializerGEXF::writeClassAttrs(QTextStream &ts, const CEditorScene& s
 	for (auto it = attrs.constBegin(); it != attrs.constEnd(); ++it)
 	{
 		const auto &attr = it.value();
-		if (attr.noDefault)
+		if (attr.isVirtual)
 			continue;
 
 		// size

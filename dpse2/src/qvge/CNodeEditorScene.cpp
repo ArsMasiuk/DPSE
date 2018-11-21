@@ -165,6 +165,7 @@ void CNodeEditorScene::initialize()
 	if (edgeStyles->ids.isEmpty()) {
 		edgeStyles->names << "None" << "Solid" << "Dots" << "Dashes" << "Dash-Dot" << "Dash-Dot-Dot";
 		edgeStyles->ids << "none" << "solid" << "dotted" << "dashed" << "dashdot" << "dashdotdot";
+		//edgeStyles->icons << QIcon(":/Icons/Edge-Directed") << QIcon(":/Icons/Edge-Mutual") << QIcon(":/Icons/Edge-Undirected");
 	}
 
 

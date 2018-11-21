@@ -3,6 +3,10 @@ QVGE 0.5.2
 - item ids can be hidded separately
 - more diagnostic shown if file reading failed
 - in-place label editing
+- selection of global attributes made more convenient
+
+- fixed some GEXF-related issues 
+- fixed font reading/setting issue
 
 
 QVGE 0.5.1 (bugfix beta)

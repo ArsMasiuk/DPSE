@@ -249,15 +249,14 @@ void CItem::updateLabelContent()
 	setLabelText(labelToShow);
 
     // label attrs
-    QFont f = getAttribute("label.font").value<QFont>();
+    QFont f(getAttribute(QByteArrayLiteral("label.font")).value<QFont>());
 
 	if (!scene->isFontAntialiased())
 		f.setStyleStrategy(QFont::NoAntialias);
 
     m_labelItem->setFont(f);
 
-    QColor c = getAttribute("label.color").value<QColor>();
-    m_labelItem->setBrush(c);
+	m_labelItem->setBrush(getAttribute(QByteArrayLiteral("label.color")).value<QColor>());
 }
 
 
@@ -267,13 +266,9 @@ void CItem::updateLabelDecoration()
 		return;
 
 	if (m_internalStateFlags & IS_Selected)
-		m_labelItem->setBrush(QColor("orange"));
+		m_labelItem->setBrush(QColor(QStringLiteral("orange")));
 	else
-	{
-		QColor c = getAttribute("label.color").value<QColor>();
-		//if (c.isValid())
-			m_labelItem->setBrush(c);
-	}
+		m_labelItem->setBrush(getAttribute(QByteArrayLiteral("label.color")).value<QColor>());
 }
 
 
