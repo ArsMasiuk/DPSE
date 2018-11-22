@@ -59,7 +59,7 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
     m_gridSnap = false;
     m_gridPen = QPen(Qt::gray, 0, Qt::DotLine);
 
-	setBackgroundBrush(QColor("#f3ffe1"));
+	setBackgroundBrush(Qt::white);
 
     setSceneRect(-500, -500, 1000, 1000);
 
@@ -582,6 +582,9 @@ bool CEditorScene::removeClassAttribute(const QByteArray& classId, const QByteAr
 
 void CEditorScene::setClassAttributeVisible(const QByteArray& classId, const QByteArray& attrId, bool vis)
 {
+	if (vis == m_classAttributesVis[classId].contains(attrId))
+		return;
+
 	if (vis)
 		m_classAttributesVis[classId].insert(attrId);
 	else

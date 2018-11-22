@@ -115,6 +115,11 @@ CNodeEditorUIController::CNodeEditorUIController(CMainWindow *parent) :
 }
 
 
+CNodeEditorUIController::~CNodeEditorUIController()
+{
+}
+
+
 void CNodeEditorUIController::createMenus()
 {
     // file actions
@@ -141,14 +146,14 @@ void CNodeEditorUIController::createMenus()
     QAction *undoAction = editMenu->addAction(QIcon(":/Icons/Undo"), tr("&Undo"));
     undoAction->setStatusTip(tr("Undo latest action"));
     undoAction->setShortcut(QKeySequence::Undo);
-    connect(undoAction, &QAction::triggered, m_editorScene, &CEditorScene::undo);
+    connect(undoAction, &QAction::triggered, this, &CNodeEditorUIController::undo);
     connect(m_editorScene, &CEditorScene::undoAvailable, undoAction, &QAction::setEnabled);
     undoAction->setEnabled(m_editorScene->availableUndoCount());
 
     QAction *redoAction = editMenu->addAction(QIcon(":/Icons/Redo"), tr("&Redo"));
     redoAction->setStatusTip(tr("Redo latest action"));
     redoAction->setShortcut(QKeySequence::Redo);
-    connect(redoAction, &QAction::triggered, m_editorScene, &CEditorScene::redo);
+    connect(redoAction, &QAction::triggered, this, &CNodeEditorUIController::redo);
     connect(m_editorScene, &CEditorScene::redoAvailable, redoAction, &QAction::setEnabled);
     redoAction->setEnabled(m_editorScene->availableRedoCount());
 
@@ -420,11 +425,6 @@ void CNodeEditorUIController::onNavigatorShown()
     m_editorScene->enableGrid(gridOn);
     m_editorScene->enableItemLabels(labelsOn);
     m_sliderView->setBackgroundBrush(pm);
-}
-
-
-CNodeEditorUIController::~CNodeEditorUIController()
-{
 }
 
 
@@ -845,3 +845,20 @@ void CNodeEditorUIController::showItemLabels(bool on)
 	m_editorScene->setClassAttributeVisible("item", "label", on);
 }
 
+
+void CNodeEditorUIController::undo()
+{
+	m_editorScene->undo();
+
+	m_editorScene->setClassAttributeVisible("item", "id", actionShowIds->isChecked());
+	m_editorScene->setClassAttributeVisible("item", "label", actionShowLabels->isChecked());
+}
+
+
+void CNodeEditorUIController::redo()
+{
+	m_editorScene->redo();
+
+	m_editorScene->setClassAttributeVisible("item", "id", actionShowIds->isChecked());
+	m_editorScene->setClassAttributeVisible("item", "label", actionShowLabels->isChecked());
+}

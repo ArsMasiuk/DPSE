@@ -72,6 +72,9 @@ private Q_SLOTS:
 	void showItemIds(bool on);
 	void showItemLabels(bool on);
 
+	void undo();
+	void redo();
+
 	void addNodePort();
 	void editNodePort();
 	
