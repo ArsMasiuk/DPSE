@@ -200,21 +200,6 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
 		ui->StrokeSize->setValue(node->getAttribute("stroke.size").toDouble());
     }
 
-    if (nodes.count() == 1)
-    {
-        ui->NodeId->setEnabled(true);
-        ui->NodeId->setText(tr("Node id: %1").arg(nodes.first()->getId()));
-
-		ui->NodeLabel->setVisible(true);
-    }
-    else
-    {
-        ui->NodeId->setEnabled(false);
-        ui->NodeId->setText(tr("Select single node to edit its id && text"));
-
-		ui->NodeLabel->setVisible(false);
-    }
-
     QList<CItem*> nodeItems;
     for (auto item: nodes) nodeItems << item;
     int attrCount = ui->NodeAttrEditor->setupFromItems(*m_scene, nodeItems);
@@ -232,21 +217,6 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
         ui->EdgeWeight->setValue(edge->getAttribute("weight").toDouble());
 		ui->EdgeStyle->setPenStyle(CUtils::textToPenStyle(edge->getAttribute("style").toString()));
 		ui->EdgeDirection->selectAction(edge->getAttribute("direction"));
-    }
-
-    if (edges.count() == 1)
-    {
-        ui->EdgeId->setEnabled(true);
-        ui->EdgeId->setText(tr("Edge id: %1").arg(edges.first()->getId()));
-
-		ui->EdgeLabel->setVisible(true);
-    }
-    else
-    {
-        ui->EdgeId->setEnabled(false);
-        ui->EdgeId->setText(tr("Select single edge to edit its id and text"));
-
-		ui->EdgeLabel->setVisible(false);
     }
 
     QList<CItem*> edgeItems;
@@ -360,82 +330,6 @@ void CNodeEdgePropertiesUI::on_NodeSizeSwitch_toggled(bool on)
 }
 
 
-void CNodeEdgePropertiesUI::on_NodeLabel_clicked()
-{
-	QList<CNode*> nodes = m_scene->getSelectedNodes();
-	if (nodes.count() != 1)
-		return;
-
-	m_scene->onActionEditLabel(nodes.first());
-}
-
-
-void CNodeEdgePropertiesUI::on_NodeId_clicked()
-{
-    QList<CNode*> nodes = m_scene->getSelectedNodes();
-    if (nodes.count() != 1)
-        return;
-
-    QString id = nodes.first()->getId();
-    QString editId = id;
-
-_again:
-
-    QString newId = QInputDialog::getText(this, tr("Change node Id"),
-        tr("Specify new node Id:"), QLineEdit::Normal, editId);
-
-    if (newId.isEmpty() || newId == id)
-        return;
-
-    auto items = m_scene->getItemsById(newId);
-    for (auto item: items)
-    {
-        CNode* node = dynamic_cast<CNode*>(item);
-        if (node == NULL || node == nodes.first())
-            continue;
-
-        if (node->getId() == newId)
-        {
-            int count = 0;
-            QString nextFreeId = newId + QString::number(count++);
-            while (m_scene->getItemsById(nextFreeId).count())
-            {
-                nextFreeId = newId + QString::number(count++);
-            }
-
-            QString autoId = QString(tr("Suggested Id: %1").arg(nextFreeId));
-
-            int r = QMessageBox::warning(this, tr("Warning: Id is in use"),
-                                 tr("Id %1 is already used by another node.").arg(newId),
-                                 autoId,
-                                 tr("Swap node Ids"),
-                                 tr("Continue editing"), 0, 2);
-
-            if (r == 2)
-            {
-                editId = newId;
-                goto _again;
-            }
-
-            if (r == 1)
-            {
-                nodes.first()->setId(newId);
-                node->setId(id);
-                m_scene->addUndoState();
-                return;
-            }
-
-            // r = 0
-            editId = nextFreeId;
-            goto _again;
-        }
-    }
-
-    nodes.first()->setId(newId);
-    m_scene->addUndoState();
-}
-
-
 void CNodeEdgePropertiesUI::on_StrokeColor_activated(const QColor &color)
 {
 	setNodesAttribute("stroke.color", color);
@@ -478,82 +372,6 @@ void CNodeEdgePropertiesUI::on_EdgeStyle_activated(QVariant data)
 void CNodeEdgePropertiesUI::on_EdgeDirection_activated(QVariant data)
 {
 	setEdgesAttribute("direction", data);
-}
-
-
-void CNodeEdgePropertiesUI::on_EdgeLabel_clicked()
-{
-	QList<CEdge*> edges = m_scene->getSelectedEdges();
-	if (edges.count() != 1)
-		return;
-
-	m_scene->onActionEditLabel(edges.first());
-}
-
-
-void CNodeEdgePropertiesUI::on_EdgeId_clicked()
-{
-    QList<CEdge*> edges = m_scene->getSelectedEdges();
-    if (edges.count() != 1)
-        return;
-
-    QString id = edges.first()->getId();
-    QString editId = id;
-
-_again:
-
-    QString newId = QInputDialog::getText(this, tr("Change edge Id"),
-        tr("Specify new edge Id:"), QLineEdit::Normal, editId);
-
-    if (newId.isEmpty() || newId == id)
-        return;
-
-    auto items = m_scene->getItemsById(newId);
-    for (auto item: items)
-    {
-        CEdge* edge = dynamic_cast<CEdge*>(item);
-        if (edge == NULL || edge == edges.first())
-            continue;
-
-        if (edge->getId() == newId)
-        {
-            int count = 0;
-            QString nextFreeId = newId + QString::number(count++);
-            while (m_scene->getItemsById(nextFreeId).count())
-            {
-                nextFreeId = newId + QString::number(count++);
-            }
-
-            QString autoId = QString(tr("Suggested Id: %1").arg(nextFreeId));
-
-            int r = QMessageBox::warning(this, tr("Warning: Id is in use"),
-                                 tr("Id %1 is already used by another edge.").arg(newId),
-                                 autoId,
-                                 tr("Swap edge Ids"),
-                                 tr("Continue editing"), 0, 2);
-
-            if (r == 2)
-            {
-                editId = newId;
-                goto _again;
-            }
-
-            if (r == 1)
-            {
-                edges.first()->setId(newId);
-                edge->setId(id);
-                m_scene->addUndoState();
-                return;
-            }
-
-            // r = 0
-            editId = nextFreeId;
-            goto _again;
-        }
-    }
-
-    edges.first()->setId(newId);
-    m_scene->addUndoState();
 }
 
 

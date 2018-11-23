@@ -75,6 +75,8 @@ private Q_SLOTS:
 	void undo();
 	void redo();
 
+	void changeItemId();
+
 	void addNodePort();
 	void editNodePort();
 	

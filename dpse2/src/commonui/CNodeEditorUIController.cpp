@@ -32,6 +32,7 @@ It can be used freely, maintaining the information above.
 #include <qvge/CImageExport.h>
 #include <qvge/CPDFExport.h>
 #include <qvge/CNodeEditorScene.h>
+#include <qvge/CNodeSceneActions.h>
 #include <qvge/CEditorSceneDefines.h>
 #include <qvge/CEditorView.h>
 #include <qvge/CFileSerializerGEXF.h>
@@ -861,4 +862,24 @@ void CNodeEditorUIController::redo()
 
 	m_editorScene->setClassAttributeVisible("item", "id", actionShowIds->isChecked());
 	m_editorScene->setClassAttributeVisible("item", "label", actionShowLabels->isChecked());
+}
+
+
+void CNodeEditorUIController::changeItemId()
+{
+	auto sceneActions = dynamic_cast<CNodeSceneActions*>(m_editorScene->getActions());
+	int nodesCount = m_editorScene->getSelectedNodes().size();
+	int edgesCount = m_editorScene->getSelectedEdges().size();
+
+	if (nodesCount == 1 && edgesCount == 0 && sceneActions)
+	{
+		sceneActions->editNodeId(m_editorScene->getSelectedNodes().first());
+		return;
+	}
+
+	if (nodesCount == 0 && edgesCount == 1 && sceneActions)
+	{
+		sceneActions->editEdgeId(m_editorScene->getSelectedEdges().first());
+		return;
+	}
 }
