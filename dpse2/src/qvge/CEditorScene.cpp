@@ -1403,9 +1403,7 @@ void CEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			QGraphicsItem *hoverItem = getItemAt(mouseEvent->scenePos());
 
 			if (m_doubleClick)
-			{
 				onLeftDoubleClick(mouseEvent, hoverItem);
-			}
 			else
 				onLeftClick(mouseEvent, hoverItem);
 		}
@@ -1520,13 +1518,11 @@ void CEditorScene::onLeftClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsIt
 }
 
 
-void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* clickedItem)
+void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem)
 {
 	// clicked on empty space?
 	if (!clickedItem)
-	{
 		return;
-	}
 
 	// else check clicked item...
 	if (CItem *item = dynamic_cast<CItem*>(clickedItem))

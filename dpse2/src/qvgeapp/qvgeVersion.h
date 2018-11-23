@@ -13,7 +13,7 @@ It can be used freely, maintaining the information above.
 #include <QVersionNumber>
 
 
-static QVersionNumber qvgeVersion(0,5,1);
+static QVersionNumber qvgeVersion(0,5,2);
 
 
 #endif // QVGEVERSION_H
