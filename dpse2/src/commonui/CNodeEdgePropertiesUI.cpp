@@ -234,7 +234,10 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
 		QFont f(item->getAttribute("label.font").value<QFont>());
         ui->LabelFont->setCurrentFont(f);
 		ui->LabelFontSize->setValue(f.pointSize());
-        ui->LabelColor->setColor(item->getAttribute("label.color").value<QColor>());
+		ui->LabelFontBold->setChecked(f.bold());
+		ui->LabelFontItalic->setChecked(f.italic());
+		ui->LabelFontUnderline->setChecked(f.underline());
+		ui->LabelColor->setColor(item->getAttribute("label.color").value<QColor>());
         break;
     }
 
@@ -384,19 +387,13 @@ void CNodeEdgePropertiesUI::on_LabelFont_activated(const QFont &font)
     if (m_updateLock || m_scene == NULL)
         return;
 
-    QList<CEdge*> edges = m_scene->getSelectedEdges();
-	QList<CNode*> nodes = m_scene->getSelectedNodes();
-	if (nodes.isEmpty() && edges.isEmpty())
+	QList<CItem*> items = m_scene->getSelectedNodesEdges();
+	if (items.isEmpty())
 		return;
 
-	for (auto edge: edges)
-    {
-        edge->setAttribute("label.font", font);
-    }
-
-	for (auto node : nodes)
+	for (auto item : items)
 	{
-		node->setAttribute("label.font", font);
+		item->setAttribute("label.font", font);
 	}
 
     m_scene->addUndoState();
@@ -408,19 +405,13 @@ void CNodeEdgePropertiesUI::on_LabelColor_activated(const QColor &color)
 	if (m_updateLock || m_scene == NULL)
 		return;
 
-	QList<CEdge*> edges = m_scene->getSelectedEdges();
-	QList<CNode*> nodes = m_scene->getSelectedNodes();
-	if (nodes.isEmpty() && edges.isEmpty())
+	QList<CItem*> items = m_scene->getSelectedNodesEdges();
+	if (items.isEmpty())
 		return;
 
-	for (auto edge : edges)
+	for (auto item : items)
 	{
-		edge->setAttribute("label.color", color);
-	}
-
-	for (auto node : nodes)
-	{
-		node->setAttribute("label.color", color);
+		item->setAttribute("label.color", color);
 	}
 
 	m_scene->addUndoState();
@@ -429,11 +420,107 @@ void CNodeEdgePropertiesUI::on_LabelColor_activated(const QColor &color)
 
 void CNodeEdgePropertiesUI::on_LabelFontSize_valueChanged(int value)
 {
-	QFont f = ui->LabelFont->font();
-	if (f.pointSize() != value)
+	if (m_updateLock || m_scene == NULL)
+		return;
+
+	QList<CItem*> items = m_scene->getSelectedNodesEdges();
+	if (items.isEmpty())
+		return;
+
+	bool set = false;
+
+	for (auto item : items)
 	{
-		f.setPointSize(value);
-		ui->LabelFont->setFont(f);
-		on_LabelFont_activated(f);
+		QFont font = item->getAttribute("label.font").value<QFont>();
+		if (font.pointSize() != value)
+		{
+			font.setPointSize(value);
+			item->setAttribute("label.font", font);
+			set = true;
+		}
 	}
+
+	if (set)
+		m_scene->addUndoState();
+}
+
+
+void CNodeEdgePropertiesUI::on_LabelFontBold_toggled(bool on)
+{
+	if (m_updateLock || m_scene == NULL)
+		return;
+
+	QList<CItem*> items = m_scene->getSelectedNodesEdges();
+	if (items.isEmpty())
+		return;
+
+	bool set = false;
+
+	for (auto item : items)
+	{
+		QFont font = item->getAttribute("label.font").value<QFont>();
+		if (font.bold() != on)
+		{
+			font.setBold(on);
+			item->setAttribute("label.font", font);
+			set = true;
+		}
+	}
+
+	if (set)
+		m_scene->addUndoState();
+}
+
+
+void CNodeEdgePropertiesUI::on_LabelFontItalic_toggled(bool on)
+{
+	if (m_updateLock || m_scene == NULL)
+		return;
+
+	QList<CItem*> items = m_scene->getSelectedNodesEdges();
+	if (items.isEmpty())
+		return;
+
+	bool set = false;
+
+	for (auto item : items)
+	{
+		QFont font = item->getAttribute("label.font").value<QFont>();
+		if (font.italic() != on)
+		{
+			font.setItalic(on);
+			item->setAttribute("label.font", font);
+			set = true;
+		}
+	}
+
+	if (set)
+		m_scene->addUndoState();
+}
+
+
+void CNodeEdgePropertiesUI::on_LabelFontUnderline_toggled(bool on)
+{
+	if (m_updateLock || m_scene == NULL)
+		return;
+
+	QList<CItem*> items = m_scene->getSelectedNodesEdges();
+	if (items.isEmpty())
+		return;
+
+	bool set = false;
+
+	for (auto item : items)
+	{
+		QFont font = item->getAttribute("label.font").value<QFont>();
+		if (font.underline() != on)
+		{
+			font.setUnderline(on);
+			item->setAttribute("label.font", font);
+			set = true;
+		}
+	}
+
+	if (set)
+		m_scene->addUndoState();
 }

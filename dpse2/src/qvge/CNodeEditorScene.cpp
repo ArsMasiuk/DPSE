@@ -809,11 +809,21 @@ const QList<CEdge*>& CNodeEditorScene::getSelectedEdges() const
 }
 
 
+const QList<CItem*>& CNodeEditorScene::getSelectedNodesEdges() const
+{
+	if (m_selItems.isEmpty())
+		prefetchSelection();
+
+	return m_selItems;
+}
+
+
 void CNodeEditorScene::onSelectionChanged()
 {
     // drop cached selections
     m_selNodes.clear();
     m_selEdges.clear();
+	m_selItems.clear();
 
 	Super::onSelectionChanged();
 }
@@ -823,6 +833,7 @@ void CNodeEditorScene::prefetchSelection() const
 {
     m_selNodes.clear();
     m_selEdges.clear();
+	m_selItems.clear();
 
     auto selItems = selectedItems();
 
@@ -831,12 +842,14 @@ void CNodeEditorScene::prefetchSelection() const
         if (CNode* node = dynamic_cast<CNode*>(item))
         {
             m_selNodes << node;
+			m_selItems << node;
             continue;
         }
 
         if (CEdge* edge = dynamic_cast<CEdge*>(item))
         {
             m_selEdges << edge;
+			m_selItems << edge;
             continue;
         }
     }

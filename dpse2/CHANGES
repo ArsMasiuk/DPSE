@@ -5,6 +5,7 @@ QVGE 0.5.2
 - more diagnostic shown if file reading failed
 - in-place label editing added
 - selection of global attributes made more convenient
+- label font editor extended a little
 
 - fixed some GEXF-related issues 
 - fixed font reading/setting issue
