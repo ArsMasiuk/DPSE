@@ -150,13 +150,16 @@ void CDirectEdge::onParentGeometryChanged()
 	prepareGeometryChange();
 
 	// update line position
-	QPointF p1 = m_firstNode->pos();
+	QPointF p1c = m_firstNode->pos();
 	if (m_firstPortId.size() && m_firstNode->getPort(m_firstPortId))
-		p1 = m_firstNode->getPort(m_firstPortId)->scenePos();
+		p1c = m_firstNode->getPort(m_firstPortId)->scenePos();
 
-	QPointF p2 = m_lastNode->pos();
+	QPointF p2c = m_lastNode->pos();
 	if (m_lastPortId.size() && m_lastNode->getPort(m_lastPortId))
-		p2 = m_lastNode->getPort(m_lastPortId)->scenePos();
+		p2c = m_lastNode->getPort(m_lastPortId)->scenePos();
+
+	QPointF p1 = m_firstNode->getIntersectionPoint(QLineF(p1c, p2c), m_firstPortId);
+	QPointF p2 = m_lastNode->getIntersectionPoint(QLineF(p2c, p1c), m_lastPortId);
 
 	QLineF l(p1, p2);
 	setLine(l);
@@ -171,19 +174,19 @@ void CDirectEdge::onParentGeometryChanged()
 		double nr = nodeDiameter / 2;
 		double r = nr + qAbs(m_bendFactor) * nr / 2;
 
-		m_controlPos = p1 + QPointF(0, -r);
+		m_controlPos = p1c + QPointF(0, -r);
 		path.addEllipse(m_controlPos, r, r);
 	}
 	else // not circled
 	{
-		path.moveTo(p1);
+		path.moveTo(p1c);
 
 		// center
-		m_controlPos = (p1 + p2) / 2;
+		m_controlPos = (p1c + p2c) / 2;
 
 		if (m_bendFactor == 0)
 		{
-			path.lineTo(p2);
+			path.lineTo(p2c);
 		}
 		else
 		{
@@ -194,14 +197,14 @@ void CDirectEdge::onParentGeometryChanged()
 			if (m_bendFactor < 0)
 				bendDirection = !bendDirection;
 
-			QLineF f1(t1, p2);
+			QLineF f1(t1, p2c);
 			f1.setAngle(bendDirection ? f1.angle() + 90 : f1.angle() - 90);
 			f1.setLength(f1.length() * 0.2 * posFactor);
 
 			m_controlPos = f1.p2();
 			m_controlPoint = m_controlPos - (t1 - m_controlPos) * 0.33;
 
-			path.cubicTo(m_controlPoint, m_controlPoint, p2);
+			path.cubicTo(m_controlPoint, m_controlPoint, p2c);
 		}
 	}
 

@@ -176,10 +176,6 @@ void CNodeEditorScene::initialize()
     CAttribute shapeAttr("shape", "Shape", "disc");
 	setClassAttribute("node", shapeAttr);
 
-	//CAttribute sizeAttr("size", "Size", 11.0);
-	//setClassAttribute("node", sizeAttr);
-	//setClassAttributeConstrains("node", "size", new CDoubleConstrains(0.1, 1000.0));
-	//createClassAttribute("node", "size", "Size", 11.0, new CDoubleConstrains(0.1, 1000.0));
 	createClassAttribute("node", "size", "Size", QSizeF(11.0, 11.0));
 
 	createClassAttribute("node", "stroke.style", "Stroke Style", "solid");
@@ -190,6 +186,12 @@ void CNodeEditorScene::initialize()
     CAttribute posAttr("pos", "Position", QPointF());
 	posAttr.noDefault = true;
 	setClassAttribute("node", posAttr);
+
+	CAttribute degreeAttr("degree", "Degree", 0);
+	degreeAttr.noDefault = true;
+	degreeAttr.isVirtual = true;
+	setClassAttribute("node", degreeAttr);
+
 
 	// default edge attr
     CAttribute edgeAttr("color", "Color", QColor(Qt::gray));

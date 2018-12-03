@@ -192,15 +192,15 @@ QLineF CEdge::calculateArrowLine(const QPainterPath &path, bool first, const QLi
 
 	if (first && m_firstNode)
 	{
-		qreal shift = m_firstNode->getDistanceToLineEnd(direction, m_firstPortId);
-		qreal arrowStart = path.percentAtLength(shift + ARROW_SIZE);
+		//qreal shift = m_firstNode->getDistanceToLineEnd(direction, m_firstPortId);
+		qreal arrowStart = path.percentAtLength(/*shift +*/ ARROW_SIZE);
 		return QLineF(path.pointAtPercent(arrowStart), direction.p2());
 	}
 	else if (!first && m_lastNode)
 	{
 		qreal len = path.length();
-		qreal shift = m_lastNode->getDistanceToLineEnd(direction, m_lastPortId);
-		qreal arrowStart = path.percentAtLength(len - shift - ARROW_SIZE);
+		//qreal shift = m_lastNode->getDistanceToLineEnd(direction, m_lastPortId);
+		qreal arrowStart = path.percentAtLength(len - /*shift -*/ ARROW_SIZE);
 		return QLineF(path.pointAtPercent(arrowStart), direction.p2());
 	}
 
@@ -212,18 +212,18 @@ void CEdge::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*optio
 {
 	if (first && m_firstNode)
 	{
-		qreal shift = m_firstNode->getDistanceToLineEnd(direction, m_firstPortId);
-		drawArrow(painter, shift, direction);
+		//qreal shift = m_firstNode->getDistanceToLineEnd(direction, m_firstPortId);
+		drawArrow(painter, /*shift*/0, direction);
 	}
 	else if (!first && m_lastNode)
 	{
-		qreal shift = m_lastNode->getDistanceToLineEnd(direction, m_lastPortId);
-		drawArrow(painter, shift, direction);
+		//qreal shift = m_lastNode->getDistanceToLineEnd(direction, m_lastPortId);
+		drawArrow(painter, /*shift*/0, direction);
 	}
 }
 
 
-void CEdge::drawArrow(QPainter* painter, qreal shift, const QLineF& direction) const
+void CEdge::drawArrow(QPainter* painter, qreal /*shift*/, const QLineF& direction) const
 {
 	static QPolygonF arrowHead;
 	if (arrowHead.isEmpty())
@@ -240,7 +240,7 @@ void CEdge::drawArrow(QPainter* painter, qreal shift, const QLineF& direction) c
 
 	painter->translate(direction.p2());
 	painter->rotate(180 + a);
-	painter->translate(QPointF(0, shift + oldPen.widthF()));
+	painter->translate(QPointF(0, /*shift +*/ oldPen.widthF()));
 	painter->drawPolygon(arrowHead);
 
 	painter->restore();

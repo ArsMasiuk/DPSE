@@ -236,6 +236,11 @@ QVariant CNode::getAttribute(const QByteArray& attrId) const
 		return pos();
 	}
 
+	if (attrId == "degree")
+	{
+		return m_connections.size();
+	}
+
 	return Super::getAttribute(attrId);
 }
 
@@ -540,14 +545,25 @@ double CNode::getDistanceToLineEnd(const QLineF& line, const QByteArray& portId)
 }
 
 
-QPointF CNode::getIntersectionPoint(const QLineF& line) const
+QPointF CNode::getIntersectionPoint(const QLineF& line, const QByteArray& portId) const
 {
+	// port
+	if (portId.size())
+	{
+		if (CNodePort* port = getPort(portId))
+		{
+			double shift = (port->boundingRect().width() / 2);
+			auto angle = qDegreesToRadians(line.angle());
+			return port->scenePos() + QPointF(shift * qCos(angle), - shift * qSin(angle));
+		}
+	}
+
 	// circle 
 	if (m_shapeCache.isEmpty())
 	{
 		auto shift = qMax(rect().width() / 2, rect().height() / 2);
 		auto angle = qDegreesToRadians(line.angle());
-		return pos() + QPointF(shift * qCos(angle), shift * qSin(angle));
+		return pos() + QPointF(shift * qCos(angle), - shift * qSin(angle));
 	}
 
 	// polygon (must be cashed)
@@ -779,7 +795,7 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 	if (color.isValid())
 		painter->setBrush(color);
 	else
-		painter->setBrush(getScene()->backgroundBrush());	// fake to fill with "transparent" brush
+		painter->setBrush(Qt::NoBrush);
 
 
 	QColor strokeColor = isSelected ? 
