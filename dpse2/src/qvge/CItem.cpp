@@ -266,9 +266,14 @@ void CItem::updateLabelDecoration()
 		return;
 
 	if (m_internalStateFlags & IS_Selected)
-		m_labelItem->setBrush(QColor(QStringLiteral("orange")));
+		m_labelItem->setOpacity(0.6);
 	else
-		m_labelItem->setBrush(getAttribute(QByteArrayLiteral("label.color")).value<QColor>());
+		m_labelItem->setOpacity(1.0);
+
+	//if (m_internalStateFlags & IS_Selected)
+	//	m_labelItem->setBrush(QColor(QStringLiteral("orange")));
+	//else
+	//	m_labelItem->setBrush(getAttribute(QByteArrayLiteral("label.color")).value<QColor>());
 }
 
 

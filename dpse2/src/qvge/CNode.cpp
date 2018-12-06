@@ -797,24 +797,38 @@ void CNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 	else
 		painter->setBrush(Qt::NoBrush);
 
-
-	QColor strokeColor = isSelected ? 
-		QColor(QStringLiteral("orange")) : 
-		getAttribute(QByteArrayLiteral("stroke.color")).value<QColor>();
-	
 	qreal strokeSize = getAttribute(QByteArrayLiteral("stroke.size")).toDouble();
 	strokeSize = qMax(0.1, strokeSize);
-	if (isSelected) strokeSize++;
+
+	QColor strokeColor = getAttribute(QByteArrayLiteral("stroke.color")).value<QColor>();
 
 	int strokeStyle = CUtils::textToPenStyle(getAttribute(QByteArrayLiteral("stroke.style")).toString(), Qt::SolidLine);
 
-	painter->setPen(QPen(strokeColor, strokeSize, (Qt::PenStyle)strokeStyle));
+	// selection background outline
+	if (isSelected)
+	{
+		painter->setPen(QPen(Qt::darkCyan, strokeSize+5, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin));
+		painter->setOpacity(0.3);
 
-
+		// draw shape: disc if no cache
+		if (m_shapeCache.isEmpty())
+		{
+			QRectF r = Shape::boundingRect();
+			painter->drawEllipse(r);
+		}
+		else
+		{
+			painter->drawPolygon(m_shapeCache);
+		}
+	}
+	
 	// hover opacity
 	if (itemStateFlags() & IS_Drag_Accepted)
 		painter->setOpacity(0.6);
+	else
+		painter->setOpacity(1.0);
 
+	painter->setPen(QPen(strokeColor, strokeSize, (Qt::PenStyle)strokeStyle));
 
 	// draw shape: disc if no cache
 	if (m_shapeCache.isEmpty())

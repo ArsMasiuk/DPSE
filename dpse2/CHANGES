@@ -6,9 +6,12 @@ QVGE 0.5.2
 - in-place label editing added
 - selection of global attributes made more convenient
 - label font editor extended a little
+- item painting optimizations and corrections
 
 - fixed some GEXF-related issues 
 - fixed font reading/setting issue
+- fixed bug with changing style of selected items after applying a new scheme
+- fixed drawing of transparent items
 
 
 QVGE 0.5.1 (bugfix beta)

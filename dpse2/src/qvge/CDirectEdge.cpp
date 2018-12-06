@@ -58,6 +58,16 @@ void CDirectEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 {
 	//qDebug() << boundingRect() << option->exposedRect << option->rect;
 
+	//bool isSelected = (option->state & QStyle::State_Selected);
+	//if (isSelected)
+	//{
+	//	QPen p(QColor(Qt::darkCyan), 1.0, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
+	//	painter->setOpacity(0.5);
+	//	painter->setPen(p);
+	//	painter->drawPath(m_selectionShapePath);
+	//	painter->setOpacity(1.0);
+	//}
+
 	// called before draw 
     setupPainter(painter, option, widget);
 
@@ -66,16 +76,19 @@ void CDirectEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 	// circled connection
 	if (isCircled())
 	{
-		int nodeDiameter = m_firstNode->boundingRect().height();
-		double nr = nodeDiameter / 2;
-		double r = nr + qAbs(m_bendFactor) * nr / 2;
+		//int nodeDiameter = m_firstNode->boundingRect().height();
+		//double nr = nodeDiameter / 2;
+		//double r = nr + qAbs(m_bendFactor) * nr / 2;
 
-		painter->drawEllipse(m_controlPos, r, r);
+		//painter->drawEllipse(m_controlPos, r, r);
+
+		painter->drawPath(m_shapeCachePath);
 	}
 	else
 		if (m_bendFactor == 0)	// straight line
 		{
-			painter->drawLine(line());
+			//painter->drawLine(line());
+			painter->drawPath(m_shapeCachePath);
 
             // arrows
             if (m_itemFlags & CF_Start_Arrow)
@@ -86,23 +99,19 @@ void CDirectEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 		}
 		else // curve
 		{
-			QPainterPath pp;
-			pp.moveTo(line().p1());
-			pp.cubicTo(m_controlPoint, m_controlPoint, line().p2());
-
 			painter->setBrush(Qt::NoBrush);
-			painter->drawPath(pp);
+			painter->drawPath(m_shapeCachePath);
 
 			// arrows
             if (m_itemFlags & CF_Start_Arrow)
             {
-                QLineF arrowLine = calculateArrowLine(pp, true, QLineF(m_controlPos, line().p1()));
+                QLineF arrowLine = calculateArrowLine(m_shapeCachePath, true, QLineF(m_controlPos, line().p1()));
                 drawArrow(painter, option, true, arrowLine);
             }
 
             if (m_itemFlags & CF_End_Arrow)
             {
-                QLineF arrowLine = calculateArrowLine(pp, false, QLineF(m_controlPos, line().p2()));
+                QLineF arrowLine = calculateArrowLine(m_shapeCachePath, false, QLineF(m_controlPos, line().p2()));
                 drawArrow(painter, option, false, arrowLine);
             }
         }
@@ -165,7 +174,7 @@ void CDirectEdge::onParentGeometryChanged()
 	setLine(l);
 
 	// update shape path
-	QPainterPath path;
+	m_shapeCachePath = QPainterPath();
 
 	// circled connection 
 	if (isCircled())
@@ -174,19 +183,34 @@ void CDirectEdge::onParentGeometryChanged()
 		double nr = nodeDiameter / 2;
 		double r = nr + qAbs(m_bendFactor) * nr / 2;
 
-		m_controlPos = p1c + QPointF(0, -r);
-		path.addEllipse(m_controlPos, r, r);
+		// left up point
+		QPointF lp = p1c + QPointF(-r, -r);
+		QPointF p1 = m_firstNode->getIntersectionPoint(QLineF(lp, p1c), m_firstPortId);
+
+		// right up point
+		QPointF rp = p2c + QPointF(r, -r);
+		QPointF p2 = m_lastNode->getIntersectionPoint(QLineF(rp, p2c), m_lastPortId);
+
+		// up point
+		QPointF up = (p1c + p2c) / 2 + QPointF(0, -r * 2);
+
+		QPolygonF poly;
+		poly << p1 << lp << up << rp << p2;
+		m_shapeCachePath.addPolygon(poly);
+
+		//m_controlPos = p1c + QPointF(0, -r);
+		//path.addEllipse(m_controlPos, r, r);
 	}
 	else // not circled
 	{
-		path.moveTo(p1c);
+		m_shapeCachePath.moveTo(p1);
 
 		// center
 		m_controlPos = (p1c + p2c) / 2;
 
 		if (m_bendFactor == 0)
 		{
-			path.lineTo(p2c);
+			m_shapeCachePath.lineTo(p2);
 		}
 		else
 		{
@@ -204,13 +228,13 @@ void CDirectEdge::onParentGeometryChanged()
 			m_controlPos = f1.p2();
 			m_controlPoint = m_controlPos - (t1 - m_controlPos) * 0.33;
 
-			path.cubicTo(m_controlPoint, m_controlPoint, p2c);
+			m_shapeCachePath.cubicTo(m_controlPoint, m_controlPoint, p2);
 		}
 	}
 
 	QPainterPathStroker stroker;
 	stroker.setWidth(6);
-	m_selectionShapePath = stroker.createStroke(path);
+	m_selectionShapePath = stroker.createStroke(m_shapeCachePath);
 
 	update();
 

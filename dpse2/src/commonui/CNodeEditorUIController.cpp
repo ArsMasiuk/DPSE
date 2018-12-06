@@ -379,10 +379,10 @@ void CNodeEditorUIController::createPanels()
 
 
     // connect color schemes
-    connect(
-        m_schemesController, &CColorSchemesUIController::colorSchemeApplied,
-        m_propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene
-    );
+    //connect(
+    //    m_schemesController, &CColorSchemesUIController::colorSchemeApplied,
+    //    m_propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene
+    //);
 }
 
 

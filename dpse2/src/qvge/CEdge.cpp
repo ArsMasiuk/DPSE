@@ -159,9 +159,8 @@ void CEdge::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *opti
 	bool isSelected = (option->state & QStyle::State_Selected);
     if (isSelected)
     {
-		QPen p(QColor(QStringLiteral("orange")), weight + 1.0, penStyle, Qt::FlatCap, Qt::MiterJoin);
-		//p.setCosmetic(true);
-
+		QPen p(QColor(Qt::darkCyan), weight + 1.0, penStyle, Qt::FlatCap, Qt::MiterJoin);
+		painter->setOpacity(0.5);
         painter->setPen(p);
     }
     else
@@ -170,8 +169,8 @@ void CEdge::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *opti
 		QColor color = getAttribute(QByteArrayLiteral("color")).value<QColor>();
 
 		QPen p(color, weight, penStyle, Qt::FlatCap, Qt::MiterJoin);
-		//p.setCosmetic(true);
 
+		painter->setOpacity(1.0);
 		painter->setPen(p);
 	}
 }
