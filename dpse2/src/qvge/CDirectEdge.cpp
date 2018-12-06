@@ -58,63 +58,42 @@ void CDirectEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 {
 	//qDebug() << boundingRect() << option->exposedRect << option->rect;
 
-	//bool isSelected = (option->state & QStyle::State_Selected);
-	//if (isSelected)
-	//{
-	//	QPen p(QColor(Qt::darkCyan), 1.0, Qt::SolidLine, Qt::FlatCap, Qt::MiterJoin);
-	//	painter->setOpacity(0.5);
-	//	painter->setPen(p);
-	//	painter->drawPath(m_selectionShapePath);
-	//	painter->setOpacity(1.0);
-	//}
-
 	// called before draw 
     setupPainter(painter, option, widget);
 
     painter->setClipRect(boundingRect());
 
-	// circled connection
-	if (isCircled())
+	bool isDirect = (!isCircled() && (m_bendFactor == 0));
+	if (isDirect)	// straight line
 	{
-		//int nodeDiameter = m_firstNode->boundingRect().height();
-		//double nr = nodeDiameter / 2;
-		//double r = nr + qAbs(m_bendFactor) * nr / 2;
-
-		//painter->drawEllipse(m_controlPos, r, r);
-
+		//painter->drawLine(line());
 		painter->drawPath(m_shapeCachePath);
+
+        // arrows
+        if (m_itemFlags & CF_Start_Arrow)
+            drawArrow(painter, option, true, QLineF(line().p2(), line().p1()));
+
+        if (m_itemFlags & CF_End_Arrow)
+            drawArrow(painter, option, false, line());
 	}
-	else
-		if (m_bendFactor == 0)	// straight line
-		{
-			//painter->drawLine(line());
-			painter->drawPath(m_shapeCachePath);
+	else // curve
+	{
+		painter->setBrush(Qt::NoBrush);
+		painter->drawPath(m_shapeCachePath);
 
-            // arrows
-            if (m_itemFlags & CF_Start_Arrow)
-                drawArrow(painter, option, true, QLineF(line().p2(), line().p1()));
-
-            if (m_itemFlags & CF_End_Arrow)
-                drawArrow(painter, option, false, line());
-		}
-		else // curve
-		{
-			painter->setBrush(Qt::NoBrush);
-			painter->drawPath(m_shapeCachePath);
-
-			// arrows
-            if (m_itemFlags & CF_Start_Arrow)
-            {
-                QLineF arrowLine = calculateArrowLine(m_shapeCachePath, true, QLineF(m_controlPos, line().p1()));
-                drawArrow(painter, option, true, arrowLine);
-            }
-
-            if (m_itemFlags & CF_End_Arrow)
-            {
-                QLineF arrowLine = calculateArrowLine(m_shapeCachePath, false, QLineF(m_controlPos, line().p2()));
-                drawArrow(painter, option, false, arrowLine);
-            }
+		// arrows
+        if (m_itemFlags & CF_Start_Arrow)
+        {
+            QLineF arrowLine = calculateArrowLine(m_shapeCachePath, true, QLineF(m_controlPos, line().p1()));
+            drawArrow(painter, option, true, arrowLine);
         }
+
+        if (m_itemFlags & CF_End_Arrow)
+        {
+            QLineF arrowLine = calculateArrowLine(m_shapeCachePath, false, QLineF(m_controlPos, line().p2()));
+            drawArrow(painter, option, false, arrowLine);
+        }
+    }
 }
 
 
@@ -180,7 +159,7 @@ void CDirectEdge::onParentGeometryChanged()
 	if (isCircled())
 	{
 		int nodeDiameter = m_firstNode->boundingRect().height();
-		double nr = nodeDiameter / 2;
+		double nr = nodeDiameter /*/ 2*/;
 		double r = nr + qAbs(m_bendFactor) * nr / 2;
 
 		// left up point
@@ -192,14 +171,13 @@ void CDirectEdge::onParentGeometryChanged()
 		QPointF p2 = m_lastNode->getIntersectionPoint(QLineF(rp, p2c), m_lastPortId);
 
 		// up point
-		QPointF up = (p1c + p2c) / 2 + QPointF(0, -r * 2);
+		m_controlPos = (p1c + p2c) / 2 + QPointF(0, -r * 2);
 
-		QPolygonF poly;
-		poly << p1 << lp << up << rp << p2;
-		m_shapeCachePath.addPolygon(poly);
+		QLineF l(p1, p2);
+		setLine(l);
 
-		//m_controlPos = p1c + QPointF(0, -r);
-		//path.addEllipse(m_controlPos, r, r);
+		m_shapeCachePath.moveTo(p1);
+		m_shapeCachePath.cubicTo(lp, rp, p2);
 	}
 	else // not circled
 	{

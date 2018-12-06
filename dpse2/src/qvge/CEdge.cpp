@@ -178,28 +178,26 @@ void CEdge::setupPainter(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
 QLineF CEdge::calculateArrowLine(const QPainterPath &path, bool first, const QLineF &direction) const
 {
-	// optimization: disable during drag or pan
-	Qt::MouseButtons buttons = QGuiApplication::mouseButtons();
-	if ((buttons & Qt::LeftButton) || (buttons & Qt::RightButton))
-		return direction;
+	//// optimization: disable during drag or pan
+	//Qt::MouseButtons buttons = QGuiApplication::mouseButtons();
+	//if ((buttons & Qt::LeftButton) || (buttons & Qt::RightButton))
+	//	return direction;
 
-	// optimization: disable during zoom
-	Qt::KeyboardModifiers keys = QGuiApplication::keyboardModifiers();
-	if (keys & Qt::ControlModifier)
-		return direction;
+	//// optimization: disable during zoom
+	//Qt::KeyboardModifiers keys = QGuiApplication::keyboardModifiers();
+	//if (keys & Qt::ControlModifier)
+	//	return direction;
 
 
 	if (first && m_firstNode)
 	{
-		//qreal shift = m_firstNode->getDistanceToLineEnd(direction, m_firstPortId);
-		qreal arrowStart = path.percentAtLength(/*shift +*/ ARROW_SIZE);
+		qreal arrowStart = path.percentAtLength(ARROW_SIZE);
 		return QLineF(path.pointAtPercent(arrowStart), direction.p2());
 	}
 	else if (!first && m_lastNode)
 	{
 		qreal len = path.length();
-		//qreal shift = m_lastNode->getDistanceToLineEnd(direction, m_lastPortId);
-		qreal arrowStart = path.percentAtLength(len - /*shift -*/ ARROW_SIZE);
+		qreal arrowStart = path.percentAtLength(len - ARROW_SIZE);
 		return QLineF(path.pointAtPercent(arrowStart), direction.p2());
 	}
 
@@ -211,13 +209,11 @@ void CEdge::drawArrow(QPainter* painter, const QStyleOptionGraphicsItem* /*optio
 {
 	if (first && m_firstNode)
 	{
-		//qreal shift = m_firstNode->getDistanceToLineEnd(direction, m_firstPortId);
-		drawArrow(painter, /*shift*/0, direction);
+		drawArrow(painter, 0, direction);
 	}
 	else if (!first && m_lastNode)
 	{
-		//qreal shift = m_lastNode->getDistanceToLineEnd(direction, m_lastPortId);
-		drawArrow(painter, /*shift*/0, direction);
+		drawArrow(painter, 0, direction);
 	}
 }
 
@@ -239,7 +235,7 @@ void CEdge::drawArrow(QPainter* painter, qreal /*shift*/, const QLineF& directio
 
 	painter->translate(direction.p2());
 	painter->rotate(180 + a);
-	painter->translate(QPointF(0, /*shift +*/ oldPen.widthF()));
+	painter->translate(QPointF(0, oldPen.widthF()));
 	painter->drawPolygon(arrowHead);
 
 	painter->restore();
