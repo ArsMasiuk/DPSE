@@ -92,12 +92,28 @@ void CNodePort::setOffset(double xoff, double yoff)
 }
 
 
+QColor CNodePort::getColor() const
+{
+	return brush().color();
+}
+
+
+void CNodePort::setColor(const QColor& color)
+{
+	setBrush(color);
+}
+
+
 void CNodePort::copyDataFrom(const CNodePort &port)
 {
 	m_id = port.m_id;
 	m_align = port.m_align;
 	m_xoff = port.m_xoff;
 	m_yoff = port.m_yoff;
+
+	setBrush(port.brush());
+	setPen(port.pen());
+	setRect(port.rect());
 }
 
 
@@ -146,6 +162,10 @@ bool CNodePort::storeTo(QDataStream& out, quint64 version64) const
 {
 	out << m_id;
 	out << m_align << m_xoff << m_yoff;
+
+	// color etc. since v12
+	out << brush() << pen() << rect();
+
 	return true;
 }
 

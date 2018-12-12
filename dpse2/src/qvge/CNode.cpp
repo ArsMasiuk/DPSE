@@ -398,6 +398,13 @@ bool CNode::restoreFrom(QDataStream& out, quint64 version64)
 			CNodePort *port = new CNodePort(this, id, align, xoff, yoff);
 			m_ports[id] = port;
 
+			if (version64 >= 12)
+			{
+				QBrush br; out >> br; port->setBrush(br);
+				QPen pn; out >> pn; port->setPen(pn);
+				QRectF r; out >> r; port->setRect(r);
+			}
+
 			// update
 			port->onParentGeometryChanged();
 		}

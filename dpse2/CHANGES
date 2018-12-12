@@ -3,10 +3,11 @@ QVGE 0.5.2
 - item ids can be shown/hidded separately from labels
 - item ids are now editable via context menu only
 - more diagnostic shown if file reading failed
-- in-place label editing added
+- added in-place label editing
 - selection of global attributes made more convenient
 - label font editor extended a little
 - item painting optimizations and corrections
+- added port colors 
 
 - fixed some GEXF-related issues 
 - fixed font reading/setting issue
