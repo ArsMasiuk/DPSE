@@ -72,6 +72,8 @@ CNodeEditorUIController::CNodeEditorUIController(CMainWindow *parent) :
     connect(m_editorScene, &CEditorScene::infoStatusChanged, this, &CNodeEditorUIController::onSceneStatusChanged);
     connect(m_editorScene, &CNodeEditorScene::editModeChanged, this, &CNodeEditorUIController::onEditModeChanged);
 
+	connect(m_editorScene, &CEditorScene::sceneDoubleClicked, this, &CNodeEditorUIController::onSceneDoubleClicked);
+
     CSceneMenuUIController *menuController = new CSceneMenuUIController(this);
     m_editorScene->setContextMenuController(menuController);
 
@@ -478,6 +480,14 @@ void CNodeEditorUIController::onSceneStatusChanged(int status)
 }
 
 
+void CNodeEditorUIController::onSceneDoubleClicked(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem)
+{
+	CNodePort *port = dynamic_cast<CNodePort*>(clickedItem);
+	if (port)
+		editNodePort(*port);
+}
+
+
 void CNodeEditorUIController::onZoomChanged(double currentZoom)
 {
     resetZoomAction2->setText(QString("%1%").arg((int)(currentZoom * 100)));
@@ -805,14 +815,18 @@ void CNodeEditorUIController::addNodePort()
 void CNodeEditorUIController::editNodePort()
 {
     CNodePort *port = dynamic_cast<CNodePort*>(m_editorScene->getContextMenuTrigger());
-    if (!port)
-        return;
+	if (port)
+		editNodePort(*port);
+}
 
-    CNodePortEditorDialog dialog;
-    if (dialog.exec(*port) == QDialog::Accepted)
-        m_editorScene->addUndoState();
-    else
-        m_editorScene->revertUndoState();
+
+void CNodeEditorUIController::editNodePort(CNodePort &port)
+{
+	CNodePortEditorDialog dialog;
+	if (dialog.exec(port) == QDialog::Accepted)
+		m_editorScene->addUndoState();
+	else
+		m_editorScene->revertUndoState();
 }
 
 

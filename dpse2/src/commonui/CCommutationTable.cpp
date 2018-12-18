@@ -16,6 +16,7 @@ It can be used freely, maintaining the information above.
 #include <QDebug>
 #include <QElapsedTimer>
 #include <QInputDialog>
+#include <QScrollBar>
 
 
 // NumSortItem: numeric sorting by ids
@@ -142,7 +143,7 @@ void CCommutationTable::onSceneChanged()
 	ui.Table->setColumnCount(m_extraSectionIds.size() + CustomId);
 
 	int extraSectionIndex = CustomId;
-	for (auto paramId : m_extraSectionIds)
+	for (const auto& paramId : m_extraSectionIds)
 	{
 		ui.Table->headerItem()->setText(extraSectionIndex++, paramId);
 	}
@@ -168,7 +169,7 @@ void CCommutationTable::onSceneChanged()
 		item->setText(EdgeId, edge->getId());
 
 		int extraSectionIndex = CustomId;
-		for (auto paramId : m_extraSectionIds)
+		for (const auto& paramId : m_extraSectionIds)
 		{
 			QString val = edge->getAttribute(paramId).toString();
 			item->setText(extraSectionIndex++, val);
@@ -309,9 +310,12 @@ void CCommutationTable::onCustomContextMenu(const QPoint& pos)
 			SLOT(onRemoveSection()));
 
 		act->setData(sectionIndex - CustomId);
+
+		contextMenu.addSeparator();
 	}
 
-	contextMenu.addAction(tr("Add Column..."), this, SLOT(onAddSection()));
+	QAction* act = contextMenu.addAction(tr("Add Column..."), this, SLOT(onAddSection()));
+	act->setData(pos);
 
 	contextMenu.exec(ui.Table->mapToGlobal(pos));
 }
@@ -319,11 +323,38 @@ void CCommutationTable::onCustomContextMenu(const QPoint& pos)
 
 void CCommutationTable::onAddSection()
 {
-	QString paramId = QInputDialog::getText(NULL, tr("Add Column"), tr("Enter edge parameter ID:"));
-	if (paramId.size() && !m_extraSectionIds.contains(paramId.toLocal8Bit()))
+	QByteArrayList paramIdsList = m_scene->getClassAttributes("edge", true).keys();
+	QStringList paramIds;
+	for (const auto& id : paramIdsList)
+		if (!m_extraSectionIds.contains(id))
+			paramIds << id;
+
+	QInputDialog dialog;
+	dialog.setComboBoxItems(paramIds);
+	dialog.setComboBoxEditable(true);
+	dialog.setWindowTitle(tr("Add Column"));
+	dialog.setLabelText(tr("Enter edge attribute ID:"));
+	dialog.setInputMode(QInputDialog::TextInput);
+	
+	if (dialog.exec() != QDialog::Accepted)
+		return;
+
+	QByteArray paramId = dialog.textValue().toLocal8Bit();
+	if (paramId.size() && !m_extraSectionIds.contains(paramId))
 	{
-		m_extraSectionIds.append(paramId.toLocal8Bit());
+		QAction* act = (QAction*)sender();
+		QPoint pos = act->data().toPoint();
+		int sectionIndex = ui.Table->header()->logicalIndexAt(pos);
+		int listIndex = sectionIndex - CustomId;
+
+		m_extraSectionIds.insert(listIndex+1, paramId);
 		onSceneChanged();
+
+		if (ui.Table->horizontalScrollBar())
+		{
+			int x = ui.Table->header()->sectionPosition(sectionIndex+1);
+			ui.Table->horizontalScrollBar()->setSliderPosition(x);
+		}
 	}
 }
 

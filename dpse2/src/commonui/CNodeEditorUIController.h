@@ -12,12 +12,15 @@ It can be used freely, maintaining the information above.
 #include <QAction>
 #include <QLabel>
 #include <QSettings>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsItem>
 
 #include <slider2d.h>
 
 class CMainWindow;
 
 class CNodeEditorScene;
+class CNodePort;
 class CEditorView;
 class IFileSerializer;
 
@@ -58,6 +61,8 @@ private Q_SLOTS:
     void onSceneChanged();
 	void onSceneHint(const QString& text);
 	void onSceneStatusChanged(int status);
+	void onSceneDoubleClicked(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
+
 	void sceneEditMode(QAction*);
 	void onEditModeChanged(int mode);
 
@@ -88,6 +93,8 @@ private:
 	void createMenus();
 	void createPanels();
     void createNavigator();
+
+	void editNodePort(CNodePort &port);
 
 private:
     CMainWindow *m_parent;
