@@ -305,7 +305,7 @@ void CCommutationTable::onCustomContextMenu(const QPoint& pos)
 	if (sectionIndex >= CustomId) 
 	{
 		QAction* act = contextMenu.addAction(
-			tr("Remove Column (%1)").arg(ui.Table->headerItem()->text(sectionIndex)), 
+			tr("Remove Column [%1]").arg(ui.Table->headerItem()->text(sectionIndex)), 
 			this, 
 			SLOT(onRemoveSection()));
 
@@ -318,6 +318,12 @@ void CCommutationTable::onCustomContextMenu(const QPoint& pos)
 	act->setData(pos);
 
 	contextMenu.exec(ui.Table->mapToGlobal(pos));
+}
+
+
+void CCommutationTable::on_AddColumnButton_clicked()
+{
+	onAddSection();
 }
 
 
@@ -342,12 +348,19 @@ void CCommutationTable::onAddSection()
 	QByteArray paramId = dialog.textValue().toLocal8Bit();
 	if (paramId.size() && !m_extraSectionIds.contains(paramId))
 	{
-		QAction* act = (QAction*)sender();
-		QPoint pos = act->data().toPoint();
-		int sectionIndex = ui.Table->header()->logicalIndexAt(pos);
+		int sectionIndex = ui.Table->header()->count() - 1;
+
+		QAction* act = dynamic_cast<QAction*>(sender());
+		if (act)
+		{
+			QPoint pos = act->data().toPoint();
+			sectionIndex = ui.Table->header()->logicalIndexAt(pos);
+		}
+		
 		int listIndex = sectionIndex - CustomId;
 
 		m_extraSectionIds.insert(listIndex+1, paramId);
+
 		onSceneChanged();
 
 		if (ui.Table->horizontalScrollBar())

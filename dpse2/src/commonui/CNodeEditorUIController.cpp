@@ -449,6 +449,8 @@ void CNodeEditorUIController::onSceneChanged()
     auto edges = m_editorScene->getItems<CEdge>();
 
     m_statusLabel->setText(tr("Nodes: %1 | Edges: %2").arg(nodes.size()).arg(edges.size()));
+
+	updateActions();
 }
 
 
@@ -519,14 +521,25 @@ void CNodeEditorUIController::sceneOptions()
 
     if (dialog.exec(*m_editorScene, *m_editorView))
     {
-        gridAction->setChecked(m_editorScene->gridEnabled());
-        gridSnapAction->setChecked(m_editorScene->gridSnapEnabled());
-        actionShowLabels->setChecked(m_editorScene->itemLabelsEnabled());
+		updateActions();
 
-        m_showNewGraphDialog  = dialog.isShowNewGraphDialog();
+        m_showNewGraphDialog = dialog.isShowNewGraphDialog();
 
         m_parent->writeSettings();
     }
+}
+
+
+void CNodeEditorUIController::updateActions()
+{
+	if (m_editorScene)
+	{
+		gridAction->setChecked(m_editorScene->gridEnabled());
+		gridSnapAction->setChecked(m_editorScene->gridSnapEnabled());
+		//actionShowLabels->setChecked(m_editorScene->itemLabelsEnabled());
+		actionShowLabels->setChecked(m_editorScene->isClassAttributeVisible("item", "label"));
+		actionShowIds->setChecked(m_editorScene->isClassAttributeVisible("item", "id"));
+	}
 }
 
 
@@ -852,12 +865,16 @@ void CNodeEditorUIController::sceneCrop()
 void CNodeEditorUIController::showItemIds(bool on)
 {
 	m_editorScene->setClassAttributeVisible("item", "id", on);
+
+	m_editorScene->addUndoState();
 }
 
 
 void CNodeEditorUIController::showItemLabels(bool on)
 {
 	m_editorScene->setClassAttributeVisible("item", "label", on);
+
+	m_editorScene->addUndoState();
 }
 
 

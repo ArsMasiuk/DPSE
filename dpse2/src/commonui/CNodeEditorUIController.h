@@ -94,6 +94,8 @@ private:
 	void createPanels();
     void createNavigator();
 
+	void updateActions();
+
 	void editNodePort(CNodePort &port);
 
 private:

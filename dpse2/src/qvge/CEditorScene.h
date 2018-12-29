@@ -236,6 +236,7 @@ Q_SIGNALS:
 	void redoAvailable(bool);
 
 	void sceneChanged();
+	void sceneDoubleClicked(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem);
 
 	void infoStatusChanged(int status);
 

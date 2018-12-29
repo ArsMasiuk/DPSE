@@ -1520,6 +1520,9 @@ void CEditorScene::onLeftClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsIt
 
 void CEditorScene::onLeftDoubleClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem)
 {
+	// emit signals
+	Q_EMIT sceneDoubleClicked(mouseEvent, clickedItem);
+
 	// clicked on empty space?
 	if (!clickedItem)
 		return;

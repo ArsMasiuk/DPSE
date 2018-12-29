@@ -49,6 +49,7 @@ protected Q_SLOTS:
 	void onCustomContextMenu(const QPoint &);
 	void onAddSection();
 	void onRemoveSection();
+	void on_AddColumnButton_clicked();
 
 private:
 	Ui::CCommutationTable ui;
