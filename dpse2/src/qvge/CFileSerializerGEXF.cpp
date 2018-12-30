@@ -378,7 +378,7 @@ bool CFileSerializerGEXF::save(const QString& fileName, CEditorScene& scene, QSt
 	ts << 
 		"    <meta lastmodifieddate = \"" << QDate::currentDate().toString(Qt::ISODate) << "\">\n"
 		"        <creator>" << QApplication::applicationDisplayName() << "</creator>\n"
-		"        <description>" << scene.getClassAttribute("", "comment", false).defaultValue.toString() << "</description>\n"
+		"        <description>" << scene.getClassAttribute("", "comment", false).defaultValue.toString().toHtmlEscaped() << "</description>\n"
 		"    </meta>\n";
 
 	// graph
@@ -509,7 +509,7 @@ void CFileSerializerGEXF::writeNodes(QTextStream &ts, const CEditorScene& scene)
 	{
 		QMap<QByteArray, QVariant> nodeAttrs = node->getLocalAttributes();
 
-		ts << "        <node id=\"" << node->getId() << "\" label=\"" << nodeAttrs.take("label").toString() << "\">\n";
+		ts << "        <node id=\"" << node->getId() << "\" label=\"" << nodeAttrs.take("label").toString().toHtmlEscaped() << "\">\n";
 		ts << "            <viz:position x=\"" << node->pos().x() << "\" y=\"" << node->pos().y() << "\"/>\n";
 
 		if (nodeAttrs.contains("size"))
@@ -557,7 +557,7 @@ void CFileSerializerGEXF::writeEdges(QTextStream &ts, const CEditorScene& scene)
 	{
 		QMap<QByteArray, QVariant> edgeAttrs = edge->getLocalAttributes();
 
-		ts << "        <edge id=\"" << edge->getId() << "\" label=\"" << edgeAttrs.take("label").toString()
+		ts << "        <edge id=\"" << edge->getId() << "\" label=\"" << edgeAttrs.take("label").toString().toHtmlEscaped()
 			<< "\" source=\"" << edge->firstNode()->getId() << "\" target=\"" << edge->lastNode()->getId();
 		
 		QString edgetype = edgeAttrs.take("direction").toString();
@@ -602,7 +602,7 @@ void CFileSerializerGEXF::writeAttValues(QTextStream &ts, const QMap<QByteArray,
 
 		for (auto it = attvalues.constBegin(); it != attvalues.constEnd(); ++it)
 		{
-			ts << "                <attvalue for=\"" << it.key() << "\" value=\"" << it.value().toString() << "\"/>\n";
+			ts << "                <attvalue for=\"" << it.key() << "\" value=\"" << it.value().toString().toHtmlEscaped() << "\"/>\n";
 		}
 
 		ts << "            </attvalues>\n";
