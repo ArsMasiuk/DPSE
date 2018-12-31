@@ -278,22 +278,22 @@ void CNodeEditorUIController::createMenus()
 
 
     // add view menu
-    QMenu *viewMenu = new QMenu(tr("&View"));
-    m_parent->menuBar()->insertMenu(m_parent->getWindowMenuAction(), viewMenu);
+    m_viewMenu = new QMenu(tr("&View"));
+    m_parent->menuBar()->insertMenu(m_parent->getWindowMenuAction(), m_viewMenu);
 
-    gridAction = viewMenu->addAction(QIcon(":/Icons/Grid-Show"), tr("Show &Grid"));
+    gridAction = m_viewMenu->addAction(QIcon(":/Icons/Grid-Show"), tr("Show &Grid"));
     gridAction->setCheckable(true);
     gridAction->setStatusTip(tr("Show/hide background grid"));
     gridAction->setChecked(m_editorScene->gridEnabled());
     connect(gridAction, SIGNAL(toggled(bool)), m_editorScene, SLOT(enableGrid(bool)));
 
-    gridSnapAction = viewMenu->addAction(QIcon(":/Icons/Grid-Snap"), tr("&Snap to Grid"));
+    gridSnapAction = m_viewMenu->addAction(QIcon(":/Icons/Grid-Snap"), tr("&Snap to Grid"));
     gridSnapAction->setCheckable(true);
     gridSnapAction->setStatusTip(tr("Snap to grid when dragging"));
     gridSnapAction->setChecked(m_editorScene->gridSnapEnabled());
     connect(gridSnapAction, SIGNAL(toggled(bool)), m_editorScene, SLOT(enableGridSnap(bool)));
 
-    actionShowLabels = viewMenu->addAction(QIcon(":/Icons/Label"), tr("Show &Labels"));
+    actionShowLabels = m_viewMenu->addAction(QIcon(":/Icons/Label"), tr("Show &Labels"));
     actionShowLabels->setCheckable(true);
     actionShowLabels->setStatusTip(tr("Show/hide item labels"));
 	actionShowLabels->setChecked(m_editorScene->isClassAttributeVisible("item", "label"));
@@ -301,36 +301,35 @@ void CNodeEditorUIController::createMenus()
 	//actionShowLabels->setChecked(m_editorScene->itemLabelsEnabled());
     //connect(actionShowLabels, SIGNAL(toggled(bool)), m_editorScene, SLOT(enableItemLabels(bool)));
 
-	actionShowIds = viewMenu->addAction(tr("Show &Ids"));
+	actionShowIds = m_viewMenu->addAction(tr("Show &Ids"));
 	actionShowIds->setCheckable(true);
 	actionShowIds->setStatusTip(tr("Show/hide item ids"));
 	actionShowIds->setChecked(m_editorScene->isClassAttributeVisible("item", "id"));
 	connect(actionShowIds, SIGNAL(toggled(bool)), this, SLOT(showItemIds(bool)));
 
-    viewMenu->addSeparator();
+	m_viewMenu->addSeparator();
 
-    zoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomIn"), tr("&Zoom"));
+    zoomAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomIn"), tr("&Zoom"));
     zoomAction->setStatusTip(tr("Zoom view in"));
     zoomAction->setShortcut(QKeySequence::ZoomIn);
     connect(zoomAction, &QAction::triggered, this, &CNodeEditorUIController::zoom);
 
-    unzoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomOut"), tr("&Unzoom"));
+    unzoomAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomOut"), tr("&Unzoom"));
     unzoomAction->setStatusTip(tr("Zoom view out"));
     unzoomAction->setShortcut(QKeySequence::ZoomOut);
     connect(unzoomAction, &QAction::triggered, this, &CNodeEditorUIController::unzoom);
 
-    resetZoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomReset"), tr("&Reset Zoom"));
+    resetZoomAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomReset"), tr("&Reset Zoom"));
     resetZoomAction->setStatusTip(tr("Zoom view to 100%"));
     connect(resetZoomAction, &QAction::triggered, this, &CNodeEditorUIController::resetZoom);
 
-    fitZoomAction = viewMenu->addAction(QIcon(":/Icons/ZoomFit"), tr("&Fit to View"));
+    fitZoomAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomFit"), tr("&Fit to View"));
     fitZoomAction->setStatusTip(tr("Zoom to fit all the items to view"));
     connect(fitZoomAction, &QAction::triggered, m_editorView, &CEditorView::fitToView);
 
-    fitZoomSelectedAction = viewMenu->addAction(QIcon(":/Icons/ZoomFitSelected"), tr("Fit &Selection to View"));
+    fitZoomSelectedAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomFitSelected"), tr("Fit &Selection to View"));
     fitZoomSelectedAction->setStatusTip(tr("Zoom to fit selected items to view"));
     connect(fitZoomSelectedAction, &QAction::triggered, m_editorView, &CEditorView::fitSelectedToView);
-
 
 
     // add view toolbar
@@ -380,11 +379,10 @@ void CNodeEditorUIController::createPanels()
     m_defaultsPanel->setScene(m_editorScene);
 
 
-    // connect color schemes
-    //connect(
-    //    m_schemesController, &CColorSchemesUIController::colorSchemeApplied,
-    //    m_propertiesPanel, &CNodeEdgePropertiesUI::updateFromScene
-    //);
+	// update view menu with created toolbars & panels
+	m_viewMenu->addSeparator();
+	QAction *panelsAction = m_viewMenu->addMenu(m_parent->createPopupMenu());
+	panelsAction->setText("Toolbars and Panels");
 }
 
 

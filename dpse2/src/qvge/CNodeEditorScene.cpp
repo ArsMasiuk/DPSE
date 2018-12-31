@@ -524,6 +524,7 @@ bool CNodeEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, c
 void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* dragItem)
 {
 	CNode *dragNode = dynamic_cast<CNode*>(dragItem);
+	CEdge *dragEdge = dynamic_cast<CEdge*>(dragItem);
 
 	// perform snap
 	if (gridSnapEnabled())
@@ -540,14 +541,11 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 		QSet<QGraphicsItem*> items;
 		QSet<CEdge*> edges;
 
-		if (!dragNode) 
+		if (dragEdge) 
 		{
-			if (auto edge = dynamic_cast<CEdge*>(dragItem))
-			{
-				edges << edge;
+			edges << dragEdge;
 
-				dragNode = edge->firstNode();
-			}
+			dragNode = dragEdge->firstNode();
 		}
 
 		if (dragNode)
@@ -562,8 +560,12 @@ void CNodeEditorScene::onDropped(QGraphicsSceneMouseEvent* mouseEvent, QGraphics
 				if (auto edge = dynamic_cast<CEdge*>(item))
 				{
 					edges << edge;
-					items << edge->firstNode();
-					items << edge->lastNode();
+
+					if (dragEdge)
+					{
+						items << edge->firstNode();
+						items << edge->lastNode();
+					}
 				}
 				else
 					items << item;
@@ -656,16 +658,23 @@ void CNodeEditorScene::moveSelectedItemsBy(const QPointF& d)
 	QSet<QGraphicsItem*> items;
 	QSet<CEdge*> edges;
 
+	// if dragging nodes and there are selected nodes: do not drag not-selected nodes
+	auto dragNode = dynamic_cast<CNode*>(m_startDragItem);
+
 	for (auto item : selectedItems())
 	{
 		if (!(item->flags() & item->ItemIsMovable))
 			continue;
-		else
+
 		if (auto edge = dynamic_cast<CEdge*>(item))
 		{
 			edges << edge;
-			items << edge->firstNode();
-			items << edge->lastNode();
+
+			if (!dragNode)
+			{
+				items << edge->firstNode();
+				items << edge->lastNode();
+			}
 		}
 		else
 			items << item; 

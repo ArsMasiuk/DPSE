@@ -1,15 +1,18 @@
 QVGE 0.5.2 
 -------------------------------------------------------------------------------
-- item ids can be shown/hidded separately from labels
-- item ids are now editable via context menu only
 - more diagnostic shown if file reading failed
-- added in-place label editing
 - selection of global attributes made more convenient
+- logic of movement of the selected items made more intuitive (#48)
 - label font editor extended a little
 - item painting optimizations and corrections
+- added in-place label editing
 - added port colors 
 - double click on a port shows its properties
 - Commutation Table: when adding a column, a list with available attribute ids is shown
+- Commutation Table: added button bar
+- View Menu: added toolbars & panels submenu (#52) 
+- View Menu: item ids can be shown/hidded separately from labels
+- item ids are now editable via context menu only
 
 - fixed font reading/setting issue
 - fixed bug with changing style of selected items after applying a new scheme

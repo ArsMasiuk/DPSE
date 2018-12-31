@@ -129,7 +129,7 @@ protected:
     QAction *m_saveDocument;
     QAction *m_saveAsDocument;
 	QAction *m_exportDocument;
-
+	
 	QMenu *m_windowsMenu;
 	QAction *m_windowsMenuAction;
 

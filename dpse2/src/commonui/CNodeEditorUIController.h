@@ -109,6 +109,8 @@ private:
 
 	QString m_lastExportPath;
 
+	QMenu *m_viewMenu;
+
 	QAction *cutAction;
 	QAction *copyAction;
 	QAction *pasteAction;
