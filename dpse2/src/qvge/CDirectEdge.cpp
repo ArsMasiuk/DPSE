@@ -106,18 +106,18 @@ void CDirectEdge::updateLabelPosition()
 
 	if (isCircled())
 	{
-		m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - boundingRect().height() / 2 - h);
+		m_labelItem->setPos(m_controlPoint.x() - w / 2, m_controlPoint.y() - boundingRect().height() / 2 - h);
 
 		m_labelItem->setRotation(0);
 	}
 	else
 	{
-		m_labelItem->setPos(m_controlPos.x() - w / 2, m_controlPos.y() - h / 2);
+		m_labelItem->setPos(m_controlPoint.x() - w / 2, m_controlPoint.y() - h / 2);
 
 		// update label rotation
-		qreal angle = 180 - line().angle();
-		if (angle > 90) angle -= 180;
-		else if (angle < -90) angle += 180;
+		//qreal angle = 180 - line().angle();
+		//if (angle > 90) angle -= 180;
+		//else if (angle < -90) angle += 180;
 		//qDebug() << angle;
 		//m_labelItem->setRotation(angle);
 	}
@@ -176,6 +176,8 @@ void CDirectEdge::onParentGeometryChanged()
 		QLineF l(p1, p2);
 		setLine(l);
 
+		m_controlPoint = (lp + rp) / 2;
+
 		m_shapeCachePath.moveTo(p1);
 		m_shapeCachePath.cubicTo(lp, rp, p2);
 	}
@@ -189,6 +191,7 @@ void CDirectEdge::onParentGeometryChanged()
 		if (m_bendFactor == 0)
 		{
 			m_shapeCachePath.lineTo(p2);
+			m_controlPoint = line().center();
 		}
 		else
 		{

@@ -11,12 +11,12 @@ QVGE 0.5.2
 - double click on a port shows its properties
 - Commutation Table: when adding a column, a list with available attribute ids is shown
 
-- fixed some GEXF-related issues 
 - fixed font reading/setting issue
 - fixed bug with changing style of selected items after applying a new scheme
 - fixed drawing of transparent items
 - fixed storing/applying of grid snap properties (#49)
 - fixed placement of edge labels (#50)
+- fixed some GEXF-related issues (#51)
 
 
 QVGE 0.5.1 (bugfix beta)

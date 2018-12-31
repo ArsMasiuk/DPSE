@@ -168,8 +168,8 @@ CEditorScene* CItem::getScene() const
 {
 	if (auto sceneItem = getSceneItem())
 		return dynamic_cast<CEditorScene*>(sceneItem->scene());
-
-	return NULL;
+	else
+		return NULL;
 }
 
 
@@ -300,8 +300,20 @@ QRectF CItem::getSceneLabelRect() const
 {
 	if (!m_labelItem)
 		return QRectF();
-	
-	return m_labelItem->mapRectToScene(m_labelItem->boundingRect());
+	else
+		return m_labelItem->mapRectToScene(m_labelItem->boundingRect());
+}
+
+
+QPointF CItem::getLabelCenter() const
+{
+	if (m_labelItem)
+		return getSceneLabelRect().center();
+	else 
+	if (auto sceneItem = getSceneItem())
+		return sceneItem->boundingRect().center();
+	else
+		return QPointF();
 }
 
 

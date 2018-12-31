@@ -31,10 +31,10 @@ void CTextLabelEdit::updateGeometry()
 {
 	if (m_item)
 	{
-		QPointF center = m_item->getSceneItem()->boundingRect().center();
-		QPointF bcenter = boundingRect().center();
-		QPointF delta = center - bcenter;
-		setPos(m_item->getSceneItem()->pos() + delta);
+		QPointF center = m_item->getLabelCenter();
+		double w = boundingRect().width();
+		double h = boundingRect().height();
+		setPos(center.x() - w/2, center.y() - h/2);
 	}
 }
 
