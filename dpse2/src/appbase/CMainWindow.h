@@ -47,6 +47,8 @@ public:
     virtual void readSettings();
     virtual void writeSettings();
 
+	virtual QSettings& getApplicationSettings();
+
 	QAction* getFileExportAction() { return m_exportDocument; }
 	QMenu* getFileMenu() { return m_fileMenu; }
 	QAction* getWindowMenuAction() { return m_windowsMenuAction; }

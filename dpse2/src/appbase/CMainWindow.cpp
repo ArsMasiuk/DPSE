@@ -425,7 +425,7 @@ bool CMainWindow::doOpenDocument(const QString &fileName)
 		onCurrentFileChanged();
 
 		// restore settings for this instance
-		readSettings();
+		//readSettings();
 
 		return true;
 	}
@@ -832,9 +832,18 @@ QString CMainWindow::getAboutText() const
 
 // settings
 
+QSettings& CMainWindow::getApplicationSettings()
+{
+	static QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	return settings;
+}
+
+
 void CMainWindow::readSettings()
 {
-	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	QSettings& settings = getApplicationSettings();
+
+	settings.sync();
 
 	doReadSettings(settings);
 }
@@ -884,9 +893,11 @@ void CMainWindow::doReadSettings(QSettings& settings)
 
 void CMainWindow::writeSettings()
 {
-	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
-	
+	QSettings& settings = getApplicationSettings();
+
 	doWriteSettings(settings);
+
+	settings.sync();
 }
 
 

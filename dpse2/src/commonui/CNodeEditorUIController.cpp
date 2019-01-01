@@ -621,8 +621,9 @@ void CNodeEditorUIController::doReadSettings(QSettings& settings)
     m_lastExportPath = settings.value("lastExportPath", m_lastExportPath).toString();
     m_showNewGraphDialog = settings.value("autoCreateGraphDialog", m_showNewGraphDialog).toBool();
 
-	actionShowIds->setChecked(settings.value("showItemIds", actionShowIds->isChecked()).toBool());
-	actionShowLabels->setChecked(settings.value("showItemLabel", actionShowLabels->isChecked()).toBool());
+
+	// default scene settings
+	readDefaultSceneSettings();
 
 
     // UI elements
@@ -656,6 +657,10 @@ void CNodeEditorUIController::doReadSettings(QSettings& settings)
 
 void CNodeEditorUIController::doWriteSettings(QSettings& settings)
 {
+	// temp
+	writeDefaultSceneSettings();
+
+
     bool isAA = m_editorView->renderHints().testFlag(QPainter::Antialiasing);
     settings.setValue("antialiasing", isAA);
 
@@ -664,9 +669,6 @@ void CNodeEditorUIController::doWriteSettings(QSettings& settings)
 
     settings.setValue("lastExportPath", m_lastExportPath);
     settings.setValue("autoCreateGraphDialog", m_showNewGraphDialog);
-
-	settings.setValue("showItemIds", actionShowIds->isChecked());
-	settings.setValue("showItemLables", actionShowLabels->isChecked());
 
 
     // UI elements
@@ -765,10 +767,60 @@ bool CNodeEditorUIController::saveToFile(const QString &fileName, const QString 
 }
 
 
+void CNodeEditorUIController::readDefaultSceneSettings()
+{
+	QSettings& settings = m_parent->getApplicationSettings();
+
+	settings.beginGroup("Scene/Defaults");
+
+	bool showIds = settings.value("showItemIds", false).toBool();
+	bool showLabels = settings.value("showItemLabel", true).toBool();
+
+	QColor bgColor = settings.value("background", m_editorScene->backgroundBrush().color()).value<QColor>();
+	QPen gridPen = settings.value("grid.color", m_editorScene->getGridPen()).value<QPen>();
+	int gridSize = settings.value("grid.size", m_editorScene->getGridSize()).toInt();
+	bool gridEnabled = settings.value("grid.enabled", m_editorScene->gridEnabled()).toBool();
+	bool gridSnap = settings.value("grid.snap", m_editorScene->gridSnapEnabled()).toBool();
+
+	settings.endGroup();
+
+	m_editorScene->setClassAttributeVisible("item", "id", showIds);
+	m_editorScene->setClassAttributeVisible("item", "label", showLabels);
+	m_editorScene->setBackgroundBrush(bgColor);
+	m_editorScene->setGridPen(gridPen);
+	m_editorScene->setGridSize(gridSize);
+	m_editorScene->enableGrid(gridEnabled);
+	m_editorScene->enableGridSnap(gridSnap);
+}
+
+
+void CNodeEditorUIController::writeDefaultSceneSettings()
+{
+	QSettings& settings = m_parent->getApplicationSettings();
+
+	settings.beginGroup("Scene/Defaults");
+
+	bool showIds = m_editorScene->isClassAttributeVisible("item", "id");
+	bool showLabels = m_editorScene->isClassAttributeVisible("item", "label");
+
+	settings.setValue("showItemIds", showIds);
+	settings.setValue("showItemLabel", showLabels);
+
+	settings.setValue("background", m_editorScene->backgroundBrush().color());
+	settings.setValue("grid.color", m_editorScene->getGridPen());
+	settings.setValue("grid.size", m_editorScene->getGridSize());
+	settings.setValue("grid.enabled", m_editorScene->gridEnabled());
+	settings.setValue("grid.snap", m_editorScene->gridSnapEnabled());
+
+	settings.endGroup();
+
+	settings.sync();
+}
+
+
 void CNodeEditorUIController::onNewDocumentCreated()
 {
-    m_editorScene->setClassAttributeVisible("item", "id", false);
-    m_editorScene->setClassAttributeVisible("item", "label", true);
+	readDefaultSceneSettings();
 
     m_editorScene->setClassAttribute("", "comment", QString());
     m_editorScene->setClassAttribute("", "creator", QApplication::applicationName() + " " + QApplication::applicationVersion());

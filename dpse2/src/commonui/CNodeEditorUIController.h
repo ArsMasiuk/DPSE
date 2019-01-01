@@ -94,6 +94,9 @@ private:
 	void createPanels();
     void createNavigator();
 
+	void readDefaultSceneSettings();
+	void writeDefaultSceneSettings();
+
 	void updateActions();
 
 	void editNodePort(CNodePort &port);
