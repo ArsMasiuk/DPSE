@@ -17,6 +17,7 @@ It can be used freely, maintaining the information above.
 #include <QElapsedTimer>
 #include <QInputDialog>
 #include <QScrollBar>
+#include <QMessageBox>
 
 
 // NumSortItem: numeric sorting by ids
@@ -55,6 +56,8 @@ CCommutationTable::CCommutationTable(QWidget *parent)
 {
 	ui.setupUi(this);
 	ui.Table->setUniformRowHeights(true);
+
+	ui.Table->header()->setSortIndicator(2, Qt::AscendingOrder);
 
 	ui.Table->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui.Table, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
@@ -324,6 +327,26 @@ void CCommutationTable::onCustomContextMenu(const QPoint& pos)
 void CCommutationTable::on_AddColumnButton_clicked()
 {
 	onAddSection();
+}
+
+
+void CCommutationTable::on_RestoreButton_clicked()
+{
+	if (!m_extraSectionIds.isEmpty()) {
+		int r = QMessageBox::question(NULL, tr("Restore Default Columns"), tr("Are you sure to reset all the custom columns?"));
+		if (r == QMessageBox::Yes)
+		{
+			m_extraSectionIds.clear();
+			onSceneChanged();
+		}
+		else
+			return;
+	}
+
+	for (int i = 0; i < ui.Table->header()->count(); ++i)
+		ui.Table->header()->moveSection(ui.Table->header()->visualIndex(i), i);
+
+	ui.Table->header()->setSortIndicator(2, Qt::AscendingOrder);
 }
 
 

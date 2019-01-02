@@ -413,9 +413,12 @@ bool CMainWindow::doOpenDocument(const QString &fileName)
         return true;
     }
 
-    // no document - open in place
+    // open in place
     if (openDocument(normalizedName, m_currentDocType))
     {
+		// restore settings for this instance
+		readSettings();
+
         m_currentFileName = normalizedName;
         m_isChanged = false;
 		m_lastPath = QFileInfo(m_currentFileName).absolutePath();
@@ -423,9 +426,6 @@ bool CMainWindow::doOpenDocument(const QString &fileName)
         statusBar()->showMessage(tr("Opened successfully: %1").arg(fileName));
 
 		onCurrentFileChanged();
-
-		// restore settings for this instance
-		//readSettings();
 
 		return true;
 	}

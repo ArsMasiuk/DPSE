@@ -39,9 +39,9 @@ public:
 	bool loadFromFile(const QString &fileName, const QString &format, QString* lastError);
 	bool saveToFile(const QString &fileName, const QString &format, QString* lastError);
 
-public Q_SLOTS:
-    // callback
+    // callbacks
     void onNewDocumentCreated();
+	void onDocumentLoaded(const QString &fileName);
 
 // protected API
 protected:

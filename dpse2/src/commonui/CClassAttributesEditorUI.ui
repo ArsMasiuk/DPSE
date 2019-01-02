@@ -39,6 +39,12 @@
        <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
       </spacer>
      </item>
      <item>
@@ -175,6 +181,12 @@
        <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
       </spacer>
      </item>
     </layout>
@@ -209,6 +221,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="ChangeButton">
+       <property name="statusTip">
+        <string>Change selected attribute's id and type</string>
+       </property>
        <property name="text">
         <string>Change...</string>
        </property>

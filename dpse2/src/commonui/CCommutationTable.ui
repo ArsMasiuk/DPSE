@@ -94,6 +94,16 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="RestoreButton">
+       <property name="statusTip">
+        <string>Restore default columns (remove custom ones)</string>
+       </property>
+       <property name="text">
+        <string>Restore Defaults...</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

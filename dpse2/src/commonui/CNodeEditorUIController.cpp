@@ -115,6 +115,9 @@ CNodeEditorUIController::CNodeEditorUIController(CMainWindow *parent) :
         QTimer::singleShot(0, parent, SLOT(showMaximized()));
     }
 #endif
+
+	// default scene settings
+	readDefaultSceneSettings();
 }
 
 
@@ -621,11 +624,7 @@ void CNodeEditorUIController::doReadSettings(QSettings& settings)
     m_lastExportPath = settings.value("lastExportPath", m_lastExportPath).toString();
     m_showNewGraphDialog = settings.value("autoCreateGraphDialog", m_showNewGraphDialog).toBool();
 
-
-	// default scene settings
-	readDefaultSceneSettings();
-
-
+	
     // UI elements
     settings.beginGroup("UI/ItemProperties");
     m_propertiesPanel->doReadSettings(settings);
@@ -633,24 +632,6 @@ void CNodeEditorUIController::doReadSettings(QSettings& settings)
 
     settings.beginGroup("UI/ClassAttributes");
     m_defaultsPanel->doReadSettings(settings);
-    settings.endGroup();
-
-
-    // custom topology of the current document
-    settings.beginGroup("CustomFiles");
-
-    QString filename = QFileInfo(m_parent->getCurrentFileName()).fileName();
-    if (!filename.isEmpty() && settings.childGroups().contains(filename))
-    {
-        settings.beginGroup(filename);
-
-        settings.beginGroup("UI/Topology");
-        m_connectionsPanel->doReadSettings(settings);
-        settings.endGroup();
-
-        settings.endGroup();
-    }
-
     settings.endGroup();
 }
 
@@ -842,6 +823,29 @@ void CNodeEditorUIController::onNewDocumentCreated()
 
     // store newly created state
     m_editorScene->addUndoState();
+}
+
+
+void CNodeEditorUIController::onDocumentLoaded(const QString &fileName)
+{
+	QSettings& settings = m_parent->getApplicationSettings();
+
+	// read custom topology of the current document
+	settings.beginGroup("CustomFiles");
+
+	QString filename = QFileInfo(fileName).fileName();
+	if (!filename.isEmpty() && settings.childGroups().contains(filename))
+	{
+		settings.beginGroup(filename);
+
+		settings.beginGroup("UI/Topology");
+		m_connectionsPanel->doReadSettings(settings);
+		settings.endGroup();
+
+		settings.endGroup();
+	}
+
+	settings.endGroup();
 }
 
 

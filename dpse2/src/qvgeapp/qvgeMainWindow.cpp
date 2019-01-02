@@ -28,7 +28,7 @@ qvgeMainWindow::qvgeMainWindow()
 
     QApplication::setOrganizationName("qvge");
     QApplication::setApplicationName("Qt Visual Graph Editor");
-	QApplication::setApplicationVersion(qvgeVersion.toString());
+	QApplication::setApplicationVersion(qvgeVersionString);
     QApplication::setApplicationDisplayName(QString("%1 %2 (%3)")
 		.arg(QApplication::applicationName(), QApplication::applicationVersion(), bitString));
 
@@ -42,9 +42,9 @@ qvgeMainWindow::qvgeMainWindow()
                         { xgr, gexf, graphml, gml, csv} };
     addDocument(graph);
 
-    CDocumentFormat txt = { tr("Plain text file"), "*.txt", { "txt" }, true, true };
-    CDocument text = { tr("Text Document"), tr("Simple text document"), "text", true, {txt} };
-    addDocument(text);
+    //CDocumentFormat txt = { tr("Plain text file"), "*.txt", { "txt" }, true, true };
+    //CDocument text = { tr("Text Document"), tr("Simple text document"), "text", true, {txt} };
+    //addDocument(text);
 }
 
 
@@ -104,9 +104,13 @@ bool qvgeMainWindow::openDocument(const QString &fileName, QByteArray &docType)
 
 		QString lastError;
 
-        if (createDocument(docType) && m_graphEditController->loadFromFile(fileName, format, &lastError))
+        if (createDocument(docType))
 		{
-			return true;
+			if (m_graphEditController->loadFromFile(fileName, format, &lastError))
+			{
+				m_graphEditController->onDocumentLoaded(fileName);
+				return true;
+			}
 		}
 
 		if (lastError.size())
