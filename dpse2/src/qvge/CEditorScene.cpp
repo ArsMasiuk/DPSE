@@ -209,9 +209,11 @@ void CEditorScene::redo()
 
 void CEditorScene::addUndoState()
 {
+	onSceneChanged();
+
 	// canvas size
     QRectF minRect(sceneRect());
-    minRect |= itemsBoundingRect().adjusted(-20, -20, 20, 20);
+    minRect |= itemsBoundingRect().adjusted(-10, -10, 10, 10);
     setSceneRect(minRect);
 
 	// undo-redo
@@ -221,8 +223,6 @@ void CEditorScene::addUndoState()
 
 		checkUndoState();
 	}
-
-	onSceneChanged();
 }
 
 void CEditorScene::revertUndoState()

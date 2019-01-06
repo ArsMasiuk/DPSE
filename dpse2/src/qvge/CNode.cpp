@@ -908,7 +908,7 @@ void CNode::updateLabelPosition()
 	int h = m_labelItem->boundingRect().height();
 
 	QRectF r = Shape::boundingRect();
-	if (r.width() < 30 || r.height() < 30)
+	if (r.width() < 16 || r.height() < 16)
 		m_labelItem->setPos(-w / 2, boundingRect().height() / 2);	// if too small: put label at the bottom
 	else
 		m_labelItem->setPos(-w / 2, -h / 2);		// else center

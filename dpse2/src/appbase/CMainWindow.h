@@ -88,6 +88,7 @@ protected:
     virtual void onOpenDocumentDialog(QString &title, QString &filter);
     virtual bool doOpenDocument(const QString &fileName);
     virtual bool openDocument(const QString &fileName, QByteArray &docType) { return false; }
+	virtual bool getDocFormatFromName(const QString &normalizedName, const CDocument **doc, const CDocumentFormat **format, QString *suffix);
 
     virtual void onSaveDocumentDialog(QString &title, QString &filter) {}
     virtual bool doSaveDocument(const QString &fileName, const QString &selectedFilter, const QByteArray &docType);

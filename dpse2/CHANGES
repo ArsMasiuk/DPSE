@@ -1,4 +1,4 @@
-QVGE 0.5.2 
+QVGE 0.5.2
 -------------------------------------------------------------------------------
 - more diagnostic shown if file reading failed
 - selection of global attributes made more convenient
@@ -13,6 +13,7 @@ QVGE 0.5.2
 - View Menu: added toolbars & panels submenu (#52) 
 - View Menu: item ids can be shown/hidded separately from labels
 - item ids are now editable via context menu only
+- added basic import from GraphViz/DOT format via OGDF (#53)
 
 - fixed font reading/setting issue
 - fixed bug with changing style of selected items after applying a new scheme
@@ -20,6 +21,7 @@ QVGE 0.5.2
 - fixed storing/applying of grid snap properties (#49)
 - fixed placement of edge labels (#50)
 - fixed some GEXF-related issues (#51)
+- fixed canvas expansion after changing item IDs (#44)
 
 
 QVGE 0.5.1 (bugfix beta)

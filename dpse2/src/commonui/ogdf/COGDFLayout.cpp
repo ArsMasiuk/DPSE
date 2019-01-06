@@ -9,6 +9,8 @@
 #include <ogdf/module/LayoutModule.h>
 #include <ogdf/fileformats/GraphIO.h>
 
+#include <ogdf/misclayout/BalloonLayout.h>
+
 #include <QMap>
 #include <QApplication>
 #include <QFileInfo>
@@ -168,7 +170,7 @@ void COGDFLayout::graphToScene(const ogdf::Graph &G, const ogdf::GraphAttributes
 
         if (GA.has(GA.nodeGraphics))
         {
-            node->setPos(GA.x(n), GA.y(n));
+			node->setPos(GA.x(n), GA.y(n));
             node->setAttribute("size", QSizeF(GA.width(n), GA.height(n)));
             node->setAttribute("shape", toVariant(GA.shape(n)));
         }
@@ -234,21 +236,40 @@ void COGDFLayout::graphToScene(const ogdf::Graph &G, const ogdf::GraphAttributes
 
 // file IO
 
-bool COGDFLayout::loadGraph(const std::string &filename, CNodeEditorScene &scene, QString* lastError)
+bool COGDFLayout::loadGraph(const QString &filename, CNodeEditorScene &scene, QString* lastError)
 {
     ogdf::Graph G;
     ogdf::GraphAttributes GA(G, 0xffffff);   // all attrs
 
-    QString format = QFileInfo(QString::fromStdString(filename)).suffix().toLower();
+    QString format = QFileInfo(filename).suffix().toLower();
 
     bool ok = false;
     if (format == "gml")
-        ok = ogdf::GraphIO::readGML(GA, G, filename);
-    else if (format == "dot")
-        ok = ogdf::GraphIO::readDOT(GA, G, filename);
+        ok = ogdf::GraphIO::readGML(GA, G, filename.toStdString());
+	else 
+		if (format == "dot" || format == "gv")
+		{
+			ok = ogdf::GraphIO::readDOT(GA, G, filename.toStdString());
+			
+			// normalize node positions
+			if (ok && GA.has(GA.nodeGraphics))
+			{
+				for (auto n : G.nodes)
+				{
+					if (GA.x(n) || GA.y(n))
+					{
+						GA.x(n) *= 72.0;
+						GA.y(n) *= -72.0;
+						GA.width(n) *= 72.0;
+						GA.height(n) *= 72.0;
+					}
+				}
+			}
+		}
 
     if (ok)
     {
+		autoLayoutIfNone(G, GA);
         graphToScene(G, GA, scene);
 		scene.addUndoState();
 	}
@@ -256,3 +277,21 @@ bool COGDFLayout::loadGraph(const std::string &filename, CNodeEditorScene &scene
     return ok;
 }
 
+
+// privates
+
+bool COGDFLayout::autoLayoutIfNone(const ogdf::Graph &G, ogdf::GraphAttributes &GA)
+{
+	if (GA.has(GA.nodeGraphics))
+	{
+		for (auto n : G.nodes)
+		{
+			if (GA.x(n) || GA.y(n))
+				return false;
+		}
+	}
+
+	ogdf::BalloonLayout layout;
+	layout.call(GA);
+	return true;
+}

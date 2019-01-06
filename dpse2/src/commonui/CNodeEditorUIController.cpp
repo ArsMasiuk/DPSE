@@ -723,7 +723,7 @@ bool CNodeEditorUIController::loadFromFile(const QString &fileName, const QStrin
 
     // else via ogdf
 #ifdef USE_OGDF
-    return (COGDFLayout::loadGraph(fileName.toStdString(), *m_editorScene, lastError));
+    return (COGDFLayout::loadGraph(fileName, *m_editorScene, lastError));
 #else
     return false;
 #endif

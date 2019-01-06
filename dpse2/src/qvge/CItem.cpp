@@ -223,26 +223,29 @@ void CItem::updateLabelContent()
 			visibleLabels[id] = text;
 	}
 
-	if (visibleLabels.size() == 1)
+	// ids first
+	if (idsToShow.contains("id"))
 	{
-		labelToShow = visibleLabels.values().first();
+		labelToShow = "[" + visibleLabels["id"] + "]";
+		visibleLabels.remove("id");
 	}
-	else if (visibleLabels.size() > 1)
-	{
-		// if label & id:
-		if (visibleLabels.size() == 2 && idsToShow.contains("id") && idsToShow.contains("label"))
-		{
-			labelToShow = QString("[%1]\n%2").arg(visibleLabels["id"]).arg(visibleLabels["label"]);
-		}
-		else
-		{
-			for (auto it = visibleLabels.constBegin(); it != visibleLabels.constEnd(); ++it)
-			{
-				if (labelToShow.size())
-					labelToShow += "\n";
 
-				labelToShow += QString("%1: %2").arg(QString(it.key())).arg(it.value());
-			}
+	// other labels
+	if (visibleLabels.size() == 1 && idsToShow.contains("label"))
+	{
+		if (labelToShow.size())
+			labelToShow += "\n";
+
+		labelToShow += visibleLabels.values().first();
+	}
+	else
+	{
+		for (auto it = visibleLabels.constBegin(); it != visibleLabels.constEnd(); ++it)
+		{
+			if (labelToShow.size())
+				labelToShow += "\n";
+
+			labelToShow += QString("%1: %2").arg(QString(it.key())).arg(it.value());
 		}
 	}
 

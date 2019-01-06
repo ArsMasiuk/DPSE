@@ -29,6 +29,10 @@ bool CFileSerializerDOT::save(const QString& fileName, CEditorScene& scene, QStr
 
         ts << "digraph \"" << graphId << "\" {\n";
 
+		// we'll output points, not inches
+		//ts << "\n\n";
+		//ts << "inputscale = 72;";
+
 		ts << "\n\n";
 
         // nodes

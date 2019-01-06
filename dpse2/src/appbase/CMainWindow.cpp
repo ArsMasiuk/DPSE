@@ -382,6 +382,30 @@ void CMainWindow::on_actionOpen_triggered()
 }
 
 
+bool CMainWindow::getDocFormatFromName(const QString &normalizedName, const CDocument **doc, const CDocumentFormat **fmt, QString *suffix)
+{
+	const QString ext = QFileInfo(normalizedName).suffix().toLower();
+
+	for (const auto &docType : m_docTypes)
+	{
+		for (int i = 0; i < docType.formats.size(); ++i)
+		{
+			const auto &format = docType.formats.at(i);
+			if (format.suffixes.contains(ext))
+			{
+				if (doc) *doc = &docType;
+				if (fmt) *fmt = &format;
+				if (suffix) *suffix = ext;
+				return true;
+			}
+		}
+	}
+
+	// invalid format
+	return false;
+}
+
+
 bool CMainWindow::doOpenDocument(const QString &fileName)
 {
 	QString normalizedName = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
@@ -413,13 +437,25 @@ bool CMainWindow::doOpenDocument(const QString &fileName)
         return true;
     }
 
-    // open in place
-    if (openDocument(normalizedName, m_currentDocType))
+	// guess document type (TO REVISE!)
+	const CDocument *fdoc; 
+	const CDocumentFormat *fformat;
+	QString fsuffix;
+	bool found = getDocFormatFromName(normalizedName, &fdoc, &fformat, &fsuffix);
+
+	QByteArray fileDocType;
+	if (found) {
+		fileDocType = fdoc->type;
+	}
+
+    // open in place (fileDocType can be changed by this fn!)
+    if (openDocument(normalizedName, fileDocType))
     {
 		// restore settings for this instance
 		readSettings();
 
         m_currentFileName = normalizedName;
+		m_currentDocType = fileDocType;
         m_isChanged = false;
 		m_lastPath = QFileInfo(m_currentFileName).absolutePath();
 
