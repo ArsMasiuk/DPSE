@@ -56,7 +56,7 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 {
     m_gridSize = 25;
     m_gridEnabled = true;
-    m_gridSnap = false;
+    m_gridSnap = true;
     m_gridPen = QPen(Qt::gray, 0, Qt::DotLine);
 
 	setBackgroundBrush(Qt::white);
@@ -104,18 +104,31 @@ void CEditorScene::initialize()
 	// default item attrs
     CAttribute labelAttr("label", "Label", "");
 	labelAttr.noDefault = true;
-	setClassAttribute("item", labelAttr, true);
+	setClassAttribute(class_item, labelAttr, true);
 
 	CAttribute labelColorAttr("label.color", "Label Color", QColor(Qt::black));
-	setClassAttribute("item", labelColorAttr);
+	setClassAttribute(class_item, labelColorAttr);
 
 	QFont labelFont;
 	CAttribute labelFontAttr("label.font", "Label Font", labelFont);
-	setClassAttribute("item", labelFontAttr);
+	setClassAttribute(class_item, labelFontAttr);
 
     CAttribute idAttr("id", "ID", "");
 	idAttr.noDefault = true;
-	setClassAttribute("item", idAttr, true);
+	setClassAttribute(class_item, idAttr, true);
+
+
+	// labels policy
+	static CAttributeConstrainsEnum *labelsPolicy = new CAttributeConstrainsEnum();
+	if (labelsPolicy->ids.isEmpty()) {
+		labelsPolicy->names << tr("Auto") << tr("Always On") << tr("Always Off");
+		labelsPolicy->ids << Auto << AlwaysOn << AlwaysOff;
+	}
+
+	CAttribute labelsPolicyAttr(attr_labels_policy, "Labels Policy", Auto);
+	labelsPolicyAttr.userDefined = false;
+	setClassAttribute(class_scene, labelsPolicyAttr);
+	setClassAttributeConstrains(class_scene, attr_labels_policy, labelsPolicy);
 }
 
 void CEditorScene::removeItems()
@@ -1063,6 +1076,19 @@ bool CEditorScene::checkLabelRegion(const QRectF &r)
 }
 
 
+CEditorScene::LabelsPolicy CEditorScene::getLabelsPolicy() const
+{
+	int labelPolicy = getClassAttribute(class_scene, attr_labels_policy, false).defaultValue.toInt();
+	return (CEditorScene::LabelsPolicy) labelPolicy;
+}
+
+
+void CEditorScene::setLabelsPolicy(CEditorScene::LabelsPolicy v)
+{
+	setClassAttribute(class_scene, attr_labels_policy, (QVariant) v);
+}
+
+
 void CEditorScene::layoutItemLabels()
 {
 	// reset region
@@ -1070,8 +1096,11 @@ void CEditorScene::layoutItemLabels()
 
 	QList<CItem*> allItems = getItems<CItem>();
 
+	// get labeling policy
+	auto labelPolicy = getLabelsPolicy();
+
 	// hide all if disabled
-	if (!m_labelsEnabled)
+	if (!m_labelsEnabled || labelPolicy == AlwaysOff)
 	{
 		for (auto citem : allItems)
 		{
@@ -1088,13 +1117,17 @@ void CEditorScene::layoutItemLabels()
 	for (auto citem : allItems)
 	{
 		citem->updateLabelContent();
-
 		citem->updateLabelPosition();
 
-		QRectF labelRect = citem->getSceneLabelRect();
-		QRectF reducedRect(labelRect.topLeft() / 10, labelRect.size() / 10);
-		
-		citem->showLabel(checkLabelRegion(reducedRect));
+		if (labelPolicy == AlwaysOn)
+			citem->showLabel(true);
+		else
+		{
+			QRectF labelRect = citem->getSceneLabelRect();
+			QRectF reducedRect(labelRect.topLeft() / 10, labelRect.size() / 10);
+
+			citem->showLabel(checkLabelRegion(reducedRect));
+		}
 	}
 
 	//qDebug() << "layout labels: " << tm.elapsed();

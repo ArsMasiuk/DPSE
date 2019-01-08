@@ -3,17 +3,19 @@ QVGE 0.5.2
 - more diagnostic shown if file reading failed
 - selection of global attributes made more convenient
 - logic of movement of the selected items made more intuitive (#48)
+- snap to grid enabled by default (#45)
 - label font editor extended a little
 - item painting optimizations and corrections
-- added in-place label editing
-- added port colors 
-- double click on a port shows its properties
+- item ids are now editable via context menu only (by right click)
+- added in-place label editing (by double click)
+- added node port colors 
+- double click on a node port shows its properties
 - Commutation Table: when adding a column, a list with available attribute ids is shown
 - Commutation Table: added button bar
-- View Menu: added toolbars & panels submenu (#52) 
-- View Menu: item ids can be shown/hidded separately from labels
-- item ids are now editable via context menu only
+- View Menu: added Toolbars & Panels submenu (#52) 
+- View Menu: item ids can be shown/hidded separately from labels (#47)
 - added basic import from GraphViz/DOT format via OGDF (#53)
+- newly started application instance now overtakes the parent's instance settings
 
 - fixed font reading/setting issue
 - fixed bug with changing style of selected items after applying a new scheme

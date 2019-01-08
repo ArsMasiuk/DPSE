@@ -290,8 +290,18 @@ bool COGDFLayout::autoLayoutIfNone(const ogdf::Graph &G, ogdf::GraphAttributes &
 				return false;
 		}
 	}
+	else
+		return false;
 
 	ogdf::BalloonLayout layout;
 	layout.call(GA);
+
+	// factor x2
+	for (auto n : G.nodes)
+	{
+		GA.x(n) *= 2.0;
+		GA.y(n) *= 2.0;
+	}
+
 	return true;
 }

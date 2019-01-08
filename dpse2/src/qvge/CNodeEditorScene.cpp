@@ -87,7 +87,7 @@ bool CNodeEditorScene::fromGraph(const Graph& g)
 
 		for (auto it = n.ports.constBegin(); it != n.ports.constEnd(); ++it)
 		{
-			CNodePort* port = node->addPort(it.key().toLocal8Bit());
+			/*CNodePort* port =*/ node->addPort(it.key().toLocal8Bit());
 		}
 	}
 
@@ -163,7 +163,7 @@ void CNodeEditorScene::initialize()
 	// common constrains
 	static CAttributeConstrainsList *edgeStyles = new CAttributeConstrainsList();
 	if (edgeStyles->ids.isEmpty()) {
-		edgeStyles->names << "None" << "Solid" << "Dots" << "Dashes" << "Dash-Dot" << "Dash-Dot-Dot";
+		edgeStyles->names << tr("None") << tr("Solid") << tr("Dots") << tr("Dashes") << tr("Dash-Dot") << tr("Dash-Dot-Dot");
 		edgeStyles->ids << "none" << "solid" << "dotted" << "dashed" << "dashdot" << "dashdotdot";
 		//edgeStyles->icons << QIcon(":/Icons/Edge-Directed") << QIcon(":/Icons/Edge-Mutual") << QIcon(":/Icons/Edge-Undirected");
 	}

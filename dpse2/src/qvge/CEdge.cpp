@@ -391,6 +391,7 @@ QString CEdge::createNewId() const
 
 void CEdge::onNodeMoved(CNode *node)
 {
+	Q_UNUSED(node);
 	Q_ASSERT(node == m_firstNode || node == m_lastNode);
 	Q_ASSERT(node != NULL);
 

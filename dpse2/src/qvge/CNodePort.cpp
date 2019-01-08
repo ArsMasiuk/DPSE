@@ -132,7 +132,7 @@ ItemDragTestResult CNodePort::acceptDragFromItem(QGraphicsItem* draggedItem)
 }
 
 
-void CNodePort::leaveDragFromItem(QGraphicsItem* draggedItem)
+void CNodePort::leaveDragFromItem(QGraphicsItem* /*draggedItem*/)
 {
 	setOpacity(1);
 }

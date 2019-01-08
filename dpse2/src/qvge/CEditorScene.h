@@ -68,13 +68,18 @@ public:
     void setGridPen(const QPen& gridPen);
     const QPen& getGridPen() const      { return m_gridPen; }
 
-	void setSceneCursor(const QCursor& c);
-
+	void setFontAntialiased(bool on);
+	bool isFontAntialiased() const { return m_isFontAntialiased; }
+	
 	bool itemLabelsEnabled() const		{ return m_labelsEnabled; }
 	bool itemLabelsNeedUpdate() const	{ return m_labelsUpdate; }
 
-	void setFontAntialiased(bool on);
-	bool isFontAntialiased() const		{ return m_isFontAntialiased;  }
+	enum LabelsPolicy {
+		Auto, AlwaysOn, AlwaysOff
+	};
+
+	LabelsPolicy getLabelsPolicy() const;
+	void setLabelsPolicy(LabelsPolicy v);
 
 	// undo-redo
 	int availableUndoCount() const;
@@ -242,6 +247,8 @@ Q_SIGNALS:
 
 protected:
 	void setInfoStatus(int status);
+
+	void setSceneCursor(const QCursor& c);
 	void updateCursorState();
 	virtual bool doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem);
 
@@ -342,7 +349,7 @@ private:
 	bool m_isFontAntialiased = true;
 
 	// pimpl
-	class CEditorScene_p* m_pimpl = nullptr;
+	struct CEditorScene_p* m_pimpl = nullptr;
 };
 
 

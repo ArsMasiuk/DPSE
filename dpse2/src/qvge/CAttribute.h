@@ -115,10 +115,10 @@ struct CDoubleConstrains : public CAttributeConstrains
 
 typedef QList<QIcon> IconsList;
 
-struct CAttributeConstrainsList: public CAttributeConstrains
+
+struct CAttributeConstrainsListBase : public CAttributeConstrains
 {
 	QStringList names;
-	QStringList ids;
 	IconsList icons;
 
 	// convenience method to conform property browser API
@@ -127,11 +127,21 @@ struct CAttributeConstrainsList: public CAttributeConstrains
 		QMap<int, QIcon> result;
 
 		for (int i = 0; i < icons.size(); ++i)
-		{
 			result[i] = icons[i];
-		}
 
 		return result;
 	}
+};
+
+
+struct CAttributeConstrainsList: public CAttributeConstrainsListBase
+{
+	QStringList ids;
+};
+
+
+struct CAttributeConstrainsEnum : public CAttributeConstrainsListBase
+{
+	QList<int> ids;
 };
 

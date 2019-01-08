@@ -430,6 +430,9 @@ bool CMainWindow::doOpenDocument(const QString &fileName)
     // document presents - run new instance
     if (m_currentDocType.size())
     {
+		// store current settings to be read by the new instance
+		writeSettings();
+
         QStringList args;
         args << "open" << normalizedName;
         QProcess::startDetached(QCoreApplication::applicationFilePath(), args);

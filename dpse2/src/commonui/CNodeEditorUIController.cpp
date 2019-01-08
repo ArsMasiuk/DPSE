@@ -463,10 +463,15 @@ void CNodeEditorUIController::onSceneHint(const QString& text)
 
 void CNodeEditorUIController::onSceneStatusChanged(int status)
 {
+	bool isAddNodesMode = (m_editorScene->getEditMode() == EM_AddNodes);
+ 
     switch (status)
     {
     case SIS_Hover:
-        onSceneHint(tr("Ctrl+Click - (un)select item | Click & drag - move selected items | Ctrl+Click & drag - clone selected items"));
+		if (isAddNodesMode)
+			onSceneHint(tr("Click & drag - create new connection"));
+		else
+			onSceneHint(tr("Ctrl+Click - (un)select item | Click & drag - move selected items | Ctrl+Click & drag - clone selected items"));
         return;
 
     case SIS_Drag:
@@ -478,12 +483,15 @@ void CNodeEditorUIController::onSceneStatusChanged(int status)
         return;
 
     default:
-        onSceneHint(tr("Click & drag - select an area"));
+		if (isAddNodesMode)
+			onSceneHint(tr("Click - create new node | Click & drag - create new connection"));
+		else
+			onSceneHint(tr("Click & drag - select an area"));
     }
 }
 
 
-void CNodeEditorUIController::onSceneDoubleClicked(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsItem* clickedItem)
+void CNodeEditorUIController::onSceneDoubleClicked(QGraphicsSceneMouseEvent* /*mouseEvent*/, QGraphicsItem* clickedItem)
 {
 	CNodePort *port = dynamic_cast<CNodePort*>(clickedItem);
 	if (port)
@@ -765,8 +773,8 @@ void CNodeEditorUIController::readDefaultSceneSettings()
 
 	settings.endGroup();
 
-	m_editorScene->setClassAttributeVisible("item", "id", showIds);
-	m_editorScene->setClassAttributeVisible("item", "label", showLabels);
+	m_editorScene->setClassAttributeVisible(class_item, "id", showIds);
+	m_editorScene->setClassAttributeVisible(class_item, "label", showLabels);
 	m_editorScene->setBackgroundBrush(bgColor);
 	m_editorScene->setGridPen(gridPen);
 	m_editorScene->setGridSize(gridSize);
@@ -918,7 +926,7 @@ void CNodeEditorUIController::sceneCrop()
 
 void CNodeEditorUIController::showItemIds(bool on)
 {
-	m_editorScene->setClassAttributeVisible("item", "id", on);
+	m_editorScene->setClassAttributeVisible(class_item, "id", on);
 
 	m_editorScene->addUndoState();
 }
@@ -926,7 +934,7 @@ void CNodeEditorUIController::showItemIds(bool on)
 
 void CNodeEditorUIController::showItemLabels(bool on)
 {
-	m_editorScene->setClassAttributeVisible("item", "label", on);
+	m_editorScene->setClassAttributeVisible(class_item, "label", on);
 
 	m_editorScene->addUndoState();
 }
@@ -936,8 +944,8 @@ void CNodeEditorUIController::undo()
 {
 	m_editorScene->undo();
 
-	m_editorScene->setClassAttributeVisible("item", "id", actionShowIds->isChecked());
-	m_editorScene->setClassAttributeVisible("item", "label", actionShowLabels->isChecked());
+	m_editorScene->setClassAttributeVisible(class_item, "id", actionShowIds->isChecked());
+	m_editorScene->setClassAttributeVisible(class_item, "label", actionShowLabels->isChecked());
 }
 
 
@@ -945,8 +953,8 @@ void CNodeEditorUIController::redo()
 {
 	m_editorScene->redo();
 
-	m_editorScene->setClassAttributeVisible("item", "id", actionShowIds->isChecked());
-	m_editorScene->setClassAttributeVisible("item", "label", actionShowLabels->isChecked());
+	m_editorScene->setClassAttributeVisible(class_item, "id", actionShowIds->isChecked());
+	m_editorScene->setClassAttributeVisible(class_item, "label", actionShowLabels->isChecked());
 }
 
 
