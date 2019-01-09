@@ -141,9 +141,9 @@ QSet<QByteArray> CItem::getVisibleAttributeIds(int flags) const
 	if (auto scene = getScene())
 	{
 		if (flags == VF_ANY || flags == VF_TOOLTIP)
-			result += scene->getClassAttributes(classId(), true).keys().toSet();
+			result += scene->getClassAttributes(classId(), false).keys().toSet();
 		else
-			result += scene->getVisibleClassAttributes(classId(), true);
+			result += scene->getVisibleClassAttributes(classId(), false);
 	}
 
     return result;

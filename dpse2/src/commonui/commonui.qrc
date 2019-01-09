@@ -32,5 +32,6 @@
         <file alias="Delete">Icons/edit-delete.png</file>
         <file alias="Label">Icons/text-label.png</file>
         <file alias="Graph">Icons/Graph.png</file>
+        <file alias="Search">Icons/Search.png</file>
     </qresource>
 </RCC>

@@ -14,8 +14,11 @@ It can be used freely, maintaining the information above.
 #include <QSettings>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsItem>
+#include <QTimer>
 
 #include <slider2d.h>
+
+#include <commonui/CSceneOptionsDialog.h>
 
 class CMainWindow;
 
@@ -55,6 +58,8 @@ private Q_SLOTS:
 	void exportPDF();
 	void exportDOT();
 
+	void doBackup();
+
 	void onNavigatorShown();
 
 	void onSelectionChanged();
@@ -74,7 +79,8 @@ private Q_SLOTS:
 	void sceneCrop();
     void sceneOptions();
 
-	void showItemIds(bool on);
+	void showNodeIds(bool on);
+	void showEdgeIds(bool on);
 	void showItemLabels(bool on);
 
 	void undo();
@@ -97,7 +103,10 @@ private:
 	void readDefaultSceneSettings();
 	void writeDefaultSceneSettings();
 
+	void updateSceneOptions();
+
 	void updateActions();
+	void updateFromActions();
 
 	void editNodePort(CNodePort &port);
 
@@ -109,8 +118,6 @@ private:
     class QSint::Slider2d *m_sliderView;
 
     QLabel *m_statusLabel;
-
-	QString m_lastExportPath;
 
 	QMenu *m_viewMenu;
 
@@ -136,9 +143,15 @@ private:
     QAction *gridAction;
     QAction *gridSnapAction;
     QAction *actionShowLabels;
-	QAction *actionShowIds;
+	QAction *m_actionShowNodeIds;
+	QAction *m_actionShowEdgeIds;
 
-    bool m_showNewGraphDialog = true;
+
+	QString m_lastExportPath;
+
+	OptionsData m_optionsData;
+
+	QTimer m_backupTimer;
 
 #ifdef USE_OGDF
 	class COGDFLayoutUIController *m_ogdfController;

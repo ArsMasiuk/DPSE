@@ -11,7 +11,6 @@ It can be used freely, maintaining the information above.
 #include <CColorSchemesUIController.h>
 #include <CSceneMenuUIController.h>
 #include <CCommutationTable.h>
-#include <CSceneOptionsDialog.h>
 #include <CNodeEdgePropertiesUI.h>
 #include <CClassAttributesEditorUI.h>
 #include <CExtListInputDialog.h>
@@ -59,6 +58,9 @@ CNodeEditorUIController::CNodeEditorUIController(CMainWindow *parent) :
     QObject(parent),
     m_parent(parent)
 {
+	// backup timer
+	connect(&m_backupTimer, &QTimer::timeout, this, &CNodeEditorUIController::doBackup);
+
     // create document
     m_editorScene = new CNodeEditorScene(parent);
     m_editorView = new CEditorView(m_editorScene, parent);
@@ -162,14 +164,6 @@ void CNodeEditorUIController::createMenus()
     connect(redoAction, &QAction::triggered, this, &CNodeEditorUIController::redo);
     connect(m_editorScene, &CEditorScene::redoAvailable, redoAction, &QAction::setEnabled);
     redoAction->setEnabled(m_editorScene->availableRedoCount());
-
-    editMenu->addSeparator();
-
-    findAction = editMenu->addAction(QIcon(":/Icons/Find"), tr("&Find..."));
-    findAction->setStatusTip(tr("Search for items and attributes"));
-    findAction->setToolTip(tr("Find text"));
-    findAction->setShortcut(QKeySequence::Find);
-    connect(findAction, &QAction::triggered, this, &CNodeEditorUIController::find);
 
     editMenu->addSeparator();
 
@@ -296,19 +290,31 @@ void CNodeEditorUIController::createMenus()
     gridSnapAction->setChecked(m_editorScene->gridSnapEnabled());
     connect(gridSnapAction, SIGNAL(toggled(bool)), m_editorScene, SLOT(enableGridSnap(bool)));
 
-    actionShowLabels = m_viewMenu->addAction(QIcon(":/Icons/Label"), tr("Show &Labels"));
-    actionShowLabels->setCheckable(true);
-    actionShowLabels->setStatusTip(tr("Show/hide item labels"));
-	actionShowLabels->setChecked(m_editorScene->isClassAttributeVisible("item", "label"));
-	connect(actionShowLabels, SIGNAL(toggled(bool)), this, SLOT(showItemLabels(bool)));
-	//actionShowLabels->setChecked(m_editorScene->itemLabelsEnabled());
-    //connect(actionShowLabels, SIGNAL(toggled(bool)), m_editorScene, SLOT(enableItemLabels(bool)));
+ //   actionShowLabels = m_viewMenu->addAction(QIcon(":/Icons/Label"), tr("Show &Labels"));
+ //   actionShowLabels->setCheckable(true);
+ //   actionShowLabels->setStatusTip(tr("Show/hide item labels"));
+	//actionShowLabels->setChecked(m_editorScene->isClassAttributeVisible("item", "label"));
+	//connect(actionShowLabels, SIGNAL(toggled(bool)), this, SLOT(showItemLabels(bool)));
 
-	actionShowIds = m_viewMenu->addAction(tr("Show &Ids"));
-	actionShowIds->setCheckable(true);
-	actionShowIds->setStatusTip(tr("Show/hide item ids"));
-	actionShowIds->setChecked(m_editorScene->isClassAttributeVisible("item", "id"));
-	connect(actionShowIds, SIGNAL(toggled(bool)), this, SLOT(showItemIds(bool)));
+	m_actionShowNodeIds = m_viewMenu->addAction(tr("Show Node Ids"));
+	m_actionShowNodeIds->setCheckable(true);
+	m_actionShowNodeIds->setStatusTip(tr("Show/hide node ids"));
+	m_actionShowNodeIds->setChecked(m_editorScene->isClassAttributeVisible(class_node, attr_id));
+	connect(m_actionShowNodeIds, SIGNAL(toggled(bool)), this, SLOT(showNodeIds(bool)));
+
+	m_actionShowEdgeIds = m_viewMenu->addAction(tr("Show Edge Ids"));
+	m_actionShowEdgeIds->setCheckable(true);
+	m_actionShowEdgeIds->setStatusTip(tr("Show/hide edge ids"));
+	m_actionShowEdgeIds->setChecked(m_editorScene->isClassAttributeVisible(class_edge, attr_id));
+	connect(m_actionShowEdgeIds, SIGNAL(toggled(bool)), this, SLOT(showEdgeIds(bool)));
+
+	m_viewMenu->addSeparator();
+
+	findAction = m_viewMenu->addAction(QIcon(":/Icons/Search"), tr("&Find..."));
+	findAction->setStatusTip(tr("Search for items and attributes"));
+	//findAction->setToolTip(tr("Find text"));
+	findAction->setShortcut(QKeySequence::Find);
+	connect(findAction, &QAction::triggered, this, &CNodeEditorUIController::find);
 
 	m_viewMenu->addSeparator();
 
@@ -339,6 +345,10 @@ void CNodeEditorUIController::createMenus()
     QToolBar *zoomToolbar = m_parent->addToolBar(tr("View"));
     zoomToolbar->setObjectName("viewToolbar");
     zoomToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+	zoomToolbar->addAction(findAction);
+
+	zoomToolbar->addSeparator();
 
     zoomToolbar->addAction(zoomAction);
 
@@ -526,16 +536,26 @@ void CNodeEditorUIController::resetZoom()
 void CNodeEditorUIController::sceneOptions()
 {
     CSceneOptionsDialog dialog;
-    dialog.setShowNewGraphDialog(m_showNewGraphDialog);
 
-    if (dialog.exec(*m_editorScene, *m_editorView))
+    if (dialog.exec(*m_editorScene, *m_editorView, m_optionsData))
     {
-		updateActions();
-
-        m_showNewGraphDialog = dialog.isShowNewGraphDialog();
+		updateSceneOptions();
 
         m_parent->writeSettings();
     }
+}
+
+
+void CNodeEditorUIController::updateSceneOptions()
+{
+	if (m_optionsData.backupPeriod > 0) {
+		m_backupTimer.setInterval(m_optionsData.backupPeriod * 60000);
+		m_backupTimer.start();
+	}
+	else
+		m_backupTimer.stop();
+
+	updateActions();
 }
 
 
@@ -545,9 +565,18 @@ void CNodeEditorUIController::updateActions()
 	{
 		gridAction->setChecked(m_editorScene->gridEnabled());
 		gridSnapAction->setChecked(m_editorScene->gridSnapEnabled());
-		//actionShowLabels->setChecked(m_editorScene->itemLabelsEnabled());
-		actionShowLabels->setChecked(m_editorScene->isClassAttributeVisible("item", "label"));
-		actionShowIds->setChecked(m_editorScene->isClassAttributeVisible("item", "id"));
+		m_actionShowNodeIds->setChecked(m_editorScene->isClassAttributeVisible(class_node, attr_id));
+		m_actionShowEdgeIds->setChecked(m_editorScene->isClassAttributeVisible(class_edge, attr_id));
+	}
+}
+
+
+void CNodeEditorUIController::updateFromActions()
+{
+	if (m_editorScene)
+	{
+		m_editorScene->setClassAttributeVisible(class_node, attr_id, m_actionShowNodeIds->isChecked());
+		m_editorScene->setClassAttributeVisible(class_edge, attr_id, m_actionShowEdgeIds->isChecked());
 	}
 }
 
@@ -618,8 +647,32 @@ void CNodeEditorUIController::exportPDF()
 }
 
 
+void CNodeEditorUIController::doBackup()
+{
+	QString backupFileName = m_parent->getCurrentFileName();
+	if (backupFileName.isEmpty()) {
+		backupFileName = QDir::tempPath() + "/qvge_unnamed_document.bak.xgr";
+	}
+	else {
+		backupFileName = CUtils::cutLastSuffix(backupFileName) + ".bak.xgr";
+	}
+
+	m_parent->statusBar()->showMessage(tr("Running backup... (%1)").arg(backupFileName));
+	qApp->processEvents();
+
+	CFileSerializerXGR writer;
+	if (writer.save(backupFileName, *m_editorScene)) {
+		m_parent->statusBar()->showMessage(tr("Backup done (%1)").arg(backupFileName), 2000);
+	}
+	else {
+		m_parent->statusBar()->showMessage(tr("Backup failed (%1)").arg(backupFileName), 2000);
+	}
+}
+
+
 void CNodeEditorUIController::doReadSettings(QSettings& settings)
 {
+	// options
     bool isAA = m_editorView->renderHints().testFlag(QPainter::Antialiasing);
     isAA = settings.value("antialiasing", isAA).toBool();
     m_editorView->setRenderHint(QPainter::Antialiasing, isAA);
@@ -630,9 +683,13 @@ void CNodeEditorUIController::doReadSettings(QSettings& settings)
     QPixmapCache::setCacheLimit(cacheRam);
 
     m_lastExportPath = settings.value("lastExportPath", m_lastExportPath).toString();
-    m_showNewGraphDialog = settings.value("autoCreateGraphDialog", m_showNewGraphDialog).toBool();
+    
+	m_optionsData.newGraphDialogOnStart = settings.value("autoCreateGraphDialog", m_optionsData.newGraphDialogOnStart).toBool();
+	m_optionsData.backupPeriod = settings.value("backupPeriod", m_optionsData.backupPeriod).toInt();
 
-	
+	updateSceneOptions();
+
+
     // UI elements
     settings.beginGroup("UI/ItemProperties");
     m_propertiesPanel->doReadSettings(settings);
@@ -657,7 +714,9 @@ void CNodeEditorUIController::doWriteSettings(QSettings& settings)
     settings.setValue("cacheRam", cacheRam);
 
     settings.setValue("lastExportPath", m_lastExportPath);
-    settings.setValue("autoCreateGraphDialog", m_showNewGraphDialog);
+
+    settings.setValue("autoCreateGraphDialog", m_optionsData.newGraphDialogOnStart);
+	settings.setValue("backupPeriod", m_optionsData.backupPeriod);
 
 
     // UI elements
@@ -743,7 +802,7 @@ bool CNodeEditorUIController::saveToFile(const QString &fileName, const QString 
     if (format == "xgr")
         return (CFileSerializerXGR().save(fileName, *m_editorScene, lastError));
 
-    if (format == "dot")
+    if (format == "dot" || format == "gv")
         return (CFileSerializerDOT().save(fileName, *m_editorScene, lastError));
 
     if (format == "gexf")
@@ -762,8 +821,8 @@ void CNodeEditorUIController::readDefaultSceneSettings()
 
 	settings.beginGroup("Scene/Defaults");
 
-	bool showIds = settings.value("showItemIds", false).toBool();
-	bool showLabels = settings.value("showItemLabel", true).toBool();
+	bool showNodeIds = settings.value("showNodeIds", true).toBool();
+	bool showEdgeIds = settings.value("showEdgeIds", true).toBool();
 
 	QColor bgColor = settings.value("background", m_editorScene->backgroundBrush().color()).value<QColor>();
 	QPen gridPen = settings.value("grid.color", m_editorScene->getGridPen()).value<QPen>();
@@ -773,13 +832,15 @@ void CNodeEditorUIController::readDefaultSceneSettings()
 
 	settings.endGroup();
 
-	m_editorScene->setClassAttributeVisible(class_item, "id", showIds);
-	m_editorScene->setClassAttributeVisible(class_item, "label", showLabels);
+	m_editorScene->setClassAttributeVisible(class_node, attr_id, showNodeIds);
+	m_editorScene->setClassAttributeVisible(class_edge, attr_id, showEdgeIds);
 	m_editorScene->setBackgroundBrush(bgColor);
 	m_editorScene->setGridPen(gridPen);
 	m_editorScene->setGridSize(gridSize);
 	m_editorScene->enableGrid(gridEnabled);
 	m_editorScene->enableGridSnap(gridSnap);
+
+	updateFromActions();
 }
 
 
@@ -789,11 +850,12 @@ void CNodeEditorUIController::writeDefaultSceneSettings()
 
 	settings.beginGroup("Scene/Defaults");
 
-	bool showIds = m_editorScene->isClassAttributeVisible("item", "id");
-	bool showLabels = m_editorScene->isClassAttributeVisible("item", "label");
+	bool showNodeIds = m_editorScene->isClassAttributeVisible(class_node, attr_id);
+	bool showEdgeIds = m_editorScene->isClassAttributeVisible(class_edge, attr_id);
+	//bool showLabels = m_editorScene->isClassAttributeVisible("item", "label");
 
-	settings.setValue("showItemIds", showIds);
-	settings.setValue("showItemLabel", showLabels);
+	settings.setValue("showNodeIds", showNodeIds);
+	settings.setValue("showEdgeIds", showEdgeIds);
 
 	settings.setValue("background", m_editorScene->backgroundBrush().color());
 	settings.setValue("grid.color", m_editorScene->getGridPen());
@@ -815,15 +877,15 @@ void CNodeEditorUIController::onNewDocumentCreated()
     m_editorScene->setClassAttribute("", "creator", QApplication::applicationName() + " " + QApplication::applicationVersion());
 
 #ifdef USE_OGDF
-    if (m_showNewGraphDialog)
+    if (m_optionsData.newGraphDialogOnStart)
     {
         COGDFNewGraphDialog dialog;
         dialog.exec(*m_editorScene);
 
         bool show = dialog.isShowOnStart();
-        if (show != m_showNewGraphDialog)
+        if (show != m_optionsData.newGraphDialogOnStart)
         {
-            m_showNewGraphDialog = show;
+			m_optionsData.newGraphDialogOnStart = show;
             m_parent->writeSettings();
         }
     }
@@ -924,9 +986,17 @@ void CNodeEditorUIController::sceneCrop()
 }
 
 
-void CNodeEditorUIController::showItemIds(bool on)
+void CNodeEditorUIController::showNodeIds(bool on)
 {
-	m_editorScene->setClassAttributeVisible(class_item, "id", on);
+	m_editorScene->setClassAttributeVisible(class_node, attr_id, on);
+
+	m_editorScene->addUndoState();
+}
+
+
+void CNodeEditorUIController::showEdgeIds(bool on)
+{
+	m_editorScene->setClassAttributeVisible(class_edge, attr_id, on);
 
 	m_editorScene->addUndoState();
 }
@@ -944,8 +1014,7 @@ void CNodeEditorUIController::undo()
 {
 	m_editorScene->undo();
 
-	m_editorScene->setClassAttributeVisible(class_item, "id", actionShowIds->isChecked());
-	m_editorScene->setClassAttributeVisible(class_item, "label", actionShowLabels->isChecked());
+	updateFromActions();
 }
 
 
@@ -953,8 +1022,7 @@ void CNodeEditorUIController::redo()
 {
 	m_editorScene->redo();
 
-	m_editorScene->setClassAttributeVisible(class_item, "id", actionShowIds->isChecked());
-	m_editorScene->setClassAttributeVisible(class_item, "label", actionShowLabels->isChecked());
+	updateFromActions();
 }
 
 

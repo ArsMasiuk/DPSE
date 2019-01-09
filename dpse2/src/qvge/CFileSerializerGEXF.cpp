@@ -122,6 +122,10 @@ bool CFileSerializerGEXF::readAttrs(int /*index*/, const QDomNode &domNode, CEdi
         {
             attrInfo.variantType = QVariant::Bool;
         }
+		else if (type == "liststring")
+		{
+			attrInfo.variantType = QVariant::StringList;
+		}
         else    // string
         {
             attrInfo.variantType = QVariant::String;
@@ -142,6 +146,23 @@ bool CFileSerializerGEXF::readAttrs(int /*index*/, const QDomNode &domNode, CEdi
 
 		if (def.size())
 		{
+			// visibility attr
+			if (attrId == "_vis_")
+			{
+				auto visList = def.splitRef('|');
+				for (auto& id : visList)
+					scene.setClassAttributeVisible(classId, id.toLatin1());
+				continue;
+			}
+
+			// stringlists
+			if (attrInfo.variantType == QVariant::StringList)
+			{
+				attr.defaultValue = def.split('|');
+				continue;
+			}
+
+			// other attrs
 			QVariant v = CUtils::textToVariant(def, attrInfo.variantType);
 
 			if (attrId == "size" && classId == "node")
@@ -414,18 +435,24 @@ static QString typeToString(int valueType)
 	{
 	case QMetaType::Bool:		
 		return "boolean";
+
 	case QMetaType::Int:
 	case QMetaType::UInt:
 		return "integer";
+
 	case QMetaType::Long:
 	case QMetaType::ULong:
 		return "long";
+
 	case QMetaType::Double:
 		return "double";
+
 	case QMetaType::Float:
 		return "float";
 
-	// liststring
+	case QMetaType::QStringList:
+		return "liststring";
+
 	// url
 
 	default:
@@ -455,6 +482,17 @@ void CFileSerializerGEXF::writeClassAttrs(QTextStream &ts, const CEditorScene& s
 					attrs[id] = CAttribute(id);
 			}
 		}
+	}
+
+	// add visible state if any
+	QSet<QByteArray> visSet = scene.getVisibleClassAttributes(classId, false);
+	if (!visSet.isEmpty())
+	{
+		QStringList visList;
+		for (auto& id : visSet)
+			visList << id;
+		CAttribute visAttr("_vis_", "Visibility", visList);
+		attrs["_vis_"] = visAttr;
 	}
 
 	if (attrs.isEmpty())
@@ -490,7 +528,14 @@ void CFileSerializerGEXF::writeClassAttrs(QTextStream &ts, const CEditorScene& s
 		
 		if (!attr.noDefault && attr.defaultValue.isValid())
 		{
-			ts << "            <default>" << attr.defaultValue.toString() << "</default>\n";
+			ts << "            <default>";
+
+			if (attr.valueType == QMetaType::QStringList)
+				ts << attr.defaultValue.toStringList().join('|');
+			else
+				ts << attr.defaultValue.toString();
+
+			ts << "</default>\n";
 		}
 
 		ts << "        </attribute>\n";

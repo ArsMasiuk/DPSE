@@ -179,6 +179,12 @@ void COGDFLayout::graphToScene(const ogdf::Graph &G, const ogdf::GraphAttributes
         {
             auto c = GA.fillColor(n);
             node->setAttribute("color", QColor(c.red(), c.green(), c.blue()));
+
+			auto sc = GA.strokeColor(n);
+			node->setAttribute("stroke.color", QColor(c.red(), c.green(), c.blue()));
+
+			node->setAttribute("stroke.style", toVariant(GA.strokeType(n)));
+			node->setAttribute("stroke.size", GA.strokeWidth(n));
         }
 
 		int id = -1;

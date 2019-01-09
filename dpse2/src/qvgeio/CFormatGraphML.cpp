@@ -39,6 +39,8 @@ bool CFormatGraphML::save(const QString& fileName, Graph& graph, QString* lastEr
 
 	xsw.writeStartElement("graph");
 
+	// TO DO: Nodes & Edges
+
 	xsw.writeEndElement();	// graph
 
 	xsw.writeEndElement();	// graphml
