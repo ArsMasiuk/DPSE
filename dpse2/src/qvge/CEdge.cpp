@@ -276,8 +276,8 @@ bool CEdge::restoreFrom(QDataStream &out, quint64 version64)
 
 bool CEdge::linkAfterRestore(const CItemLinkMap &idToItem)
 {
-    CNode *node1 = dynamic_cast<CNode*>(idToItem.value(m_tempFirstNodeId));
-    CNode *node2 = dynamic_cast<CNode*>(idToItem.value(m_tempLastNodeId));
+    CNode *node1 = dynamic_cast<CNode*>(idToItem.value((quintptr)m_tempFirstNodeId));
+    CNode *node2 = dynamic_cast<CNode*>(idToItem.value((quintptr)m_tempLastNodeId));
 
 	m_firstNode = m_lastNode = NULL;
 
