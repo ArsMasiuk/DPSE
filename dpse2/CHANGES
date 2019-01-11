@@ -1,22 +1,13 @@
 QVGE 0.5.2
 -------------------------------------------------------------------------------
-<<<<<<< .mine
-- added in-place label editing (by double click)
-- added node port colors 
 - View Menu: added Toolbars & Panels submenu (#52) 
 - View Menu: item ids can be shown/hidded separately from labels (#47)
-- added basic import from GraphViz/DOT format via OGDF (#53)
+- added in-place label editing (by double click)
+- added node port colors 
 - added timed auto backups (#60)
-
-=======
-- added in-place label editing (by double click)
-- added node port colors 
-- View Menu: added Toolbars & Panels submenu (#52) 
-- View Menu: item ids can be shown/hidded separately from labels (#47)
 - added basic import from GraphViz/DOT format via OGDF (#53)
+- added Sugiyama graph layout (via OGDF)
 
-
->>>>>>> .theirs
 - more diagnostic shown if file reading failed
 - selection of global attributes made more convenient
 - logic of movement of the selected items made more intuitive (#48)
@@ -36,13 +27,8 @@ QVGE 0.5.2
 - fixed placement of edge labels (#50)
 - fixed some GEXF-related issues (#51)
 - fixed canvas expansion after changing item IDs (#44)
-<<<<<<< .mine
 - (32-bit-version): fixed crash while cloning the selection
 - fixed issue with storing DOT format if ids include spaces 
-=======
-- (32-bit-version only): fixed crash while cloning the selection
-
->>>>>>> .theirs
 
 - compilation speedup (OGDF reduced, COIN excluded for now)
 

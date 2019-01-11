@@ -651,7 +651,8 @@ void CNodeEditorUIController::doBackup()
 {
 	QString backupFileName = m_parent->getCurrentFileName();
 	if (backupFileName.isEmpty()) {
-		backupFileName = QDir::tempPath() + "/qvge_unnamed_document.bak.xgr";
+		m_parent->statusBar()->showMessage(tr("Cannot backup non-saved document"), 2000);
+		return;
 	}
 	else {
 		backupFileName = CUtils::cutLastSuffix(backupFileName) + ".bak.xgr";
@@ -832,6 +833,11 @@ void CNodeEditorUIController::readDefaultSceneSettings()
 
 	settings.endGroup();
 
+	// workaround: always make the labels visible
+	m_editorScene->setClassAttributeVisible(class_item, attr_label, true);
+	m_editorScene->setClassAttributeVisible(class_node, attr_label, true);
+	m_editorScene->setClassAttributeVisible(class_edge, attr_label, true);
+
 	m_editorScene->setClassAttributeVisible(class_node, attr_id, showNodeIds);
 	m_editorScene->setClassAttributeVisible(class_edge, attr_id, showEdgeIds);
 	m_editorScene->setBackgroundBrush(bgColor);
@@ -916,6 +922,11 @@ void CNodeEditorUIController::onDocumentLoaded(const QString &fileName)
 	}
 
 	settings.endGroup();
+
+	// workaround: always make the labels visible
+	m_editorScene->setClassAttributeVisible(class_item, attr_label, true);
+	m_editorScene->setClassAttributeVisible(class_node, attr_label, true);
+	m_editorScene->setClassAttributeVisible(class_edge, attr_label, true);
 }
 
 
