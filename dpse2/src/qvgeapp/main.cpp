@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
     Q_INIT_RESOURCE(commonui);
     Q_INIT_RESOURCE(appbase);
+	a.setWindowIcon(QIcon(":/Icons/AppIcon"));
 
-    a.setWindowIcon(QIcon(":/Icons/AppIcon"));
 	qvgeMainWindow w;
 	w.init(QCoreApplication::arguments());
     w.show();

@@ -720,11 +720,15 @@ void CEditorScene::del()
 	if (itemList.isEmpty())
 		return;
 
+	beginSelection();
+
 	for (QGraphicsItem* item : itemList)
 	{
 		if (items().contains(item))
 			delete item;
 	}
+
+	endSelection();
 
 	addUndoState();
 }

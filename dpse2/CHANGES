@@ -1,3 +1,9 @@
+QVGE 0.x.y
+-------------------------------------------------------------------------------
+- fixed crash on deleting items via Cut or Delete actions (#55)
+- fixed some item selection issues
+
+
 QVGE 0.5.2
 -------------------------------------------------------------------------------
 - View Menu: added Toolbars & Panels submenu (#52) 
@@ -29,8 +35,6 @@ QVGE 0.5.2
 - fixed canvas expansion after changing item IDs (#44)
 - (32-bit-version): fixed crash while cloning the selection
 - fixed issue with storing DOT format if ids include spaces 
-
-- compilation speedup (OGDF reduced, COIN excluded for now)
 
 
 QVGE 0.5.1 (bugfix beta)

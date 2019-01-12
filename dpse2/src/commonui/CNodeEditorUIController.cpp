@@ -191,6 +191,12 @@ void CNodeEditorUIController::createMenus()
     delAction->setShortcut(QKeySequence::Delete);
     connect(delAction, &QAction::triggered, m_editorScene, &CEditorScene::del);
 
+	QAction *selAction = editMenu->addAction(QIcon(":/Icons/SelectAll"), tr("Select All"));
+	selAction->setStatusTip(tr("Select all items on the scene"));
+	selAction->setToolTip(tr("Select all items"));
+	selAction->setShortcut(QKeySequence::SelectAll);
+	connect(selAction, &QAction::triggered, m_editorScene, &CEditorScene::selectAll);
+
 
     // edit modes
     editMenu->addSeparator();
