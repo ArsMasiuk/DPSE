@@ -250,6 +250,16 @@ void CEditorScene::revertUndoState()
 	onSceneChanged();
 }
 
+void CEditorScene::setInitialState()
+{
+	if (m_undoManager)
+	{
+		m_undoManager->reset();
+	}
+
+	addUndoState();
+}
+
 int CEditorScene::availableUndoCount() const
 { 
 	return m_undoManager ? m_undoManager->availableUndoCount() : 0; 
@@ -776,16 +786,16 @@ void CEditorScene::copy()
 }
 
 
-void CEditorScene::paste()
+void CEditorScene::paste(const QPointF &anchor)
 {
-	deselectAll();
-
 	const QClipboard *clipboard = QApplication::clipboard();
 	const QMimeData *mimeData = clipboard->mimeData();
 	if (mimeData == NULL)
 		return;
 	if (!mimeData->hasFormat("qvge/selection"))
 		return;
+
+	deselectAll();
 
 	// read items from the buffer
 	QByteArray buffer = mimeData->data("qvge/selection");
@@ -844,14 +854,19 @@ void CEditorScene::paste()
 	for (auto item : allItems)
 		ids[item->getId()]++;
 
-	// shift
-	moveSelectedItemsBy(100, 0);
-
+	// shift if not in-place
 	auto selItems = selectedItems();
+
+	if (!anchor.isNull())
+	{
+		QRectF r = CUtils::getBoundingRect(selItems);
+		QPointF d = anchor - r.center();
+		moveSelectedItemsBy(d);
+	}
+
+	// rename pasted items
 	for (auto sceneItem : selItems)
 	{
-		//sceneItem->moveBy(100, 0);
-
 		CItem* item = dynamic_cast<CItem*>(sceneItem);
 		if (item)
 		{

@@ -16,6 +16,7 @@ It can be used freely, maintaining the information above.
 #include <QPolygonF>
 #include <QMap>
 #include <QPen>
+#include <QGraphicsItem>
 
 
 class CUtils
@@ -33,6 +34,8 @@ public:
 	static QPointF closestIntersection(const QLineF& line, const QPolygonF& with);
 
 	static QString cutLastSuffix(const QString& fileName);
+
+	static QRectF getBoundingRect(const QList<QGraphicsItem*>& items);
 };
 
 

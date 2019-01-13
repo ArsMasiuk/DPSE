@@ -19,6 +19,22 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">/*
+QToolButton, QComboBox, QDoubleSpinBox, QSpinBox
+{
+border: 1px solid #aaa;
+border-radius: 2px;
+}
+*/
+
+QToolButton:on
+{
+border: 1px solid #aaa;
+background: #bbb;
+}
+</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="leftMargin">
     <number>0</number>
@@ -113,6 +129,9 @@
           <property name="statusTip">
            <string>Set width of the selected nodes</string>
           </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
           <property name="correctionMode">
            <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
           </property>
@@ -156,6 +175,9 @@
           </property>
           <property name="statusTip">
            <string>Set height of the selected nodes</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
           </property>
           <property name="correctionMode">
            <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
@@ -280,6 +302,9 @@
           </property>
           <property name="statusTip">
            <string>Set stroke width of the selected nodes</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
           </property>
           <property name="correctionMode">
            <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
@@ -442,6 +467,9 @@
           </property>
           <property name="statusTip">
            <string>Set weight of the selected edges</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
           </property>
           <property name="correctionMode">
            <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
@@ -619,6 +647,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
           </property>
           <property name="editable">
            <bool>true</bool>

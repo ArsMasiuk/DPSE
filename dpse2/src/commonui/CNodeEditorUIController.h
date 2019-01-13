@@ -76,6 +76,8 @@ private Q_SLOTS:
 	void unzoom();
 	void resetZoom();
 
+	void paste();
+
 	void sceneCrop();
     void sceneOptions();
 
@@ -124,6 +126,7 @@ private:
 	QAction *cutAction;
 	QAction *copyAction;
 	QAction *pasteAction;
+	QAction *pasteInplaceAction;
 	QAction *delAction;
 
 	QAction *findAction;

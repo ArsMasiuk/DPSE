@@ -1,5 +1,7 @@
 QVGE 0.x.y
 -------------------------------------------------------------------------------
+- default Paste behavior modified: items will be preferably pasted into a visible scene's area
+
 - fixed crash on deleting items via Cut or Delete actions (#55)
 - fixed some item selection issues
 

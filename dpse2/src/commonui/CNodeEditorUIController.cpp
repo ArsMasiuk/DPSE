@@ -180,10 +180,15 @@ void CNodeEditorUIController::createMenus()
     connect(copyAction, &QAction::triggered, m_editorScene, &CEditorScene::copy);
 
     pasteAction = editMenu->addAction(QIcon(":/Icons/Paste"), tr("&Paste"));
-    pasteAction->setStatusTip(tr("Paste item(s) from clipboard"));
+    pasteAction->setStatusTip(tr("Paste item(s) from clipboard to the area center"));
     pasteAction->setToolTip(tr("Paste from clipboard"));
     pasteAction->setShortcut(QKeySequence::Paste);
-    connect(pasteAction, &QAction::triggered, m_editorScene, &CEditorScene::paste);
+    connect(pasteAction, &QAction::triggered, this, &CNodeEditorUIController::paste);
+
+	pasteInplaceAction = editMenu->addAction(tr("Paste In Place"));
+	pasteInplaceAction->setStatusTip(tr("Paste item(s) from clipboard with the same coordinates"));
+	pasteInplaceAction->setToolTip(tr("Paste from clipboard in-place"));
+	connect(pasteInplaceAction, SIGNAL(triggered()), m_editorScene, SLOT(paste()));
 
     delAction = editMenu->addAction(QIcon(":/Icons/Delete"), tr("&Delete"));
     delAction->setStatusTip(tr("Delete selected item(s)"));
@@ -933,6 +938,9 @@ void CNodeEditorUIController::onDocumentLoaded(const QString &fileName)
 	m_editorScene->setClassAttributeVisible(class_item, attr_label, true);
 	m_editorScene->setClassAttributeVisible(class_node, attr_label, true);
 	m_editorScene->setClassAttributeVisible(class_edge, attr_label, true);
+
+	// store newly created state
+	m_editorScene->setInitialState();
 }
 
 
@@ -1000,6 +1008,14 @@ void CNodeEditorUIController::sceneCrop()
 	m_editorScene->setSceneRect(itemsRect);
 
 	m_editorScene->addUndoState();
+}
+
+
+void CNodeEditorUIController::paste()
+{
+	QRectF vp = m_editorView->mapToScene(m_editorView->viewport()->geometry()).boundingRect();
+	auto center = vp.center();
+	m_editorScene->paste(center);
 }
 
 

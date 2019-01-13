@@ -88,6 +88,8 @@ public:
 	void addUndoState();
 	// must be called to discard recent changes without undo
 	void revertUndoState();
+	// sets initial scene state
+	void setInitialState();
 
 	// serialization 
 	virtual bool storeTo(QDataStream& out, bool storeOptions) const;
@@ -233,7 +235,8 @@ public Q_SLOTS:
 	// copy-paste
 	void cut();
 	void copy();
-	void paste();
+	void paste(const QPointF &anchor);
+	void paste() { paste(QPointF()); }
 	void del();
 
 Q_SIGNALS:
