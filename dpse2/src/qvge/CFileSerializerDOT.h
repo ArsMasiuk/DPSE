@@ -24,6 +24,12 @@ class QTextStream;
 class CFileSerializerDOT : public IFileSerializer
 {
 public:
+	CFileSerializerDOT(bool writeBackground = true, bool writeAttrs = true) :
+		m_writeBackground(writeBackground),
+		m_writeAttrs(writeAttrs) 
+	{}
+
+
 	// reimp
 	virtual QString description() const {
         return "DOT/GraphViz graph format";
@@ -59,5 +65,8 @@ private:
 	void doWriteEdgeDefaults(QTextStream& ts, const CEditorScene& scene) const;
 	void doWriteEdge(QTextStream& ts, const CEdge& edge, const CEditorScene& scene) const;
 	void doWriteEdgeAttrs(QTextStream& ts, QMap<QByteArray, QVariant> edgeAttrs) const;
+
+	bool m_writeBackground = true;
+	bool m_writeAttrs = true;
 };
 

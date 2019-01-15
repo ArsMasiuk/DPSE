@@ -17,6 +17,7 @@ It can be used freely, maintaining the information above.
 #include <CNodesFactorDialog.h>
 #include <CNodePortEditorDialog.h>
 #include <CSearchDialog.h>
+#include <CDOTExportDialog.h>
 
 #ifdef USE_OGDF
 #include <ogdf/COGDFLayoutUIController.h>
@@ -103,6 +104,9 @@ CNodeEditorUIController::CNodeEditorUIController(CMainWindow *parent) :
 
     // search dialog
     m_searchDialog = new CSearchDialog(parent);
+
+	// export dialogs
+	m_dotDialog = new CDOTExportDialog(parent);
 
     // OGDF
 #ifdef USE_OGDF
@@ -238,7 +242,7 @@ void CNodeEditorUIController::createMenus()
 
     QAction *sceneCropAction = editMenu->addAction(QIcon(":/Icons/Crop"), tr("&Crop Area"));
     sceneCropAction->setStatusTip(tr("Crop document area to contents"));
-    connect(sceneCropAction, &QAction::triggered, this, &CNodeEditorUIController::sceneCrop);
+    connect(sceneCropAction, &QAction::triggered, m_editorScene, &CEditorScene::crop);
 
 
     // color schemes
@@ -648,7 +652,15 @@ void CNodeEditorUIController::exportFile()
 
 void CNodeEditorUIController::exportDOT()
 {
-    doExport(CFileSerializerDOT());
+	if (m_dotDialog->exec() == QDialog::Rejected)
+		return;
+
+    doExport(
+		CFileSerializerDOT(
+			m_dotDialog->writeBackground(),
+			m_dotDialog->writeAttributes()
+		)
+	);
 }
 
 
@@ -995,19 +1007,6 @@ void CNodeEditorUIController::editNodePort(CNodePort &port)
 void CNodeEditorUIController::find()
 {
     m_searchDialog->exec(*m_editorScene);
-}
-
-
-void CNodeEditorUIController::sceneCrop()
-{
-	QRectF itemsRect = m_editorScene->itemsBoundingRect().adjusted(-20, -20, 20, 20);
-	if (itemsRect == m_editorScene->sceneRect())
-		return;
-
-	// update scene rect
-	m_editorScene->setSceneRect(itemsRect);
-
-	m_editorScene->addUndoState();
 }
 
 

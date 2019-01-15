@@ -20,12 +20,14 @@ It can be used freely, maintaining the information above.
 
 #include <commonui/CSceneOptionsDialog.h>
 
+
 class CMainWindow;
 
 class CNodeEditorScene;
 class CNodePort;
 class CEditorView;
 class IFileSerializer;
+class CDOTExportDialog;
 
 
 class CNodeEditorUIController : public QObject
@@ -166,4 +168,5 @@ private:
 	class CClassAttributesEditorUI *m_defaultsPanel;
 
 	class CSearchDialog *m_searchDialog;
+	class CDOTExportDialog *m_dotDialog;
 };
