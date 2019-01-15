@@ -32,9 +32,13 @@ class CNodeEditorScene : public CEditorScene
 public:
 	typedef CEditorScene Super;
 
-	CNodeEditorScene(QObject *parent);
+	CNodeEditorScene(QObject *parent = NULL);
 
 	// reimp
+	virtual CEditorScene* createScene() const {
+		return new CNodeEditorScene();
+	}
+
 	virtual void initialize();
 	virtual bool fromGraph(const Graph& g);
 	virtual bool toGraph(Graph& g);

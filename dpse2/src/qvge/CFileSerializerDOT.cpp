@@ -33,6 +33,10 @@ bool CFileSerializerDOT::save(const QString& fileName, CEditorScene& scene, QStr
 		//ts << "\n\n";
 		//ts << "inputscale = 72;";
 
+		// background
+		ts << "\n\n";
+		ts << "bgcolor = \"" << scene.backgroundBrush().color().name() << "\"";
+
 		ts << "\n\n";
 
         // nodes
