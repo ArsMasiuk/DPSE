@@ -1,9 +1,11 @@
 QVGE 0.x.y
 -------------------------------------------------------------------------------
 - default Paste behavior modified: items will be preferably pasted into a visible scene's area
+- selection copied to clipboard can be pasted as an image to any software
 
 - fixed crash on deleting items via Cut or Delete actions (#55)
 - fixed some item selection issues
+- fixed export of image and PDF documents (auto crop added as well)
 
 
 QVGE 0.5.2

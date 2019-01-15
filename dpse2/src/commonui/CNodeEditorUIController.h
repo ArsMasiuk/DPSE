@@ -78,7 +78,6 @@ private Q_SLOTS:
 
 	void paste();
 
-	void sceneCrop();
     void sceneOptions();
 
 	void showNodeIds(bool on);

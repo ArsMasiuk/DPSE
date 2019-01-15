@@ -193,6 +193,13 @@ void CEditorScene::setFontAntialiased(bool on)
 	update();
 }
 
+void CEditorScene::cloneProperties(const CEditorScene& from)
+{
+	m_classAttributes = from.m_classAttributes;
+	m_classToSuperIds = from.m_classToSuperIds;
+	m_classAttributesVis = from.m_classAttributesVis;
+}
+
 
 // undo-redo
 
@@ -711,12 +718,6 @@ void CEditorScene::setClassAttributeConstrains(const QByteArray& classId, const 
 
 // copy-paste
 
-QList<QGraphicsItem*> CEditorScene::copyPasteItems() const
-{
-	return selectedItems();
-}
-
-
 void CEditorScene::cut()
 {
 	copy();
@@ -783,6 +784,26 @@ void CEditorScene::copy()
 	QMimeData* mimeData = new QMimeData;
 	mimeData->setData("qvge/selection", buffer);
 	QApplication::clipboard()->setMimeData(mimeData);
+
+	// paste it to a temp scene & render into mime image
+	CEditorScene* tempScene = createScene();
+	tempScene->cloneProperties(*this);
+	tempScene->enableGrid(false);
+	tempScene->paste();
+	tempScene->deselectAll();
+	tempScene->crop();
+
+	QImage image(tempScene->sceneRect().size().toSize(), QImage::Format_ARGB32);
+	image.fill(Qt::white);
+	QPainter painter(&image);
+	painter.setRenderHint(QPainter::Antialiasing);
+	painter.setRenderHint(QPainter::TextAntialiasing);
+	tempScene->render(&painter);
+	painter.end();
+
+	mimeData->setImageData(QVariant(image));
+	QApplication::clipboard()->setMimeData(mimeData);
+	delete tempScene;
 }
 
 
@@ -852,7 +873,7 @@ void CEditorScene::paste(const QPointF &anchor)
 	QMap<QString, int> ids;
 	auto allItems = getItems<CItem>();
 	for (auto item : allItems)
-		ids[item->getId()]++;
+		ids[item->getId() + item->typeId()]++;
 
 	// shift if not in-place
 	auto selItems = selectedItems();
@@ -871,12 +892,13 @@ void CEditorScene::paste(const QPointF &anchor)
 		if (item)
 		{
 			QString id = item->getId();
-			if (ids[id] > 1)
+			QString typeId = item->typeId();
+			if (ids[id + typeId] > 1)
 			{
 				int counter = 1;
 				QString newId = id;
 
-				while (ids.contains(newId))
+				while (ids.contains(newId + typeId))
 					newId = QString("Copy%1 of %2").arg(counter++).arg(id);
 
 				item->setId(newId);
@@ -894,6 +916,12 @@ void CEditorScene::paste(const QPointF &anchor)
 
 	// finish
 	addUndoState();
+}
+
+
+QList<QGraphicsItem*> CEditorScene::copyPasteItems() const
+{
+	return selectedItems();
 }
 
 
@@ -941,6 +969,21 @@ QList<CItem*> CEditorScene::cloneSelectedItems()
 	blocker.unblock();
 
 	return clonedList;
+}
+
+
+// crop
+
+void CEditorScene::crop()
+{
+	QRectF itemsRect = itemsBoundingRect().adjusted(-20, -20, 20, 20);
+	if (itemsRect == sceneRect())
+		return;
+
+	// update scene rect
+	setSceneRect(itemsRect);
+
+	addUndoState();
 }
 
 

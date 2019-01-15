@@ -49,7 +49,7 @@ class CEditorScene : public QGraphicsScene
 public:
 	typedef QGraphicsScene Super;
 
-    CEditorScene(QObject *parent);
+    CEditorScene(QObject *parent = NULL);
 	virtual ~CEditorScene();
 
 	virtual void reset();
@@ -119,6 +119,13 @@ public:
 	void setItemFactoryFilter(ISceneItemFactory *filter) {
 		m_itemFactoryFilter = filter;
 	}
+
+	// scene factory & copy
+	virtual CEditorScene* createScene() const {
+		return new CEditorScene();
+	}
+
+	virtual void cloneProperties(const CEditorScene& from);
 
 	// attributes
 	QByteArray getSuperClassId(const QByteArray& classId) const {
@@ -224,20 +231,17 @@ public Q_SLOTS:
 	void undo();
 	void redo();
 
-	void onActionDelete();
-	void onActionSelectAll();
-	void onActionEditLabel(CItem *item);
-
 	void selectAll();
 	void deselectAll();
 	void selectItems(const QList<CItem*>& items, bool exclusive = true);
 
-	// copy-paste
 	void cut();
 	void copy();
 	void paste(const QPointF &anchor);
 	void paste() { paste(QPointF()); }
 	void del();
+
+	void crop();
 
 Q_SIGNALS:
 	void undoAvailable(bool);
@@ -302,6 +306,10 @@ protected:
 protected Q_SLOTS:
 	virtual void onSelectionChanged();
 	void onFocusItemChanged(QGraphicsItem *newFocusItem, QGraphicsItem *oldFocusItem, Qt::FocusReason reason);
+
+	void onActionDelete();
+	void onActionSelectAll();
+	void onActionEditLabel(CItem *item);
 
 private:
 	void removeItems();
