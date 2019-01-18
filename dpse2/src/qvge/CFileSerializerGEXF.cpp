@@ -550,7 +550,7 @@ void CFileSerializerGEXF::writeNodes(QTextStream &ts, const CEditorScene& scene)
 	ts << "    <nodes>\n";
 
 	auto nodes = scene.getItems<CNode>();
-	for (auto node : nodes)
+	for (const auto &node : nodes)
 	{
 		QMap<QByteArray, QVariant> nodeAttrs = node->getLocalAttributes();
 
