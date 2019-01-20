@@ -1,5 +1,6 @@
 ﻿#include "CMainWindow.h"
 #include "CPlatformServices.h"
+#include "CStartPage.h"
 
 #include <QFileDialog>
 #include <QDockWidget>
@@ -86,6 +87,8 @@ void CMainWindow::init(const QStringList& args)
 
     readSettings();
 
+	createStartPage();
+
     processParams(args);
 }
 
@@ -150,7 +153,7 @@ void CMainWindow::processParams(const QStringList& args)
 
         if (command == "create")
         {
-            doCreateNewDocument(args.at(2).toLocal8Bit());
+            createNewDocument(args.at(2).toLocal8Bit());
             return;
         }
 
@@ -261,6 +264,13 @@ void CMainWindow::createFileToolbar()
 }
 
 
+void CMainWindow::createStartPage()
+{
+	CStartPage *startPage = new CStartPage(this);
+	setCentralWidget(startPage);
+}
+
+
 void CMainWindow::updateTitle()
 {
     setWindowTitle(QString("%1 - %2")
@@ -309,18 +319,18 @@ void CMainWindow::onCurrentFileChanged()
 
 void CMainWindow::createNewDocument()
 {
-    doCreateNewDocument(*m_docTypeCreate.begin());
+    createNewDocument(*m_docTypeCreate.begin());
 }
 
 
 void CMainWindow::createNewDocument(QAction *act)
 {
     QByteArray docType = act->data().toByteArray();
-    doCreateNewDocument(docType);
+    createNewDocument(docType);
 }
 
 
-void CMainWindow::doCreateNewDocument(const QByteArray &docType)
+void CMainWindow::createNewDocument(const QByteArray &docType)
 {
     // document presents - run new instance
     if (m_currentDocType.size())
@@ -359,6 +369,12 @@ bool CMainWindow::createDocument(const QByteArray &docType)
     qDebug() << docType;
 
     return true;
+}
+
+
+void CMainWindow::selectAndOpenDocument()
+{
+	on_actionOpen_triggered();
 }
 
 
@@ -641,12 +657,20 @@ bool CMainWindow::saveOnExit()
 
 // recent files management
 
+QStringList CMainWindow::getRecentFilesList() const
+{
+	QSettings &settings = getApplicationSettings();
+
+	return settings.value("recentFiles").toStringList();
+}
+
+
 void CMainWindow::updateRecentFiles()
 {
 	if (m_currentFileName.isEmpty())
 		return;
 
-	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	QSettings &settings = getApplicationSettings();
 
 	QStringList recentFiles = settings.value("recentFiles").toStringList();
 	int index = recentFiles.indexOf(m_currentFileName);
@@ -672,7 +696,7 @@ void CMainWindow::fillRecentFilesMenu()
 {
 	m_recentFilesMenu->clear();
 	 
-	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	QSettings &settings = getApplicationSettings();
 
 	QStringList recentFiles = settings.value("recentFiles").toStringList();
 
@@ -871,7 +895,7 @@ QString CMainWindow::getAboutText() const
 
 // settings
 
-QSettings& CMainWindow::getApplicationSettings()
+QSettings& CMainWindow::getApplicationSettings() const
 {
 	static QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
 	return settings;
