@@ -379,7 +379,7 @@ bool CFileSerializerGEXF::readEdge(int /*index*/, const QDomNode &domNode, const
 }
 
 
-bool CFileSerializerGEXF::save(const QString& fileName, CEditorScene& scene, QString* lastError) const
+bool CFileSerializerGEXF::save(const QString& fileName, CEditorScene& scene, QString* /*lastError*/) const
 {
 	QFile file(fileName);
 	if (!file.open(QIODevice::WriteOnly))
