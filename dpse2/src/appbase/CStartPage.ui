@@ -79,12 +79,9 @@
      </item>
      <item>
       <widget class="QScrollArea" name="scrollArea">
-<<<<<<< HEAD
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
-=======
->>>>>>> eba7b8a2551ccdd6fbe0bccde92601185babbbaa
        <property name="widgetResizable">
         <bool>true</bool>
        </property>
@@ -93,7 +90,6 @@
          <rect>
           <x>0</x>
           <y>0</y>
-<<<<<<< HEAD
           <width>310</width>
           <height>379</height>
          </rect>
@@ -111,13 +107,6 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-=======
-          <width>308</width>
-          <height>375</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
->>>>>>> eba7b8a2551ccdd6fbe0bccde92601185babbbaa
          <item>
           <widget class="QWidget" name="RightWidget" native="true">
            <property name="minimumSize">

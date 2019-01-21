@@ -23,11 +23,7 @@ CStartPage::~CStartPage()
 
 void CStartPage::createActions()
 {
-<<<<<<< HEAD
     const auto &docTypes = m_parent->getRegisteredDocumentTypes();
-=======
-	auto &docTypes = m_parent->getRegisteredDocumentTypes();
->>>>>>> eba7b8a2551ccdd6fbe0bccde92601185babbbaa
 
 	// create document actions
 	for (auto &doc : docTypes)
@@ -75,11 +71,7 @@ void CStartPage::onCreateDocument()
 
 void CStartPage::createRecentDocs()
 {
-<<<<<<< HEAD
     const auto &recentList = m_parent->getRecentFilesList();
-=======
-	auto &recentList = m_parent->getRecentFilesList();
->>>>>>> eba7b8a2551ccdd6fbe0bccde92601185babbbaa
 
 	for (const QString &fileName : recentList)
 	{
@@ -91,19 +83,10 @@ void CStartPage::createRecentDocs()
 			this
 		);
 
-<<<<<<< HEAD
         ui.RightWidget->layout()->addWidget(fileButton);
 	}
 
 
     ui.RightWidget->layout()->addItem(new QSpacerItem(1, 10, QSizePolicy::MinimumExpanding));
-=======
-		ui.RightWidget->layout()->addWidget(fileButton);
-	}
-
-
-	if (recentList.size())
-		ui.RightWidget->layout()->addItem(new QSpacerItem(1, 1, QSizePolicy::Expanding));
->>>>>>> eba7b8a2551ccdd6fbe0bccde92601185babbbaa
 }
 

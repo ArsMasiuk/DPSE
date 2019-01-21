@@ -1,12 +1,8 @@
 ﻿#pragma once
 
 #include <QWidget>
-<<<<<<< HEAD
 
 #include "ui_CStartPage.h"
-=======
-#include "ui_cstartpage.h"
->>>>>>> eba7b8a2551ccdd6fbe0bccde92601185babbbaa
 
 class CMainWindow;
 
