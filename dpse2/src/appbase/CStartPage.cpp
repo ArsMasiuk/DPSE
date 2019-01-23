@@ -72,6 +72,7 @@ void CStartPage::onCreateDocument()
 void CStartPage::createRecentDocs()
 {
     const auto &recentList = m_parent->getRecentFilesList();
+	int i = 0;
 
 	for (const QString &fileName : recentList)
 	{
@@ -83,10 +84,29 @@ void CStartPage::createRecentDocs()
 			this
 		);
 
+		fileButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+		QAction *recentAction = new QAction(fileName, fileButton);
+		recentAction->setData(i++);
+
+		connect(fileButton, &QCommandLinkButton::clicked, recentAction, &QAction::triggered);
+		connect(recentAction, &QAction::triggered, this, &CStartPage::onRecentDocument);
+		
+
         ui.RightWidget->layout()->addWidget(fileButton);
 	}
 
 
-    ui.RightWidget->layout()->addItem(new QSpacerItem(1, 10, QSizePolicy::MinimumExpanding));
+	// spacer
+	QWidget *temp = new QWidget(this);
+	temp->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+	ui.RightWidget->layout()->addWidget(temp);
 }
 
+
+void CStartPage::onRecentDocument()
+{
+	QAction *act = dynamic_cast<QAction*>(sender());
+	if (act)
+		m_parent->openDocument(act->text());
+}

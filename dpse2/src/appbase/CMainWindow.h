@@ -60,7 +60,9 @@ public Q_SLOTS:
 	virtual void onAboutApplication();
 
 	virtual void createNewDocument(const QByteArray &docType);
-	virtual void selectAndOpenDocument();
+
+	void selectAndOpenDocument();
+	bool openDocument(const QString &fileName);
 
 protected:
 	void closeEvent(QCloseEvent *event);

@@ -57,7 +57,6 @@ private Q_SLOTS:
 
 private:
 	void onLeftClickMouseMove(QMouseEvent *e);
-	void doClamp(QPointF &value);
 
 	Qt::ContextMenuPolicy m_menuModeTmp;
 	bool m_interactiveTmp = false;

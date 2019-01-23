@@ -489,14 +489,20 @@ void CNodeEditorUIController::onSceneHint(const QString& text)
 void CNodeEditorUIController::onSceneStatusChanged(int status)
 {
 	bool isAddNodesMode = (m_editorScene->getEditMode() == EM_AddNodes);
+
+	const QString arrowMoveHint = tr(" | Ctrl + Arrow keys - move selected items by one point | Shift + Arrow keys - move selected items by grid step");
  
     switch (status)
     {
+	case SIS_Edit_Label:
+		onSceneHint(tr("Enter - finish edit | Esc - cancel edit | Shift + Enter - insert line break"));
+		return;
+
     case SIS_Hover:
 		if (isAddNodesMode)
-			onSceneHint(tr("Click & drag - create new connection"));
+			onSceneHint(tr("Click & drag - create new connection | Double click - edit item's label") + arrowMoveHint);
 		else
-			onSceneHint(tr("Ctrl+Click - (un)select item | Click & drag - move selected items | Ctrl+Click & drag - clone selected items"));
+			onSceneHint(tr("Ctrl+Click - (un)select item | Click & drag or Ctrl/Shift + Arrow keys - move selected items | Ctrl+Click & drag - clone selected items | Double click - edit item's label"));
         return;
 
     case SIS_Drag:
@@ -504,14 +510,14 @@ void CNodeEditorUIController::onSceneStatusChanged(int status)
         return;
 
     case SIS_Hover_Port:
-        onSceneHint(tr("Click & drag - make a connection at this port"));
+        onSceneHint(tr("Click & drag - make a connection at this port | Double click - show port properties"));
         return;
 
     default:
 		if (isAddNodesMode)
-			onSceneHint(tr("Click - create new node | Click & drag - create new connection"));
+			onSceneHint(tr("Click - create new node | Click & drag - create new connection") + arrowMoveHint);
 		else
-			onSceneHint(tr("Click & drag - select an area"));
+			onSceneHint(tr("Click & drag - select an area")  + arrowMoveHint);
     }
 }
 

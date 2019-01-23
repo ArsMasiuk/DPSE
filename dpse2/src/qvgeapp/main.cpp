@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
 	qvgeMainWindow w;
 	w.init(QCoreApplication::arguments());
-    w.show();
+
 	return a.exec();
 }
 

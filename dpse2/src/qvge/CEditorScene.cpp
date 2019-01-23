@@ -1873,12 +1873,17 @@ void CEditorScene::keyReleaseEvent(QKeyEvent *keyEvent)
 
 void CEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 {
+	bool isCtrl = (keyEvent->modifiers() == Qt::ControlModifier);
+	bool isAlt = (keyEvent->modifiers() == Qt::AltModifier);
+	bool isShift = (keyEvent->modifiers() == Qt::ShiftModifier);
+
 	Super::keyPressEvent(keyEvent);
 
 	updateCursorState();
 
-	if (keyEvent->isAccepted())
+	if (isAlt || keyEvent->isAccepted())
 		return;
+
 
 	if (keyEvent->key() == Qt::Key_Delete)
 	{
@@ -1888,7 +1893,8 @@ void CEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 		return;
 	}
 
-	if (keyEvent->key() == Qt::Key_A && keyEvent->modifiers() == Qt::ControlModifier)
+
+	if (keyEvent->key() == Qt::Key_A && isCtrl)
 	{
 		onActionSelectAll();
 
@@ -1896,41 +1902,46 @@ void CEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 		return;
 	}
 
-	if (keyEvent->key() == Qt::Key_Right && keyEvent->modifiers() == Qt::ControlModifier)
+
+	// no modifier moves by 1 pixel, shift moves by grid size
+	int moveStep = isShift ? m_gridSize : 1;
+
+	if (keyEvent->key() == Qt::Key_Right)
 	{
-		moveSelectedItemsBy(1, 0);
+		moveSelectedItemsBy(moveStep, 0);
 		addUndoState();
 
 		keyEvent->accept();
 		return;
 	}
 
-	if (keyEvent->key() == Qt::Key_Left && keyEvent->modifiers() == Qt::ControlModifier)
+	if (keyEvent->key() == Qt::Key_Left)
 	{
-		moveSelectedItemsBy(-1, 0);
+		moveSelectedItemsBy(-moveStep, 0);
 		addUndoState();
 
 		keyEvent->accept();
 		return;
 	}
 
-	if (keyEvent->key() == Qt::Key_Up && keyEvent->modifiers() == Qt::ControlModifier)
+	if (keyEvent->key() == Qt::Key_Up)
 	{
-		moveSelectedItemsBy(0, -1);
+		moveSelectedItemsBy(0, -moveStep);
 		addUndoState();
 
 		keyEvent->accept();
 		return;
 	}
 
-	if (keyEvent->key() == Qt::Key_Down && keyEvent->modifiers() == Qt::ControlModifier)
+	if (keyEvent->key() == Qt::Key_Down)
 	{
-		moveSelectedItemsBy(0, 1);
+		moveSelectedItemsBy(0, moveStep);
 		addUndoState();
 
 		keyEvent->accept();
 		return;
 	}
+
 
 	// test
 	
@@ -2006,21 +2017,9 @@ void CEditorScene::onActionSelectAll()
 
 void CEditorScene::onActionEditLabel(CItem *item)
 {
+	setInfoStatus(SIS_Edit_Label);
+
 	m_pimpl->m_labelEditor.startEdit(item);
-
-	//bool ok = false;
-
-	//QString text = QInputDialog::getMultiLineText(NULL,
-	//	tr("Item Label"), tr("New label text:"),
-	//	item->getAttribute("label").toString(),
-	//	&ok);
-
-	//if (ok)
-	//{
-	//	item->setAttribute("label", text);
-
-	//	addUndoState();
-	//}
 }
 
 

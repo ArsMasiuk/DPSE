@@ -378,6 +378,12 @@ void CMainWindow::selectAndOpenDocument()
 }
 
 
+bool CMainWindow::openDocument(const QString &fileName)
+{
+	return doOpenDocument(fileName);
+}
+
+
 void CMainWindow::on_actionOpen_triggered()
 {
     QString title = tr("Open File");
@@ -716,7 +722,7 @@ void CMainWindow::onRecentFilesMenuAction(QAction *recentAction)
 		return;
 
 	// failed - remove
-	QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+	QSettings &settings = getApplicationSettings();
 
 	QStringList recentFiles = settings.value("recentFiles").toStringList();
 	recentFiles.removeAt(recentAction->data().toInt());
@@ -914,14 +920,16 @@ void CMainWindow::readSettings()
 
 void CMainWindow::doReadSettings(QSettings& settings)
 {
+	showNormal();
+
+
     // window geometry
 	const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
 	if (geometry.isEmpty()) 
 	{
 		const QRect availableGeometry = QApplication::desktop()->availableGeometry(this);
-		resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
-		move((availableGeometry.width() - width()) / 2,
-			(availableGeometry.height() - height()) / 2);
+		resize(availableGeometry.width()-200, availableGeometry.height()-100);
+		move(100, 50);
 	}
 	else {
 		restoreGeometry(geometry);

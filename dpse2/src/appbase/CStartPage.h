@@ -21,6 +21,7 @@ protected:
 
 protected Q_SLOTS:
 	void onCreateDocument();
+	void onRecentDocument();
 
 private:
 	Ui::CStartPage ui;
