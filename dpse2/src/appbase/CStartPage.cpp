@@ -4,6 +4,7 @@
 #include <QCommandLinkButton>
 #include <QSpacerItem>
 #include <QFileInfo>
+#include <QDateTime>
 
 
 CStartPage::CStartPage(CMainWindow *parent) : QWidget(parent)
@@ -33,6 +34,8 @@ void CStartPage::createActions()
 			QCommandLinkButton *newFileButton = new QCommandLinkButton(
 				tr("Create") + " " + doc.name, doc.description, this
 			);
+
+			newFileButton->setIcon(QIcon(":/Icons/New"));
 			
 			QAction *newFile = new QAction(newFileButton);
 			newFile->setData(doc.type);
@@ -80,7 +83,7 @@ void CStartPage::createRecentDocs()
 
 		QCommandLinkButton *fileButton = new QCommandLinkButton(
 			fi.baseName(),
-			fileName,
+			fi.lastModified().toString() + " | " + fileName,
 			this
 		);
 

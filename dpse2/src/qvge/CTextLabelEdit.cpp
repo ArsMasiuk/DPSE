@@ -46,16 +46,6 @@ bool CTextLabelEdit::sceneEvent(QEvent *event)
 		QKeyEvent *keyEvent = static_cast<QKeyEvent*> (event);
 		if (keyEvent->matches(QKeySequence::Cancel))	// Esc
 		{
-			finishEdit(false);
-			return true;
-		}
-	}
-
-	if (event->type() == QEvent::KeyPress)
-	{
-		QKeyEvent *keyEvent = static_cast<QKeyEvent*> (event);
-		if (keyEvent->matches(QKeySequence::InsertParagraphSeparator))	// Enter
-		{
 			finishEdit(true);
 			return true;
 		}
@@ -90,9 +80,9 @@ void CTextLabelEdit::startEdit(CItem *item)
 
 	updateGeometry();
 
-	QTextCursor c = textCursor();
-	c.select(QTextCursor::Document);
-	setTextCursor(c);
+	//QTextCursor c = textCursor();
+	//c.select(QTextCursor::Document);
+	//setTextCursor(c);
 	
 	setFocus();
 

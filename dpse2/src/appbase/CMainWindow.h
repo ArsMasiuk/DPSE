@@ -128,6 +128,7 @@ protected Q_SLOTS:
 	void onWindowsMenuAction(QAction*);
 
 private Q_SLOTS:
+	void exit();
 	void onQuit();
 
 protected:
