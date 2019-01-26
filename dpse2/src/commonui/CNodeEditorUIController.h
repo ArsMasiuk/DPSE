@@ -78,8 +78,6 @@ private Q_SLOTS:
 	void unzoom();
 	void resetZoom();
 
-	void paste();
-
     void sceneOptions();
 
 	void showNodeIds(bool on);
@@ -123,12 +121,6 @@ private:
     QLabel *m_statusLabel;
 
 	QMenu *m_viewMenu;
-
-	QAction *cutAction;
-	QAction *copyAction;
-	QAction *pasteAction;
-	QAction *pasteInplaceAction;
-	QAction *delAction;
 
 	QAction *findAction;
 

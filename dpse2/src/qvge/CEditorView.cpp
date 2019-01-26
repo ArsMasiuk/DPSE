@@ -31,15 +31,35 @@ CEditorView::CEditorView(QWidget *parent)
     setRenderHint(QPainter::Antialiasing);
 	setOptimizationFlags(DontSavePainterState);
     setOptimizationFlags(DontAdjustForAntialiasing);
+
+
+	// actions
+	pasteAction = new QAction(QIcon(":/Icons/Paste"), tr("&Paste"), this);
+	pasteAction->setStatusTip(tr("Paste item(s) from clipboard to the area center"));
+	pasteAction->setToolTip(tr("Paste from clipboard"));
+	pasteAction->setShortcut(QKeySequence::Paste);
+	connect(pasteAction, &QAction::triggered, this, &CEditorView::paste);
 }
+
 
 CEditorView::CEditorView(CEditorScene *scene, QWidget *parent): CEditorView(parent)
 {
 	setScene(scene);
 }
 
+
 CEditorView::~CEditorView()
 {
+}
+
+
+// actions
+
+void CEditorView::paste()
+{
+	QRectF vp = mapToScene(viewport()->geometry()).boundingRect();
+	auto center = vp.center();
+	((CEditorScene*)scene())->pasteAt(center);
 }
 
 

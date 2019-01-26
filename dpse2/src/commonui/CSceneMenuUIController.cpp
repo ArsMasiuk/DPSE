@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsSceneContextMenuEvent>
 
+#include <qvge/CEditorView.h>
 #include <qvge/CNodeEditorScene.h>
 #include <qvge/CNodeSceneActions.h>
 #include <qvge/CNode.h>
@@ -22,6 +23,9 @@ CSceneMenuUIController::~CSceneMenuUIController()
 
 bool CSceneMenuUIController::exec(CEditorScene *scene, QGraphicsItem *triggerItem, QGraphicsSceneContextMenuEvent *contextMenuEvent)
 {
+	m_menuPos = contextMenuEvent->scenePos();
+	m_scene = dynamic_cast<CNodeEditorScene*>(scene);
+
 	QMenu menu;
 	fillMenu(menu, scene, triggerItem, contextMenuEvent);
 
@@ -34,10 +38,10 @@ bool CSceneMenuUIController::exec(CEditorScene *scene, QGraphicsItem *triggerIte
 }
 
 
-void CSceneMenuUIController::fillMenu(QMenu &menu, CEditorScene *scene, QGraphicsItem *triggerItem, QGraphicsSceneContextMenuEvent *contextMenuEvent)
+void CSceneMenuUIController::fillMenu(QMenu &menu, CEditorScene *scene, QGraphicsItem *triggerItem, QGraphicsSceneContextMenuEvent* /*contextMenuEvent*/)
 {
 	auto sceneActions = scene->getActions();
-	auto nodeScene = dynamic_cast<CNodeEditorScene*>(scene);
+	auto nodeScene = m_scene;
 
 	int nodesCount = nodeScene->getSelectedNodes().size();
 	bool nodesSelected = (nodesCount > 0);
@@ -49,8 +53,12 @@ void CSceneMenuUIController::fillMenu(QMenu &menu, CEditorScene *scene, QGraphic
 	QAction *changeIdAction = menu.addAction(tr("Change Id..."), parent(), SLOT(changeItemId()));
 	changeIdAction->setEnabled((nodesCount + edgesCount) == 1);
 
-	QAction *deleteAction = menu.addAction(tr("Delete"), scene, SLOT(onActionDelete()));
-	deleteAction->setEnabled(scene->createSelectedList(CDeletableItems()).size());
+	menu.addSeparator();
+
+	menu.addAction(scene->actions()->cutAction);
+	menu.addAction(scene->actions()->copyAction);
+	menu.addAction(QIcon(":/Icons/Paste"), tr("Paste"), this, SLOT(onActionPaste()));
+	menu.addAction(scene->actions()->delAction);
 
 	// add default node actions
 	menu.addSeparator();
@@ -88,4 +96,10 @@ void CSceneMenuUIController::fillMenu(QMenu &menu, CEditorScene *scene, QGraphic
 	arrowsMenu->addAction(tr("None"), sceneActions, SLOT(onActionEdgeUndirected()));
 	arrowsMenu->addSeparator();
 	arrowsMenu->addAction(tr("Reverse"), sceneActions, SLOT(onActionEdgeReverse()));
+}
+
+
+void CSceneMenuUIController::onActionPaste()
+{
+	m_scene->pasteAt(m_menuPos);
 }

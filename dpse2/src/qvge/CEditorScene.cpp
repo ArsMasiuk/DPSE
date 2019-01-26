@@ -10,6 +10,7 @@ It can be used freely, maintaining the information above.
 #include "CEditorScene.h"
 #include "CEditorScene_p.h"
 #include "CEditorSceneDefines.h"
+#include "CEditorSceneActions.h"
 #include "CItem.h"
 #include "CControlPoint.h"
 #include "CSimpleUndoManager.h"
@@ -837,7 +838,7 @@ void CEditorScene::copy()
 }
 
 
-void CEditorScene::paste(const QPointF &anchor)
+void CEditorScene::pasteAt(const QPointF &anchor)
 {
 	const QClipboard *clipboard = QApplication::clipboard();
 	const QMimeData *mimeData = clipboard->mimeData();
@@ -1077,6 +1078,11 @@ void CEditorScene::onSceneChanged()
 
 void CEditorScene::onSelectionChanged()
 {
+	int selectionCount = selectedItems().size();
+	actions()->cutAction->setEnabled(selectionCount > 0);
+	actions()->copyAction->setEnabled(selectionCount > 0);
+	actions()->delAction->setEnabled(selectionCount > 0);
+
 	calculateTransformRect();
 }
 
@@ -1850,6 +1856,18 @@ QGraphicsItem* CEditorScene::getItemAt(const QPointF& pos) const
 }
 
 
+QGraphicsView* CEditorScene::getCurrentView()
+{
+	for (auto view: views())
+	{
+		if (view->underMouse() || view->hasFocus()) 
+			return view;
+	}
+
+	return nullptr;
+}
+
+
 // private
 
 void CEditorScene::setSceneCursor(const QCursor& c)
@@ -1941,17 +1959,6 @@ void CEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 		keyEvent->accept();
 		return;
 	}
-
-
-	// test
-	
-	//if (keyEvent->modifiers() == Qt::ControlModifier && !m_leftClickPos.isNull() && !m_doubleClick)
-	//{
-	//	setSceneCursor(Qt::SizeHorCursor);
-
-	//	keyEvent->accept();
-	//	return;
-	//}
 }
 
 
@@ -2122,6 +2129,12 @@ bool CDeletableItems::evaluate(const QGraphicsItem& item) const
 
 // actions
 
+CEditorSceneActions* CEditorScene::actions()
+{
+	return dynamic_cast<CEditorSceneActions*>(getActions());
+}
+
+
 QObject* CEditorScene::getActions()
 {
 	if (m_actions == NULL)
@@ -2133,7 +2146,6 @@ QObject* CEditorScene::getActions()
 
 QObject* CEditorScene::createActions()
 {
-	// temp
-	return new QObject(this);
+	return new CEditorSceneActions(this);
 }
 

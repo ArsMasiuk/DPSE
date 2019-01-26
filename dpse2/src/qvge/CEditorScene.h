@@ -19,11 +19,13 @@ It can be used freely, maintaining the information above.
 #include "CAttribute.h"
 
 
-class CItem;
 class IUndoManager;
 class ISceneItemFactory;
 class IInteractive;
 class ISceneMenuController;
+
+class CItem;
+class CEditorSceneActions;
 
 struct Graph;
 
@@ -219,11 +221,14 @@ public:
 		return m_infoStatus;
 	}
 
+	QGraphicsView* getCurrentView();
+
 	// callbacks
 	virtual void onItemDestroyed(CItem *citem);
 
 	// actions
 	QObject* getActions();
+	CEditorSceneActions* actions();
 
 public Q_SLOTS:
     void enableGrid(bool on = true);
@@ -239,8 +244,8 @@ public Q_SLOTS:
 
 	void cut();
 	void copy();
-	void paste(const QPointF &anchor);
-	void paste() { paste(QPointF()); }
+	void pasteAt(const QPointF &anchor);
+	void paste() { pasteAt(QPointF()); }
 	void del();
 
 	void crop();

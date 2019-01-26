@@ -171,34 +171,11 @@ void CNodeEditorUIController::createMenus()
 
     editMenu->addSeparator();
 
-    cutAction = editMenu->addAction(QIcon(":/Icons/Cut"), tr("Cu&t"));
-    cutAction->setStatusTip(tr("Cut selected item(s) to clipboard"));
-    cutAction->setToolTip(tr("Cut selection"));
-    cutAction->setShortcut(QKeySequence::Cut);
-    connect(cutAction, &QAction::triggered, m_editorScene, &CEditorScene::cut);
-
-    copyAction = editMenu->addAction(QIcon(":/Icons/Copy"), tr("&Copy"));
-    copyAction->setStatusTip(tr("Copy selected item(s) to clipboard"));
-    copyAction->setToolTip(tr("Copy selection"));
-    copyAction->setShortcut(QKeySequence::Copy);
-    connect(copyAction, &QAction::triggered, m_editorScene, &CEditorScene::copy);
-
-    pasteAction = editMenu->addAction(QIcon(":/Icons/Paste"), tr("&Paste"));
-    pasteAction->setStatusTip(tr("Paste item(s) from clipboard to the area center"));
-    pasteAction->setToolTip(tr("Paste from clipboard"));
-    pasteAction->setShortcut(QKeySequence::Paste);
-    connect(pasteAction, &QAction::triggered, this, &CNodeEditorUIController::paste);
-
-	pasteInplaceAction = editMenu->addAction(tr("Paste In Place"));
-	pasteInplaceAction->setStatusTip(tr("Paste item(s) from clipboard with the same coordinates"));
-	pasteInplaceAction->setToolTip(tr("Paste from clipboard in-place"));
-	connect(pasteInplaceAction, SIGNAL(triggered()), m_editorScene, SLOT(paste()));
-
-    delAction = editMenu->addAction(QIcon(":/Icons/Delete"), tr("&Delete"));
-    delAction->setStatusTip(tr("Delete selected item(s)"));
-    delAction->setToolTip(tr("Delete selection"));
-    delAction->setShortcut(QKeySequence::Delete);
-    connect(delAction, &QAction::triggered, m_editorScene, &CEditorScene::del);
+	editMenu->addAction(m_editorScene->actions()->cutAction);
+	editMenu->addAction(m_editorScene->actions()->copyAction);
+	editMenu->addAction(m_editorView->pasteAction);
+	editMenu->addAction(m_editorScene->actions()->pasteAction);
+	editMenu->addAction(m_editorScene->actions()->delAction);
 
 	QAction *selAction = editMenu->addAction(QIcon(":/Icons/SelectAll"), tr("Select All"));
 	selAction->setStatusTip(tr("Select all items on the scene"));
@@ -273,10 +250,10 @@ void CNodeEditorUIController::createMenus()
 
     editToolbar->addSeparator();
 
-    editToolbar->addAction(cutAction);
-    editToolbar->addAction(copyAction);
-    editToolbar->addAction(pasteAction);
-    editToolbar->addAction(delAction);
+    editToolbar->addAction(m_editorScene->actions()->cutAction);
+    editToolbar->addAction(m_editorScene->actions()->copyAction);
+    editToolbar->addAction(m_editorView->pasteAction);
+    editToolbar->addAction(m_editorScene->actions()->delAction);
 
     editToolbar->addSeparator();
 
@@ -460,10 +437,6 @@ void CNodeEditorUIController::onNavigatorShown()
 void CNodeEditorUIController::onSelectionChanged()
 {
     int selectionCount = m_editorScene->selectedItems().size();
-
-    cutAction->setEnabled(selectionCount > 0);
-    copyAction->setEnabled(selectionCount > 0);
-    delAction->setEnabled(selectionCount > 0);
 
     fitZoomSelectedAction->setEnabled(selectionCount > 0);
 }
@@ -1013,14 +986,6 @@ void CNodeEditorUIController::editNodePort(CNodePort &port)
 void CNodeEditorUIController::find()
 {
     m_searchDialog->exec(*m_editorScene);
-}
-
-
-void CNodeEditorUIController::paste()
-{
-	QRectF vp = m_editorView->mapToScene(m_editorView->viewport()->geometry()).boundingRect();
-	auto center = vp.center();
-	m_editorScene->paste(center);
 }
 
 

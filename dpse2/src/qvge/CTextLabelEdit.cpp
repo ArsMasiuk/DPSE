@@ -80,9 +80,9 @@ void CTextLabelEdit::startEdit(CItem *item)
 
 	updateGeometry();
 
-	//QTextCursor c = textCursor();
-	//c.select(QTextCursor::Document);
-	//setTextCursor(c);
+	QTextCursor c = textCursor();
+	c.select(QTextCursor::Document);
+	setTextCursor(c);
 	
 	setFocus();
 

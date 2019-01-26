@@ -18,7 +18,7 @@ It can be used freely, maintaining the information above.
 
 
 CNodeSceneActions::CNodeSceneActions(CNodeEditorScene *scene) : 
-	QObject(scene),
+	CEditorSceneActions(scene),
 	nodeScene(*scene)
 {
 }

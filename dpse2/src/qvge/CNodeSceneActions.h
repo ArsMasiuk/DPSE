@@ -9,14 +9,14 @@ It can be used freely, maintaining the information above.
 
 #pragma once
 
-#include <QObject>
+#include "CEditorSceneActions.h"
 
 class CNodeEditorScene;
 class CNode;
 class CEdge;
 
 
-class CNodeSceneActions : public QObject 
+class CNodeSceneActions : public CEditorSceneActions
 {
 	Q_OBJECT
 
