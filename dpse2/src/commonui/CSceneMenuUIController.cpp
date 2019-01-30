@@ -23,8 +23,8 @@ CSceneMenuUIController::~CSceneMenuUIController()
 
 bool CSceneMenuUIController::exec(CEditorScene *scene, QGraphicsItem *triggerItem, QGraphicsSceneContextMenuEvent *contextMenuEvent)
 {
-	m_menuPos = contextMenuEvent->scenePos();
 	m_scene = dynamic_cast<CNodeEditorScene*>(scene);
+	m_scene->setPastePosition(contextMenuEvent->scenePos());
 
 	QMenu menu;
 	fillMenu(menu, scene, triggerItem, contextMenuEvent);
@@ -34,6 +34,7 @@ bool CSceneMenuUIController::exec(CEditorScene *scene, QGraphicsItem *triggerIte
 	// execute
 	menu.exec(contextMenuEvent->screenPos());
 
+	m_scene->setPastePosition(QPointF());
 	return false;
 }
 
@@ -57,7 +58,7 @@ void CSceneMenuUIController::fillMenu(QMenu &menu, CEditorScene *scene, QGraphic
 
 	menu.addAction(scene->actions()->cutAction);
 	menu.addAction(scene->actions()->copyAction);
-	menu.addAction(QIcon(":/Icons/Paste"), tr("Paste"), this, SLOT(onActionPaste()));
+	menu.addAction(scene->actions()->pasteAction);
 	menu.addAction(scene->actions()->delAction);
 
 	// add default node actions
@@ -98,8 +99,3 @@ void CSceneMenuUIController::fillMenu(QMenu &menu, CEditorScene *scene, QGraphic
 	arrowsMenu->addAction(tr("Reverse"), sceneActions, SLOT(onActionEdgeReverse()));
 }
 
-
-void CSceneMenuUIController::onActionPaste()
-{
-	m_scene->pasteAt(m_menuPos);
-}

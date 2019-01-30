@@ -242,11 +242,13 @@ public Q_SLOTS:
 	void deselectAll();
 	void selectItems(const QList<CItem*>& items, bool exclusive = true);
 
+	void del();
 	void cut();
 	void copy();
+
+	void setPastePosition(const QPointF &anchor) { m_pastePos = anchor; }
 	void pasteAt(const QPointF &anchor);
-	void paste() { pasteAt(QPointF()); }
-	void del();
+	void paste();
 
 	void crop();
 
@@ -356,6 +358,8 @@ private:
     QPen m_gridPen;
 
 	bool m_needUpdateItems;
+
+	QPointF m_pastePos;
 
 	// selector
 	QRectF m_transformRect;

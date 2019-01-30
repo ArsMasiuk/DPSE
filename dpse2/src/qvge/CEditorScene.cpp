@@ -838,6 +838,36 @@ void CEditorScene::copy()
 }
 
 
+void CEditorScene::paste()
+{
+	if (!m_pastePos.isNull())
+	{
+		pasteAt(m_pastePos);
+		return;
+	}
+
+	auto *view = getCurrentView();
+	if (view)
+	{
+		if (view->underMouse())
+		{
+			auto p = view->mapFromGlobal(QCursor::pos());
+			pasteAt(view->mapToScene(p));
+		}
+		else
+		{
+			QRectF vp = view->mapToScene(view->viewport()->geometry()).boundingRect();
+			auto center = vp.center();
+			pasteAt(center);
+		}
+	}
+	else
+	{
+		pasteAt(QPointF());
+	}
+}
+
+
 void CEditorScene::pasteAt(const QPointF &anchor)
 {
 	const QClipboard *clipboard = QApplication::clipboard();

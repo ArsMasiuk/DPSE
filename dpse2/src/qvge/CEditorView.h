@@ -52,9 +52,6 @@ public:
 		delete newEvent;
 	}
 
-public Q_SLOTS:
-	void paste();
-
 Q_SIGNALS:
 	void scaleChanged(double);
 

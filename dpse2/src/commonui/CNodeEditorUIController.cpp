@@ -173,7 +173,6 @@ void CNodeEditorUIController::createMenus()
 
 	editMenu->addAction(m_editorScene->actions()->cutAction);
 	editMenu->addAction(m_editorScene->actions()->copyAction);
-	editMenu->addAction(m_editorView->pasteAction);
 	editMenu->addAction(m_editorScene->actions()->pasteAction);
 	editMenu->addAction(m_editorScene->actions()->delAction);
 
@@ -252,7 +251,7 @@ void CNodeEditorUIController::createMenus()
 
     editToolbar->addAction(m_editorScene->actions()->cutAction);
     editToolbar->addAction(m_editorScene->actions()->copyAction);
-    editToolbar->addAction(m_editorView->pasteAction);
+    editToolbar->addAction(m_editorScene->actions()->pasteAction);
     editToolbar->addAction(m_editorScene->actions()->delAction);
 
     editToolbar->addSeparator();
