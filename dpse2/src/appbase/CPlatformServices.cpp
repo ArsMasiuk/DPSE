@@ -127,18 +127,35 @@ extern "C" {
 
 bool CPlatformServices::SetActiveWindow(uint id)
 {
-    Display * display = QX11Info::display();
+    Display *display = QX11Info::display();
 
     XEvent event = { 0 };
     event.xclient.type = ClientMessage;
     event.xclient.serial = 0;
     event.xclient.send_event = True;
-    event.xclient.message_type = XInternAtom( display, "_NET_ACTIVE_WINDOW", False);
+    event.xclient.message_type = XInternAtom(display, "_NET_ACTIVE_WINDOW", False);
     event.xclient.window = id;
     event.xclient.format = 32;
 
     XSendEvent( display, DefaultRootWindow(display), False, SubstructureRedirectMask | SubstructureNotifyMask, &event );
     XMapRaised( display, id );
+
+    return true;
+}
+
+
+bool CPlatformServices::CloseWindow(uint id)
+{
+    Display *display = QX11Info::display();
+
+    XEvent event = { 0 };
+    event.xclient.type = ClientMessage;
+    event.xclient.window = id;
+    event.xclient.message_type = XInternAtom(display, "WM_PROTOCOLS", True);
+    event.xclient.format = 32;
+    event.xclient.data.l[0] = XInternAtom(display, "WM_DELETE_WINDOW", False);
+    event.xclient.data.l[1] = CurrentTime;
+    XSendEvent(display, id, False, NoEventMask, &event);
 
     return true;
 }
@@ -151,7 +168,7 @@ CPlatformServices::PIDs CPlatformServices::GetRunningPIDs()
     struct Root *root = read_proc();
     struct Job *buffer = NULL;
 
-    for(int i=0; i<root->len; i++)
+    for (int i = 0; i < root->len; i++)
     {
         buffer = get_from_place(root,i);
         //printf("%s\t%u\n",buffer->name,buffer->pid);
