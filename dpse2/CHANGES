@@ -1,3 +1,8 @@
+QVGE 0.6
+-------------------------------------------------------------------------------
+- added shortcuts for quick node resize (Ctrl+PageUp, Ctrl+PageDown)
+
+
 QVGE 0.5.3
 -------------------------------------------------------------------------------
 - default paste behavior modified: items will be preferably pasted into a visible scene's area

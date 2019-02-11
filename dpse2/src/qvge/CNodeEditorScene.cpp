@@ -504,6 +504,43 @@ void CNodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 {
+	bool isCtrl = (keyEvent->modifiers() == Qt::ControlModifier);
+	bool isAlt = (keyEvent->modifiers() == Qt::AltModifier);
+	bool isShift = (keyEvent->modifiers() == Qt::ShiftModifier);
+
+
+	// Ctrl+PgUp/PgDown; alter size by 10%
+	if (keyEvent->key() == Qt::Key_PageUp && isCtrl)
+	{
+		auto &nodes = getSelectedNodes();
+		for (auto &node : nodes)
+		{
+			node->setAttribute(attr_size, node->getSize() * 1.1);
+		}
+
+		addUndoState();
+
+		keyEvent->accept();
+		return;
+	}
+
+
+	if (keyEvent->key() == Qt::Key_PageDown && isCtrl)
+	{
+		auto &nodes = getSelectedNodes();
+		for (auto &node : nodes)
+		{
+			node->setAttribute(attr_size, node->getSize() / 1.1);
+		}
+
+		addUndoState();
+
+		keyEvent->accept();
+		return;
+	}
+
+
+	// cancel label edit
 	if (keyEvent->key() == Qt::Key_Escape)
 	{
 		cancel();
