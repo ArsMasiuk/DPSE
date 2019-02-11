@@ -13,6 +13,7 @@ It can be used freely, maintaining the information above.
 #include <CCommutationTable.h>
 #include <CNodeEdgePropertiesUI.h>
 #include <CClassAttributesEditorUI.h>
+#include <CQuickHelpUI.h>
 #include <CExtListInputDialog.h>
 #include <CNodesFactorDialog.h>
 #include <CNodePortEditorDialog.h>
@@ -131,6 +132,8 @@ CNodeEditorUIController::~CNodeEditorUIController()
 {
 }
 
+
+// UI
 
 void CNodeEditorUIController::createMenus()
 {
@@ -356,6 +359,15 @@ void CNodeEditorUIController::createMenus()
 
 void CNodeEditorUIController::createPanels()
 {
+	// default properties
+	m_parent->createDockWindow(
+		"defaultsDock", tr("Default Properties"), Qt::LeftDockWidgetArea,
+		m_defaultsPanel = new CClassAttributesEditorUI(m_parent)
+	);
+
+	m_defaultsPanel->setScene(m_editorScene);
+
+
     // properties
     m_parent->createDockWindow(
         "propertyDock", tr("Item Properties"), Qt::RightDockWidgetArea,
@@ -367,26 +379,30 @@ void CNodeEditorUIController::createPanels()
 
     // connections
     m_parent->createDockWindow(
-        "connectionsDock", tr("Topology"), Qt::RightDockWidgetArea,
+        "connectionsDock", tr("Topology"), Qt::LeftDockWidgetArea,
         m_connectionsPanel = new CCommutationTable(m_parent)
     );
 
     m_connectionsPanel->setScene(m_editorScene);
 
 
-    // default properties
-    m_parent->createDockWindow(
-        "defaultsDock", tr("Default Properties"), Qt::LeftDockWidgetArea,
-        m_defaultsPanel = new CClassAttributesEditorUI(m_parent)
-    );
-
-    m_defaultsPanel->setScene(m_editorScene);
+	// quick help
+	auto *quickHelpDock = m_parent->createDockWindow(
+		"quickHelpDock", tr("Quick Help"), Qt::RightDockWidgetArea,
+		m_quickHelpPanel = new CQuickHelpUI(m_parent)
+	);
 
 
 	// update view menu with created toolbars & panels
 	m_viewMenu->addSeparator();
 	QAction *panelsAction = m_viewMenu->addMenu(m_parent->createPopupMenu());
 	panelsAction->setText("Toolbars and Panels");
+
+
+	// update help menu
+	QAction *quickHelpAction = quickHelpDock->toggleViewAction();
+	quickHelpAction->setShortcut(QKeySequence::HelpContents);
+	m_parent->getHelpMenu()->insertAction(nullptr, quickHelpAction);
 }
 
 
@@ -452,6 +468,8 @@ void CNodeEditorUIController::onSceneChanged()
 }
 
 
+// scene
+
 void CNodeEditorUIController::onSceneHint(const QString& text)
 {
     m_parent->statusBar()->showMessage(text);
@@ -502,78 +520,6 @@ void CNodeEditorUIController::onSceneDoubleClicked(QGraphicsSceneMouseEvent* /*m
 }
 
 
-void CNodeEditorUIController::onZoomChanged(double currentZoom)
-{
-    resetZoomAction2->setText(QString("%1%").arg((int)(currentZoom * 100)));
-}
-
-
-void CNodeEditorUIController::zoom()
-{
-    m_editorView->zoomBy(1.3);
-}
-
-
-void CNodeEditorUIController::unzoom()
-{
-    m_editorView->zoomBy(1.0 / 1.3);
-}
-
-
-void CNodeEditorUIController::resetZoom()
-{
-    m_editorView->zoomTo(1.0);
-}
-
-
-void CNodeEditorUIController::sceneOptions()
-{
-    CSceneOptionsDialog dialog;
-
-    if (dialog.exec(*m_editorScene, *m_editorView, m_optionsData))
-    {
-		updateSceneOptions();
-
-        m_parent->writeSettings();
-    }
-}
-
-
-void CNodeEditorUIController::updateSceneOptions()
-{
-	if (m_optionsData.backupPeriod > 0) {
-		m_backupTimer.setInterval(m_optionsData.backupPeriod * 60000);
-		m_backupTimer.start();
-	}
-	else
-		m_backupTimer.stop();
-
-	updateActions();
-}
-
-
-void CNodeEditorUIController::updateActions()
-{
-	if (m_editorScene)
-	{
-		gridAction->setChecked(m_editorScene->gridEnabled());
-		gridSnapAction->setChecked(m_editorScene->gridSnapEnabled());
-		m_actionShowNodeIds->setChecked(m_editorScene->isClassAttributeVisible(class_node, attr_id));
-		m_actionShowEdgeIds->setChecked(m_editorScene->isClassAttributeVisible(class_edge, attr_id));
-	}
-}
-
-
-void CNodeEditorUIController::updateFromActions()
-{
-	if (m_editorScene)
-	{
-		m_editorScene->setClassAttributeVisible(class_node, attr_id, m_actionShowNodeIds->isChecked());
-		m_editorScene->setClassAttributeVisible(class_edge, attr_id, m_actionShowEdgeIds->isChecked());
-	}
-}
-
-
 void CNodeEditorUIController::sceneEditMode(QAction* act)
 {
     int mode = act->data().toInt();
@@ -590,63 +536,7 @@ void CNodeEditorUIController::onEditModeChanged(int mode)
 }
 
 
-bool CNodeEditorUIController::doExport(const IFileSerializer &exporter)
-{
-    QString fileName = CUtils::cutLastSuffix(m_parent->getCurrentFileName());
-    if (fileName.isEmpty())
-        fileName = m_lastExportPath;
-    else
-        fileName = QFileInfo(m_lastExportPath).absolutePath() + "/" + QFileInfo(fileName).fileName();
-
-    QString path = QFileDialog::getSaveFileName(nullptr,
-        QObject::tr("Export as") + " " + exporter.description(),
-        fileName,
-        exporter.filters()
-    );
-
-    if (path.isEmpty())
-        return false;
-
-    m_lastExportPath = path;
-
-    if (exporter.save(path, *m_editorScene))
-    {
-        m_parent->statusBar()->showMessage(tr("Export successful (%1)").arg(path));
-        return true;
-    }
-    else
-    {
-        m_parent->statusBar()->showMessage(tr("Export failed (%1)").arg(path));
-        return false;
-    }
-}
-
-
-void CNodeEditorUIController::exportFile()
-{
-    doExport(CImageExport());
-}
-
-
-void CNodeEditorUIController::exportDOT()
-{
-	if (m_dotDialog->exec() == QDialog::Rejected)
-		return;
-
-    doExport(
-		CFileSerializerDOT(
-			m_dotDialog->writeBackground(),
-			m_dotDialog->writeAttributes()
-		)
-	);
-}
-
-
-void CNodeEditorUIController::exportPDF()
-{
-    doExport(CPDFExport());
-}
-
+// documents
 
 void CNodeEditorUIController::doBackup()
 {
@@ -672,34 +562,94 @@ void CNodeEditorUIController::doBackup()
 }
 
 
+void CNodeEditorUIController::onNewDocumentCreated()
+{
+	readDefaultSceneSettings();
+
+    m_editorScene->setClassAttribute("", "comment", QString());
+    m_editorScene->setClassAttribute("", "creator", QApplication::applicationName() + " " + QApplication::applicationVersion());
+
+#ifdef USE_OGDF
+    if (m_optionsData.newGraphDialogOnStart)
+    {
+        COGDFNewGraphDialog dialog;
+        dialog.exec(*m_editorScene);
+
+        bool show = dialog.isShowOnStart();
+        if (show != m_optionsData.newGraphDialogOnStart)
+        {
+			m_optionsData.newGraphDialogOnStart = show;
+            m_parent->writeSettings();
+        }
+    }
+#endif
+
+    // store newly created state
+    m_editorScene->addUndoState();
+}
+
+
+void CNodeEditorUIController::onDocumentLoaded(const QString &fileName)
+{
+	QSettings& settings = m_parent->getApplicationSettings();
+
+	// read custom topology of the current document
+	settings.beginGroup("CustomFiles");
+
+	QString filename = QFileInfo(fileName).fileName();
+	if (!filename.isEmpty() && settings.childGroups().contains(filename))
+	{
+		settings.beginGroup(filename);
+
+		settings.beginGroup("UI/Topology");
+		m_connectionsPanel->doReadSettings(settings);
+		settings.endGroup();
+
+		settings.endGroup();
+	}
+
+	settings.endGroup();
+
+	// workaround: always make the labels visible
+	m_editorScene->setClassAttributeVisible(class_item, attr_label, true);
+	m_editorScene->setClassAttributeVisible(class_node, attr_label, true);
+	m_editorScene->setClassAttributeVisible(class_edge, attr_label, true);
+
+	// store newly created state
+	m_editorScene->setInitialState();
+}
+
+
+// settings
+
 void CNodeEditorUIController::doReadSettings(QSettings& settings)
 {
 	// options
-    bool isAA = m_editorView->renderHints().testFlag(QPainter::Antialiasing);
-    isAA = settings.value("antialiasing", isAA).toBool();
-    m_editorView->setRenderHint(QPainter::Antialiasing, isAA);
-    m_editorScene->setFontAntialiased(isAA);
+	bool isAA = m_editorView->renderHints().testFlag(QPainter::Antialiasing);
+	isAA = settings.value("antialiasing", isAA).toBool();
+	m_editorView->setRenderHint(QPainter::Antialiasing, isAA);
+	m_editorScene->setFontAntialiased(isAA);
 
-    int cacheRam = QPixmapCache::cacheLimit();
-    cacheRam = settings.value("cacheRam", cacheRam).toInt();
-    QPixmapCache::setCacheLimit(cacheRam);
+	int cacheRam = QPixmapCache::cacheLimit();
+	cacheRam = settings.value("cacheRam", cacheRam).toInt();
+	QPixmapCache::setCacheLimit(cacheRam);
 
-    m_lastExportPath = settings.value("lastExportPath", m_lastExportPath).toString();
-    
+	m_lastExportPath = settings.value("lastExportPath", m_lastExportPath).toString();
+
 	m_optionsData.newGraphDialogOnStart = settings.value("autoCreateGraphDialog", m_optionsData.newGraphDialogOnStart).toBool();
 	m_optionsData.backupPeriod = settings.value("backupPeriod", m_optionsData.backupPeriod).toInt();
 
 	updateSceneOptions();
 
 
-    // UI elements
-    settings.beginGroup("UI/ItemProperties");
-    m_propertiesPanel->doReadSettings(settings);
-    settings.endGroup();
+	// UI elements
+	settings.beginGroup("UI/ItemProperties");
+	m_propertiesPanel->doReadSettings(settings);
+	settings.endGroup();
 
-    settings.beginGroup("UI/ClassAttributes");
-    m_defaultsPanel->doReadSettings(settings);
-    settings.endGroup();
+	settings.beginGroup("UI/ClassAttributes");
+	m_defaultsPanel->doReadSettings(settings);
+	settings.endGroup();
 }
 
 
@@ -709,111 +659,44 @@ void CNodeEditorUIController::doWriteSettings(QSettings& settings)
 	writeDefaultSceneSettings();
 
 
-    bool isAA = m_editorView->renderHints().testFlag(QPainter::Antialiasing);
-    settings.setValue("antialiasing", isAA);
+	bool isAA = m_editorView->renderHints().testFlag(QPainter::Antialiasing);
+	settings.setValue("antialiasing", isAA);
 
-    int cacheRam = QPixmapCache::cacheLimit();
-    settings.setValue("cacheRam", cacheRam);
+	int cacheRam = QPixmapCache::cacheLimit();
+	settings.setValue("cacheRam", cacheRam);
 
-    settings.setValue("lastExportPath", m_lastExportPath);
+	settings.setValue("lastExportPath", m_lastExportPath);
 
-    settings.setValue("autoCreateGraphDialog", m_optionsData.newGraphDialogOnStart);
+	settings.setValue("autoCreateGraphDialog", m_optionsData.newGraphDialogOnStart);
 	settings.setValue("backupPeriod", m_optionsData.backupPeriod);
 
 
-    // UI elements
-    settings.beginGroup("UI/ItemProperties");
-    m_propertiesPanel->doWriteSettings(settings);
-    settings.endGroup();
+	// UI elements
+	settings.beginGroup("UI/ItemProperties");
+	m_propertiesPanel->doWriteSettings(settings);
+	settings.endGroup();
 
-    settings.beginGroup("UI/ClassAttributes");
-    m_defaultsPanel->doWriteSettings(settings);
-    settings.endGroup();
-
-
-    // custom topology of the current document
-    settings.beginGroup("CustomFiles");
-
-    QString filename = QFileInfo(m_parent->getCurrentFileName()).fileName();
-    if (!filename.isEmpty())
-    {
-        settings.beginGroup(filename);
-
-        settings.beginGroup("UI/Topology");
-        m_connectionsPanel->doWriteSettings(settings);
-        settings.endGroup();
-
-        settings.endGroup();
-    }
-
-    settings.endGroup();
-}
+	settings.beginGroup("UI/ClassAttributes");
+	m_defaultsPanel->doWriteSettings(settings);
+	settings.endGroup();
 
 
-bool CNodeEditorUIController::loadFromFile(const QString &fileName, const QString &format, QString* lastError)
-{
-    if (format == "xgr")
-    {
-        return (CFileSerializerXGR().load(fileName, *m_editorScene, lastError));
-    }
+	// custom topology of the current document
+	settings.beginGroup("CustomFiles");
 
-    if (format == "graphml")
-    {
-        return (CFileSerializerGraphML().load(fileName, *m_editorScene, lastError));
-    }
+	QString filename = QFileInfo(m_parent->getCurrentFileName()).fileName();
+	if (!filename.isEmpty())
+	{
+		settings.beginGroup(filename);
 
-    if (format == "gexf")
-    {
-        return (CFileSerializerGEXF().load(fileName, *m_editorScene, lastError));
-    }
+		settings.beginGroup("UI/Topology");
+		m_connectionsPanel->doWriteSettings(settings);
+		settings.endGroup();
 
-    if (format == "csv")
-    {
-        QStringList csvList;
-        csvList << ";" << "," << "Tab";
+		settings.endGroup();
+	}
 
-        int index = CExtListInputDialog::getItemIndex(
-                    tr("Separator"),
-                    tr("Choose a separator of columns:"),
-                    csvList);
-        if (index < 0)
-            return false;
-
-        CFileSerializerCSV csvLoader;
-        switch (index)
-        {
-            case 0:     csvLoader.setDelimiter(';');    break;
-            case 1:     csvLoader.setDelimiter(',');    break;
-            default:    csvLoader.setDelimiter('\t');   break;
-        }
-
-        return (csvLoader.load(fileName, *m_editorScene, lastError));
-    }
-
-    // else via ogdf
-#ifdef USE_OGDF
-    return (COGDFLayout::loadGraph(fileName, *m_editorScene, lastError));
-#else
-    return false;
-#endif
-}
-
-
-bool CNodeEditorUIController::saveToFile(const QString &fileName, const QString &format, QString* lastError)
-{
-    if (format == "xgr")
-        return (CFileSerializerXGR().save(fileName, *m_editorScene, lastError));
-
-    if (format == "dot" || format == "gv")
-        return (CFileSerializerDOT().save(fileName, *m_editorScene, lastError));
-
-    if (format == "gexf")
-        return (CFileSerializerGEXF().save(fileName, *m_editorScene, lastError));
-
-	if (format == "graphml")
-		return (CFileSerializerGraphML().save(fileName, *m_editorScene, lastError));
-
-    return false;
+	settings.endGroup();
 }
 
 
@@ -876,65 +759,82 @@ void CNodeEditorUIController::writeDefaultSceneSettings()
 }
 
 
-void CNodeEditorUIController::onNewDocumentCreated()
+void CNodeEditorUIController::sceneOptions()
 {
-	readDefaultSceneSettings();
+	CSceneOptionsDialog dialog;
 
-    m_editorScene->setClassAttribute("", "comment", QString());
-    m_editorScene->setClassAttribute("", "creator", QApplication::applicationName() + " " + QApplication::applicationVersion());
-
-#ifdef USE_OGDF
-    if (m_optionsData.newGraphDialogOnStart)
-    {
-        COGDFNewGraphDialog dialog;
-        dialog.exec(*m_editorScene);
-
-        bool show = dialog.isShowOnStart();
-        if (show != m_optionsData.newGraphDialogOnStart)
-        {
-			m_optionsData.newGraphDialogOnStart = show;
-            m_parent->writeSettings();
-        }
-    }
-#endif
-
-    // store newly created state
-    m_editorScene->addUndoState();
-}
-
-
-void CNodeEditorUIController::onDocumentLoaded(const QString &fileName)
-{
-	QSettings& settings = m_parent->getApplicationSettings();
-
-	// read custom topology of the current document
-	settings.beginGroup("CustomFiles");
-
-	QString filename = QFileInfo(fileName).fileName();
-	if (!filename.isEmpty() && settings.childGroups().contains(filename))
+	if (dialog.exec(*m_editorScene, *m_editorView, m_optionsData))
 	{
-		settings.beginGroup(filename);
+		updateSceneOptions();
 
-		settings.beginGroup("UI/Topology");
-		m_connectionsPanel->doReadSettings(settings);
-		settings.endGroup();
-
-		settings.endGroup();
+		m_parent->writeSettings();
 	}
-
-	settings.endGroup();
-
-	// workaround: always make the labels visible
-	m_editorScene->setClassAttributeVisible(class_item, attr_label, true);
-	m_editorScene->setClassAttributeVisible(class_node, attr_label, true);
-	m_editorScene->setClassAttributeVisible(class_edge, attr_label, true);
-
-	// store newly created state
-	m_editorScene->setInitialState();
 }
 
 
-// actions
+void CNodeEditorUIController::updateSceneOptions()
+{
+	if (m_optionsData.backupPeriod > 0) {
+		m_backupTimer.setInterval(m_optionsData.backupPeriod * 60000);
+		m_backupTimer.start();
+	}
+	else
+		m_backupTimer.stop();
+
+	updateActions();
+}
+
+
+void CNodeEditorUIController::updateActions()
+{
+	if (m_editorScene)
+	{
+		gridAction->setChecked(m_editorScene->gridEnabled());
+		gridSnapAction->setChecked(m_editorScene->gridSnapEnabled());
+		m_actionShowNodeIds->setChecked(m_editorScene->isClassAttributeVisible(class_node, attr_id));
+		m_actionShowEdgeIds->setChecked(m_editorScene->isClassAttributeVisible(class_edge, attr_id));
+	}
+}
+
+
+void CNodeEditorUIController::updateFromActions()
+{
+	if (m_editorScene)
+	{
+		m_editorScene->setClassAttributeVisible(class_node, attr_id, m_actionShowNodeIds->isChecked());
+		m_editorScene->setClassAttributeVisible(class_edge, attr_id, m_actionShowEdgeIds->isChecked());
+	}
+}
+
+
+// zooming
+
+
+void CNodeEditorUIController::onZoomChanged(double currentZoom)
+{
+	resetZoomAction2->setText(QString("%1%").arg((int)(currentZoom * 100)));
+}
+
+
+void CNodeEditorUIController::zoom()
+{
+	m_editorView->zoomBy(1.3);
+}
+
+
+void CNodeEditorUIController::unzoom()
+{
+	m_editorView->zoomBy(1.0 / 1.3);
+}
+
+
+void CNodeEditorUIController::resetZoom()
+{
+	m_editorView->zoomTo(1.0);
+}
+
+
+// other actions
 
 void CNodeEditorUIController::factorNodes()
 {

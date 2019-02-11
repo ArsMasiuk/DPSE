@@ -346,7 +346,7 @@ bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 
     // auto select created items
     m_startNode->setSelected(false);
-    //m_connection->setSelected(true);
+    m_connection->setSelected(true);
     m_endNode->setSelected(true);
 
 	return true;
