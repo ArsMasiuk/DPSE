@@ -10,6 +10,12 @@ CCSVImportDialog::CCSVImportDialog(QWidget *parent):
 	ui(new Ui::CCSVImportDialog)
 {
 	ui->setupUi(this);
+
+	connect(ui->CommaDelim, SIGNAL(toggled(bool)), this, SLOT(OnDelimToggled(bool)));
+	connect(ui->PointCommaDelim, SIGNAL(toggled(bool)), this, SLOT(OnDelimToggled(bool)));
+	connect(ui->TabDelim, SIGNAL(toggled(bool)), this, SLOT(OnDelimToggled(bool)));
+	connect(ui->CustomDelim, SIGNAL(toggled(bool)), this, SLOT(OnDelimToggled(bool)));
+	connect(ui->CustomDelimEdit, SIGNAL(textChanged(const QString &)), this, SLOT(OnCustomChanged(const QString &)));
 }
 
 
@@ -47,14 +53,42 @@ int CCSVImportDialog::exec()
 }
 
 
+void CCSVImportDialog::OnDelimToggled(bool on)
+{
+	if (on) preview();
+}
+
+
+void CCSVImportDialog::OnCustomChanged(const QString &text)
+{
+	if (text.size()) preview();
+}
+
+
 void CCSVImportDialog::preview()
 {
 	ui->PreviewTable->setUpdatesEnabled(false);
-	ui->PreviewTable->clear();
+	ui->PreviewTable->reset();
 
+	QString sep;
+	if (ui->CommaDelim->isChecked())			sep = ",";
+	else if (ui->PointCommaDelim->isChecked())	sep = ";";
+	else if (ui->TabDelim->isChecked())			sep = "\t";
+	else										sep = ui->CustomDelimEdit->text();
 
+	for (int i = 0; i < m_lines.size(); ++i)
+	{
+		const QString& line = m_lines.at(i);
+		auto refs = line.splitRef(sep);
+
+		for (int x = 0; x < refs.size(); ++x)
+			ui->PreviewTable->setCellText(i, x, refs.at(x));
+	}
 
 	ui->PreviewTable->setUpdatesEnabled(true);
+
+
+	ui->RawPreview->setText(m_lines.join("\n"));
 }
 
 

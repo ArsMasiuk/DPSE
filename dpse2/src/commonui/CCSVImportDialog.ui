@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>469</width>
-    <height>309</height>
+    <height>505</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,12 +81,6 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_2">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="title">
       <string>Columns preview</string>
      </property>
@@ -95,7 +89,35 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QTableWidget" name="PreviewTable"/>
+       <widget class="CEasyTableWidget" name="PreviewTable">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Raw preview</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QTextBrowser" name="RawPreview"/>
       </item>
      </layout>
     </widget>
@@ -119,6 +141,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CEasyTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header location="global">commonui/CEasyTableWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>CommaDelim</tabstop>
   <tabstop>PointCommaDelim</tabstop>

@@ -26,6 +26,8 @@ public:
 
 private Q_SLOTS:
 	void on_CustomDelim_toggled(bool on);
+	void OnDelimToggled(bool on);
+	void OnCustomChanged(const QString &text);
 
 private:
 	int withError(const QString &text);
