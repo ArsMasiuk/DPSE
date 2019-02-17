@@ -44,7 +44,8 @@ int CCSVImportDialog::exec()
 	}
 
 	QTextStream ts(&f);
-	while (!ts.atEnd())
+	int linesCount = 0;
+	while (!ts.atEnd() && linesCount++ < 10)
 		m_lines << ts.readLine();
 
 	preview();
@@ -82,7 +83,13 @@ void CCSVImportDialog::preview()
 		auto refs = line.splitRef(sep);
 
 		for (int x = 0; x < refs.size(); ++x)
-			ui->PreviewTable->setCellText(i, x, refs.at(x));
+		{
+			auto item = ui->PreviewTable->setCellText(i, x, refs.at(x));
+			if (i)
+				item->setFlags(Qt::ItemIsEnabled);
+			else
+				item->setFlags(Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+		}
 	}
 
 	ui->PreviewTable->setUpdatesEnabled(true);

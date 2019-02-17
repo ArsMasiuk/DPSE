@@ -192,6 +192,10 @@ public:
 	virtual void moveSelectedItemsBy(const QPointF& d);
 
 	virtual QList<CItem*> cloneSelectedItems();
+
+	// to reimplement
+	virtual QList<QGraphicsItem*> copyPasteItems() const;
+	virtual QList<QGraphicsItem*> transformableItems() const;
  
 	// operations
 	void startDrag(QGraphicsItem* dragItem);
@@ -268,9 +272,6 @@ protected:
 	void updateCursorState();
 	virtual bool doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem);
 
-	void calculateTransformRect();
-	void drawTransformRect(QPainter *painter);
-
 	virtual QObject* createActions();
 
 	// internal call
@@ -287,10 +288,6 @@ protected:
 	virtual void keyReleaseEvent(QKeyEvent *keyEvent);
 	virtual void focusInEvent(QFocusEvent *focusEvent);
 	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *contextMenuEvent);
-
-	// to reimplement
-	virtual QList<QGraphicsItem*> copyPasteItems() const;
-	virtual QList<QGraphicsItem*> transformableItems() const;
 
 	// call from reimp
 	void moveDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem, bool performDrag);
@@ -361,9 +358,6 @@ private:
 
 	QPointF m_pastePos;
 
-	// selector
-	QRectF m_transformRect;
-
 	// labels
 	QPainterPath m_usedLabelsRegion;
 	bool m_labelsEnabled, m_labelsUpdate;
@@ -371,7 +365,7 @@ private:
 	bool m_isFontAntialiased = true;
 
 	// pimpl
-	struct CEditorScene_p* m_pimpl = nullptr;
+	class CEditorScene_p* m_pimpl = nullptr;
 };
 
 

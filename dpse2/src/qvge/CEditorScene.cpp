@@ -53,7 +53,7 @@ CEditorScene::CEditorScene(QObject *parent): QGraphicsScene(parent),
 	m_isFontAntialiased(true),
 	m_labelsEnabled(true),
 	m_labelsUpdate(false),
-	m_pimpl(new CEditorScene_p)
+	m_pimpl(new CEditorScene_p(this))
 {
     m_gridSize = 25;
     m_gridEnabled = true;
@@ -1056,40 +1056,6 @@ QList<QGraphicsItem*> CEditorScene::transformableItems() const
 }
 
 
-void CEditorScene::calculateTransformRect()
-{
-	auto items = transformableItems();
-
-	if (items.isEmpty())
-	{
-		m_transformRect = QRectF();
-	}
-	else
-	{
-		QRectF r;
-		for (const auto item : items)
-		{
-			r |= item->sceneBoundingRect();
-		}
-
-		invalidate(r | m_transformRect);
-
-		m_transformRect = r;
-	}
-}
-
-
-void CEditorScene::drawTransformRect(QPainter *painter)
-{
-	if (m_transformRect.isValid())
-	{
-		painter->setBrush(Qt::transparent);
-		painter->setPen(QPen(Qt::red, 0, Qt::DashLine));
-		painter->drawRect(m_transformRect);
-	}
-}
-
-
 // callbacks
 
 void CEditorScene::onItemDestroyed(CItem *citem)
@@ -1112,8 +1078,6 @@ void CEditorScene::onSelectionChanged()
 	actions()->cutAction->setEnabled(selectionCount > 0);
 	actions()->copyAction->setEnabled(selectionCount > 0);
 	actions()->delAction->setEnabled(selectionCount > 0);
-
-	calculateTransformRect();
 }
 
 
@@ -1187,6 +1151,8 @@ void CEditorScene::drawForeground(QPainter *painter, const QRectF &r)
 	m_labelsUpdate = false;
 
 	// draw transformer
+	// test
+	m_pimpl->m_transformRect.paintTo(this, painter, r);
 	//drawTransformRect(painter);
 }
 
@@ -1628,9 +1594,6 @@ void CEditorScene::finishDrag(QGraphicsSceneMouseEvent* mouseEvent, QGraphicsIte
 
 	m_startDragItem = NULL;
 	m_dragInProgress = false;
-
-	// transform resume
-	calculateTransformRect();
 }
 
 
@@ -1706,9 +1669,6 @@ bool CEditorScene::onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPoin
 
 		if (!item->flags() & item->ItemIsMovable)
 			return false;
-
-		// transform reset
-		m_transformRect = QRectF();
 
 		if (CItem *citem = dynamic_cast<CItem*>(item))
 		{
