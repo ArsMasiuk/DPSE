@@ -209,11 +209,13 @@ void CNodeEditorUIController::createMenus()
     modeNodesAction->setChecked(m_editorScene->getEditMode() == EM_AddNodes);
     modeNodesAction->setData(EM_AddNodes);
 
-    //modeEdgesAction = editMenu->addAction(tr("Add edges mode"));
-    //modeEdgesAction->setCheckable(true);
-    //modeEdgesAction->setActionGroup(m_editModesGroup);
-    //modeEdgesAction->setChecked(m_editorScene->getEditMode() == EM_AddEdges);
-    //modeEdgesAction->setData(EM_AddEdges);
+	modeTransformAction = editMenu->addAction(QIcon(":/Icons/Mode-Transform"), tr("Transform"));
+	modeTransformAction->setToolTip(tr("Transformation mode"));
+	modeTransformAction->setStatusTip(tr("Transform selected nodes"));
+	modeTransformAction->setCheckable(true);
+	modeTransformAction->setActionGroup(m_editModesGroup);
+	modeTransformAction->setChecked(m_editorScene->getEditMode() == EM_Transform);
+	modeTransformAction->setData(EM_Transform);
 
 
     // scene actions
@@ -266,6 +268,7 @@ void CNodeEditorUIController::createMenus()
 
     editModesToolbar->addAction(modeDefaultAction);
     editModesToolbar->addAction(modeNodesAction);
+	editModesToolbar->addAction(modeTransformAction);
 
 
     // add view menu
@@ -529,10 +532,9 @@ void CNodeEditorUIController::sceneEditMode(QAction* act)
 
 void CNodeEditorUIController::onEditModeChanged(int mode)
 {
-    if (mode == EM_AddNodes)
-        modeNodesAction->setChecked(true);
-    else
-        modeDefaultAction->setChecked(true);
+	modeNodesAction->setChecked(mode == EM_AddNodes);
+	modeDefaultAction->setChecked(mode == EM_Default);
+	modeTransformAction->setChecked(mode == EM_Transform);
 }
 
 

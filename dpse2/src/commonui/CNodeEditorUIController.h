@@ -128,7 +128,7 @@ private:
 	QActionGroup *m_editModesGroup;
 	QAction *modeDefaultAction;
 	QAction *modeNodesAction;
-	QAction *modeEdgesAction;
+	QAction *modeTransformAction;
 
 	QAction *zoomAction;
 	QAction *unzoomAction;

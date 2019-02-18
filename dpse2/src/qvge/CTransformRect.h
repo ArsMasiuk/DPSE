@@ -9,12 +9,17 @@ It can be used freely, maintaining the information above.
 
 #pragma once
 
-#include <QGraphicsRectItem> 
+#include <QCursor> 
+#include <QPainter>
+#include <QRectF>
+#include <QPointF>
 
-class CItem;
+#include "ISceneEditController.h"
+
+class CEditorScene;
 
 
-class CTransformRect: public QObject
+class CTransformRect: public QObject, public ISceneEditController
 {
 	Q_OBJECT
 
@@ -22,12 +27,16 @@ public:
 	CTransformRect();
 	~CTransformRect();
 
-	virtual void paintTo(class CEditorScene *scene, QPainter *painter, const QRectF &r);
+	// ISceneEditController
+	virtual void onActivated(CEditorScene& scene);
+	virtual void onDeactivated(CEditorScene& scene) {};
+	virtual void draw(CEditorScene& scene, QPainter *painter, const QRectF &r);
 
 protected:
 	struct ControlPoint
 	{
 		QPointF pos;
+		QCursor cursor;
 	};
 
 	ControlPoint m_points[8];
