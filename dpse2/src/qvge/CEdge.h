@@ -60,8 +60,8 @@ public:
 	virtual ItemDragTestResult acceptDragFromItem(QGraphicsItem* /*draggedItem*/) { return Ignored; }
 
 	// reimp
-	virtual QPainterPath shape() const;
 	virtual QRectF boundingRect() const;
+	virtual QPainterPath shape() const { return m_selectionShapePath; }
 
 	// attributes
 	virtual bool hasLocalAttribute(const QByteArray& attrId) const;

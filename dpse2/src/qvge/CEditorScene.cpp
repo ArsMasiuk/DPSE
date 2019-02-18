@@ -1150,10 +1150,9 @@ void CEditorScene::drawForeground(QPainter *painter, const QRectF &r)
 	// drop label update flag
 	m_labelsUpdate = false;
 
-	// draw transformer
-	// test
-	m_pimpl->m_transformRect.paintTo(this, painter, r);
-	//drawTransformRect(painter);
+	// draw transformer etc
+	if (m_editController)
+		m_editController->draw(*this, painter, r);
 }
 
 
@@ -1241,6 +1240,7 @@ void CEditorScene::needUpdate()
 
 void CEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+	// check RMB
 	if (mouseEvent->button() == Qt::RightButton)
 	{	
 		onRightButtonPressed(mouseEvent);
@@ -2139,3 +2139,28 @@ QObject* CEditorScene::createActions()
 	return new CEditorSceneActions(this);
 }
 
+
+// edit extenders
+
+void CEditorScene::startTransform(bool on)
+{
+	if (on)
+		setSceneEditController(&m_pimpl->m_transformRect);
+	else
+		setSceneEditController(nullptr);
+}
+
+
+void CEditorScene::setSceneEditController(ISceneEditController *controller)
+{
+	if (m_editController != controller)
+	{
+		if (m_editController)
+			m_editController->onDeactivated(*this);
+
+		m_editController = controller;
+
+		if (m_editController)
+			m_editController->onActivated(*this);
+	}
+}

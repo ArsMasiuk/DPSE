@@ -8,6 +8,8 @@ It can be used freely, maintaining the information above.
 */
 
 
+#include <QGraphicsView>
+
 #include "CTransformRect.h"
 #include "CItem.h"
 #include "CEditorScene.h"
@@ -15,25 +17,35 @@ It can be used freely, maintaining the information above.
 
 CTransformRect::CTransformRect()
 {
+	m_points[0].cursor = Qt::SizeFDiagCursor;
+	m_points[1].cursor = Qt::SizeVerCursor;
+	m_points[2].cursor = Qt::SizeBDiagCursor;
+	m_points[3].cursor = Qt::SizeHorCursor;
+	m_points[4].cursor = Qt::SizeHorCursor;
+	m_points[5].cursor = Qt::SizeFDiagCursor;
+	m_points[6].cursor = Qt::SizeVerCursor;
+	m_points[7].cursor = Qt::SizeBDiagCursor;
 }
 
 CTransformRect::~CTransformRect()
 {
 }
 
-
-void CTransformRect::paintTo(class CEditorScene *scene, QPainter *painter, const QRectF &)
+void CTransformRect::onActivated(CEditorScene& scene)
 {
-	auto selItems = scene->transformableItems();
+	scene.update();
+}
+
+void CTransformRect::draw(class CEditorScene &scene, QPainter *painter, const QRectF &)
+{
+	auto selItems = scene.transformableItems();
 	if (selItems.size())
 	{
 		QRectF r;
-		for (const auto& item : selItems)
+		for (auto item : selItems)
 		{
 			r |= item->sceneBoundingRect();
 		}
-
-		scene->invalidate(r.adjusted(-5,-5,5,5));
 
 		// update points
 		m_points[0].pos = r.topLeft();
@@ -48,8 +60,22 @@ void CTransformRect::paintTo(class CEditorScene *scene, QPainter *painter, const
 		painter->setPen(QPen(Qt::black, 0, Qt::SolidLine));
 		painter->drawRect(r);
 
-		for (int i = 0; i < 8; ++i)
-			painter->fillRect(m_points[i].pos.x() - 4, m_points[i].pos.y() - 4, 9, 9, Qt::SolidPattern);
+		auto view = scene.getCurrentView();
+		if (view)
+		{
+			for (int i = 0; i < 8; ++i)
+			{
+				// zoom-independend control points
+				QPoint viewPos = view->mapFromScene(m_points[i].pos);
+				QPointF topLeft = view->mapToScene(QPoint(viewPos.x() - 4, viewPos.y() - 4));
+				QPointF bottomRight = view->mapToScene(QPoint(viewPos.x() + 4, viewPos.y() + 4));
+
+				painter->fillRect(QRectF(topLeft, bottomRight), Qt::SolidPattern);
+			}
+
+			scene.invalidate(r.adjusted(-5, -5, 5, 5));
+		}
+
 	}
 }
 

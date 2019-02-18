@@ -23,6 +23,7 @@ class IUndoManager;
 class ISceneItemFactory;
 class IInteractive;
 class ISceneMenuController;
+class ISceneEditController;
 
 class CItem;
 class CEditorSceneActions;
@@ -199,6 +200,18 @@ public:
  
 	// operations
 	void startDrag(QGraphicsItem* dragItem);
+	void startTransform(bool on);
+
+	// actions
+	QObject* getActions();
+	CEditorSceneActions* actions();
+
+	// edit extenders
+	void setSceneEditController(ISceneEditController *controller);
+
+	ISceneEditController* getSceneEditController() const {
+		return m_editController;
+	}
 
 	// context menu
 	void setContextMenuController(ISceneMenuController *controller) {
@@ -229,10 +242,6 @@ public:
 
 	// callbacks
 	virtual void onItemDestroyed(CItem *citem);
-
-	// actions
-	QObject* getActions();
-	CEditorSceneActions* actions();
 
 public Q_SLOTS:
     void enableGrid(bool on = true);
@@ -343,6 +352,8 @@ private:
 	ISceneMenuController *m_menuController = nullptr;
 	
 	QObject *m_actions = nullptr;
+
+	ISceneEditController *m_editController = nullptr;
 
 	QMap<QByteArray, QByteArray> m_classToSuperIds;
 	ClassAttributesMap m_classAttributes;

@@ -132,12 +132,6 @@ void CEdge::updateArrowFlags(const QString& direction)
 
 // reimp
 
-QPainterPath CEdge::shape() const
-{
-	return m_selectionShapePath;
-}
-
-
 QRectF CEdge::boundingRect() const
 {
     return Shape::boundingRect().adjusted(-10,-10,10,10);

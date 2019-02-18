@@ -281,6 +281,8 @@ void CNodeEditorScene::setEditMode(EditMode mode)
 	{
 		m_editMode = mode;
 
+		startTransform(m_editMode == EM_Transform);
+
 		Q_EMIT editModeChanged(m_editMode);
 	}
 }
@@ -288,6 +290,9 @@ void CNodeEditorScene::setEditMode(EditMode mode)
 
 bool CNodeEditorScene::startNewConnection(const QPointF& pos)
 {
+	if (m_editMode == EM_Transform)
+		return false;
+
 	if (QGraphicsItem* item = getItemAt(pos))
 	{
 		if (!item->isEnabled())
