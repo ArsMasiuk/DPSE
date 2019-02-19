@@ -1240,6 +1240,12 @@ void CEditorScene::needUpdate()
 
 void CEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+	if (m_editController)
+	{
+		if (m_editController->onMousePressed(*this, mouseEvent))
+			return;
+	}
+
 	// check RMB
 	if (mouseEvent->button() == Qt::RightButton)
 	{	
@@ -1307,9 +1313,18 @@ void CEditorScene::onRightButtonPressed(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+	if (m_editController)
+	{
+		if (m_editController->onMouseMove(*this, mouseEvent))
+			return;
+	}
+
+
+	// store the last position
 	m_mousePos = mouseEvent->scenePos();
 
 	bool isDragging = (mouseEvent->buttons() & Qt::LeftButton);
+
 
 	if (m_doubleClick)
 	{
@@ -1513,6 +1528,12 @@ void CEditorScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+	if (m_editController)
+	{
+		if (m_editController->onMouseReleased(*this, mouseEvent))
+			return;
+	}
+
 	QGraphicsItem* prevGrabber = m_draggedItem;
 
 	Super::mouseReleaseEvent(mouseEvent);
@@ -1853,6 +1874,9 @@ QGraphicsView* CEditorScene::getCurrentView()
 		if (view->underMouse() || view->hasFocus()) 
 			return view;
 	}
+
+	if (views().count() == 1)
+		return views().first();
 
 	return nullptr;
 }

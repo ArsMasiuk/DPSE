@@ -31,6 +31,8 @@ CEditorView::CEditorView(QWidget *parent)
     setRenderHint(QPainter::Antialiasing);
 	setOptimizationFlags(DontSavePainterState);
     setOptimizationFlags(DontAdjustForAntialiasing);
+
+	setFocus();
 }
 
 

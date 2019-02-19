@@ -10,6 +10,7 @@
 
 #include <qvgeio/CGraphBase.h>
 
+#include <QGraphicsView>
 #include <QGraphicsSceneMouseEvent>
 #include <QColorDialog> 
 #include <QKeyEvent>
@@ -281,7 +282,24 @@ void CNodeEditorScene::setEditMode(EditMode mode)
 	{
 		m_editMode = mode;
 
-		startTransform(m_editMode == EM_Transform);
+		switch (m_editMode)
+		{
+		case EM_Transform:
+			getCurrentView()->setDragMode(QGraphicsView::NoDrag);
+			startTransform(true);
+			break;
+
+		case EM_AddNodes:
+			getCurrentView()->setDragMode(QGraphicsView::NoDrag);
+			startTransform(false);
+			break;
+
+		default:
+			getCurrentView()->setDragMode(QGraphicsView::RubberBandDrag);
+			startTransform(false);
+			break;
+		}
+		//startTransform(m_editMode == EM_Transform);
 
 		Q_EMIT editModeChanged(m_editMode);
 	}

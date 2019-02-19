@@ -11,11 +11,20 @@ It can be used freely, maintaining the information above.
 
 class CEditorScene;
 
+class QGraphicsSceneMouseEvent;
+class QPainter;
+class QRectF;
+
 
 class ISceneEditController
 {
 public:
 	virtual void onActivated(CEditorScene& scene) = 0;
 	virtual void onDeactivated(CEditorScene& scene) = 0;
+
+	virtual bool onMousePressed(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent) = 0;
+	virtual bool onMouseMove(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent) = 0;
+	virtual bool onMouseReleased(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent) = 0;
+
 	virtual void draw(CEditorScene& scene, QPainter *painter, const QRectF &r) = 0;
 };

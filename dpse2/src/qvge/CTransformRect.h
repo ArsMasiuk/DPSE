@@ -31,14 +31,25 @@ public:
 	virtual void onActivated(CEditorScene& scene);
 	virtual void onDeactivated(CEditorScene& scene) {};
 	virtual void draw(CEditorScene& scene, QPainter *painter, const QRectF &r);
+	virtual bool onMousePressed(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent);
+	virtual bool onMouseMove(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent);
+	virtual bool onMouseReleased(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent);
 
 protected:
+	void doTransformBy(CEditorScene& scene, const QRectF& oldRect, const QRectF& newRect);
+
 	struct ControlPoint
 	{
 		QPointF pos;
 		QCursor cursor;
+		QRectF sceneRect;
 	};
 
 	ControlPoint m_points[8];
+
+	int m_dragPoint = -1;
+	QPointF m_dragPos;
+	QPointF m_lastPos;
+	QRectF m_lastRect;
 };
 

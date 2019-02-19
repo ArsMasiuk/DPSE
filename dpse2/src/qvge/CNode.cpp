@@ -121,6 +121,12 @@ CItem* CNode::clone()
 
 // attributes
 
+void CNode::setSize(float w, float h)
+{
+	setAttribute("size", QSizeF(w, h));
+}
+
+
 bool CNode::hasLocalAttribute(const QByteArray& attrId) const
 {
 	if (/*attrId == "shape" || attrId == "size" ||*/ attrId == "pos" || 

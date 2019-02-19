@@ -265,6 +265,8 @@ public Q_SLOTS:
 
 	void crop();
 
+	void setSceneCursor(const QCursor& c);
+
 Q_SIGNALS:
 	void undoAvailable(bool);
 	void redoAvailable(bool);
@@ -277,7 +279,6 @@ Q_SIGNALS:
 protected:
 	void setInfoStatus(int status);
 
-	void setSceneCursor(const QCursor& c);
 	void updateCursorState();
 	virtual bool doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem);
 
