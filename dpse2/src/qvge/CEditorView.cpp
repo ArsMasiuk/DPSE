@@ -71,6 +71,9 @@ void CEditorView::zoomBy(double factor)
 
 void CEditorView::fitToView()
 {
+	m_zoomBeforeFit = m_currentZoom;
+	m_dxyBeforeFit = QPointF(transform().dx(), transform().dy());
+
 	fitInView(scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
 
 	m_currentZoom = matrix().m11();
@@ -85,6 +88,9 @@ void CEditorView::fitSelectedToView()
 	if (items.isEmpty())
 		return;
 
+	m_zoomBeforeFit = m_currentZoom;
+	m_dxyBeforeFit = QPointF(transform().dx(), transform().dy());
+
 	QRectF r;
 	for (const auto item : items)
 	{
@@ -96,6 +102,13 @@ void CEditorView::fitSelectedToView()
 	m_currentZoom = matrix().m11();
 
 	Q_EMIT scaleChanged(m_currentZoom);
+}
+
+
+void CEditorView::zoomBack()
+{
+	zoomTo(m_zoomBeforeFit);
+	translate(m_dxyBeforeFit.x(), m_dxyBeforeFit.y());
 }
 
 

@@ -136,6 +136,7 @@ private:
 	QAction *resetZoomAction2;
 	QAction *fitZoomAction;
 	QAction *fitZoomSelectedAction;
+	QAction *fitZoomBackAction;
 
     QAction *gridAction;
     QAction *gridSnapAction;

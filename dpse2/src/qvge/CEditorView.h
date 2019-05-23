@@ -38,6 +38,7 @@ public:
 
 	void fitToView();
 	void fitSelectedToView();
+	void zoomBack();
 
 	// reimp
 	virtual void mousePressEvent(QMouseEvent *e);
@@ -67,6 +68,8 @@ private:
 	QPoint m_pos;
 
 	double m_currentZoom;
+	double m_zoomBeforeFit;
+	QPointF m_dxyBeforeFit;
 
 	float m_scrollThreshold = 30;
 };

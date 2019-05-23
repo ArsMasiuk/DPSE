@@ -185,6 +185,14 @@ void CNodeEditorUIController::createMenus()
 	selAction->setShortcut(QKeySequence::SelectAll);
 	connect(selAction, &QAction::triggered, m_editorScene, &CEditorScene::selectAll);
 
+	editMenu->addSeparator();
+
+	findAction = editMenu->addAction(QIcon(":/Icons/Search"), tr("&Find..."));
+	findAction->setStatusTip(tr("Search for items and attributes"));
+	findAction->setToolTip(tr("Search for items"));
+	findAction->setShortcut(QKeySequence::Find);
+	connect(findAction, &QAction::triggered, this, &CNodeEditorUIController::find);
+
 
     // edit modes
     editMenu->addSeparator();
@@ -261,6 +269,9 @@ void CNodeEditorUIController::createMenus()
 
     editToolbar->addSeparator();
 
+	editToolbar->addAction(findAction);
+
+
     // add edit modes toolbar
     QToolBar *editModesToolbar = m_parent->addToolBar(tr("Edit Modes"));
     editModesToolbar->setObjectName("editModesToolbar");
@@ -307,14 +318,6 @@ void CNodeEditorUIController::createMenus()
 
 	m_viewMenu->addSeparator();
 
-	findAction = m_viewMenu->addAction(QIcon(":/Icons/Search"), tr("&Find..."));
-	findAction->setStatusTip(tr("Search for items and attributes"));
-	//findAction->setToolTip(tr("Find text"));
-	findAction->setShortcut(QKeySequence::Find);
-	connect(findAction, &QAction::triggered, this, &CNodeEditorUIController::find);
-
-	m_viewMenu->addSeparator();
-
     zoomAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomIn"), tr("&Zoom"));
     zoomAction->setStatusTip(tr("Zoom view in"));
     zoomAction->setShortcut(QKeySequence::ZoomIn);
@@ -337,15 +340,15 @@ void CNodeEditorUIController::createMenus()
     fitZoomSelectedAction->setStatusTip(tr("Zoom to fit selected items to view"));
     connect(fitZoomSelectedAction, &QAction::triggered, m_editorView, &CEditorView::fitSelectedToView);
 
+	fitZoomBackAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomFitBack"), tr("Zoom &Back"));
+	fitZoomBackAction->setStatusTip(tr("Zoom to previous state before last fit"));
+	connect(fitZoomBackAction, &QAction::triggered, m_editorView, &CEditorView::zoomBack);
 
-    // add view toolbar
-    QToolBar *zoomToolbar = m_parent->addToolBar(tr("View"));
-    zoomToolbar->setObjectName("viewToolbar");
+
+    // add zoom toolbar
+    QToolBar *zoomToolbar = m_parent->addToolBar(tr("Zoom"));
+    zoomToolbar->setObjectName("zoomToolbar");
     zoomToolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-	zoomToolbar->addAction(findAction);
-
-	zoomToolbar->addSeparator();
 
     zoomToolbar->addAction(zoomAction);
 
@@ -357,6 +360,7 @@ void CNodeEditorUIController::createMenus()
     zoomToolbar->addAction(unzoomAction);
     zoomToolbar->addAction(fitZoomAction);
     zoomToolbar->addAction(fitZoomSelectedAction);
+	zoomToolbar->addAction(fitZoomBackAction);
 }
 
 

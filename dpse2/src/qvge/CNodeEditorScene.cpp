@@ -299,7 +299,6 @@ void CNodeEditorScene::setEditMode(EditMode mode)
 			startTransform(false);
 			break;
 		}
-		//startTransform(m_editMode == EM_Transform);
 
 		Q_EMIT editModeChanged(m_editMode);
 	}
@@ -598,7 +597,7 @@ bool CNodeEditorScene::onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const Q
 	{
 		if (startNewConnection(clickPos))
 		{
-			setEditMode(EM_Default);
+			//setEditMode(EM_Default);
 			return true;
 		}
 	}
@@ -700,7 +699,7 @@ void CNodeEditorScene::onLeftClick(QGraphicsSceneMouseEvent* mouseEvent, QGraphi
 		if (!clickedItem)
 		{
 			onLeftDoubleClick(mouseEvent, clickedItem);
-			setEditMode(EM_Default);
+			//setEditMode(EM_Default);
 			return;
 		}
 	}

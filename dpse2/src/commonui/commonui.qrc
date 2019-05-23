@@ -30,6 +30,7 @@
         <file alias="ZoomIn">Icons/zoom-in.png</file>
         <file alias="ZoomReset">Icons/zoom-original.png</file>
         <file alias="ZoomOut">Icons/zoom-out.png</file>
+        <file alias="ZoomFitBack">Icons/zoom-previous.png</file>
         <file alias="Delete">Icons/edit-delete.png</file>
         <file alias="Label">Icons/text-label.png</file>
         <file alias="Graph">Icons/Graph.png</file>
