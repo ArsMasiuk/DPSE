@@ -819,6 +819,8 @@ void CNodeEditorUIController::updateFromActions()
 void CNodeEditorUIController::onZoomChanged(double currentZoom)
 {
 	resetZoomAction2->setText(QString("%1%").arg((int)(currentZoom * 100)));
+
+	fitZoomBackAction->setEnabled(m_editorView->getZoomBeforeFit() > 0);
 }
 
 

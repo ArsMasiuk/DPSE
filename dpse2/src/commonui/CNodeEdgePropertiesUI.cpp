@@ -335,10 +335,10 @@ void CNodeEdgePropertiesUI::on_NodeSizeSwitch_toggled(bool on)
 	if (on)
 	{
 		ui->NodeSizeY->setValue(ui->NodeSizeX->value());
-		ui->NodeSizeX->setFocus();
+		//ui->NodeSizeX->setFocus();
 	}
-	else
-		ui->NodeSizeY->setFocus();
+	//else
+	//	ui->NodeSizeY->setFocus();
 }
 
 

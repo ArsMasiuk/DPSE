@@ -36,6 +36,7 @@ public:
 	// factor if relative % value to zoom by (2 = 2x from current etc.)
 	void zoomBy(double factor);
 
+	double getZoomBeforeFit() const { return m_zoomBeforeFit; }
 	void fitToView();
 	void fitSelectedToView();
 	void zoomBack();

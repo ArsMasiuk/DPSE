@@ -1,6 +1,8 @@
 QVGE 0.6
 -------------------------------------------------------------------------------
-- added shortcuts for quick node resize (Ctrl+PageUp, Ctrl+PageDown)
+- added shortcuts for quick node resize (Ctrl+Up, Ctrl+Down)
+- (*) added mini help (#15)
+- added "zoom back after fit" feature (#65)
 
 
 QVGE 0.5.3

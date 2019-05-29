@@ -531,8 +531,8 @@ void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 	bool isShift = (keyEvent->modifiers() == Qt::ShiftModifier);
 
 
-	// Ctrl+PgUp/PgDown; alter size by 10%
-	if (keyEvent->key() == Qt::Key_PageUp && isCtrl)
+	// Ctrl+Up/Down; alter size by 10%
+	if (keyEvent->key() == Qt::Key_Up && isCtrl)
 	{
 		auto &nodes = getSelectedNodes();
 		for (auto &node : nodes)
@@ -547,7 +547,7 @@ void CNodeEditorScene::keyPressEvent(QKeyEvent *keyEvent)
 	}
 
 
-	if (keyEvent->key() == Qt::Key_PageDown && isCtrl)
+	if (keyEvent->key() == Qt::Key_Down && isCtrl)
 	{
 		auto &nodes = getSelectedNodes();
 		for (auto &node : nodes)
@@ -838,19 +838,34 @@ QList<QGraphicsItem*> CNodeEditorScene::transformableItems() const
 
 bool CNodeEditorScene::doUpdateCursorState(Qt::KeyboardModifiers keys, Qt::MouseButtons buttons, QGraphicsItem *hoverItem)
 {
-	// handled by super?
-	if (Super::doUpdateCursorState(keys, buttons, hoverItem))
-		return true;
-
+	// port?
 	if (CNodePort *portItem = dynamic_cast<CNodePort*>(hoverItem))
 	{
 		if (portItem->isEnabled())
 		{
-			setSceneCursor(Qt::UpArrowCursor);
+			setSceneCursor(Qt::CrossCursor);
 			setInfoStatus(SIS_Hover_Port);
 			return true;
 		}
 	}
+
+	// hover item?
+	if (m_editMode == EM_AddNodes)
+	{
+		if (hoverItem)
+		{
+			if (hoverItem->isEnabled())
+			{
+				setSceneCursor(Qt::CrossCursor);
+				setInfoStatus(SIS_Hover);
+				return true;
+			}
+		}
+	}
+
+	// handled by super?
+	if (Super::doUpdateCursorState(keys, buttons, hoverItem))
+		return true;
 
 	// still not handled
 	return false;
