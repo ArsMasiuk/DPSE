@@ -523,11 +523,11 @@ void CNodeEdgePropertiesUI::on_LabelFontUnderline_toggled(bool on)
 
 	for (auto item : items)
 	{
-		QFont font = item->getAttribute("label.font").value<QFont>();
+		QFont font = item->getAttribute(QByteArrayLiteral("label.font")).value<QFont>();
 		if (font.underline() != on)
 		{
 			font.setUnderline(on);
-			item->setAttribute("label.font", font);
+			item->setAttribute(QByteArrayLiteral("label.font"), font);
 			set = true;
 		}
 	}

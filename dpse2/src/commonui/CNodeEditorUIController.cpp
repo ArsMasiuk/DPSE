@@ -336,7 +336,8 @@ void CNodeEditorUIController::createMenus()
     fitZoomAction->setStatusTip(tr("Zoom to fit all the items to view"));
     connect(fitZoomAction, &QAction::triggered, m_editorView, &CEditorView::fitToView);
 
-    fitZoomSelectedAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomFitSelected"), tr("Fit &Selection to View"));
+    fitZoomSelectedAction = m_viewMenu->addAction(QIcon(":/Icons/ZoomFitSelected"), tr("Fit &Selection"));
+	fitZoomSelectedAction->setToolTip(tr("Fit selected items to view"));
     fitZoomSelectedAction->setStatusTip(tr("Zoom to fit selected items to view"));
     connect(fitZoomSelectedAction, &QAction::triggered, m_editorView, &CEditorView::fitSelectedToView);
 

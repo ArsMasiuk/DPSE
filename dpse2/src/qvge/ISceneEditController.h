@@ -14,6 +14,7 @@ class CEditorScene;
 class QGraphicsSceneMouseEvent;
 class QPainter;
 class QRectF;
+class QGraphicsItem;
 
 
 class ISceneEditController
@@ -21,6 +22,9 @@ class ISceneEditController
 public:
 	virtual void onActivated(CEditorScene& scene) = 0;
 	virtual void onDeactivated(CEditorScene& scene) = 0;
+
+	virtual void onSelectionChanged(CEditorScene& scene) = 0;
+	virtual void onDragItem(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem) = 0;
 
 	virtual bool onMousePressed(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent) = 0;
 	virtual bool onMouseMove(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent) = 0;

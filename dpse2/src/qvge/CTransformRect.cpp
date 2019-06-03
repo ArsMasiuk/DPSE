@@ -181,6 +181,12 @@ bool CTransformRect::onMouseMove(CEditorScene& scene, QGraphicsSceneMouseEvent *
 
 void CTransformRect::doTransformBy(CEditorScene& scene, const QRectF& oldRect, const QRectF& newRect)
 {
+	if (oldRect == newRect)
+		return;
+
+	if (!oldRect.isValid() || !newRect.isValid())
+		return;
+
 	double xc = oldRect.width() / newRect.width();
 	double yc = oldRect.height() / newRect.height();
 

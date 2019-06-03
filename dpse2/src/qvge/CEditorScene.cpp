@@ -94,6 +94,8 @@ void CEditorScene::reset()
 		m_undoManager->reset();
 
 	setSceneRect(QRectF(-500,-500,1000,1000));
+
+	startTransform(true);
 }
 
 
@@ -1078,6 +1080,11 @@ void CEditorScene::onSelectionChanged()
 	actions()->cutAction->setEnabled(selectionCount > 0);
 	actions()->copyAction->setEnabled(selectionCount > 0);
 	actions()->delAction->setEnabled(selectionCount > 0);
+
+	if (m_editController)
+	{
+		m_editController->onSelectionChanged(*this);
+	}
 }
 
 
@@ -1374,6 +1381,11 @@ void CEditorScene::startDrag(QGraphicsItem* dragItem)
 
 void CEditorScene::processDrag(QGraphicsSceneMouseEvent *mouseEvent, QGraphicsItem* dragItem)
 {
+	if (m_editController)
+	{
+		m_editController->onDragItem(*this, mouseEvent, dragItem);
+	}
+
 	QPointF d = mouseEvent->scenePos() - mouseEvent->lastScenePos();	// delta pos
 
 	if (m_startDragItem)
