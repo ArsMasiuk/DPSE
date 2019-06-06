@@ -94,8 +94,6 @@ void CEditorScene::reset()
 		m_undoManager->reset();
 
 	setSceneRect(QRectF(-500,-500,1000,1000));
-
-	startTransform(true);
 }
 
 

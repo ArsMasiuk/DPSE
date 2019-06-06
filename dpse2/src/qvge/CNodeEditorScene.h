@@ -65,6 +65,8 @@ public:
     // selections
     virtual void moveSelectedItemsBy(const QPointF& d);
 
+	virtual int getBoundingMargin() const { return 5; }
+
     const QList<CNode*>& getSelectedNodes() const;
     const QList<CEdge*>& getSelectedEdges() const;
 	const QList<CItem*>& getSelectedNodesEdges() const;

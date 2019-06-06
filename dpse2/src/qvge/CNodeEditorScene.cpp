@@ -291,12 +291,12 @@ void CNodeEditorScene::setEditMode(EditMode mode)
 
 		case EM_AddNodes:
 			getCurrentView()->setDragMode(QGraphicsView::NoDrag);
-			startTransform(true);
+			startTransform(false);
 			break;
 
 		default:
 			getCurrentView()->setDragMode(QGraphicsView::RubberBandDrag);
-			startTransform(true);
+			startTransform(false);
 			break;
 		}
 

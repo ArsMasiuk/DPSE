@@ -194,6 +194,8 @@ public:
 
 	virtual QList<CItem*> cloneSelectedItems();
 
+	virtual int getBoundingMargin() const { return 0; }
+
 	// to reimplement
 	virtual QList<QGraphicsItem*> copyPasteItems() const;
 	virtual QList<QGraphicsItem*> transformableItems() const;

@@ -48,12 +48,7 @@ void CTransformRect::draw(class CEditorScene &scene, QPainter *painter, const QR
 	auto selItems = scene.transformableItems();
 	if (selItems.size())
 	{
-		QRectF r;
-		for (auto item : selItems)
-		{
-			r |= item->sceneBoundingRect();
-		}
-
+		QRectF r = CUtils::getBoundingRect(selItems);
 		m_lastRect = r;
 
 		// update points
@@ -84,7 +79,7 @@ void CTransformRect::draw(class CEditorScene &scene, QPainter *painter, const QR
 				painter->fillRect(m_points[i].sceneRect, Qt::SolidPattern);
 			}
 
-			scene.invalidate(r.adjusted(-5, -5, 5, 5));
+			scene.invalidate(/*r.adjusted(-5, -5, 5, 5)*/);
 		}
 
 	}
@@ -179,10 +174,15 @@ bool CTransformRect::onMouseMove(CEditorScene& scene, QGraphicsSceneMouseEvent *
 }
 
 
-void CTransformRect::doTransformBy(CEditorScene& scene, const QRectF& oldRect, const QRectF& newRect)
+void CTransformRect::doTransformBy(CEditorScene& scene, QRectF oldRect, QRectF newRect)
 {
 	if (oldRect == newRect)
 		return;
+
+	// normalize borders
+	const int margin = scene.getBoundingMargin();
+	oldRect.adjust(margin, margin, -margin, -margin);
+	newRect.adjust(margin, margin, -margin, -margin);
 
 	if (!oldRect.isValid() || !newRect.isValid())
 		return;

@@ -39,7 +39,7 @@ public:
 	virtual bool onMouseReleased(CEditorScene& scene, QGraphicsSceneMouseEvent *mouseEvent);
 
 protected:
-	void doTransformBy(CEditorScene& scene, const QRectF& oldRect, const QRectF& newRect);
+	void doTransformBy(CEditorScene& scene, QRectF oldRect, QRectF newRect);
 
 	struct ControlPoint
 	{

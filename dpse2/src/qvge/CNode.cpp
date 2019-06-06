@@ -867,7 +867,13 @@ QRectF CNode::boundingRect() const
 	QRectF r = Shape::boundingRect();
 
 	// in case of bold selection
-	return r.adjusted(-3, -3, 3, 3);
+	if (auto scene = getScene())
+	{
+		const int margin = scene->getBoundingMargin();
+		return r.adjusted(-margin, -margin, margin, margin);
+	}
+	else
+		return r;
 }
 
 
