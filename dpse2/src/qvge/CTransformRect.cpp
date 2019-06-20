@@ -116,11 +116,16 @@ bool CTransformRect::onMouseReleased(CEditorScene& scene, QGraphicsSceneMouseEve
 	if (!isDragging)
 		return false;
 
-	// default
+	// nothing was dragged
+	if (m_dragPoint == -1)
+		return false;
+
+	// else finish the drag
 	if (m_lastPos != m_dragPos)
 		scene.addUndoState();
 
 	scene.setSceneCursor(Qt::ArrowCursor);
+
 	m_dragPos = m_lastPos = QPointF();
 	m_dragPoint = -1;
 	return true;

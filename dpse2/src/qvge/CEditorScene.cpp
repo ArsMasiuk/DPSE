@@ -1248,7 +1248,12 @@ void CEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	if (m_editController)
 	{
 		if (m_editController->onMousePressed(*this, mouseEvent))
+		{
+			mouseEvent->setAccepted(true);
 			return;
+		}
+		else
+			mouseEvent->setAccepted(false);
 	}
 
 	// check RMB
@@ -1321,7 +1326,12 @@ void CEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	if (m_editController)
 	{
 		if (m_editController->onMouseMove(*this, mouseEvent))
+		{
+			mouseEvent->setAccepted(true);
 			return;
+		}
+		else
+			mouseEvent->setAccepted(false);
 	}
 
 
@@ -1541,7 +1551,12 @@ void CEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	if (m_editController)
 	{
 		if (m_editController->onMouseReleased(*this, mouseEvent))
+		{
+			mouseEvent->setAccepted(true);
 			return;
+		}
+		else
+			mouseEvent->setAccepted(false);
 	}
 
 	QGraphicsItem* prevGrabber = m_draggedItem;

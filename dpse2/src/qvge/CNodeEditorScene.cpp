@@ -285,7 +285,7 @@ void CNodeEditorScene::setEditMode(EditMode mode)
 		switch (m_editMode)
 		{
 		case EM_Transform:
-			getCurrentView()->setDragMode(QGraphicsView::NoDrag);
+			getCurrentView()->setDragMode(QGraphicsView::RubberBandDrag);
 			startTransform(true);
 			break;
 

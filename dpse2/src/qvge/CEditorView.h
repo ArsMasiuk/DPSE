@@ -41,6 +41,8 @@ public:
 	void fitSelectedToView();
 	void zoomBack();
 
+	QPointF getCenter() const;
+
 	// reimp
 	virtual void mousePressEvent(QMouseEvent *e);
 	virtual void mouseMoveEvent(QMouseEvent *e);
@@ -62,7 +64,8 @@ private Q_SLOTS:
 
 private:
 	void onLeftClickMouseMove(QMouseEvent *e);
-
+	
+	DragMode m_dragModeTmp;
 	Qt::ContextMenuPolicy m_menuModeTmp;
 	bool m_interactiveTmp = false;
 	bool m_moved = false;

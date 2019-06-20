@@ -72,7 +72,7 @@ void CEditorView::zoomBy(double factor)
 void CEditorView::fitToView()
 {
 	m_zoomBeforeFit = m_currentZoom;
-	m_dxyBeforeFit = QPointF(transform().dx(), transform().dy());
+	m_dxyBeforeFit = getCenter();
 
 	fitInView(scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
 
@@ -89,7 +89,7 @@ void CEditorView::fitSelectedToView()
 		return;
 
 	m_zoomBeforeFit = m_currentZoom;
-	m_dxyBeforeFit = QPointF(transform().dx(), transform().dy());
+	m_dxyBeforeFit = getCenter();
 
 	QRectF r;
 	for (const auto item : items)
@@ -108,7 +108,13 @@ void CEditorView::fitSelectedToView()
 void CEditorView::zoomBack()
 {
 	zoomTo(m_zoomBeforeFit);
-	translate(m_dxyBeforeFit.x(), m_dxyBeforeFit.y());
+	centerOn(m_dxyBeforeFit);
+}
+
+
+QPointF CEditorView::getCenter() const
+{
+	return mapToScene(viewport()->rect().center());
 }
 
 
@@ -139,6 +145,7 @@ void CEditorView::mouseMoveEvent(QMouseEvent *e)
 			m_menuModeTmp = contextMenuPolicy();
 			setContextMenuPolicy(Qt::PreventContextMenu);
 
+			m_dragModeTmp = dragMode();
 			setDragMode(ScrollHandDrag);
 
 			m_interactiveTmp = isInteractive();
@@ -167,7 +174,7 @@ void CEditorView::mouseReleaseEvent(QMouseEvent *e)
 		QMouseEvent fake(e->type(), e->pos(), Qt::LeftButton, Qt::LeftButton, e->modifiers());
 		Super::mouseReleaseEvent(&fake);
 
-		setDragMode(RubberBandDrag);
+		setDragMode(m_dragModeTmp);
 
 		setInteractive(m_interactiveTmp);
 
