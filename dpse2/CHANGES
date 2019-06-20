@@ -1,8 +1,10 @@
-QVGE 0.6
+QVGE 0.5.4
 -------------------------------------------------------------------------------
 - added shortcuts for quick node resize (Ctrl+Up, Ctrl+Down)
 - (*) added mini help (#15)
 - added "zoom back after fit" feature (#65)
+
+- fixed crash after editing of a node port
 
 
 QVGE 0.5.3

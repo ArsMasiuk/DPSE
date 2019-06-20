@@ -883,7 +883,7 @@ void CNodeEditorUIController::editNodePort()
 
 void CNodeEditorUIController::editNodePort(CNodePort &port)
 {
-	CNodePortEditorDialog dialog;
+	CNodePortEditorDialog dialog; 
 	if (dialog.exec(port) == QDialog::Accepted)
 		m_editorScene->addUndoState();
 	else
