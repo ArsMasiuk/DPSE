@@ -33,10 +33,10 @@ CNodeEditorScene::CNodeEditorScene(QObject *parent) : Super(parent),
 	registerItemFactory<CPolyEdge>();
 
 	m_nodesFactory = factory<CNode>();
-	m_edgesFactory = factory<CDirectEdge>();
+	//m_edgesFactory = factory<CDirectEdge>();
 
 	// test
-	//setEdgesFactory(factory<CPolyEdge>());
+	setEdgesFactory(factory<CPolyEdge>());
 
 	// go
 	initialize();

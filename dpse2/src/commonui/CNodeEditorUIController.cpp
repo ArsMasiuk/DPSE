@@ -446,14 +446,14 @@ void CNodeEditorUIController::onNavigatorShown()
 
     QPixmap pm(m_sliderView->size());
     QPainter p(&pm);
-    bool gridOn = m_editorScene->gridEnabled();
-    bool labelsOn = m_editorScene->itemLabelsEnabled();
-    m_editorScene->enableGrid(false);
-    m_editorScene->enableItemLabels(false);
-    m_editorScene->render(&p);
-    m_editorScene->enableGrid(gridOn);
-    m_editorScene->enableItemLabels(labelsOn);
-    m_sliderView->setBackgroundBrush(pm);
+
+	CEditorScene* tempScene = m_editorScene->clone();
+	tempScene->enableGrid(false);
+	tempScene->enableItemLabels(false);
+	tempScene->render(&p);
+	delete tempScene;
+
+	m_sliderView->setBackgroundBrush(pm);
 }
 
 

@@ -138,6 +138,9 @@ QSet<QByteArray> CItem::getVisibleAttributeIds(int flags) const
 	if (flags == VF_ANY || flags == VF_TOOLTIP)
         result = getLocalAttributes().keys().toSet();
 
+	if (flags == VF_LABEL)
+		result += "label";
+
 	if (auto scene = getScene())
 	{
 		if (flags == VF_ANY || flags == VF_TOOLTIP)

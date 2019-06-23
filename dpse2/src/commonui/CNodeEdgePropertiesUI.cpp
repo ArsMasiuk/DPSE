@@ -60,11 +60,14 @@ CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
 
 
 	// font size
-	QVector<int> fontSizes = { 5,6,7,8,9,10,11,12,14,16,18,20,24,28,32,36,40,44,48,54,60,66,72,80,88,96 };
-	for (int i : fontSizes)
-		ui->LabelFontSize->addItem(QString::number(i), i);
-	auto v = new QIntValidator(4, 200, this);
-	ui->LabelFontSize->setValidator(v);
+	QList<int> fontSizes = { 5,6,7,8,9,10,11,12,14,16,18,20,24,28,32,36,40,44,48,54,60,66,72,80,88,96 };
+	ui->LabelFontSize->setValueList(fontSizes);
+
+
+	// node size
+	QList<int> nodeSizes = { 5,10,15,20,30,40,50,75,100,150,200 };
+	ui->NodeSizeX->setValueList(nodeSizes);
+	ui->NodeSizeY->setValueList(nodeSizes);
 
 
     // update status & tooltips etc.
@@ -125,11 +128,13 @@ void CNodeEdgePropertiesUI::updateFromScene(CEditorScene* scene)
 	auto nodeAttrs = scene->getClassAttributes("node", false);
 	ui->NodeColor->setColor(nodeAttrs["color"].defaultValue.value<QColor>());
 	ui->NodeShape->selectAction(nodeAttrs["shape"].defaultValue);
+
 	QSize size = nodeAttrs["size"].defaultValue.toSize();
 	ui->NodeSizeSwitch->setChecked(size.width() == size.height());
-	ui->NodeSizeY->setEnabled(size.width() != size.height());
+	ui->NodeSizeY->setVisible(size.width() != size.height());
 	ui->NodeSizeX->setValue(size.width());
 	ui->NodeSizeY->setValue(size.height());
+
 	ui->StrokeColor->setColor(nodeAttrs["stroke.color"].defaultValue.value<QColor>());
 	ui->StrokeStyle->setPenStyle(CUtils::textToPenStyle(nodeAttrs["stroke.style"].defaultValue.toString()));
 	ui->StrokeSize->setValue(nodeAttrs["stroke.size"].defaultValue.toDouble());
@@ -142,9 +147,8 @@ void CNodeEdgePropertiesUI::updateFromScene(CEditorScene* scene)
 
 	QFont f(edgeAttrs["label.font"].defaultValue.value<QFont>());
 	ui->LabelFont->setCurrentFont(f);
-	//ui->LabelFontSize->setValue(f.pointSize());
+	ui->LabelFontSize->setValue(f.pointSize());
 	ui->LabelColor->setColor(edgeAttrs["label.color"].defaultValue.value<QColor>());
-	ui->LabelFontSize->setCurrentText(QString::number(f.pointSize()));
 }
 
 
@@ -200,8 +204,8 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
 		
 		QSize size = node->getAttribute("size").toSize();
 		ui->NodeSizeSwitch->setChecked(size.width() == size.height());
-		ui->NodeSizeY->setEnabled(size.width() != size.height());
-        ui->NodeSizeX->setValue(size.width());
+		ui->NodeSizeY->setVisible(size.width() != size.height());
+		ui->NodeSizeX->setValue(size.width());
 		ui->NodeSizeY->setValue(size.height());
 
 		ui->StrokeColor->setColor(node->getAttribute("stroke.color").value<QColor>());
@@ -242,7 +246,7 @@ void CNodeEdgePropertiesUI::onSelectionChanged()
     {
 		QFont f(item->getAttribute("label.font").value<QFont>());
         ui->LabelFont->setCurrentFont(f);
-		ui->LabelFontSize->setCurrentText(QString::number(f.pointSize()));
+		ui->LabelFontSize->setValue(f.pointSize());
 		ui->LabelFontBold->setChecked(f.bold());
 		ui->LabelFontItalic->setChecked(f.italic());
 		ui->LabelFontUnderline->setChecked(f.underline());
@@ -330,7 +334,7 @@ void CNodeEdgePropertiesUI::on_NodeSizeY_valueChanged(int value)
 
 void CNodeEdgePropertiesUI::on_NodeSizeSwitch_toggled(bool on)
 {
-	ui->NodeSizeY->setEnabled(!on);
+	ui->NodeSizeY->setVisible(!on);
 
 	if (on)
 	{
@@ -390,7 +394,7 @@ void CNodeEdgePropertiesUI::on_EdgeDirection_activated(QVariant data)
 void CNodeEdgePropertiesUI::on_LabelFont_activated(const QFont &font)
 {
 	ui->LabelFontSize->blockSignals(true);
-	ui->LabelFontSize->setCurrentText(QString::number(font.pointSize()));
+	ui->LabelFontSize->setValue(font.pointSize());
 	ui->LabelFontSize->blockSignals(false);
 
     if (m_updateLock || m_scene == NULL)
@@ -427,7 +431,7 @@ void CNodeEdgePropertiesUI::on_LabelColor_activated(const QColor &color)
 }
 
 
-void CNodeEdgePropertiesUI::on_LabelFontSize_currentTextChanged(const QString &text)
+void CNodeEdgePropertiesUI::on_LabelFontSize_valueChanged(int value)
 {
 	if (m_updateLock || m_scene == NULL)
 		return;
@@ -435,8 +439,6 @@ void CNodeEdgePropertiesUI::on_LabelFontSize_currentTextChanged(const QString &t
 	QList<CItem*> items = m_scene->getSelectedNodesEdges();
 	if (items.isEmpty())
 		return;
-
-	int value = text.toInt();
 
 	bool set = false;
 
