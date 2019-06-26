@@ -191,7 +191,7 @@ void CDirectEdge::onParentGeometryChanged()
 		if (m_bendFactor == 0)
 		{
 			m_shapeCachePath.lineTo(p2);
-			m_controlPoint = line().center();
+            m_controlPoint = (line().p1() + line().p2()) / 2;
 		}
 		else
 		{
