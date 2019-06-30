@@ -12,6 +12,7 @@ It can be used freely, maintaining the information above.
 
 #include <QGraphicsView>
 #include <QPaintEvent>
+#include <QTimer>
 
 class CEditorScene;
 
@@ -61,10 +62,9 @@ Q_SIGNALS:
 
 private Q_SLOTS:
 	void restoreContextMenu();
+	void onScrollTimeout();
 
 private:
-	void onLeftClickMouseMove(QMouseEvent *e);
-	
 	DragMode m_dragModeTmp;
 	Qt::ContextMenuPolicy m_menuModeTmp;
 	bool m_interactiveTmp = false;
@@ -75,6 +75,7 @@ private:
 	double m_zoomBeforeFit;
 	QPointF m_dxyBeforeFit;
 
+	QTimer m_scrollTimer;
 	float m_scrollThreshold = 30;
 };
 

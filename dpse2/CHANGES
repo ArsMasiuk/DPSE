@@ -4,6 +4,7 @@ QVGE 0.5.4
 - (*) added mini help (#15)
 - added "zoom back after fit" feature (#65)
 - added nodes transformation mode (#24)
+- auto scroll during drag implemented (#56)
 
 - fixed crash after editing a node port
 

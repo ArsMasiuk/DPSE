@@ -61,7 +61,8 @@ void CTransformRect::draw(class CEditorScene &scene, QPainter *painter, const QR
 		m_points[6].pos = QPointF(r.center().x(), r.bottom());
 		m_points[7].pos = r.bottomRight();
 
-		painter->setPen(QPen(Qt::black, 0, Qt::SolidLine));
+		const QPen rectPen(QColor(0x333333), 0, Qt::SolidLine);
+		painter->setPen(rectPen);
 		painter->drawRect(r);
 
 		auto view = scene.getCurrentView();
