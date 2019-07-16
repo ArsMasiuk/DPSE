@@ -63,18 +63,21 @@ void CDirectEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 
     painter->setClipRect(boundingRect());
 
+	auto len = line().length();
+	bool isArrow = (len > ARROW_SIZE * 2);
+
 	bool isDirect = (!isCircled() && (m_bendFactor == 0));
 	if (isDirect)	// straight line
 	{
-		//painter->drawLine(line());
+		painter->setBrush(Qt::NoBrush);
 		painter->drawPath(m_shapeCachePath);
 
         // arrows
-        if (m_itemFlags & CF_Start_Arrow)
-            drawArrow(painter, option, true, QLineF(line().p2(), line().p1()));
+		if (isArrow && m_itemFlags & CF_Start_Arrow)
+			drawArrow(painter, option, true, QLineF(line().p2(), line().p1()));
 
-        if (m_itemFlags & CF_End_Arrow)
-            drawArrow(painter, option, false, line());
+		if (isArrow && m_itemFlags & CF_End_Arrow)
+			drawArrow(painter, option, false, line());
 	}
 	else // curve
 	{
@@ -82,13 +85,13 @@ void CDirectEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 		painter->drawPath(m_shapeCachePath);
 
 		// arrows
-        if (m_itemFlags & CF_Start_Arrow)
+        if (isArrow && m_itemFlags & CF_Start_Arrow)
         {
             QLineF arrowLine = calculateArrowLine(m_shapeCachePath, true, QLineF(m_controlPos, line().p1()));
             drawArrow(painter, option, true, arrowLine);
         }
 
-        if (m_itemFlags & CF_End_Arrow)
+        if (isArrow && m_itemFlags & CF_End_Arrow)
         {
             QLineF arrowLine = calculateArrowLine(m_shapeCachePath, false, QLineF(m_controlPos, line().p2()));
             drawArrow(painter, option, false, arrowLine);
@@ -210,6 +213,16 @@ void CDirectEdge::onParentGeometryChanged()
 			m_controlPoint = m_controlPos - (t1 - m_controlPos) * 0.33;
 
 			m_shapeCachePath.cubicTo(m_controlPoint, m_controlPoint, p2);
+		}
+
+		auto len = line().length();
+		auto fullLen = QLineF(p1c, p2c).length();
+		//qDebug() << len << fullLen;
+
+		// if len == fullLen : drop the shape
+		if (qAbs(len - fullLen) < 5)
+		{
+			m_shapeCachePath = QPainterPath();
 		}
 	}
 

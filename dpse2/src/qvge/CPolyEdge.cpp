@@ -208,18 +208,10 @@ void CPolyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 	painter->setClipRect(boundingRect());
 
-	QPainterPath path;
-	path.moveTo(line().p1());
-
-	for (const QPointF &p : m_polyPoints)
-		path.lineTo(p);
-
-	path.lineTo(line().p2());
-
 	painter->save();
 
 	painter->setBrush(Qt::NoBrush);
-	painter->drawPath(path);
+	painter->drawPath(m_shapeCachePath);
 
 	painter->restore();
 
@@ -233,13 +225,15 @@ void CPolyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	if (m_itemFlags & CF_Start_Arrow)
 	{
 		QLineF arrowLine(m_polyPoints.first(), line().p1());
-		drawArrow(painter, option, true, arrowLine);
+		if (arrowLine.length() > ARROW_SIZE * 2)
+			drawArrow(painter, option, true, arrowLine);
 	}
 
 	if (m_itemFlags & CF_End_Arrow)
 	{
 		QLineF arrowLine(m_polyPoints.last(), line().p2());
-		drawArrow(painter, option, false, arrowLine);
+		if (arrowLine.length() > ARROW_SIZE * 2)
+			drawArrow(painter, option, false, arrowLine);
 	}
 }
 
@@ -281,19 +275,19 @@ void CPolyEdge::onParentGeometryChanged()
 	setLine(l);
 
 	// update shape path
-	QPainterPath path;
-	path.moveTo(p1);
+	m_shapeCachePath = QPainterPath();
+	m_shapeCachePath.moveTo(p1);
 	
 	for (const QPointF &p : m_polyPoints)
-		path.lineTo(p);
+		m_shapeCachePath.lineTo(p);
 
-	path.lineTo(p2);
+	m_shapeCachePath.lineTo(p2);
 
-	m_controlPoint = path.pointAtPercent(0.5);
+	m_controlPoint = m_shapeCachePath.pointAtPercent(0.5);
 
 	QPainterPathStroker stroker;
 	stroker.setWidth(6);
-	m_selectionShapePath = stroker.createStroke(path);
+	m_selectionShapePath = stroker.createStroke(m_shapeCachePath);
 
 	update();
 

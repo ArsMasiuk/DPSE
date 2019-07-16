@@ -20,9 +20,6 @@ It can be used freely, maintaining the information above.
 #include <math.h>
 
 
-const int ARROW_SIZE = 6;
-
-
 CEdge::CEdge(QGraphicsItem *parent): Shape(parent)
 {
     m_firstNode = m_lastNode = NULL;

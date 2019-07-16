@@ -112,6 +112,8 @@ protected:
 
 	QPainterPath m_selectionShapePath;
 	QPainterPath m_shapeCachePath;
+
+	const int ARROW_SIZE = 6;
 };
 
 
