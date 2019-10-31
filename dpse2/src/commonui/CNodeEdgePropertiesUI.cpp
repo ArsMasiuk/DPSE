@@ -20,6 +20,7 @@ It can be used freely, maintaining the information above.
 #include <qvge/CEdge.h>
 #include <qvge/CDirectEdge.h>
 #include <qvge/CAttribute.h>
+#include <qvge/CEditorSceneDefines.h>
 
 
 CNodeEdgePropertiesUI::CNodeEdgePropertiesUI(QWidget *parent) :
@@ -406,7 +407,7 @@ void CNodeEdgePropertiesUI::on_LabelFont_activated(const QFont &font)
 
 	for (auto item : items)
 	{
-		item->setAttribute("label.font", font);
+		item->setAttribute(attr_label_font, font);
 	}
 
     m_scene->addUndoState();
@@ -424,7 +425,7 @@ void CNodeEdgePropertiesUI::on_LabelColor_activated(const QColor &color)
 
 	for (auto item : items)
 	{
-		item->setAttribute("label.color", color);
+		item->setAttribute(attr_label_color, color);
 	}
 
 	m_scene->addUndoState();
@@ -444,11 +445,11 @@ void CNodeEdgePropertiesUI::on_LabelFontSize_valueChanged(int value)
 
 	for (auto item : items)
 	{
-		QFont font = item->getAttribute("label.font").value<QFont>();
+		QFont font = item->getAttribute(attr_label_font).value<QFont>();
 		if (font.pointSize() != value)
 		{
 			font.setPointSize(value);
-			item->setAttribute("label.font", font);
+			item->setAttribute(attr_label_font, font);
 			set = true;
 		}
 	}
@@ -471,11 +472,11 @@ void CNodeEdgePropertiesUI::on_LabelFontBold_toggled(bool on)
 
 	for (auto item : items)
 	{
-		QFont font = item->getAttribute("label.font").value<QFont>();
+		QFont font = item->getAttribute(attr_label_font).value<QFont>();
 		if (font.bold() != on)
 		{
 			font.setBold(on);
-			item->setAttribute("label.font", font);
+			item->setAttribute(attr_label_font, font);
 			set = true;
 		}
 	}
@@ -498,11 +499,12 @@ void CNodeEdgePropertiesUI::on_LabelFontItalic_toggled(bool on)
 
 	for (auto item : items)
 	{
-		QFont font = item->getAttribute("label.font").value<QFont>();
+		QFont font = item->getAttribute(attr_label_font).value<QFont>();
 		if (font.italic() != on)
 		{
 			font.setItalic(on);
-			item->setAttribute("label.font", font);
+			item->setAttribute(attr_label_font, font);
+			item->updateLabelContent();
 			set = true;
 		}
 	}
@@ -525,11 +527,11 @@ void CNodeEdgePropertiesUI::on_LabelFontUnderline_toggled(bool on)
 
 	for (auto item : items)
 	{
-		QFont font = item->getAttribute(QByteArrayLiteral("label.font")).value<QFont>();
+		QFont font = item->getAttribute(attr_label_font).value<QFont>();
 		if (font.underline() != on)
 		{
 			font.setUnderline(on);
-			item->setAttribute(QByteArrayLiteral("label.font"), font);
+			item->setAttribute(attr_label_font, font);
 			set = true;
 		}
 	}

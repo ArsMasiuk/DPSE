@@ -58,6 +58,10 @@ void CDirectEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 {
 	//qDebug() << boundingRect() << option->exposedRect << option->rect;
 
+	// dowt draw if no cache 
+	if (m_shapeCachePath.isEmpty())
+		return;
+
 	// called before draw 
     setupPainter(painter, option, widget);
 
@@ -152,6 +156,8 @@ void CDirectEdge::onParentGeometryChanged()
 	QPointF p1 = m_firstNode->getIntersectionPoint(QLineF(p1c, p2c), m_firstPortId);
 	QPointF p2 = m_lastNode->getIntersectionPoint(QLineF(p2c, p1c), m_lastPortId);
 
+	bool intersected = (!p1.isNull()) && (!p2.isNull());
+
 	QLineF l(p1, p2);
 	setLine(l);
 
@@ -162,16 +168,16 @@ void CDirectEdge::onParentGeometryChanged()
 	if (isCircled())
 	{
 		int nodeDiameter = m_firstNode->boundingRect().height();
-		double nr = nodeDiameter /*/ 2*/;
-		double r = nr + qAbs(m_bendFactor) * nr / 2;
+		double nr = nodeDiameter;
+		double r = nr + qAbs(m_bendFactor) * nr / 4;
 
 		// left up point
 		QPointF lp = p1c + QPointF(-r, -r);
-		QPointF p1 = m_firstNode->getIntersectionPoint(QLineF(lp, p1c), m_firstPortId);
+		QPointF p1 = m_firstNode->getIntersectionPoint(QLineF(p1c, lp), m_firstPortId);
 
 		// right up point
 		QPointF rp = p2c + QPointF(r, -r);
-		QPointF p2 = m_lastNode->getIntersectionPoint(QLineF(rp, p2c), m_lastPortId);
+		QPointF p2 = m_lastNode->getIntersectionPoint(QLineF(p2c, rp), m_lastPortId);
 
 		// up point
 		m_controlPos = (p1c + p2c) / 2 + QPointF(0, -r * 2);
@@ -219,8 +225,8 @@ void CDirectEdge::onParentGeometryChanged()
 		auto fullLen = QLineF(p1c, p2c).length();
 		//qDebug() << len << fullLen;
 
-		// if len == fullLen : drop the shape
-		if (qAbs(len - fullLen) < 5)
+		// if no intersection or len == fullLen : drop the shape
+		if (!intersected || qAbs(len - fullLen) < 5)
 		{
 			m_shapeCachePath = QPainterPath();
 		}

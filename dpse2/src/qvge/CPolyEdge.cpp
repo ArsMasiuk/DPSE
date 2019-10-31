@@ -276,6 +276,12 @@ void CPolyEdge::onParentGeometryChanged()
 
 	// update shape path
 	m_shapeCachePath = QPainterPath();
+
+	if (QLineF(p1, m_polyPoints.first()).length() < 5)
+		p1 = m_polyPoints.first();
+	if (QLineF(p2, m_polyPoints.last()).length() < 5)
+		p2 = m_polyPoints.last();
+
 	m_shapeCachePath.moveTo(p1);
 	
 	for (const QPointF &p : m_polyPoints)
