@@ -152,6 +152,8 @@ void CDirectEdge::onParentGeometryChanged()
 	QPointF p1 = m_firstNode->getIntersectionPoint(QLineF(p1c, p2c), m_firstPortId);
 	QPointF p2 = m_lastNode->getIntersectionPoint(QLineF(p2c, p1c), m_lastPortId);
 
+	bool intersected = (!p1.isNull()) && (!p2.isNull());
+
 	QLineF l(p1, p2);
 	setLine(l);
 
@@ -219,8 +221,8 @@ void CDirectEdge::onParentGeometryChanged()
 		auto fullLen = QLineF(p1c, p2c).length();
 		//qDebug() << len << fullLen;
 
-		// if len == fullLen : drop the shape
-		if (qAbs(len - fullLen) < 5)
+		// if no intersection or len == fullLen : drop the shape
+		if (!intersected || qAbs(len - fullLen) < 5)
 		{
 			m_shapeCachePath = QPainterPath();
 		}

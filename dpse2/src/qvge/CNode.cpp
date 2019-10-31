@@ -560,7 +560,10 @@ double CNode::getDistanceToLineEnd(const QLineF& line, const QByteArray& portId)
 	// polygon (must be cashed)
 	QPolygonF scenePolygon = m_shapeCache.translated(pos());
     QPointF intersectionPoint = CUtils::closestIntersection(line, scenePolygon);
-	return QLineF(intersectionPoint, line.p2()).length();
+	if (intersectionPoint.isNull())
+		return 0.0;
+	else
+		return QLineF(intersectionPoint, line.p2()).length();
 }
 
 

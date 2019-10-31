@@ -726,7 +726,7 @@ CAttributeConstrains* CEditorScene::getClassAttributeConstrains(const QByteArray
 	if (m_classAttributesConstrains.contains(index))
 		return m_classAttributesConstrains[index];
 	else
-		return NULL;
+        return nullptr;
 }
 
 
@@ -872,7 +872,7 @@ void CEditorScene::pasteAt(const QPointF &anchor)
 {
 	const QClipboard *clipboard = QApplication::clipboard();
 	const QMimeData *mimeData = clipboard->mimeData();
-	if (mimeData == NULL)
+    if (!mimeData)
 		return;
 	if (!mimeData->hasFormat("qvge/selection"))
 		return;
@@ -1713,7 +1713,7 @@ bool CEditorScene::onClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const QPoin
 		if (!item->isEnabled())
 			return false;
 
-		if (!item->flags() & item->ItemIsMovable)
+        if (!(item->flags() & item->ItemIsMovable))
 			return false;
 
 		if (CItem *citem = dynamic_cast<CItem*>(item))
@@ -1763,7 +1763,7 @@ bool CEditorScene::onDoubleClickDrag(QGraphicsSceneMouseEvent *mouseEvent, const
 		if (!item->isEnabled())
 			return false;
 
-		if (!item->flags() & item->ItemIsMovable)
+        if (!(item->flags() & item->ItemIsMovable))
 			return false;
 
 		CItem *citem = dynamic_cast<CItem*>(item);
@@ -1883,7 +1883,7 @@ QGraphicsItem* CEditorScene::getItemAt(const QPointF& pos) const
 	QGraphicsItem *hoverItem = itemAt(pos, QTransform());
 	
 	// if label: return parent instead
-	if (dynamic_cast<QGraphicsSimpleTextItem*>(hoverItem) != NULL)
+    if (dynamic_cast<QGraphicsSimpleTextItem*>(hoverItem))
 	{
 		return hoverItem->parentItem();
 	}
@@ -2176,7 +2176,7 @@ CEditorSceneActions* CEditorScene::actions()
 
 QObject* CEditorScene::getActions()
 {
-	if (m_actions == NULL)
+    if (m_actions == nullptr)
 		m_actions = createActions();
 
 	return m_actions;
